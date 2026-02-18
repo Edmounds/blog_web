@@ -1,0 +1,40 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "个人博客与项目展示" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;500;700&display=swap"
+    />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <script is:inline>
+      (() => {
+        const key = "blog-theme";
+        const stored = localStorage.getItem(key);
+        const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const next = stored === "dark" || stored === "light" ? stored : systemDark ? "dark" : "light";
+        document.documentElement.classList.toggle("dark", next === "dark");
+        document.documentElement.dataset.theme = next;
+      })();
+    </script>
+  </head>
+  <body class="grain min-h-screen antialiased selection:bg-[var(--accent-soft)]">
+    <slot />
+  </body>
+</html>

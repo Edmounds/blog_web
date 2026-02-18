@@ -1,43 +1,28 @@
-# Astro Starter Kit: Minimal
+﻿# 纯中文 Astro 博客模板
 
-```sh
-npm create astro@latest -- --template minimal
+## 功能
+- 中文站点路由：`/`、`/blogs/`、`/blog/[slug]/`、`/projects/`、`/about/`
+- 内容管理：`Astro Content Collections`
+- 样式系统：Tailwind + 全局设计 Token
+- 明暗主题切换：跟随系统 + 本地持久化
+- 评论系统：`/api/comments` + Supabase
+
+## 快速开始
+```bash
+npm install
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## 环境变量
+复制 `.env.example` 为 `.env` 并填入：
+- `PUBLIC_SUPABASE_URL`
+- `PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
 
-## 🚀 Project Structure
+## Supabase 建表
+在 Supabase SQL Editor 执行 `supabase/schema.sql`。
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+## 内容目录
+- 博客：`src/content/blog/*.md`
+- 项目：`src/content/projects/*.md`
+- 关于：`src/content/about/profile.md`

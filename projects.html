@@ -10,12 +10,13 @@
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#3b62fe",
+                        "primary": "#D0D0D0", 
                         "background-main": "#1A1A1A",
                         "surface-dark": "#242424",
                         "text-main": "#E0E0E0",
                         "text-muted": "#A0A0A0",
                         "border-color": "#333333",
+                        "accent-line": "#4A4A4A"
                     },
                     fontFamily: {
                         "display": ["Inter", "sans-serif"],
@@ -41,36 +42,54 @@
             transition: filter 0.5s ease;
         }
         .group:hover img {
-            filter: grayscale(0%) brightness(0.6) contrast(1.1);}
+            filter: grayscale(0%) brightness(0.6) contrast(1.1);
+        }.timeline-line {
+            width: 1px;
+            background-color: #4A4A4A;
+        }
+        .timeline-branch {
+            height: 1px;
+            background-color: #4A4A4A;
+        }
     </style>
 </head>
-<body class="bg-background-main text-text-main font-display selection:bg-primary/20 selection:text-primary min-h-screen flex flex-col antialiased">
+<body class="bg-background-main text-text-main font-display selection:bg-white/20 selection:text-white min-h-screen flex flex-col antialiased">
 <nav class="sticky top-0 z-50 w-full bg-background-main/90 backdrop-blur-md border-b border-border-color">
 <div class="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
-<a class="text-xl font-medium tracking-tight text-white hover:text-primary transition-colors duration-200" href="#">
+<a class="text-xl font-medium tracking-tight text-white hover:text-text-muted transition-colors duration-200" href="#">
                 Alex Chen
             </a>
 <div class="hidden md:flex items-center space-x-8">
-<a class="text-sm text-text-muted hover:text-primary transition-colors" href="#">Home</a>
-<a class="text-sm text-text-muted hover:text-primary transition-colors" href="#">Blogs</a>
+<a class="text-sm text-text-muted hover:text-white transition-colors" href="#">Home</a>
+<a class="text-sm text-text-muted hover:text-white transition-colors" href="#">Blogs</a>
 <a class="text-sm text-white font-medium" href="#">Projects</a>
-<a class="text-sm text-text-muted hover:text-primary transition-colors" href="#">About me</a>
+<a class="text-sm text-text-muted hover:text-white transition-colors" href="#">About me</a>
 </div>
 <button class="md:hidden text-text-muted hover:text-white">
 <span class="material-symbols-outlined">menu</span>
 </button>
 </div>
 </nav>
-<main class="max-w-5xl mx-auto px-6 py-12 md:py-20 flex-grow">
-<header class="mb-20 max-w-2xl">
-<h1 class="serif-font text-5xl md:text-6xl text-white mb-6 leading-tight">Selected Projects</h1>
+<main class="max-w-6xl mx-auto px-6 py-12 md:py-16 flex-grow">
+<header class="mb-16 max-w-2xl mx-auto text-center">
+<h1 class="serif-font text-5xl md:text-6xl text-white mb-4 leading-tight">Selected Projects</h1>
 <p class="text-lg text-text-muted font-light leading-relaxed">
-                A collection of digital experiences, interface experiments, and visual explorations crafted with precision and purpose.
+                A chronological exploration of digital experiences, interface experiments, and visual journeys.
             </p>
 </header>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-24">
-<article class="group cursor-pointer">
-<div class="aspect-[4/3] w-full overflow-hidden rounded-xl bg-surface-dark border border-border-color mb-6 relative shadow-2xl shadow-black/20 group-hover:shadow-primary/10 transition-shadow duration-500">
+<div class="relative max-w-5xl mx-auto">
+<div class="absolute left-1/2 transform -translate-x-1/2 h-full timeline-line hidden md:block"></div>
+<article class="relative md:w-1/2 md:pr-12 md:ml-0 group mb-12 md:mb-16">
+<div class="hidden md:block absolute top-6 right-0 w-12 timeline-branch"></div>
+<div class="hidden md:block absolute top-6 -right-[3px] transform -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-accent-line"></div>
+<div class="flex flex-col items-end text-right md:items-end">
+<div class="mb-3 w-full flex flex-col items-end">
+<h2 class="serif-font text-2xl md:text-3xl text-white font-bold group-hover:text-primary transition-colors duration-300 tracking-tight leading-none mb-1">
+                            Nexus Dashboard
+                        </h2>
+<span class="text-xs text-text-muted font-mono tracking-widest uppercase">2024</span>
+</div>
+<div class="aspect-[16/9] w-full overflow-hidden rounded-sm bg-surface-dark border border-border-color mb-4 relative shadow-2xl shadow-black/20 group-hover:shadow-white/5 transition-shadow duration-500">
 <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-500 z-10 flex items-center justify-center">
 <div class="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 flex items-center gap-2 text-white border border-white/30 bg-black/20 backdrop-blur-sm px-6 py-3 rounded-full">
 <span class="text-sm font-medium tracking-wide">View Case Study</span>
@@ -79,22 +98,23 @@
 </div>
 <img alt="Interface design for a financial dashboard" class="h-full w-full object-cover transition-all duration-700 ease-out transform group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzhHcIvNnzJbT_zQ5n5Bdi7_Dwg7rzXRHHZ-v82uXLoF-4gzqQBAakYPXh7Wh0koUdg4GjidBptfg0nmI0qSOwDIwkf2CZsiv_N1VAvaHwhAbfZftxW4unqOI9qVLb7y1N-_BMwO320peeblVJymMl91tYArWJcdf5duZcvbenqPk9P6bA-9JtpiWYgrWpEXWuldVzaDARm8uV_6w5uAqI7A28AV3sI67L7J4uCF-9hOXW8CKKLHLPZTK9gzU6CzgwJdk5dcr_zErE"/>
 </div>
-<div class="flex flex-col">
-<div class="flex items-center gap-3 text-xs text-text-muted mb-3 font-medium uppercase tracking-widest">
-<span class="text-primary">Fintech</span>
-<span class="w-1 h-1 rounded-full bg-zinc-600"></span>
-<span>2024</span>
-</div>
-<h2 class="serif-font text-4xl text-white mb-4 group-hover:text-primary transition-colors duration-300 tracking-tight">
-                        Nexus Dashboard
-                    </h2>
-<p class="text-base text-text-muted leading-relaxed font-light">
+<p class="text-sm text-text-muted leading-relaxed font-light max-w-md">
                         Redefining complexity through a minimalist financial interface that prioritizes data clarity and user intuition.
-                    </p>
+                        <span class="block mt-1 text-[10px] text-zinc-500 uppercase tracking-wider">Fintech</span>
+</p>
 </div>
 </article>
-<article class="group cursor-pointer md:mt-24">
-<div class="aspect-[4/3] w-full overflow-hidden rounded-xl bg-surface-dark border border-border-color mb-6 relative shadow-2xl shadow-black/20 group-hover:shadow-primary/10 transition-shadow duration-500">
+<article class="relative md:w-1/2 md:ml-auto md:pl-12 group mb-12 md:mb-16">
+<div class="hidden md:block absolute top-6 left-0 w-12 timeline-branch"></div>
+<div class="hidden md:block absolute top-6 -left-[3px] transform -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-accent-line"></div>
+<div class="flex flex-col items-start text-left">
+<div class="mb-3 w-full flex flex-col items-start">
+<h2 class="serif-font text-2xl md:text-3xl text-white font-bold group-hover:text-primary transition-colors duration-300 tracking-tight leading-none mb-1">
+                            Sentient Nodes
+                        </h2>
+<span class="text-xs text-text-muted font-mono tracking-widest uppercase">2023</span>
+</div>
+<div class="aspect-[16/9] w-full overflow-hidden rounded-sm bg-surface-dark border border-border-color mb-4 relative shadow-2xl shadow-black/20 group-hover:shadow-white/5 transition-shadow duration-500">
 <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-500 z-10 flex items-center justify-center">
 <div class="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 flex items-center gap-2 text-white border border-white/30 bg-black/20 backdrop-blur-sm px-6 py-3 rounded-full">
 <span class="text-sm font-medium tracking-wide">View Case Study</span>
@@ -103,22 +123,23 @@
 </div>
 <img alt="Abstract 3D visualization of data" class="h-full w-full object-cover transition-all duration-700 ease-out transform group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQQzbaUSpDNY3zpF6TB-UoePhXJsppfGae1qeSQ1VXcKBakqLaOgq2nkvDymHIgOmmzr1ysejsKUOIseAg0YRquHvtNteq4bl4AeucI0mFQIQLeFmpDFAk1SUtYMJr8sI55ie6n3Rwv-NN3yxKfzI_bc5j3mtJfNT0wyDU0noc4MYfKB6Tg35ULCIYdhsJcFeg0LdReJg9JMKXg__j7KTi1PaNxekH9YLmg3TQsey-np4M_MFu3yEd2vvmNUWdLAPDkGR3FXmJvAQN"/>
 </div>
-<div class="flex flex-col">
-<div class="flex items-center gap-3 text-xs text-text-muted mb-3 font-medium uppercase tracking-widest">
-<span class="text-primary">Data Viz</span>
-<span class="w-1 h-1 rounded-full bg-zinc-600"></span>
-<span>2023</span>
-</div>
-<h2 class="serif-font text-4xl text-white mb-4 group-hover:text-primary transition-colors duration-300 tracking-tight">
-                        Sentient Nodes
-                    </h2>
-<p class="text-base text-text-muted leading-relaxed font-light">
+<p class="text-sm text-text-muted leading-relaxed font-light max-w-md">
                         An interactive WebGL exploration of neural networks visualized as organic, breathing light structures.
-                    </p>
+                         <span class="block mt-1 text-[10px] text-zinc-500 uppercase tracking-wider">Data Viz</span>
+</p>
 </div>
 </article>
-<article class="group cursor-pointer">
-<div class="aspect-[4/3] w-full overflow-hidden rounded-xl bg-surface-dark border border-border-color mb-6 relative shadow-2xl shadow-black/20 group-hover:shadow-primary/10 transition-shadow duration-500">
+<article class="relative md:w-1/2 md:pr-12 md:ml-0 group mb-12 md:mb-16">
+<div class="hidden md:block absolute top-6 right-0 w-12 timeline-branch"></div>
+<div class="hidden md:block absolute top-6 -right-[3px] transform -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-accent-line"></div>
+<div class="flex flex-col items-end text-right md:items-end">
+<div class="mb-3 w-full flex flex-col items-end">
+<h2 class="serif-font text-2xl md:text-3xl text-white font-bold group-hover:text-primary transition-colors duration-300 tracking-tight leading-none mb-1">
+                            Mono Objects
+                        </h2>
+<span class="text-xs text-text-muted font-mono tracking-widest uppercase">2023</span>
+</div>
+<div class="aspect-[16/9] w-full overflow-hidden rounded-sm bg-surface-dark border border-border-color mb-4 relative shadow-2xl shadow-black/20 group-hover:shadow-white/5 transition-shadow duration-500">
 <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-500 z-10 flex items-center justify-center">
 <div class="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 flex items-center gap-2 text-white border border-white/30 bg-black/20 backdrop-blur-sm px-6 py-3 rounded-full">
 <span class="text-sm font-medium tracking-wide">View Case Study</span>
@@ -127,22 +148,23 @@
 </div>
 <img alt="Minimalist e-commerce product page" class="h-full w-full object-cover transition-all duration-700 ease-out transform group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhMws6Shyuk4QRp4NaKBuoYExU7aafn8AOJ0LbQ_eAL-pjpFHfwhDXl5TpJmTXuPRuSMEdMHueIoiFBbGeyP0a-8iIVC-b0fo1NNj13re8OVxgRtOVo7UscYyE7Han2bXFi9AGmzmLpqrIBPVc9yv4a3d7AR2uNWOtnbhNX81IFbqhNs2NjX1skjzZ2Vn-5Hi8vHeHQT5Wv_YB9uMWF4Yg2ik257F5b0Y4SGaEZ7J6nbGggjr_F3EIZ3QtvMHrzxYJKHojXlC-1MuT"/>
 </div>
-<div class="flex flex-col">
-<div class="flex items-center gap-3 text-xs text-text-muted mb-3 font-medium uppercase tracking-widest">
-<span class="text-primary">E-commerce</span>
-<span class="w-1 h-1 rounded-full bg-zinc-600"></span>
-<span>2023</span>
-</div>
-<h2 class="serif-font text-4xl text-white mb-4 group-hover:text-primary transition-colors duration-300 tracking-tight">
-                        Mono Objects
-                    </h2>
-<p class="text-base text-text-muted leading-relaxed font-light">
+<p class="text-sm text-text-muted leading-relaxed font-light max-w-md">
                         A brutalist approach to online retail, stripping away distractions to focus purely on form and function.
-                    </p>
+                         <span class="block mt-1 text-[10px] text-zinc-500 uppercase tracking-wider">E-commerce</span>
+</p>
 </div>
 </article>
-<article class="group cursor-pointer md:mt-24">
-<div class="aspect-[4/3] w-full overflow-hidden rounded-xl bg-surface-dark border border-border-color mb-6 relative shadow-2xl shadow-black/20 group-hover:shadow-primary/10 transition-shadow duration-500">
+<article class="relative md:w-1/2 md:ml-auto md:pl-12 group mb-12 md:mb-16">
+<div class="hidden md:block absolute top-6 left-0 w-12 timeline-branch"></div>
+<div class="hidden md:block absolute top-6 -left-[3px] transform -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-accent-line"></div>
+<div class="flex flex-col items-start text-left">
+<div class="mb-3 w-full flex flex-col items-start">
+<h2 class="serif-font text-2xl md:text-3xl text-white font-bold group-hover:text-primary transition-colors duration-300 tracking-tight leading-none mb-1">
+                            Atmosphere
+                        </h2>
+<span class="text-xs text-text-muted font-mono tracking-widest uppercase">2022</span>
+</div>
+<div class="aspect-[16/9] w-full overflow-hidden rounded-sm bg-surface-dark border border-border-color mb-4 relative shadow-2xl shadow-black/20 group-hover:shadow-white/5 transition-shadow duration-500">
 <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-500 z-10 flex items-center justify-center">
 <div class="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 flex items-center gap-2 text-white border border-white/30 bg-black/20 backdrop-blur-sm px-6 py-3 rounded-full">
 <span class="text-sm font-medium tracking-wide">View Case Study</span>
@@ -151,22 +173,23 @@
 </div>
 <img alt="Mobile application interface showing weather patterns" class="h-full w-full object-cover transition-all duration-700 ease-out transform group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9hkORmimTo5FBmvlajpgwKNMDpYzSeAZOKcVLN2Fi1yhrCJNEBDdRi6_1jE1J14gfwsEu2fOq89czGsgGWTIDLlYnXitUsAUBldfsJ6Pz5fCX3pLoZfg272AuxE6nlLDpXOSaonTdmnPfWf23QKKis0L4eXYM6FEIFoeFFnTaagqdNZN7RJmWX5fox-8IIYEaxMIg9dU-4kWYhnrc9XvMTlvLtq4YcB474dr4ypemdTW9eTmWTMAn_dq16WdzUkZwHemtUSB4lzTS"/>
 </div>
-<div class="flex flex-col">
-<div class="flex items-center gap-3 text-xs text-text-muted mb-3 font-medium uppercase tracking-widest">
-<span class="text-primary">Mobile App</span>
-<span class="w-1 h-1 rounded-full bg-zinc-600"></span>
-<span>2022</span>
-</div>
-<h2 class="serif-font text-4xl text-white mb-4 group-hover:text-primary transition-colors duration-300 tracking-tight">
-                        Atmosphere
-                    </h2>
-<p class="text-base text-text-muted leading-relaxed font-light">
+<p class="text-sm text-text-muted leading-relaxed font-light max-w-md">
                         Weather forecasting reimagined as an ambient background utility that blends into your daily digital routine.
-                    </p>
+                         <span class="block mt-1 text-[10px] text-zinc-500 uppercase tracking-wider">Mobile App</span>
+</p>
 </div>
 </article>
-<article class="group cursor-pointer">
-<div class="aspect-[4/3] w-full overflow-hidden rounded-xl bg-surface-dark border border-border-color mb-6 relative shadow-2xl shadow-black/20 group-hover:shadow-primary/10 transition-shadow duration-500">
+<article class="relative md:w-1/2 md:pr-12 md:ml-0 group mb-12">
+<div class="hidden md:block absolute top-6 right-0 w-12 timeline-branch"></div>
+<div class="hidden md:block absolute top-6 -right-[3px] transform -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-accent-line"></div>
+<div class="flex flex-col items-end text-right md:items-end">
+<div class="mb-3 w-full flex flex-col items-end">
+<h2 class="serif-font text-2xl md:text-3xl text-white font-bold group-hover:text-primary transition-colors duration-300 tracking-tight leading-none mb-1">
+                            Type &amp; Tone
+                        </h2>
+<span class="text-xs text-text-muted font-mono tracking-widest uppercase">2022</span>
+</div>
+<div class="aspect-[16/9] w-full overflow-hidden rounded-sm bg-surface-dark border border-border-color mb-4 relative shadow-2xl shadow-black/20 group-hover:shadow-white/5 transition-shadow duration-500">
 <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-500 z-10 flex items-center justify-center">
 <div class="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 flex items-center gap-2 text-white border border-white/30 bg-black/20 backdrop-blur-sm px-6 py-3 rounded-full">
 <span class="text-sm font-medium tracking-wide">View Case Study</span>
@@ -175,22 +198,14 @@
 </div>
 <img alt="Typography focused editorial layout" class="h-full w-full object-cover transition-all duration-700 ease-out transform group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzhHcIvNnzJbT_zQ5n5Bdi7_Dwg7rzXRHHZ-v82uXLoF-4gzqQBAakYPXh7Wh0koUdg4GjidBptfg0nmI0qSOwDIwkf2CZsiv_N1VAvaHwhAbfZftxW4unqOI9qVLb7y1N-_BMwO320peeblVJymMl91tYArWJcdf5duZcvbenqPk9P6bA-9JtpiWYgrWpEXWuldVzaDARm8uV_6w5uAqI7A28AV3sI67L7J4uCF-9hOXW8CKKLHLPZTK9gzU6CzgwJdk5dcr_zErE"/>
 </div>
-<div class="flex flex-col">
-<div class="flex items-center gap-3 text-xs text-text-muted mb-3 font-medium uppercase tracking-widest">
-<span class="text-primary">Editorial</span>
-<span class="w-1 h-1 rounded-full bg-zinc-600"></span>
-<span>2022</span>
-</div>
-<h2 class="serif-font text-4xl text-white mb-4 group-hover:text-primary transition-colors duration-300 tracking-tight">
-                        Type &amp; Tone
-                    </h2>
-<p class="text-base text-text-muted leading-relaxed font-light">
+<p class="text-sm text-text-muted leading-relaxed font-light max-w-md">
                         An experimental digital magazine exploring the relationship between typographic rhythm and reading comprehension.
-                    </p>
+                         <span class="block mt-1 text-[10px] text-zinc-500 uppercase tracking-wider">Editorial</span>
+</p>
 </div>
 </article>
 </div>
-<div class="mt-24 flex justify-center">
+<div class="mt-16 flex justify-center">
 <button class="px-8 py-3 rounded-full border border-border-color text-text-muted hover:text-white hover:border-white transition-all duration-300 text-sm tracking-wide">
                 Load More Projects
             </button>
@@ -217,5 +232,4 @@
 </div>
 </div>
 </footer>
-
 </body></html>

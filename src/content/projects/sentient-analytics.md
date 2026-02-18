@@ -1,0 +1,8 @@
+﻿---
+title: 智析数据看板
+slug: sentient-analytics
+summary: 为中小团队设计的数据决策工作台，强调低门槛洞察与可解释指标。
+year: 2025
+category: SaaS
+cover: https://lh3.googleusercontent.com/aida-public/AB6AXuBlkbMj1Oi_XWv31xdzwdEX1l04TUTytTYPVVdMBvG4A6suYkNFqvuDlZqYLb7hmJvUrsNxghg0KxMGvFBcmFLHvSFn15QFxxwSe8ZtA-0MIrst_fRPJCVK0oqPpVEuALgFV4S5TxXAE3UUY6DqsLDmBDNqtBSmSlSzqpCL1CBIPWk3M73BKU5iCbeptqtfQCeN2yg0VXOAq4EIph5kXeHXPAXgwXbDDzh5zsc5VfcefEbotYDhz1qK0qu28QbFlTMcirgZX61DRxRJ
+---
