@@ -1,0 +1,42 @@
+---
+import type { TimelineItemModel } from "../../types/ui";
+
+interface Props {
+  item: TimelineItemModel;
+}
+
+const { item } = Astro.props;
+const isLeft = item.side === "left";
+---
+
+<article class:list={[
+  "relative mb-12 md:w-1/2",
+  isLeft ? "md:pr-10" : "md:ml-auto md:pl-10",
+]}>
+  <div class:list={[
+    "hidden md:block absolute top-10 h-px w-10 bg-[var(--border-strong)]",
+    isLeft ? "right-0" : "left-0",
+  ]}></div>
+  <div class:list={[
+    "hidden md:block absolute top-[2.37rem] h-3 w-3 rounded-full border border-[var(--border-strong)] bg-[var(--bg-base)]",
+    isLeft ? "-right-[6px]" : "-left-[6px]",
+  ]}></div>
+
+  <div class="group overflow-hidden rounded-xl border border-[var(--border-strong)] bg-[color:color-mix(in_srgb,var(--bg-elevated)_78%,transparent)] shadow-[var(--shadow-soft)]">
+    <a href={item.href} class="block overflow-hidden border-b border-[var(--border-soft)]">
+      <img src={item.image} alt={item.title} class="h-52 w-full object-cover grayscale transition duration-700 group-hover:scale-105 group-hover:grayscale-0" loading="lazy" />
+    </a>
+
+    <div class="space-y-4 p-5">
+      <div class="flex items-center justify-between gap-3 text-xs text-[var(--text-faint)]">
+        <span class="ui-kicker text-[var(--accent)]">{item.category}</span>
+        <span class="font-mono">{item.year}</span>
+      </div>
+      <h3 class="font-serif text-3xl leading-tight text-[var(--text-main)] transition group-hover:text-[var(--accent)]">
+        <a href={item.href}>{item.title}</a>
+      </h3>
+      <p class="text-sm leading-relaxed text-[var(--text-muted)]">{item.summary}</p>
+      <p class="pt-3 text-sm text-[var(--text-muted)] transition group-hover:text-[var(--text-main)]">{item.ctaLabel} -></p>
+    </div>
+  </div>
+</article>

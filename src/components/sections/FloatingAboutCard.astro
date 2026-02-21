@@ -1,0 +1,37 @@
+---
+import PillTag from "../foundation/PillTag.astro";
+import SurfacePanel from "../foundation/SurfacePanel.astro";
+
+interface Props {
+  badge: string;
+  title: string;
+  name: string;
+  description: string;
+  location: string;
+  portrait: string;
+  href: string;
+}
+
+const { badge, title, name, description, location, portrait, href } = Astro.props;
+---
+
+<SurfacePanel class="relative overflow-hidden p-6">
+  <div class="pointer-events-none absolute -left-12 -top-14 h-40 w-40 rounded-full bg-[var(--accent-soft)] blur-3xl"></div>
+  <div class="relative space-y-5">
+    <PillTag text={badge} />
+    <h2 class="font-serif text-4xl leading-tight text-[var(--text-main)]">
+      <a href={href} class="transition hover:text-[var(--accent)]">{title}</a>
+    </h2>
+    <h3 class="text-2xl text-[var(--text-main)]">{name}</h3>
+    <p class="text-base leading-relaxed text-[var(--text-muted)]">{description}</p>
+    <p class="text-sm text-[var(--text-faint)]">{location}</p>
+    <a href={href} class="block aspect-square overflow-hidden rounded-lg border border-[var(--border-strong)]">
+      <img
+        src={portrait}
+        alt={name}
+        class="h-full w-full object-cover grayscale transition duration-700 hover:scale-105 hover:grayscale-0"
+        loading="lazy"
+      />
+    </a>
+  </div>
+</SurfacePanel>

@@ -1,36 +1,28 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import ContentCard from "../domain/ContentCard.astro";
 
 interface Props {
   post: CollectionEntry<"blog">;
 }
 
 const { post } = Astro.props;
+const dateLabel = post.data.publishedAt.toLocaleDateString("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+});
 ---
 
-<article class="group panel fade-in overflow-hidden rounded-2xl">
-  <a href={`/blog/${post.slug}/`} class="block">
-    <img
-      src={post.data.cover}
-      alt={post.data.title}
-      class="h-52 w-full object-cover grayscale transition duration-500 group-hover:scale-105 group-hover:grayscale-0"
-      loading="lazy"
-    />
-  </a>
-  <div class="space-y-4 p-5">
-    <div class="flex items-center gap-3 text-xs text-[var(--muted)]">
-      <span>{post.data.publishedAt.toLocaleDateString("zh-CN")}</span>
-      <span>·</span>
-      <span>{post.data.readingTime}</span>
-    </div>
-    <h3 class="font-serif text-2xl leading-tight text-[var(--text)] transition group-hover:text-[var(--accent)]">
-      <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
-    </h3>
-    <p class="line-clamp-2 text-sm leading-relaxed text-[var(--muted)]">{post.data.summary}</p>
-    <div class="flex flex-wrap gap-2">
-      {post.data.tags.map((tag) => (
-        <span class="rounded-full border border-[var(--border)] px-3 py-1 text-xs text-[var(--muted)]">{tag}</span>
-      ))}
-    </div>
-  </div>
-</article>
+<ContentCard
+  variant="blog"
+  title={post.data.title}
+  summary={post.data.summary}
+  href={`/blog/${post.slug}/`}
+  image={post.data.cover}
+  imageAlt={post.data.title}
+  eyebrow="Blog"
+  meta={[{ label: "Published", value: dateLabel }, { label: "Read", value: post.data.readingTime }]}
+  tags={post.data.tags}
+  footerText="Read article"
+/>

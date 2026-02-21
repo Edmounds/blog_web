@@ -1,8 +1,15 @@
-﻿---
-title: 远行计划重构
-slug: wanderlust-redesign
-summary: 以任务路径为核心重构旅游应用，让探索、规划、预订合并为连续体验。
-year: 2024
-category: 移动端
-cover: https://lh3.googleusercontent.com/aida-public/AB6AXuBbbeWUmw_F9EExxhDyh-wyQ1218cCRkulk21PCbS0tbFHnlEf5Lm4Q5o5ffu9Wy1NU-BvksJlliLJIeqcY7YGQbFU1nTqzKEI3E3ap9bi4nYX6nGdmJraee3Xuv-s45yAPuS2ClT-B_UBDYFdXcmd8d15Ed4xASmN8gNR6mEwY7XlDBoaHtEfDsO4lzpNf7mLRWBue3qgPZbWz4brPjFj_93LYdBHtgZqMaCyol7Uh2Oa9DUvk4LGmyyxlRcnJTXv7vNHaeU2RensU
 ---
+title: Wanderlust Redesign
+summary: Redefining the travel planning experience through intuitive gesture-based navigation and localized discovery.
+year: 2024
+category: UX Research
+cover: /images/content/projects/wanderlust-redesign.png
+showOnHome: true
+showInTimeline: false
+order: 2
+type: Mobile
+cta: View Prototype
+---
+
+Focused on collapsing explore, plan, and booking into one intent-first workflow.
+

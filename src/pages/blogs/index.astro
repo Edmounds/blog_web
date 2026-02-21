@@ -1,176 +1,58 @@
 ﻿---
-import { archiveBlogSections, archiveCategoryFilters } from "../../data/static/blogs";
-import { routes } from "../../data/static/home";
+import PageContainer from "../../components/foundation/PageContainer.astro";
+import ArchiveSidebar from "../../components/domain/ArchiveSidebar.astro";
+import ContentCard from "../../components/domain/ContentCard.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getArchiveBlogSections, getArchiveCategorySummaries, getSiteSettings } from "../../lib/content";
+import { routes } from "../../lib/routes";
+import { toArchiveFilters, toBlogCardModel } from "../../lib/view-models";
+
+const site = await getSiteSettings();
+const archiveBlogSections = await getArchiveBlogSections();
+const archiveCategorySummaries = await getArchiveCategorySummaries();
+const filters = toArchiveFilters(archiveCategorySummaries, site.copy.archiveAllCategories);
+const cardCopy = {
+  publishedLabel: site.copy.blogMetaPublished,
+  readLabel: site.copy.blogMetaRead,
+  readArticleLabel: site.copy.blogReadArticle,
+};
+const sections = archiveBlogSections.map((section) => ({
+  year: section.year,
+  cards: section.posts.map((post) => toBlogCardModel(post, cardCopy)),
+}));
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Claude Dark Archive and Bio</title>
-    <script is:inline src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-      rel="stylesheet"
-    />
-    <script id="tailwind-config" is:inline>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              primary: "#D2975B",
-              "primary-hover": "#C2864B",
-              "background-dark": "#1A1A1A",
-              "surface-dark": "#232323",
-              "border-muted": "#2A2A2A",
-              "text-muted": "#888888",
-              "text-light": "#E0E0E0",
-            },
-            fontFamily: {
-              display: ["Inter", "sans-serif"],
-            },
-            borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
-          },
-        },
-      };
-    </script>
-    <style>
-      body {
-        background-color: #1A1A1A;
-        color: #E0E0E0;
-      }
-      ::-webkit-scrollbar {
-        width: 6px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #1A1A1A;
-      }
-      ::-webkit-scrollbar-thumb {
-        background-color: #333333;
-        border-radius: 20px;
-      }
-      ::selection {
-        background-color: #D2975B;
-        color: #1A1A1A;
-      }
-    </style>
-  </head>
-  <body class="bg-background-dark text-text-light font-display antialiased min-h-screen flex flex-col selection:bg-primary selection:text-background-dark">
-    <header class="w-full max-w-7xl mx-auto px-6 py-10 flex justify-between items-center relative z-10 border-b border-transparent">
-      <a class="text-xl font-normal tracking-tight text-white/90 hover:text-primary transition-colors duration-300" href={routes.home}>
-        alexander.wright
-      </a>
-      <div class="flex items-center gap-8">
-        <nav class="hidden md:flex gap-8 text-[11px] font-medium text-text-muted uppercase tracking-widest">
-          <a class="hover:text-primary transition-colors duration-300" href={routes.home}>Work</a>
-          <a class="text-primary cursor-default" href={routes.blogs}>Archive</a>
-          <a class="hover:text-primary transition-colors duration-300" href={routes.projects}>Notes</a>
-          <a class="hover:text-primary transition-colors duration-300" href={routes.about}>Contact</a>
-        </nav>
-        <div class="hidden md:flex items-center group relative">
-          <span class="material-symbols-outlined absolute left-2 text-zinc-600 text-[18px]">search</span>
-          <input
-            class="bg-transparent border border-zinc-800 focus:border-zinc-600 rounded-full py-1.5 pl-8 pr-4 text-[12px] text-zinc-300 placeholder-zinc-600 focus:ring-0 w-32 focus:w-48 transition-all duration-300 ease-in-out outline-none"
-            placeholder="Search..."
-            type="text"
-          />
-        </div>
-      </div>
-      <button class="md:hidden p-2 text-text-muted hover:text-primary transition-colors" type="button">
-        <span class="material-symbols-outlined">menu</span>
-      </button>
-    </header>
+<BaseLayout title="Blogs" description="Writing archive and notes." currentPath={routes.blogs}>
+  <PageContainer class="py-12 md:py-16">
+    <section class="mb-10 max-w-2xl space-y-3">
+      <p class="ui-kicker">Archive</p>
+      <h1 class="font-serif text-5xl text-[var(--text-main)] md:text-6xl">Writing Archive</h1>
+      <p class="text-[var(--text-muted)]">
+        Essays on design systems, product thinking, and working with AI interfaces.
+      </p>
+    </section>
 
-    <main class="flex-grow w-full max-w-7xl mx-auto px-6 py-12 lg:py-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 relative">
-      <aside class="lg:col-span-4 xl:col-span-3 space-y-8 lg:sticky lg:top-24 lg:h-fit order-first">
-        <div class="space-y-6">
-          <div class="space-y-4">
-            <h1 class="text-xl font-medium text-white tracking-tight">Filter by Category</h1>
-            <nav class="flex flex-col space-y-1">
-              {archiveCategoryFilters.map((filter) => (
-                <a class="flex justify-between items-center group py-1.5 cursor-pointer" href={routes.blogs}>
-                  <span class="text-[13px] text-zinc-400 group-hover:text-primary transition-colors duration-300">{filter.label}</span>
-                  <span class="text-[11px] text-zinc-600 font-mono">{filter.count}</span>
-                </a>
-              ))}
-            </nav>
-          </div>
-        </div>
-
-        <div class="w-full h-px bg-white/5 my-6"></div>
-
-        <div class="flex gap-4 pt-2">
-          <a aria-label="Twitter" class="text-zinc-500 hover:text-primary transition-colors duration-300" href={routes.home}>
-            <svg aria-hidden="true" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path></svg>
-          </a>
-          <a aria-label="GitHub" class="text-zinc-500 hover:text-primary transition-colors duration-300" href={routes.projects}>
-            <svg aria-hidden="true" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.597 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" fill-rule="evenodd"></path></svg>
-          </a>
-        </div>
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
+      <aside class="lg:col-span-4 xl:col-span-3">
+        <ArchiveSidebar filters={filters} title={site.copy.archiveSidebarTitle} />
       </aside>
 
-      <section class="lg:col-span-8 xl:col-span-9 space-y-16">
-        <div class="flex items-baseline justify-between border-b border-white/5 pb-4">
-          <h2 class="text-[11px] font-medium tracking-widest uppercase text-zinc-500">Writing Archive</h2>
-          <span class="text-[10px] text-zinc-600 font-mono tracking-tighter uppercase">42 Articles</span>
-        </div>
+      <section class="space-y-10 lg:col-span-8 xl:col-span-9">
+        {sections.map((section) => (
+          <section class="space-y-5">
+            <header class="flex items-end justify-between border-b border-[var(--border-strong)] pb-3">
+              <h2 class="font-serif text-3xl text-[var(--text-main)]">{section.year}</h2>
+              <p class="text-xs uppercase tracking-wider text-[var(--text-faint)]">{section.cards.length} posts</p>
+            </header>
 
-        {archiveBlogSections.map((section) => (
-          <>
-            <div class="relative group">
-              <div class="absolute -left-20 top-1.5 hidden xl:block">
-                <span class="text-[11px] font-normal text-zinc-700 font-mono">{section.year}</span>
-              </div>
-              <div class="space-y-12">
-                {section.posts.map((post) => (
-                  <article class="group/item relative flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6 transition-all hover:translate-x-1 duration-300">
-                    <time class="shrink-0 text-xs text-zinc-500 w-16 sm:w-20 font-mono pt-1.5 order-1 sm:order-none">{post.dateLabel}</time>
-                    <a href={`/blog/${post.slug}/`} class="shrink-0 w-full sm:w-32 h-40 sm:h-20 order-2 sm:order-none overflow-hidden rounded-md bg-zinc-800/50">
-                      <img alt={post.title} class="w-full h-full object-cover opacity-60 group-hover/item:opacity-80 transition-opacity duration-300 grayscale group-hover/item:grayscale-0" src={post.cover} />
-                    </a>
-                    <div class="flex-grow space-y-3 cursor-pointer order-3 sm:order-none">
-                      <h3 class="text-xl font-normal text-white/90 group-hover/item:text-primary transition-colors duration-300">
-                        <a class="focus:outline-none" href={`/blog/${post.slug}/`}>
-                          <span aria-hidden="true" class="absolute inset-0"></span>
-                          {post.title}
-                        </a>
-                      </h3>
-                      {post.archiveExcerpt && (
-                        <p class="text-zinc-500 font-light text-[13px] line-clamp-2 leading-relaxed max-w-2xl">{post.archiveExcerpt}</p>
-                      )}
-                      {post.archiveTags && (
-                        <div class="flex gap-2 pt-1">
-                          {post.archiveTags.map((tag) => (
-                            <span class="text-[9px] tracking-widest uppercase font-medium text-zinc-600 border border-zinc-800 px-1.5 py-0.5 rounded-[2px] bg-transparent">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </article>
-                ))}
-              </div>
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+              {section.cards.map((card) => (
+                <ContentCard {...card} />
+              ))}
             </div>
-            {section.year === 2024 && <div class="w-full h-px bg-white/5"></div>}
-          </>
+          </section>
         ))}
       </section>
-    </main>
-
-    <footer class="w-full max-w-7xl mx-auto px-6 py-12 border-t border-white/5 mt-auto">
-      <div class="flex flex-col sm:flex-row justify-between items-center gap-6 text-[10px] text-zinc-600 font-mono uppercase tracking-widest">
-        <p>&copy; 2024 Alexander Wright. All rights reserved.</p>
-        <div class="flex gap-8">
-          <a class="hover:text-primary transition-colors duration-300" href={routes.blogs}>RSS</a>
-          <a class="hover:text-primary transition-colors duration-300" href={routes.home}>Twitter</a>
-          <a class="hover:text-primary transition-colors duration-300" href={routes.about}>Email</a>
-        </div>
-      </div>
-    </footer>
-  </body>
-</html>
-
+    </div>
+  </PageContainer>
+</BaseLayout>

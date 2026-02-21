@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import ContentCard from "../domain/ContentCard.astro";
 
 interface Props {
   project: CollectionEntry<"projects">;
@@ -8,22 +9,14 @@ interface Props {
 const { project } = Astro.props;
 ---
 
-<article class="group panel fade-in overflow-hidden rounded-2xl">
-  <img
-    src={project.data.cover}
-    alt={project.data.title}
-    class="h-56 w-full object-cover grayscale transition duration-500 group-hover:scale-105 group-hover:grayscale-0"
-    loading="lazy"
-  />
-  <div class="space-y-4 p-6">
-    <div class="flex items-center gap-3 text-xs uppercase tracking-wide text-[var(--muted)]">
-      <span>{project.data.category}</span>
-      <span>·</span>
-      <span>{project.data.year}</span>
-    </div>
-    <h3 class="font-serif text-3xl leading-tight text-[var(--text)] transition group-hover:text-[var(--accent)]">
-      {project.data.title}
-    </h3>
-    <p class="text-sm leading-relaxed text-[var(--muted)]">{project.data.summary}</p>
-  </div>
-</article>
+<ContentCard
+  variant="project"
+  title={project.data.title}
+  summary={project.data.summary}
+  href={project.data.href ?? "/projects/"}
+  image={project.data.cover}
+  imageAlt={project.data.title}
+  eyebrow={project.data.category}
+  meta={[{ label: "Year", value: String(project.data.year) }]}
+  footerText="View project"
+/>

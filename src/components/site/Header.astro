@@ -1,41 +1,65 @@
-<header class="sticky top-0 z-40 border-b border-[var(--border)] bg-[color:color-mix(in_srgb,var(--bg)_85%,transparent)] backdrop-blur">
-  <div class="mx-auto flex h-18 w-full max-w-6xl items-center justify-between px-6">
-    <a href="/" class="font-serif text-2xl tracking-tight text-[var(--text)] transition hover:text-[var(--accent)]">
-      Alex 的博客
+﻿---
+import { routes } from "../../lib/routes";
+import type { NavItem } from "../../types/ui";
+import ThemeToggle from "./ThemeToggle.astro";
+
+interface Props {
+  currentPath?: string;
+  brand?: string;
+  navItems?: NavItem[];
+}
+
+const { currentPath = "/", brand = "Site", navItems = [] } = Astro.props;
+
+const isActive = (item: NavItem) => {
+  if (item.match === "prefix") {
+    if (item.href === routes.blogs) {
+      return currentPath.startsWith(routes.blogs) || currentPath.startsWith("/blog/");
+    }
+    return currentPath.startsWith(item.href);
+  }
+  return currentPath === item.href;
+};
+---
+
+<header class="sticky top-0 z-50 border-b border-[var(--border-strong)] bg-[color:color-mix(in_srgb,var(--bg-base)_90%,transparent)] backdrop-blur-md">
+  <div class="app-container flex h-20 items-center justify-between gap-6">
+    <a href={routes.home} class="font-serif text-2xl tracking-tight text-[var(--text-main)] transition hover:text-[var(--accent)]">
+      {brand}
     </a>
-    <nav class="hidden items-center gap-7 text-sm text-[var(--muted)] md:flex">
-      <a href="/" class="transition hover:text-[var(--text)]">首页</a>
-      <a href="/blogs/" class="transition hover:text-[var(--text)]">博客</a>
-      <a href="/projects/" class="transition hover:text-[var(--text)]">项目</a>
-      <a href="/about/" class="transition hover:text-[var(--text)]">关于我</a>
+
+    <div class="hidden items-center gap-8 md:flex">
+      <nav class="flex items-center gap-7 text-sm">
+        {navItems.map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              "transition",
+              isActive(item) ? "text-[var(--text-main)]" : "text-[var(--text-muted)] hover:text-[var(--text-main)]",
+            ]}
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+      <ThemeToggle />
+    </div>
+  </div>
+
+  <div class="app-container flex items-center justify-between gap-4 pb-4 md:hidden">
+    <nav class="flex items-center gap-4 text-xs uppercase tracking-wider">
+      {navItems.map((item) => (
+        <a
+          href={item.href}
+          class:list={[
+            "transition",
+            isActive(item) ? "text-[var(--text-main)]" : "text-[var(--text-muted)]",
+          ]}
+        >
+          {item.label}
+        </a>
+      ))}
     </nav>
-    <button
-      id="theme-toggle"
-      class="panel rounded-full px-4 py-2 text-xs tracking-wide text-[var(--text)] transition hover:border-[var(--accent)]"
-      type="button"
-      aria-label="切换主题"
-    >
-      切换主题
-    </button>
+    <ThemeToggle />
   </div>
 </header>
-
-<script>
-  import { readTheme, toggleTheme } from "../../lib/theme";
-
-  const btn = document.getElementById("theme-toggle");
-  const render = () => {
-    const isDark = document.documentElement.classList.contains("dark");
-    if (btn) btn.textContent = isDark ? "浅色模式" : "深色模式";
-  };
-
-  render();
-  window.addEventListener("storage", render);
-  btn?.addEventListener("click", () => {
-    toggleTheme();
-    render();
-  });
-
-  const current = readTheme();
-  document.documentElement.classList.toggle("dark", current === "dark");
-</script>

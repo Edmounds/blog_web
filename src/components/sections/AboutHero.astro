@@ -1,0 +1,44 @@
+---
+import type { AboutMetaItem } from "../../types/ui";
+import SurfacePanel from "../foundation/SurfacePanel.astro";
+
+interface Props {
+  titleLeading: string;
+  titleName: string;
+  subtitle: string;
+  portrait: string;
+  meta: AboutMetaItem[];
+  availability: string;
+}
+
+const { titleLeading, titleName, subtitle, portrait, meta, availability } = Astro.props;
+---
+
+<section class="grid grid-cols-1 gap-8 border-b border-[var(--border-strong)] pb-16 lg:grid-cols-12">
+  <div class="space-y-8 lg:col-span-8">
+    <h1 class="font-serif text-5xl leading-[0.95] text-[var(--text-main)] md:text-7xl lg:text-8xl">
+      {titleLeading}
+      <span class="block italic text-[var(--text-muted)]">{titleName}</span>
+    </h1>
+    <p class="max-w-3xl text-xl leading-relaxed text-[var(--text-muted)]">{subtitle}</p>
+  </div>
+
+  <div class="space-y-5 lg:col-span-4">
+    <SurfacePanel class="overflow-hidden">
+      <img src={portrait} alt={titleName} class="h-full w-full object-cover grayscale transition duration-700 hover:scale-105 hover:grayscale-0" loading="lazy" />
+    </SurfacePanel>
+
+    <SurfacePanel class="space-y-4 p-5 text-sm">
+      {meta.map((item) => (
+        <div class="space-y-1 border-b border-[var(--border-soft)] pb-3 last:border-b-0 last:pb-0">
+          <p class="ui-kicker">{item.label}</p>
+          <p class="text-[var(--text-main)]">{item.value}</p>
+        </div>
+      ))}
+      <div class="flex items-center gap-2 pt-2 text-[var(--text-main)]">
+        <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+        <span>{availability}</span>
+      </div>
+    </SurfacePanel>
+  </div>
+</section>

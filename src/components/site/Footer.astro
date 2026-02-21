@@ -1,10 +1,25 @@
-<footer class="mt-20 border-t border-[var(--border)]">
-  <div class="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-10 text-sm text-[var(--muted)] md:flex-row md:items-center md:justify-between">
-    <p>© 2026 Alex. 保留所有权利。</p>
+﻿---
+import type { FooterLink } from "../../types/ui";
+
+interface Props {
+  brand?: string;
+  links?: FooterLink[];
+}
+
+const { brand = "Site", links = [] } = Astro.props;
+
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-16 border-t border-[var(--border-strong)] bg-[color:color-mix(in_srgb,var(--bg-subtle)_70%,transparent)]">
+  <div class="app-container flex flex-col gap-4 py-10 text-sm text-[var(--text-muted)] md:flex-row md:items-center md:justify-between">
+    <p>Copyright {year} {brand}. All rights reserved.</p>
     <div class="flex items-center gap-6">
-      <a href="/blogs/" class="transition hover:text-[var(--text)]">最新文章</a>
-      <a href="/projects/" class="transition hover:text-[var(--text)]">项目案例</a>
-      <a href="/about/" class="transition hover:text-[var(--text)]">联系合作</a>
+      {links.map((link) => (
+        <a href={link.href} class="ui-link ui-link-accent text-sm">
+          {link.label}
+        </a>
+      ))}
     </div>
   </div>
 </footer>

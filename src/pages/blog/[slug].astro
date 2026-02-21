@@ -1,345 +1,101 @@
 ﻿---
-import { blogBySlug, staticBlogPosts } from "../../data/static/blogs";
-import { routes } from "../../data/static/home";
+import { getCollection } from "astro:content";
+import ArticleMeta from "../../components/domain/ArticleMeta.astro";
+import PageContainer from "../../components/foundation/PageContainer.astro";
+import PillTag from "../../components/foundation/PillTag.astro";
+import SurfacePanel from "../../components/foundation/SurfacePanel.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getBlogStaticPaths, getNextBlogPost, getSiteSettings } from "../../lib/content";
+import { routes } from "../../lib/routes";
+import { toArticleMetaItems } from "../../lib/view-models";
 
 export async function getStaticPaths() {
-  return staticBlogPosts.map((post) => ({
-    params: { slug: post.slug },
-  }));
+  return getBlogStaticPaths();
 }
 
 const { slug } = Astro.params;
-const post = slug ? blogBySlug.get(slug) : undefined;
+const allPosts = await getCollection("blog", ({ data }) => !data.draft);
+const post = allPosts.find((entry) => entry.slug === slug);
 
 if (!post) {
   throw new Error(`Unknown blog slug: ${slug ?? ""}`);
 }
 
-const nextPost =
-  staticBlogPosts[(staticBlogPosts.findIndex((item) => item.slug === post.slug) + 1) % staticBlogPosts.length];
-
-const staticComments = [
+const { Content, headings } = await post.render();
+const site = await getSiteSettings();
+const nextPost = await getNextBlogPost(post.slug);
+const dateLong = post.data.publishedAt.toLocaleDateString(site.dateLocale, {
+  month: "long",
+  day: "numeric",
+  year: "numeric",
+});
+const metaItems = toArticleMetaItems(
   {
-    initials: "JD",
-    name: "John Doe",
-    time: "2 hours ago",
-    text: "This is a fascinating perspective on the evolution of UI. The idea of \"liquid layouts\" driven by AI really changes how we think about design systems.",
+    slug: post.slug,
+    category: post.data.category,
+    dateLong,
+    readingTime: post.data.readingTime,
   },
   {
-    initials: "AS",
-    name: "Alice Smith",
-    time: "5 hours ago",
-    text: "I wonder how accessibility will be handled in such dynamically generated interfaces. It's crucial that we don't leave anyone behind.",
+    publishedLabel: site.copy.blogMetaPublished,
+    readingTimeLabel: site.copy.blogMetaRead,
   },
-  {
-    initials: "MK",
-    name: "Mike K.",
-    time: "1 day ago",
-    text: "The \"latency of thought\" concept is spot on. Speed is definitely going to be the biggest bottleneck for adoption.",
-  },
-];
+);
+const relatedTags = post.data.archiveTags?.length ? post.data.archiveTags : [post.data.category];
+const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>{post.title}</title>
-    <script is:inline src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
-      rel="stylesheet"
-    />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-      rel="stylesheet"
-    />
-    <script id="tailwind-config" is:inline>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              primary: "#d97757",
-              "background-dark": "#1A1A1A",
-              "surface-dark": "#252525",
-              "text-main": "#E0E0E0",
-              "text-muted": "#A0A0A0",
-              "border-dark": "#333333",
-            },
-            fontFamily: {
-              display: ["Inter", "sans-serif"],
-              serif: ["Playfair Display", "serif"],
-            },
-            borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
-          },
-        },
-      };
-    </script>
-    <style>
-      html {
-        scroll-behavior: smooth;
-      }
-      body::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
-        pointer-events: none;
-        z-index: 50;
-      }
-      ::selection {
-        background-color: #d9775740;
-        color: #ffffff;
-      }
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #1A1A1A;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #333333;
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #444444;
-      }
-    </style>
-  </head>
-  <body class="bg-background-dark font-display text-text-main antialiased selection:bg-primary/30">
-    <header class="fixed top-0 left-0 right-0 z-40 bg-[#1A1A1A]/90 backdrop-blur-xl border-b border-white/5 transition-all duration-300" id="main-header">
-      <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
-        <a class="flex items-center gap-2 group" href={routes.home}>
-          <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors border border-white/5">
-            <span class="material-icons text-text-main text-sm">auto_awesome</span>
-          </div>
-          <span class="font-serif font-medium text-lg tracking-tight text-text-main group-hover:text-primary transition-colors">Claude's Journal</span>
-        </a>
-        <nav class="hidden sm:flex items-center gap-6">
-          <a class="text-sm font-medium text-text-muted hover:text-text-main transition-colors" href={routes.blogs}>Articles</a>
-          <a class="text-sm font-medium text-text-muted hover:text-text-main transition-colors" href={routes.about}>About</a>
-          <a class="text-sm font-medium text-text-muted hover:text-text-main transition-colors" href={routes.blogs}>Subscribe</a>
-        </nav>
-        <button class="sm:hidden text-text-muted hover:text-text-main" type="button">
-          <span class="material-icons">menu</span>
-        </button>
-      </div>
-    </header>
+<BaseLayout title={post.data.title} description={post.data.summary} currentPath={routes.blogs}>
+  <PageContainer class="py-12 md:py-16">
+    <div class="grid grid-cols-1 gap-10 lg:grid-cols-12">
+      <aside class="hidden lg:col-span-3 lg:block">
+        <div class="sticky top-28 space-y-5">
+          {tocHeadings.length > 0 && (
+            <SurfacePanel class="space-y-4 p-5">
+              <h2 class="font-serif text-2xl text-[var(--text-main)]">On this page</h2>
+              <nav class="space-y-2 text-sm">
+                {tocHeadings.map((heading) => (
+                  <a href={`#${heading.slug}`} class="ui-link block">
+                    {heading.text}
+                  </a>
+                ))}
+              </nav>
+            </SurfacePanel>
+          )}
 
-    <main class="pt-32 pb-24 px-6 relative z-10 max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12">
-      <aside class="hidden lg:block lg:col-span-3 relative">
-        <div class="sticky top-32 space-y-8">
-          <div>
-            <h3 class="text-xs font-semibold uppercase tracking-wider text-text-muted/50 mb-4">On this page</h3>
-            <ul class="space-y-3 border-l border-white/5 pl-4">
-              <li class="relative">
-                <a class="block text-sm text-primary font-medium transition-colors hover:text-primary" href="#introduction">Introduction</a>
-                <div class="absolute -left-[17px] top-1/2 -translate-y-1/2 w-0.5 h-4 bg-primary rounded-full"></div>
-              </li>
-              <li>
-                <a class="block text-sm text-text-muted hover:text-text-main transition-colors" href="#liquid-layouts">From Static to Liquid Layouts</a>
-              </li>
-              <li>
-                <a class="block text-sm text-text-muted hover:text-text-main transition-colors" href="#latency">The Latency of Thought</a>
-              </li>
-              <li>
-                <a class="block text-sm text-text-muted hover:text-text-main transition-colors" href="#comments">Comments</a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="text-xs font-semibold uppercase tracking-wider text-text-muted/50 mb-4">Related Topics</h3>
+          <SurfacePanel class="space-y-3 p-5">
+            <h3 class="ui-kicker">Related topics</h3>
             <div class="flex flex-wrap gap-2">
-              <span class="px-3 py-1 bg-surface-dark border border-white/5 rounded-full text-xs text-text-muted hover:text-text-main cursor-pointer transition-colors">Generative UI</span>
-              <span class="px-3 py-1 bg-surface-dark border border-white/5 rounded-full text-xs text-text-muted hover:text-text-main cursor-pointer transition-colors">Design Systems</span>
-              <span class="px-3 py-1 bg-surface-dark border border-white/5 rounded-full text-xs text-text-muted hover:text-text-main cursor-pointer transition-colors">AI</span>
+              {relatedTags.map((tag) => (
+                <PillTag text={tag} />
+              ))}
             </div>
-          </div>
+          </SurfacePanel>
         </div>
       </aside>
 
-      <div class="lg:col-span-7 lg:col-start-4">
-        <div class="max-w-[680px] mx-auto mb-16">
-          <div class="flex flex-col">
-            <div class="mb-8 w-16 h-16 rounded-2xl bg-[#D68261] flex items-center justify-center relative overflow-hidden shadow-lg shadow-orange-900/20">
-              <svg class="w-2/3 h-2/3 text-[#252525] fill-none stroke-current stroke-[3] opacity-90" viewBox="0 0 100 100">
-                <circle cx="50" cy="30" r="10"></circle>
-                <rect height="20" rx="2" width="20" x="20" y="50"></rect>
-                <path d="M70 60 L80 50 L90 60 L80 70 Z"></path>
-                <path d="M50 30 L50 80"></path>
-                <path d="M30 60 L50 60 L80 60"></path>
-                <circle cx="50" cy="80" fill="currentColor" r="3"></circle>
-              </svg>
-            </div>
-            <h1 class="font-serif text-4xl md:text-5xl lg:text-6xl leading-[1.1] font-bold text-[#F0F0F0] mb-6 tracking-tight">{post.title}</h1>
-            <p class="text-lg md:text-xl text-text-muted italic leading-relaxed font-serif text-[#A0A0A0] mb-10">{post.summary}</p>
-            <div class="grid grid-cols-2 gap-y-6 gap-x-4 border-t border-b border-white/10 py-5 mb-10 text-[#E0E0E0]">
-              <div class="group">
-                <div class="flex items-center gap-2 text-text-muted mb-1">
-                  <span class="material-symbols-outlined text-[16px]">lightbulb</span>
-                  <span class="text-xs font-light uppercase tracking-wide">Category</span>
-                </div>
-                <a class="text-sm font-medium hover:text-primary transition-colors block w-fit" href={routes.blogs}>{post.category}</a>
-              </div>
-              <div class="group">
-                <div class="flex items-center gap-2 text-text-muted mb-1">
-                  <span class="material-symbols-outlined text-[16px]">business_center</span>
-                  <span class="text-xs font-light uppercase tracking-wide">Product</span>
-                </div>
-                <div class="text-sm font-medium leading-tight">Claude Developer Platform</div>
-              </div>
-              <div>
-                <div class="flex items-center gap-2 text-text-muted mb-1">
-                  <span class="material-symbols-outlined text-[16px]">calendar_today</span>
-                  <span class="text-xs font-light uppercase tracking-wide">Date</span>
-                </div>
-                <div class="text-sm font-medium">{post.dateLong}</div>
-              </div>
-              <div class="flex flex-col justify-between h-full">
-                <div>
-                  <div class="flex items-center gap-2 text-text-muted mb-1">
-                    <span class="material-symbols-outlined text-[16px]">timer</span>
-                    <span class="text-xs font-light uppercase tracking-wide">Reading time</span>
-                  </div>
-                  <div class="text-sm font-medium">{post.readingTime}</div>
-                </div>
-              </div>
-            </div>
+      <article class="space-y-8 lg:col-span-7">
+        <header class="space-y-5">
+          <p class="ui-kicker text-[var(--accent)]">{post.data.category}</p>
+          <h1 class="font-serif text-5xl leading-tight text-[var(--text-main)] md:text-6xl">{post.data.title}</h1>
+          <p class="max-w-3xl text-lg leading-relaxed text-[var(--text-muted)]">{post.data.summary}</p>
+          <ArticleMeta items={metaItems} />
+        </header>
+
+        <section class="ui-prose">
+          <Content />
+        </section>
+
+        <SurfacePanel class="flex flex-col gap-3 p-6 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p class="ui-kicker">{site.copy.blogNextArticle}</p>
+            <p class="font-serif text-2xl text-[var(--text-main)]">{nextPost.title}</p>
           </div>
-        </div>
+          <a href={`/blog/${nextPost.slug}/`} class="ui-link ui-link-accent text-sm">{site.copy.blogReadNext} -&gt;</a>
+        </SurfacePanel>
+      </article>
 
-        <article class="max-w-[680px] mx-auto relative">
-          <div class="max-w-none">
-            <p id="introduction" class="text-lg md:text-xl leading-relaxed text-[#D0D0D0] mb-8 font-light font-display">
-              We are standing at the precipice of a fundamental shift in how humans interact with computers. For decades, the paradigm has been static: point, click, tap. But as language models become more sophisticated, the interface itself is beginning to liquefy.
-            </p>
-            <p class="text-base md:text-[1.05rem] leading-[1.8] text-text-muted mb-6 font-display">
-              Traditionally, UI design has been about prediction. Designers anticipate user needs and build static pathways - menus, buttons, forms - to fulfill them. It is a deterministic world where every state must be explicitly defined. But generative AI introduces a probabilistic element to the interface layer.
-            </p>
-            <p class="text-base md:text-[1.05rem] leading-[1.8] text-text-muted mb-10 font-display">
-              Imagine an operating system that doesn't just present you with apps, but constructs ephemeral tools the moment you need them. You ask for a way to track your expenses, and instead of opening Excel, the system generates a bespoke micro-interface tailored exactly to your verbal description.
-            </p>
-
-            <div class="my-12 bg-surface-dark/50 border border-white/5 rounded-xl p-8 md:p-10 relative overflow-hidden group">
-              <div class="absolute -right-4 -top-4 text-white/5">
-                <span class="material-icons text-7xl">format_quote</span>
-              </div>
-              <p class="text-lg md:text-xl font-serif italic text-white/90 relative z-10 leading-relaxed">
-                "The best interface is not invisible; it is fluid. It adapts to the intent of the user rather than forcing the user to adapt to the constraints of the system."
-              </p>
-              <footer class="mt-6 text-xs tracking-widest uppercase font-semibold text-primary/70 relative z-10">- Interface Principles, 2024</footer>
-            </div>
-
-            <h2 id="liquid-layouts" class="font-serif text-2xl md:text-3xl font-medium text-white mt-16 mb-6">From Static to Liquid Layouts</h2>
-            <p class="text-base md:text-[1.05rem] leading-[1.8] text-text-muted mb-6 font-display">
-              The concept of "liquid layouts" isn't new to web design, but generative UI takes it literally. We are moving towards interfaces that are composed in real-time. This requires a new design system philosophy - one based on atomic components that understand their own semantic purpose.
-            </p>
-
-            <figure class="my-10">
-              <div class="rounded-2xl overflow-hidden shadow-2xl border border-white/5 bg-black/40">
-                <img alt="Abstract fluid digital waves representing generative interface" class="w-full h-auto object-cover opacity-90 transition-opacity duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCe1sL5pc4TJUdr8qPUWFCOCQyF_JmkNNa9vGpFHifVIiE7DkHPl1FegWHTt2vOi11WppLRMBZ7ACJ7HCOj_Uq-WwsxrUs3309zD7NXqQE3WHhNnX8JVNJ1WSCl-cDPs4un1QsVzaTV2Cgnb_JKyrnOZtbAyYuLtogDFjSrjHTphiBcQTPvZxuiFBZcqA9Fy-pXMCBZ8GA_U3uV91YlNUu--qxoxA01YBew6yzCJvaQOTSY-Up_Z7APey3lTQ-ycafE_D9amT7-ZDvJ" />
-              </div>
-              <figcaption class="mt-4 text-center text-xs text-text-muted/60 font-medium">Figure 1: Visualization of adaptive interface topology</figcaption>
-            </figure>
-
-            <p class="text-base md:text-[1.05rem] leading-[1.8] text-text-muted mb-6 font-display">
-              When a user expresses an intent, the system acts as an orchestrator. It pulls the necessary UI atoms - a date picker here, a text field there, a visualization widget - and assembles them into a coherent view. The role of the designer shifts from architecting pages to defining the rules of assembly.
-            </p>
-
-            <h3 id="latency" class="font-serif text-xl md:text-2xl font-medium text-white mt-12 mb-4">The Latency of Thought</h3>
-            <p class="text-base md:text-[1.05rem] leading-[1.8] text-text-muted mb-6 font-display">
-              One challenge is speed. Generating a UI takes more compute than rendering a static HTML file. We need to design for the "latency of thought" - creating loading states that feel like a conversation pause rather than a system hang.
-            </p>
-
-            <ul class="list-none space-y-4 mb-10 pl-6 border-l border-white/10">
-              <li class="flex items-start gap-3">
-                <span class="mt-2.5 w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0"></span>
-                <span class="text-text-muted">Predictive pre-fetching of UI components based on conversation context.</span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-2.5 w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0"></span>
-                <span class="text-text-muted">Optimistic UI rendering for common patterns.</span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-2.5 w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0"></span>
-                <span class="text-text-muted">Skeleton screens that morph organically rather than flash abruptly.</span>
-              </li>
-            </ul>
-
-            <p class="text-base md:text-[1.05rem] leading-[1.8] text-text-muted mb-6 font-display">
-              Ultimately, the goal is to reduce friction. The computer should meet you where you are, not demand you learn its language.
-            </p>
-          </div>
-
-          <div class="flex justify-center my-12">
-            <button class="w-10 h-10 bg-white text-background-dark rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-105 border border-transparent" title="Like this article" type="button">
-              <span class="material-icons text-lg">thumb_up</span>
-            </button>
-          </div>
-
-          <div id="comments" class="mt-16 pt-16 border-t border-white/10">
-            <h3 class="font-serif text-2xl text-white mb-8">Comments (3)</h3>
-            <div class="space-y-8 mb-12">
-              {staticComments.map((comment) => (
-                <div class="flex gap-4">
-                  <div class="w-10 h-10 rounded-full bg-surface-dark border border-white/10 flex items-center justify-center text-text-muted font-serif text-sm">
-                    {comment.initials}
-                  </div>
-                  <div>
-                    <div class="flex items-center gap-2 mb-1">
-                      <span class="text-sm font-medium text-white">{comment.name}</span>
-                      <span class="text-xs text-text-muted/60">{comment.time}</span>
-                    </div>
-                    <p class="text-sm text-text-muted leading-relaxed">{comment.text}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div class="bg-surface-dark/50 border border-white/5 rounded-xl p-6">
-              <h4 class="text-sm font-medium text-text-main mb-4">Leave a comment</h4>
-              <textarea class="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-sm text-text-main placeholder-text-muted/40 focus:ring-1 focus:ring-primary focus:border-primary/50 transition-all resize-none h-32 mb-4" placeholder="Share your thoughts..."></textarea>
-              <div class="flex justify-end">
-                <button class="px-5 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white text-xs font-medium tracking-wide transition-colors" type="button">
-                  Post Comment
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="my-16 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-        </article>
-      </div>
-
-      <div class="hidden lg:block lg:col-span-2"></div>
-    </main>
-
-    <footer class="bg-[#111111] border-t border-white/5 relative z-10">
-      <div class="max-w-4xl mx-auto px-6 py-16">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-8">
-          <div class="text-center md:text-left">
-            <h4 class="font-serif text-2xl text-white mb-2">More from the Journal</h4>
-            <p class="text-sm text-text-muted">Curated thoughts on design and technology.</p>
-          </div>
-          <a class="group flex items-center gap-3 px-8 py-4 rounded-full border border-white/10 hover:border-white/20 hover:bg-white/5 transition-all" href={`/blog/${nextPost.slug}/`}>
-            <span class="text-sm font-semibold text-text-main tracking-tight">Read Next Article</span>
-            <span class="material-icons text-text-muted text-sm group-hover:text-white group-hover:translate-x-1 transition-all">arrow_forward</span>
-          </a>
-        </div>
-        <div class="mt-16 pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-          <span class="text-xs text-text-muted/60 font-medium">&copy; 2023 Claude's Journal. All rights reserved.</span>
-          <div class="flex gap-8">
-            <a class="text-xs text-text-muted/60 hover:text-white transition-colors font-medium" href={routes.about}>Privacy Policy</a>
-            <a class="text-xs text-text-muted/60 hover:text-white transition-colors font-medium" href={routes.about}>Terms of Service</a>
-          </div>
-        </div>
-      </div>
-    </footer>
-  </body>
-</html>
-
+      <div class="hidden lg:col-span-2 lg:block"></div>
+    </div>
+  </PageContainer>
+</BaseLayout>

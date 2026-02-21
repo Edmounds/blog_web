@@ -1,197 +1,62 @@
 ﻿---
-import { homeBlogPosts } from "./../data/static/blogs";
-import { homeFeatured, routes } from "./../data/static/home";
-import { homeProjects } from "./../data/static/projects";
+import Divider from "../components/foundation/Divider.astro";
+import PageContainer from "../components/foundation/PageContainer.astro";
+import ContentCard from "../components/domain/ContentCard.astro";
+import HomeHero from "../components/sections/HomeHero.astro";
+import SectionHeading from "../components/site/SectionHeading.astro";
+import { getAboutProfile, getHomeBlogPosts, getHomeProjects, getSiteSettings } from "../lib/content";
+import { routes } from "../lib/routes";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { toBlogCardModel, toProjectCardModel } from "../lib/view-models";
+
+const site = await getSiteSettings();
+const homeBlogPosts = await getHomeBlogPosts();
+const homeProjects = await getHomeProjects();
+const { homeFeatured } = await getAboutProfile();
+const blogCardCopy = {
+  publishedLabel: site.copy.blogMetaPublished,
+  readLabel: site.copy.blogMetaRead,
+  readArticleLabel: site.copy.blogReadArticle,
+};
+const blogCards = homeBlogPosts.map((post) => toBlogCardModel(post, blogCardCopy));
+const projectCards = homeProjects.map(toProjectCardModel);
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Claude-inspired Dark Blog Home</title>
-    <script is:inline src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config" is:inline>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              primary: "#3b62fe",
-              "background-main": "#1A1A1A",
-              "surface-dark": "#242424",
-              "text-main": "#E0E0E0",
-              "text-muted": "#A0A0A0",
-              "border-color": "#333333",
-            },
-            fontFamily: {
-              display: ["Inter", "sans-serif"],
-              serif: ["Georgia", "Times New Roman", "serif"],
-            },
-            borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
-          },
-        },
-      };
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-      rel="stylesheet"
+<BaseLayout title="Home" description="Design notes, essays, and selected projects." currentPath={routes.home}>
+  <PageContainer class="space-y-16 py-12 md:py-20">
+    <HomeHero
+      badge={homeFeatured.badge}
+      title={homeFeatured.title}
+      name={homeFeatured.name}
+      description={homeFeatured.description}
+      location={homeFeatured.location}
+      portrait={homeFeatured.portrait}
+      href={routes.about}
     />
-    <style>
-      body {
-        font-family: 'Inter', sans-serif;
-        background-color: #1A1A1A;
-      }
-      .serif-font {
-        font-family: 'Georgia', serif;
-      }
-      img {
-        filter: grayscale(100%) brightness(0.85) contrast(0.95);
-      }
-      .group:hover img {
-        filter: grayscale(0%) brightness(1) contrast(1);
-      }
-    </style>
-  </head>
-  <body class="bg-background-main text-text-main font-display selection:bg-primary/20 selection:text-primary min-h-screen flex flex-col antialiased">
-    <nav class="sticky top-0 z-50 w-full bg-background-main/90 backdrop-blur-md border-b border-border-color">
-      <div class="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
-        <a class="text-xl font-medium tracking-tight text-white hover:text-primary transition-colors duration-200" href={routes.home}>
-          Alex Chen
-        </a>
-        <div class="hidden md:flex items-center space-x-8">
-          <a class="text-sm text-text-muted hover:text-primary transition-colors" href={routes.home}>Home</a>
-          <a class="text-sm text-text-muted hover:text-primary transition-colors" href={routes.blogs}>Blogs</a>
-          <a class="text-sm text-text-muted hover:text-primary transition-colors" href={routes.projects}>Projects</a>
-          <a class="text-sm text-text-muted hover:text-primary transition-colors" href={routes.about}>About me</a>
-        </div>
-        <button class="md:hidden text-text-muted hover:text-white" type="button">
-          <span class="material-symbols-outlined">menu</span>
-        </button>
+
+    <Divider />
+
+    <section>
+      <SectionHeading title={site.copy.homeRecentBlogsTitle} cta={{ label: site.copy.homeRecentBlogsCta, href: routes.blogs }} />
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {blogCards.map((card) => (
+          <ContentCard {...card} />
+        ))}
       </div>
-    </nav>
+    </section>
 
-    <main class="max-w-5xl mx-auto px-6 py-12 md:py-20 flex-grow">
-      <section class="mb-24 group rounded-xl p-8 md:p-12 relative overflow-hidden bg-surface-dark/20">
-        <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-16 -mt-16 z-0"></div>
-        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <div class="lg:col-span-7 order-2 lg:order-1">
-            <div class="flex items-center gap-4 mb-6">
-              <span class="inline-block py-1 px-3 rounded-full bg-surface-dark border border-border-color text-xs font-medium tracking-wide text-text-muted uppercase">
-                {homeFeatured.badge}
-              </span>
-            </div>
-            <h1 class="serif-font text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-6 group-hover:text-primary transition-colors duration-300">
-              <a href={routes.about}>{homeFeatured.title}</a>
-            </h1>
-            <h2 class="text-2xl text-text-main font-light mb-4">{homeFeatured.name}</h2>
-            <p class="text-lg text-text-muted leading-relaxed mb-8 max-w-2xl font-light">{homeFeatured.description}</p>
-            <div class="flex items-center gap-4 text-sm text-text-muted/80">
-              <img alt="Portrait of Alex Chen" class="w-12 h-12 rounded-full object-cover border border-border-color" src={homeFeatured.portrait} />
-              <div class="flex flex-col">
-                <span class="text-white font-medium">{homeFeatured.name}</span>
-                <span class="text-xs">{homeFeatured.location}</span>
-              </div>
-            </div>
-          </div>
-          <div class="lg:col-span-5 order-1 lg:order-2">
-            <a href={routes.about} class="block aspect-[4/5] w-full overflow-hidden rounded-lg bg-surface-dark border border-border-color relative shadow-2xl shadow-black/20">
-              <div class="absolute inset-0 bg-primary/10 mix-blend-overlay z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-              <img alt="Monochromatic architecture detail with shadows" class="h-full w-full object-cover transition-all duration-700 ease-out transform group-hover:scale-105" src={homeFeatured.portrait} />
-            </a>
-          </div>
-        </div>
-      </section>
+    <Divider />
 
-      <div class="w-full h-px bg-border-color mb-16"></div>
-
-      <section class="mb-24">
-        <div class="flex items-end justify-between mb-10">
-          <h2 class="serif-font text-3xl text-white">Recent Blogs</h2>
-          <a class="text-sm text-text-muted hover:text-white transition-colors flex items-center gap-1" href={routes.blogs}>
-            View all blogs
-            <span class="material-symbols-outlined text-[1em]">arrow_right_alt</span>
-          </a>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
-          {homeBlogPosts.map((post) => (
-            <article class="group flex flex-col h-full cursor-pointer">
-              <a href={`/blog/${post.slug}/`} class="aspect-[16/10] overflow-hidden rounded-lg bg-surface-dark border border-border-color mb-5 relative shadow-lg shadow-black/10 block">
-                <img alt={post.title} class="h-full w-full object-cover transition-all duration-500" src={post.cover} />
-              </a>
-              <div class="flex-1 flex flex-col">
-                <div class="flex items-center gap-3 text-xs text-text-muted mb-3 font-medium uppercase tracking-wide">
-                  <span class="text-primary">{post.category}</span>
-                  <span class="w-0.5 h-3 bg-zinc-700"></span>
-                  <span>{post.dateLabel}</span>
-                </div>
-                <h3 class="serif-font text-xl text-white mb-3 group-hover:text-primary transition-colors">
-                  <a href={`/blog/${post.slug}/`}>{post.title}</a>
-                </h3>
-                <p class="text-sm text-text-muted leading-relaxed mb-4 line-clamp-3">{post.summary}</p>
-                <div class="mt-auto pt-4 flex items-center justify-between text-xs text-text-muted/60 border-t border-border-color">
-                  <span>{post.readingTime} read</span>
-                  <span class="material-symbols-outlined text-[1.2em] group-hover:translate-x-1 transition-transform text-primary">arrow_forward</span>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <div class="w-full h-px bg-border-color mb-16"></div>
-
-      <section class="mb-8">
-        <div class="flex items-end justify-between mb-10">
-          <h2 class="serif-font text-3xl text-white">Recent Projects</h2>
-          <a class="text-sm text-text-muted hover:text-white transition-colors flex items-center gap-1" href={routes.projects}>
-            View all projects
-            <span class="material-symbols-outlined text-[1em]">arrow_right_alt</span>
-          </a>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
-          {homeProjects.map((project) => (
-            <article class="group flex flex-col h-full cursor-pointer">
-              <a href={routes.projects} class="aspect-[16/10] overflow-hidden rounded-lg bg-surface-dark border border-border-color mb-5 relative shadow-lg shadow-black/10 block">
-                <img alt={project.title} class="h-full w-full object-cover transition-all duration-500" src={project.cover} />
-              </a>
-              <div class="flex-1 flex flex-col">
-                <div class="flex items-center gap-3 text-xs text-text-muted mb-3 font-medium uppercase tracking-wide">
-                  <span class="text-primary">{project.category}</span>
-                  <span class="w-0.5 h-3 bg-zinc-700"></span>
-                  <span>{project.type}</span>
-                </div>
-                <h3 class="serif-font text-xl text-white mb-3 group-hover:text-primary transition-colors">
-                  <a href={routes.projects}>{project.title}</a>
-                </h3>
-                <p class="text-sm text-text-muted leading-relaxed mb-4 line-clamp-3">{project.summary}</p>
-                <div class="mt-auto pt-4 flex items-center justify-between text-xs text-text-muted/60 border-t border-border-color">
-                  <span>{project.cta}</span>
-                  <span class="material-symbols-outlined text-[1.2em] group-hover:translate-x-1 transition-transform text-primary">arrow_forward</span>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-    </main>
-
-    <footer class="border-t border-border-color bg-surface-dark/30 mt-12">
-      <div class="max-w-5xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-6">
-        <div class="text-sm text-zinc-500">&copy; 2024 Alex Chen. All rights reserved.</div>
-        <div class="flex space-x-6">
-          <a class="text-zinc-500 hover:text-white transition-colors" href={routes.blogs}>
-            <span class="sr-only">Blogs</span>
-            <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path></svg>
-          </a>
-          <a class="text-zinc-500 hover:text-white transition-colors" href={routes.projects}>
-            <span class="sr-only">Projects</span>
-            <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" fill-rule="evenodd"></path></svg>
-          </a>
-        </div>
+    <section>
+      <SectionHeading
+        title={site.copy.homeRecentProjectsTitle}
+        cta={{ label: site.copy.homeRecentProjectsCta, href: routes.projects }}
+      />
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {projectCards.map((card) => (
+          <ContentCard {...card} />
+        ))}
       </div>
-    </footer>
-  </body>
-</html>
-
+    </section>
+  </PageContainer>
+</BaseLayout>

@@ -1,0 +1,18 @@
+---
+import type { ArticleMetaModel } from "../../types/ui";
+
+interface Props {
+  items: ArticleMetaModel[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="grid grid-cols-1 gap-4 border-y border-[var(--border-strong)] py-6 sm:grid-cols-2">
+  {items.map((item) => (
+    <div class="space-y-1">
+      <p class="ui-kicker">{item.label}</p>
+      <p class="text-sm text-[var(--text-main)]">{item.value}</p>
+    </div>
+  ))}
+</div>

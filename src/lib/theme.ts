@@ -7,6 +7,7 @@ export const getThemeFromSystem = (): Theme =>
 
 export const applyTheme = (theme: Theme): void => {
   document.documentElement.classList.toggle("dark", theme === "dark");
+  document.documentElement.classList.toggle("light", theme === "light");
   document.documentElement.dataset.theme = theme;
 };
 

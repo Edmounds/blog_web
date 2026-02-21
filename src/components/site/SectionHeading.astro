@@ -1,0 +1,19 @@
+---
+import type { SectionCta } from "../../types/ui";
+
+interface Props {
+  title: string;
+  cta?: SectionCta;
+}
+
+const { title, cta } = Astro.props;
+---
+
+<div class="mb-8 flex items-end justify-between gap-4">
+  <h2 class="font-serif text-3xl text-[var(--text-main)] md:text-4xl">{title}</h2>
+  {cta && (
+    <a href={cta.href} class="ui-link ui-link-accent text-sm">
+      {cta.label} ->
+    </a>
+  )}
+</div>

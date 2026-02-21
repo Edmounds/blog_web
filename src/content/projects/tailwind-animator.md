@@ -1,8 +1,15 @@
-﻿---
-title: 动效原子工具集
-slug: tailwind-animator
-summary: 一套面向界面动效的轻量工具集，降低复杂动画的实现门槛。
-year: 2024
-category: 开源
-cover: https://lh3.googleusercontent.com/aida-public/AB6AXuDJmjKxrgKmgSQHXLT1SLSD8RcWWDWKe165V792KH9JBWOTACBp-l6k1_VvyIoOLa1C8kEIzN1Exgme8RdNbHSGiCn7D_Qpyjq1l0GFS0Ezl1o-uSyaxwLRTOUpO8i3lD4Q1n3JFlsBIn1T2jvZZU0YH2BnH5kfGtcT1I52T44YMdZFMYD08VVb0JfB2r5w8CyULon3-ZVXQFS-4J_nVhA7c-4Uy3jOBdg4MlQZJFLBOl9idtLZcN4AZZCFAzrhWxSu7yL60uoRlALH
 ---
+title: Tailwind Animator
+summary: A lightweight utility library for creating complex SVG animations directly within your HTML classes.
+year: 2024
+category: Open Source
+cover: /images/content/projects/tailwind-animator.png
+showOnHome: true
+showInTimeline: false
+order: 3
+type: Library
+cta: View Repository
+---
+
+Provides composable motion primitives for teams that want expressive interfaces without heavy tooling.
+
