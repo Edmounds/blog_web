@@ -41,6 +41,22 @@ export interface ArchiveFilterModel {
   active: boolean;
 }
 
+export interface ArchivePostSummaryModel {
+  slug: string;
+  title: string;
+  summary: string;
+  category: string;
+  dateLabel: string;
+  readingTime: string;
+  tags?: string[];
+}
+
+export interface ArchivePostSectionModel {
+  year: number;
+  cards: ContentCardModel[];
+  posts: ArchivePostSummaryModel[];
+}
+
 export interface TimelineItemModel {
   title: string;
   year: string;

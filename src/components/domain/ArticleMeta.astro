@@ -8,11 +8,11 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<div class="grid grid-cols-1 gap-4 border-y border-[var(--border-strong)] py-6 sm:grid-cols-2">
+<div class="space-y-3 border-y border-[var(--border-strong)] py-5">
   {items.map((item) => (
-    <div class="space-y-1">
+    <div class="border-b border-[var(--border-subtle)] pb-3 last:border-none last:pb-0">
       <p class="ui-kicker">{item.label}</p>
-      <p class="text-sm text-[var(--text-main)]">{item.value}</p>
+      <p class="mt-1 text-sm text-[var(--text-main)]">{item.value}</p>
     </div>
   ))}
 </div>

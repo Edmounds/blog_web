@@ -50,7 +50,7 @@ const {
       <a href={href}>{title}</a>
     </h3>
 
-    <p class="line-clamp-3 text-sm leading-relaxed text-[var(--text-muted)]">{summary}</p>
+    {summary && <p class="line-clamp-3 text-sm leading-relaxed text-[var(--text-muted)]">{summary}</p>}
 
     {tags.length > 0 && (
       <div class="mt-auto flex flex-wrap gap-2 pt-2">

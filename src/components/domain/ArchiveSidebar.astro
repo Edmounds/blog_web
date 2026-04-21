@@ -1,6 +1,5 @@
 ﻿---
 import type { ArchiveFilterModel } from "../../types/ui";
-import SurfacePanel from "../foundation/SurfacePanel.astro";
 
 interface Props {
   filters: ArchiveFilterModel[];
@@ -10,23 +9,45 @@ interface Props {
 const { filters, title = "Filter" } = Astro.props;
 ---
 
-<SurfacePanel class="sticky top-28 space-y-5 p-5">
-  <h2 class="font-serif text-2xl text-[var(--text-main)]">{title}</h2>
-  <nav class="space-y-2 text-sm">
+<section class="sticky top-28">
+  <h2 class="mb-5 font-serif text-2xl text-[var(--text-main)]">{title}</h2>
+  <nav class="border-t border-[var(--border-soft)] text-sm">
     {filters.map((filter) => (
       <a
         href={filter.href}
         class:list={[
-          "flex items-center justify-between rounded-md px-2 py-1.5 transition",
+          "group flex items-center justify-between gap-3 border-b border-[var(--border-soft)] py-4 transition",
           filter.active
-            ? "bg-[var(--bg-subtle)] text-[var(--text-main)]"
-            : "text-[var(--text-muted)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-main)]",
+            ? "text-[var(--text-main)]"
+            : "text-[var(--text-muted)] hover:text-[var(--text-main)]",
         ]}
         aria-current={filter.active ? "page" : undefined}
       >
         <span>{filter.label}</span>
-        <span class="font-mono text-xs text-[var(--text-faint)]">{filter.count}</span>
+        <span class="flex items-center gap-2">
+          <span
+            class:list={[
+              "font-mono text-xs transition-colors",
+              filter.active ? "text-[var(--text-main)]" : "text-[var(--text-faint)] group-hover:text-[var(--text-main)]",
+            ]}
+          >
+            {filter.count}
+          </span>
+          <svg
+            class:list={[
+              "h-3.5 w-3.5 transition-colors",
+              filter.active ? "text-[var(--text-main)]" : "text-[var(--text-faint)] group-hover:text-[var(--text-main)]",
+            ]}
+            viewBox="0 0 20 20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            aria-hidden="true"
+          >
+            <path d="M6 8l4 4 4-4" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
       </a>
     ))}
   </nav>
-</SurfacePanel>
+</section>

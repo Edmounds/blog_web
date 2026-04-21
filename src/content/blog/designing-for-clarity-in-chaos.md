@@ -1,12 +1,12 @@
 ---
-title: Designing for Clarity in Chaos
-summary: In a world overflowing with information, the role of a designer shifts from creator to curator. How do we build interfaces that calm the mind?
-publishedAt: 2024-10-28
+title: 你好
+summary: nihao
+publishedAt: 2026-1-28
 cover: /images/content/blog/designing-for-clarity-in-chaos.png
 readingTime: 8 min
 category: Design
 showOnHome: true
-showInArchive: false
+showInArchive: true
 order: 1
 draft: false
 tags:

@@ -179,6 +179,16 @@ body {
   background: var(--border-strong);
 }
 
+@media (min-width: 768px) {
+  .timeline-shell .timeline-item {
+    margin-bottom: 1.75rem;
+  }
+
+  .timeline-shell .timeline-item:nth-child(even) {
+    margin-top: -7rem;
+  }
+}
+
 @media (max-width: 767px) {
   .timeline-shell::before {
     display: none;

@@ -29,37 +29,111 @@ const isActive = (item: NavItem) => {
     </a>
 
     <div class="hidden items-center gap-8 md:flex">
-      <nav class="flex items-center gap-7 text-sm">
+      <nav class="nav-switcher relative flex items-center gap-7 text-sm" data-nav-switcher>
         {navItems.map((item) => (
           <a
             href={item.href}
+            data-nav-link
+            aria-current={isActive(item) ? "page" : undefined}
             class:list={[
-              "transition",
+              "relative z-10 transition duration-300",
               isActive(item) ? "text-[var(--text-main)]" : "text-[var(--text-muted)] hover:text-[var(--text-main)]",
             ]}
           >
             {item.label}
           </a>
         ))}
+        <span class="nav-switcher-indicator" data-nav-indicator aria-hidden="true"></span>
       </nav>
       <ThemeToggle />
     </div>
   </div>
 
   <div class="app-container flex items-center justify-between gap-4 pb-4 md:hidden">
-    <nav class="flex items-center gap-4 text-xs uppercase tracking-wider">
+    <nav class="nav-switcher relative flex items-center gap-4 text-xs uppercase tracking-wider" data-nav-switcher>
       {navItems.map((item) => (
         <a
           href={item.href}
+          data-nav-link
+          aria-current={isActive(item) ? "page" : undefined}
           class:list={[
-            "transition",
+            "relative z-10 transition duration-300",
             isActive(item) ? "text-[var(--text-main)]" : "text-[var(--text-muted)]",
           ]}
         >
           {item.label}
         </a>
       ))}
+      <span class="nav-switcher-indicator" data-nav-indicator aria-hidden="true"></span>
     </nav>
     <ThemeToggle />
   </div>
 </header>
+
+<style>
+  .nav-switcher-indicator {
+    --x: 0px;
+    --w: 0px;
+    position: absolute;
+    left: 0;
+    bottom: -0.45rem;
+    width: var(--w);
+    height: 2px;
+    border-radius: 999px;
+    background: var(--accent);
+    transform: translateX(var(--x));
+    transition:
+      transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+      width 320ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 220ms ease;
+    opacity: 0;
+    box-shadow: 0 0 16px color-mix(in srgb, var(--accent) 42%, transparent);
+  }
+
+  .nav-switcher[data-ready="true"] .nav-switcher-indicator {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-switcher-indicator {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const navSwitchers = Array.from(document.querySelectorAll("[data-nav-switcher]"));
+
+  const bindSwitcher = (switcher) => {
+    const links = Array.from(switcher.querySelectorAll("[data-nav-link]"));
+    const indicator = switcher.querySelector("[data-nav-indicator]");
+    if (!links.length || !indicator) return;
+
+    const active = () => links.find((link) => link.getAttribute("aria-current") === "page") ?? links[0];
+
+    const moveTo = (link) => {
+      indicator.style.setProperty("--x", `${link.offsetLeft}px`);
+      indicator.style.setProperty("--w", `${link.offsetWidth}px`);
+      switcher.setAttribute("data-ready", "true");
+    };
+
+    const reset = () => moveTo(active());
+
+    reset();
+    window.addEventListener("resize", reset, { passive: true });
+
+    links.forEach((link) => {
+      link.addEventListener("pointerenter", () => moveTo(link));
+      link.addEventListener("focus", () => moveTo(link));
+    });
+
+    switcher.addEventListener("pointerleave", reset);
+    switcher.addEventListener("focusout", () => {
+      requestAnimationFrame(() => {
+        if (!switcher.contains(document.activeElement)) reset();
+      });
+    });
+  };
+
+  navSwitchers.forEach((switcher) => bindSwitcher(switcher));
+</script>
