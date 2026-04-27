@@ -11,12 +11,15 @@ const { brand = "Site", links = [] } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
-<footer class="mt-16 border-t border-[var(--border-strong)] bg-[color:color-mix(in_srgb,var(--bg-subtle)_70%,transparent)]">
-  <div class="app-container flex flex-col gap-4 py-10 text-sm text-[var(--text-muted)] md:flex-row md:items-center md:justify-between">
+<footer class="mt-16 border-t border-border bg-muted/35">
+  <div class="app-container flex flex-col gap-4 py-10 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between">
     <p>Copyright {year} {brand}. All rights reserved.</p>
-    <div class="flex items-center gap-6">
+    <div class="flex items-center gap-2">
       {links.map((link) => (
-        <a href={link.href} class="ui-link ui-link-accent text-sm">
+        <a
+          href={link.href}
+          class="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-background hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        >
           {link.label}
         </a>
       ))}

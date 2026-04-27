@@ -6,7 +6,7 @@
   - Acceptance: light and dark themes use shadcn semantic tokens coherently.
   - Verify: `npm run check`.
 
-- [ ] Redesign shared site shell in `BaseLayout.astro`, `Header.astro`, `Footer.astro`, and `ThemeToggle.astro`.
+- [x] Redesign shared site shell in `BaseLayout.astro`, `Header.astro`, `Footer.astro`, and `ThemeToggle.astro`.
   - Acceptance: header/footer/theme toggle visibly match shadcn style; navigation and theme switching remain functional.
   - Verify: `npm run check`.
 

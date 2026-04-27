@@ -47,8 +47,8 @@ const resolvedDescription = description ?? site.seo.defaultDescription;
       })();
     </script>
   </head>
-  <body class="site-grain min-h-screen antialiased selection:bg-[var(--accent-soft)]">
-    <div class="relative z-10 flex min-h-screen flex-col">
+  <body class="site-grain min-h-screen bg-background text-foreground antialiased selection:bg-primary/15 selection:text-primary">
+    <div class="relative z-10 flex min-h-screen flex-col bg-[radial-gradient(circle_at_top_left,var(--accent-soft),transparent_32rem)]">
       <Header currentPath={currentPath} brand={site.brand} navItems={site.nav} />
       <main class={`flex-1 ${mainClass}`.trim()}>
         <slot />
