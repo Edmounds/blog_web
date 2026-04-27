@@ -1,6 +1,7 @@
 ---
 import ContentCard from "./ContentCard.astro";
 import type { ArchivePostSectionModel } from "../../types/ui";
+import { Button } from "../ui/button";
 
 interface Props {
   sections: ArchivePostSectionModel[];
@@ -14,6 +15,8 @@ const listRows = sections.flatMap((section) =>
     year: section.year,
   })),
 );
+const archiveViewButtonClass =
+  "archive-view-button !h-auto !rounded-[0.9rem] !px-[0.95rem] !py-[0.6rem] !text-base !text-[var(--text-muted)] hover:!bg-transparent hover:!text-[var(--text-main)]";
 ---
 
 <section data-archive-root class="space-y-8">
@@ -40,9 +43,10 @@ const listRows = sections.flatMap((section) =>
     </label>
 
     <div class="inline-flex rounded-2xl bg-[color:color-mix(in_srgb,var(--bg-elevated)_72%,transparent)] p-1">
-      <button
+      <Button
         type="button"
-        class="archive-view-button is-active"
+        variant="ghost"
+        className={`${archiveViewButtonClass} is-active`}
         data-archive-view="grid"
         aria-pressed="true"
       >
@@ -60,15 +64,16 @@ const listRows = sections.flatMap((section) =>
           <rect x="10" y="10" width="4.5" height="4.5" rx="1" />
         </svg>
         <span>Grid</span>
-      </button>
-      <button
+      </Button>
+      <Button
         type="button"
-        class="archive-view-button"
+        variant="ghost"
+        className={archiveViewButtonClass}
         data-archive-view="list"
         aria-pressed="false"
       >
         <span>List</span>
-      </button>
+      </Button>
     </div>
   </div>
 
@@ -141,34 +146,40 @@ const listRows = sections.flatMap((section) =>
 </section>
 
 <script>
-  const roots = Array.from(document.querySelectorAll("[data-archive-root]"));
-
-  const getScopeItems = (root, scope) =>
-    Array.from(root.querySelectorAll(`[data-archive-item][data-archive-scope="${scope}"]`));
+  const roots = Array.from(document.querySelectorAll<HTMLElement>("[data-archive-root]"));
 
   roots.forEach((root) => {
-    const searchInput = root.querySelector("[data-archive-search]");
-    const gridView = root.querySelector("[data-archive-grid]");
-    const listView = root.querySelector("[data-archive-list]");
-    const emptyState = root.querySelector("[data-archive-empty]");
-    const listHead = root.querySelector("[data-archive-list-head]");
-    const groups = Array.from(root.querySelectorAll("[data-archive-group]"));
-    const viewButtons = Array.from(root.querySelectorAll("[data-archive-view]"));
+    const searchInput = root.querySelector<HTMLInputElement>("[data-archive-search]");
+    const gridView = root.querySelector<HTMLElement>("[data-archive-grid]");
+    const listView = root.querySelector<HTMLElement>("[data-archive-list]");
+    const emptyState = root.querySelector<HTMLElement>("[data-archive-empty]");
+    const listHead = root.querySelector<HTMLElement>("[data-archive-list-head]");
+    const groups = Array.from(root.querySelectorAll<HTMLElement>("[data-archive-group]")).map((element) => ({
+      element,
+      gridItems: Array.from(
+        element.querySelectorAll<HTMLElement>('[data-archive-item][data-archive-scope="grid"]'),
+      ),
+    }));
+    const viewButtons = Array.from(root.querySelectorAll<HTMLElement>("[data-archive-view]"));
+    const allItems = Array.from(root.querySelectorAll<HTMLElement>("[data-archive-item]"));
+    const scopeItems = {
+      grid: allItems.filter((item) => item.getAttribute("data-archive-scope") === "grid"),
+      list: allItems.filter((item) => item.getAttribute("data-archive-scope") === "list"),
+    };
 
     if (!(searchInput instanceof HTMLInputElement) || !gridView || !listView || !emptyState) {
       return;
     }
 
-    let activeView = "grid";
+    let activeView: "grid" | "list" = "grid";
 
     const updateEmptyState = () => {
-      const visibleCount = getScopeItems(root, activeView).filter((item) => !item.hidden).length;
+      const visibleCount = scopeItems[activeView].filter((item) => !item.hidden).length;
       emptyState.classList.toggle("hidden", visibleCount > 0);
     };
 
     const applyFilter = () => {
       const query = searchInput.value.trim().toLowerCase();
-      const allItems = Array.from(root.querySelectorAll("[data-archive-item]"));
 
       allItems.forEach((item) => {
         const keywords = (item.getAttribute("data-archive-keywords") ?? "").toLowerCase();
@@ -177,21 +188,19 @@ const listRows = sections.flatMap((section) =>
       });
 
       groups.forEach((group) => {
-        const hasVisibleGridItem = Array.from(
-          group.querySelectorAll('[data-archive-item][data-archive-scope="grid"]'),
-        ).some((item) => !item.hidden);
-        group.toggleAttribute("hidden", !hasVisibleGridItem);
+        const hasVisibleGridItem = group.gridItems.some((item) => !item.hidden);
+        group.element.toggleAttribute("hidden", !hasVisibleGridItem);
       });
 
       if (listHead) {
-        const hasVisibleListItem = getScopeItems(root, "list").some((item) => !item.hidden);
+        const hasVisibleListItem = scopeItems.list.some((item) => !item.hidden);
         listHead.classList.toggle("hidden", !hasVisibleListItem);
       }
 
       updateEmptyState();
     };
 
-    const setView = (view) => {
+    const setView = (view: string) => {
       activeView = view === "list" ? "list" : "grid";
       gridView.classList.toggle("hidden", activeView !== "grid");
       listView.classList.toggle("hidden", activeView !== "list");

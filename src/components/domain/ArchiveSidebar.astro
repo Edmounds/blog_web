@@ -1,5 +1,6 @@
 ﻿---
 import type { ArchiveFilterModel } from "../../types/ui";
+import { Badge } from "../ui/badge";
 
 interface Props {
   filters: ArchiveFilterModel[];
@@ -25,14 +26,15 @@ const { filters, title = "Filter" } = Astro.props;
       >
         <span>{filter.label}</span>
         <span class="flex items-center gap-2">
-          <span
-            class:list={[
-              "font-mono text-xs transition-colors",
-              filter.active ? "text-[var(--text-main)]" : "text-[var(--text-faint)] group-hover:text-[var(--text-main)]",
-            ]}
+          <Badge
+            variant="outline"
+            className={[
+              "!h-auto !border-[var(--border-strong)] !bg-transparent !px-2 !py-0.5 !font-mono !text-xs !font-normal transition-colors",
+              filter.active ? "!text-[var(--text-main)]" : "!text-[var(--text-faint)] group-hover:!text-[var(--text-main)]",
+            ].join(" ")}
           >
             {filter.count}
-          </span>
+          </Badge>
           <svg
             class:list={[
               "h-3.5 w-3.5 transition-colors",

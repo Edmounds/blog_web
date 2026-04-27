@@ -1,5 +1,6 @@
 ---
 import type { AboutFocusCard } from "../../types/ui";
+import PillTag from "../foundation/PillTag.astro";
 import SurfacePanel from "../foundation/SurfacePanel.astro";
 
 interface Props {
@@ -16,7 +17,7 @@ const { cards } = Astro.props;
       <SurfacePanel class="space-y-3 p-6">
         <div class="flex items-start justify-between gap-3">
           <h3 class="font-serif text-2xl text-[var(--text-main)]">{card.title}</h3>
-          <span class="ui-tag uppercase">{card.icon}</span>
+          <PillTag text={card.icon} class="uppercase" />
         </div>
         <p class="text-sm leading-relaxed text-[var(--text-muted)]">{card.text}</p>
       </SurfacePanel>

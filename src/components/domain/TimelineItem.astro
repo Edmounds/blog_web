@@ -1,5 +1,6 @@
 ---
 import type { TimelineItemModel } from "../../types/ui";
+import { Card, CardContent } from "../ui/card";
 
 interface Props {
   item: TimelineItemModel;
@@ -22,12 +23,12 @@ const isLeft = item.side === "left";
     isLeft ? "-right-[5px]" : "-left-[5px]",
   ]}></div>
 
-  <div class="group overflow-hidden rounded-xl border border-[var(--border-strong)] bg-[color:color-mix(in_srgb,var(--bg-elevated)_78%,transparent)] shadow-[var(--shadow-soft)]">
+  <Card className="group !gap-0 overflow-hidden rounded-xl !border !border-[var(--border-strong)] !bg-[color:color-mix(in_srgb,var(--bg-elevated)_78%,transparent)] !py-0 !shadow-[var(--shadow-soft)] !ring-0">
     <a href={item.href} class="block overflow-hidden border-b border-[var(--border-soft)]">
       <img src={item.image} alt={item.title} class="h-44 w-full object-cover grayscale transition duration-700 group-hover:scale-105 group-hover:grayscale-0 md:h-48" loading="lazy" />
     </a>
 
-    <div class="space-y-3 p-4">
+    <CardContent className="space-y-3 !p-4">
       <div class="flex items-center justify-between gap-3 text-xs text-[var(--text-faint)]">
         <span class="ui-kicker text-[var(--accent)]">{item.category}</span>
         <span class="font-mono">{item.year}</span>
@@ -37,6 +38,6 @@ const isLeft = item.side === "left";
       </h3>
       <p class="text-sm leading-relaxed text-[var(--text-muted)]">{item.summary}</p>
       <p class="pt-1 text-sm text-[var(--text-muted)] transition group-hover:text-[var(--text-main)]">{item.ctaLabel} -></p>
-    </div>
-  </div>
+    </CardContent>
+  </Card>
 </article>

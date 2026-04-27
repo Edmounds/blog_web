@@ -20,7 +20,7 @@ const TEXT_EXTENSIONS = new Set([
 ]);
 
 const TEXT_BASENAMES = new Set([".env", ".env.example"]);
-const IGNORE_DIRS = new Set([".git", ".astro", "dist", "node_modules"]);
+const IGNORE_DIRS = new Set([".git", ".astro", ".worktrees", "dist", "node_modules"]);
 const CJK_REGEX = /[\u3400-\u9fff\uf900-\ufaff]/u;
 
 const decoder = new TextDecoder("utf-8", { fatal: true });

@@ -1,4 +1,6 @@
 ---
+import { Separator } from "../ui/separator";
+
 interface Props {
   class?: string;
 }
@@ -6,4 +8,4 @@ interface Props {
 const { class: className = "" } = Astro.props;
 ---
 
-<div class={`ui-divider ${className}`.trim()}></div>
+<Separator className={`ui-divider !bg-[color:color-mix(in_srgb,var(--border-strong)_75%,transparent)] ${className}`.trim()} />

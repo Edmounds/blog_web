@@ -3,7 +3,6 @@ import Divider from "../components/foundation/Divider.astro";
 import PageContainer from "../components/foundation/PageContainer.astro";
 import ContentCard from "../components/domain/ContentCard.astro";
 import HomeHero from "../components/sections/HomeHero.astro";
-import HomeShadcnDemo from "../components/home/HomeShadcnDemo";
 import SectionHeading from "../components/site/SectionHeading.astro";
 import { getAboutProfile, getHomeBlogPosts, getHomeProjects, getSiteSettings } from "../lib/content";
 import { routes } from "../lib/routes";
@@ -23,7 +22,6 @@ const blogCards = homeBlogPosts.map((post) => toBlogCardModel(post, blogCardCopy
 const projectCards = homeProjects.map(toProjectCardModel);
 const compactBlogCards = blogCards.map((card) => ({ ...card, meta: [], summary: "", footerText: undefined }));
 const compactProjectCards = projectCards.map((card) => ({ ...card, meta: [], summary: "", footerText: undefined }));
-const showLocalShadcnDemo = import.meta.env.DEV;
 ---
 
 <BaseLayout title="Home" description="Design notes, essays, and selected projects." currentPath={routes.home}>
@@ -42,13 +40,6 @@ const showLocalShadcnDemo = import.meta.env.DEV;
 
       <div class="home-feed space-y-16">
         <Divider />
-
-        {showLocalShadcnDemo && (
-          <section>
-            <SectionHeading title="Local UI sandbox" />
-            <HomeShadcnDemo blogHref={routes.blogs} projectsHref={routes.projects} />
-          </section>
-        )}
 
         <section>
           <SectionHeading title={site.copy.homeRecentBlogsTitle} cta={{ label: site.copy.homeRecentBlogsCta, href: routes.blogs }} />
