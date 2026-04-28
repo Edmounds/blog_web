@@ -1,5 +1,6 @@
 ﻿---
 import { getCollection } from "astro:content";
+import Reveal from "../../components/animation/Reveal";
 import ArticleMeta from "../../components/domain/ArticleMeta.astro";
 import PageContainer from "../../components/foundation/PageContainer.astro";
 import PillTag from "../../components/foundation/PillTag.astro";
@@ -51,52 +52,62 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.
       <aside class="hidden lg:col-span-3 lg:block">
         <div class="sticky top-28 space-y-5">
           {tocHeadings.length > 0 && (
-            <SurfacePanel class="space-y-4 p-5">
-              <h2 class="font-serif text-2xl text-[var(--text-main)]">On this page</h2>
-              <nav class="space-y-2 text-sm">
-                {tocHeadings.map((heading) => (
-                  <a href={`#${heading.slug}`} class="ui-link block">
-                    {heading.text}
-                  </a>
-                ))}
-              </nav>
-            </SurfacePanel>
+            <Reveal delay={0.08} y={10} client:visible>
+              <SurfacePanel class="space-y-4 p-5">
+                <h2 class="font-serif text-2xl text-[var(--text-main)]">On this page</h2>
+                <nav class="space-y-2 text-sm">
+                  {tocHeadings.map((heading) => (
+                    <a href={`#${heading.slug}`} class="ui-link block">
+                      {heading.text}
+                    </a>
+                  ))}
+                </nav>
+              </SurfacePanel>
+            </Reveal>
           )}
 
-          <SurfacePanel class="space-y-3 p-5">
-            <h3 class="ui-kicker">Related topics</h3>
-            <div class="flex flex-wrap gap-2">
-              {relatedTags.map((tag) => (
-                <PillTag text={tag} />
-              ))}
-            </div>
-          </SurfacePanel>
+          {relatedTags.length > 0 && (
+            <Reveal delay={0.14} y={10} client:visible>
+              <SurfacePanel class="space-y-3 p-3">
+                <h3 class="ui-kicker">Related topics</h3>
+                <div class="flex flex-wrap gap-1.5">
+                  {relatedTags.map((tag) => (
+                    <PillTag text={tag} />
+                  ))}
+                </div>
+              </SurfacePanel>
+            </Reveal>
+          )}
         </div>
       </aside>
 
       <article class="space-y-8 lg:col-span-7">
-        <header class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-start">
-          <div class="space-y-5">
-            <p class="ui-kicker text-[var(--accent)]">{post.data.category}</p>
-            <h1 class="font-serif text-5xl leading-tight text-[var(--text-main)] md:text-6xl">{post.data.title}</h1>
-            <p class="max-w-3xl text-lg leading-relaxed text-[var(--text-muted)]">{post.data.summary}</p>
-          </div>
-          <div class="lg:pt-1">
-            <ArticleMeta items={metaItems} />
-          </div>
-        </header>
+        <Reveal client:visible>
+          <header class="space-y-6">
+            <div class="space-y-5">
+              <p class="ui-kicker text-[var(--accent)]">{post.data.category}</p>
+              <h1 class="font-serif text-5xl leading-tight text-[var(--text-main)] md:text-6xl">{post.data.title}</h1>
+              <p class="max-w-3xl text-lg leading-relaxed text-[var(--text-muted)]">{post.data.summary}</p>
+            </div>
+            <ArticleMeta items={metaItems} variant="grid" />
+          </header>
+        </Reveal>
 
         <section class="ui-prose">
           <Content />
         </section>
 
-        <SurfacePanel class="flex flex-col gap-3 p-6 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p class="ui-kicker">{site.copy.blogNextArticle}</p>
-            <p class="font-serif text-2xl text-[var(--text-main)]">{nextPost.title}</p>
-          </div>
-          <a href={`/blog/${nextPost.slug}/`} class="ui-link ui-link-accent text-sm">{site.copy.blogReadNext} -&gt;</a>
-        </SurfacePanel>
+        <Reveal y={12} client:visible>
+          <SurfacePanel class="flex flex-col gap-6 p-6 sm:flex-row sm:items-end sm:justify-between sm:p-8">
+            <div class="max-w-2xl space-y-3">
+              <p class="ui-kicker">{site.copy.blogNextArticle}</p>
+              <h2 class="font-serif text-3xl leading-tight text-[var(--text-main)] md:text-4xl">{nextPost.title}</h2>
+            </div>
+            <a href={`/blog/${nextPost.slug}/`} class="ui-link ui-link-accent shrink-0 text-sm" aria-label={`${site.copy.blogReadNext}: ${nextPost.title}`}>
+              {site.copy.blogReadNext} -&gt;
+            </a>
+          </SurfacePanel>
+        </Reveal>
       </article>
 
       <div class="hidden lg:col-span-2 lg:block"></div>
