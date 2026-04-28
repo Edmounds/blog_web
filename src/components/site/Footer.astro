@@ -1,4 +1,5 @@
 ﻿---
+import Reveal from "../animation/Reveal";
 import type { FooterLink } from "../../types/ui";
 
 interface Props {
@@ -12,7 +13,7 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="mt-16 border-t border-border bg-muted/35">
-  <div class="app-container flex flex-col gap-4 py-10 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between">
+  <Reveal className="app-container flex flex-col gap-4 py-10 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between" y={10} duration={0.4} client:visible>
     <p>Copyright {year} {brand}. All rights reserved.</p>
     <div class="flex items-center gap-2">
       {links.map((link) => (
@@ -24,5 +25,5 @@ const year = new Date().getFullYear();
         </a>
       ))}
     </div>
-  </div>
+  </Reveal>
 </footer>

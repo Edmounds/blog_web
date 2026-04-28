@@ -1,4 +1,6 @@
 ---
+import Reveal from "../animation/Reveal";
+import Stagger from "../animation/Stagger";
 import type { AboutFocusCard } from "../../types/ui";
 import PillTag from "../foundation/PillTag.astro";
 import SurfacePanel from "../foundation/SurfacePanel.astro";
@@ -11,8 +13,10 @@ const { cards } = Astro.props;
 ---
 
 <section class="space-y-6">
-  <h2 class="font-serif text-4xl text-[var(--text-main)]">Current Focus</h2>
-  <div class="grid gap-5">
+  <Reveal client:visible>
+    <h2 class="font-serif text-4xl text-[var(--text-main)]">Current Focus</h2>
+  </Reveal>
+  <Stagger className="grid gap-5" delay={0.08} stagger={0.06} client:visible>
     {cards.map((card) => (
       <SurfacePanel class="space-y-3 p-6">
         <div class="flex items-start justify-between gap-3">
@@ -22,5 +26,5 @@ const { cards } = Astro.props;
         <p class="text-sm leading-relaxed text-[var(--text-muted)]">{card.text}</p>
       </SurfacePanel>
     ))}
-  </div>
+  </Stagger>
 </section>

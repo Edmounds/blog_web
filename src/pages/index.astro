@@ -1,4 +1,6 @@
 ﻿---
+import Reveal from "../components/animation/Reveal";
+import Stagger from "../components/animation/Stagger";
 import Divider from "../components/foundation/Divider.astro";
 import PageContainer from "../components/foundation/PageContainer.astro";
 import ContentCard from "../components/domain/ContentCard.astro";
@@ -39,29 +41,37 @@ const compactProjectCards = projectCards.map((card) => ({ ...card, meta: [], sum
       </aside>
 
       <div class="home-feed space-y-16">
-        <Divider />
+        <Reveal client:visible>
+          <Divider />
+        </Reveal>
 
         <section>
-          <SectionHeading title={site.copy.homeRecentBlogsTitle} cta={{ label: site.copy.homeRecentBlogsCta, href: routes.blogs }} />
-          <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <Reveal client:visible>
+            <SectionHeading title={site.copy.homeRecentBlogsTitle} cta={{ label: site.copy.homeRecentBlogsCta, href: routes.blogs }} />
+          </Reveal>
+          <Stagger className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3" delay={0.08} stagger={0.06} client:visible>
             {compactBlogCards.map((card) => (
               <ContentCard {...card} />
             ))}
-          </div>
+          </Stagger>
         </section>
 
-        <Divider />
+        <Reveal client:visible>
+          <Divider />
+        </Reveal>
 
         <section>
-          <SectionHeading
-            title={site.copy.homeRecentProjectsTitle}
-            cta={{ label: site.copy.homeRecentProjectsCta, href: routes.projects }}
-          />
-          <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <Reveal client:visible>
+            <SectionHeading
+              title={site.copy.homeRecentProjectsTitle}
+              cta={{ label: site.copy.homeRecentProjectsCta, href: routes.projects }}
+            />
+          </Reveal>
+          <Stagger className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3" delay={0.08} stagger={0.06} client:visible>
             {compactProjectCards.map((card) => (
               <ContentCard {...card} />
             ))}
-          </div>
+          </Stagger>
         </section>
       </div>
     </div>

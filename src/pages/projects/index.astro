@@ -1,4 +1,6 @@
 ﻿---
+import Reveal from "../../components/animation/Reveal";
+import Stagger from "../../components/animation/Stagger";
 import PageContainer from "../../components/foundation/PageContainer.astro";
 import TimelineItem from "../../components/domain/TimelineItem.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -18,18 +20,20 @@ const timelineItems = timelineProjects.map((project) =>
 
 <BaseLayout title="Projects" description="Selected project work and experiments." currentPath={routes.projects}>
   <PageContainer class="space-y-10 py-12 md:py-16">
-    <header class="mx-auto max-w-3xl space-y-4 text-center">
-      <p class="ui-kicker">Selected Work</p>
-      <h1 class="font-serif text-5xl text-[var(--text-main)] md:text-6xl">Project Timeline</h1>
-      <p class="text-[var(--text-muted)]">
-        A chronological view of product design and engineering projects.
-      </p>
-    </header>
+    <Reveal client:visible>
+      <header class="mx-auto max-w-3xl space-y-4 text-center">
+        <p class="ui-kicker">Selected Work</p>
+        <h1 class="font-serif text-5xl text-[var(--text-main)] md:text-6xl">Project Timeline</h1>
+        <p class="text-[var(--text-muted)]">
+          A chronological view of product design and engineering projects.
+        </p>
+      </header>
+    </Reveal>
 
-    <section class="timeline-shell mx-auto max-w-5xl pt-2">
+    <Stagger className="timeline-shell mx-auto max-w-5xl pt-2" delay={0.08} stagger={0.08} client:visible>
       {timelineItems.map((item) => (
         <TimelineItem item={item} />
       ))}
-    </section>
+    </Stagger>
   </PageContainer>
 </BaseLayout>
