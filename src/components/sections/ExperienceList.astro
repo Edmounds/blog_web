@@ -1,4 +1,6 @@
 ---
+import Reveal from "../animation/Reveal";
+import Stagger from "../animation/Stagger";
 import type { ExperienceItem } from "../../types/ui";
 import Divider from "../foundation/Divider.astro";
 
@@ -10,8 +12,10 @@ const { jobs } = Astro.props;
 ---
 
 <section class="space-y-6">
-  <h2 class="font-serif text-4xl text-[var(--text-main)]">Selected Experience</h2>
-  <div class="space-y-0 border-t border-[var(--border-strong)]">
+  <Reveal client:visible>
+    <h2 class="font-serif text-4xl text-[var(--text-main)]">Selected Experience</h2>
+  </Reveal>
+  <Stagger className="space-y-0 border-t border-[var(--border-strong)]" delay={0.08} stagger={0.06} client:visible>
     {jobs.map((job, index) => (
       <>
         <article class="grid gap-4 py-6 md:grid-cols-[140px_1fr] md:gap-8">
@@ -25,5 +29,5 @@ const { jobs } = Astro.props;
         {index < jobs.length - 1 && <Divider class="!bg-[var(--border-strong)]" />}
       </>
     ))}
-  </div>
+  </Stagger>
 </section>

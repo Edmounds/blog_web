@@ -1,4 +1,5 @@
 ---
+import Reveal from "../animation/Reveal";
 import type { AboutMetaItem } from "../../types/ui";
 import SurfacePanel from "../foundation/SurfacePanel.astro";
 
@@ -14,33 +15,35 @@ interface Props {
 const { titleLeading, titleName, subtitle, portrait, meta, availability } = Astro.props;
 ---
 
-<section class="grid grid-cols-1 gap-8 border-b border-[var(--border-strong)] pb-16 lg:grid-cols-12">
-  <div class="space-y-8 lg:col-span-8">
-    <h1 class="font-serif text-5xl leading-[0.95] text-[var(--text-main)] md:text-7xl lg:text-8xl">
-      {titleLeading}
-      <span class="block italic text-[var(--text-muted)]">{titleName}</span>
-    </h1>
-    <p class="max-w-3xl text-xl leading-relaxed text-[var(--text-muted)]">{subtitle}</p>
+<Reveal client:visible>
+  <section class="grid grid-cols-1 gap-8 border-b border-[var(--border-strong)] pb-16 lg:grid-cols-12">
+    <div class="space-y-8 lg:col-span-8">
+      <h1 class="font-serif text-5xl leading-[0.95] text-[var(--text-main)] md:text-7xl lg:text-8xl">
+        {titleLeading}
+        <span class="block italic text-[var(--text-muted)]">{titleName}</span>
+      </h1>
+      <p class="max-w-3xl text-xl leading-relaxed text-[var(--text-muted)]">{subtitle}</p>
 
-    <div class="max-w-3xl px-1 text-sm">
-      <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
-        {meta.map((item) => (
-          <p class="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-[var(--text-main)]">
-            <span class="ui-kicker">{item.label}</span>
-            <span>{item.value}</span>
-          </p>
-        ))}
-        <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[var(--text-main)]">
-          <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
-          <span>{availability}</span>
+      <div class="max-w-3xl px-1 text-sm">
+        <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
+          {meta.map((item) => (
+            <p class="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-[var(--text-main)]">
+              <span class="ui-kicker">{item.label}</span>
+              <span>{item.value}</span>
+            </p>
+          ))}
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[var(--text-main)]">
+            <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+            <span>{availability}</span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="lg:col-span-4">
-    <SurfacePanel class="overflow-hidden">
-      <img src={portrait} alt={titleName} class="h-full w-full object-cover grayscale transition duration-700 hover:scale-105 hover:grayscale-0" loading="lazy" />
-    </SurfacePanel>
-  </div>
-</section>
+    <div class="lg:col-span-4">
+      <SurfacePanel class="overflow-hidden">
+        <img src={portrait} alt={titleName} class="h-full w-full object-cover grayscale transition duration-700 hover:scale-105 hover:grayscale-0" loading="lazy" />
+      </SurfacePanel>
+    </div>
+  </section>
+</Reveal>
