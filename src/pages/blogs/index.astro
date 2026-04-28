@@ -1,4 +1,5 @@
 ﻿---
+import Reveal from "../../components/animation/Reveal";
 import PageContainer from "../../components/foundation/PageContainer.astro";
 import ArchiveSidebar from "../../components/domain/ArchiveSidebar.astro";
 import ArchivePostsView from "../../components/domain/ArchivePostsView.astro";
@@ -33,13 +34,15 @@ const sections = archiveBlogSections.map((section) => ({
 
 <BaseLayout title="Blogs" description="Writing archive and notes." currentPath={routes.blogs}>
   <PageContainer class="py-12 md:py-16">
-    <section class="mb-10 max-w-2xl space-y-3">
-      <p class="ui-kicker">Archive</p>
-      <h1 class="font-serif text-5xl text-[var(--text-main)] md:text-6xl">Writing Archive</h1>
-      <p class="text-[var(--text-muted)]">
-        Essays on design systems, product thinking, and working with AI interfaces.
-      </p>
-    </section>
+    <Reveal client:visible>
+      <section class="mb-10 max-w-2xl space-y-3">
+        <p class="ui-kicker">Archive</p>
+        <h1 class="font-serif text-5xl text-[var(--text-main)] md:text-6xl">Writing Archive</h1>
+        <p class="text-[var(--text-muted)]">
+          Essays on design systems, product thinking, and working with AI interfaces.
+        </p>
+      </section>
+    </Reveal>
 
     <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
       <aside class="lg:col-span-4 xl:col-span-3">
