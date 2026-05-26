@@ -1,0 +1,30 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ProjectsSection from "../../../components/sections/ProjectsSection.astro";
+import { getProjectCategorySummaries } from "../../../lib/content";
+import { routes } from "../../../lib/routes";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const categories = await getProjectCategorySummaries();
+  return categories.map((category) => ({ params: { category: category.slug } }));
+}
+
+const { category } = Astro.params;
+
+if (!category) {
+  throw new Error("Missing project category slug.");
+}
+
+const projectCategorySummaries = await getProjectCategorySummaries();
+const activeCategory = projectCategorySummaries.find((item) => item.slug === category);
+
+if (!activeCategory) {
+  throw new Error(`Unknown project category slug: ${category}`);
+}
+---
+
+<BaseLayout title={`Projects: ${activeCategory.label}`} description="Selected project work and experiments." currentPath={routes.projects}>
+  <ProjectsSection activeCategorySlug={category} />
+</BaseLayout>

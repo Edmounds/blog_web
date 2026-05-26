@@ -1,0 +1,35 @@
+---
+import type { ArchivePostSectionModel } from "../../types/ui";
+import ContentCard from "./ContentCard.astro";
+
+interface Props {
+  sections: ArchivePostSectionModel[];
+  countLabel?: string;
+}
+
+const { sections, countLabel = "posts" } = Astro.props;
+---
+
+<div data-archive-grid class="flex flex-col gap-12">
+  {sections.map((section) => (
+    <section class="flex flex-col gap-5" data-archive-group>
+      <header class="flex items-end justify-between border-b border-[var(--border-soft)] pb-3">
+        <h2 class="text-3xl font-semibold text-[var(--text-main)]">{section.year}</h2>
+        <p class="text-xs text-[var(--text-faint)]">{section.cards.length} {countLabel}</p>
+      </header>
+
+      <div class="grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-2">
+        {section.cards.map((card, index) => {
+          const post = section.posts[index];
+          const keywords = [post.title, post.category, post.readingTime].join(" ").toLowerCase();
+
+          return (
+            <div data-archive-item data-archive-scope="grid" data-archive-keywords={keywords}>
+              <ContentCard {...card} />
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  ))}
+</div>

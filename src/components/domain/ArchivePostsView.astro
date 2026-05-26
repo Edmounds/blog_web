@@ -1,260 +1,42 @@
 ---
 import Reveal from "../animation/Reveal";
-import ContentCard from "./ContentCard.astro";
-import type { ArchivePostSectionModel } from "../../types/ui";
-import { Button } from "../ui/button";
+import type { ArchivePostSectionModel, ArchiveViewCopy } from "../../types/ui";
+import ArchiveGrid from "./ArchiveGrid.astro";
+import ArchiveInteractionController from "./ArchiveInteractionController";
+import ArchiveList from "./ArchiveList.astro";
+import ArchiveToolbar from "./ArchiveToolbar.astro";
+import ArchiveViewMotionController from "./ArchiveViewMotionController";
 
 interface Props {
   sections: ArchivePostSectionModel[];
+  copy?: Partial<ArchiveViewCopy>;
 }
 
-const { sections } = Astro.props;
+const defaultCopy: ArchiveViewCopy = {
+  emptyLabel: "No posts found.",
+  searchPlaceholder: "Search posts",
+  countLabel: "posts",
+  listTitleLabel: "Title",
+  listCategoryLabel: "Category",
+  listReadingLabel: "Reading",
+  listDateLabel: "Date",
+};
 
-const listRows = sections.flatMap((section) =>
-  section.posts.map((post) => ({
-    ...post,
-    year: section.year,
-  })),
-);
-const archiveViewButtonClass =
-  "archive-view-button !h-auto !rounded-[0.9rem] !px-[0.95rem] !py-[0.6rem] !text-base !text-[var(--text-muted)] hover:!bg-transparent hover:!text-[var(--text-main)]";
+const { sections, copy: copyOverrides = {} } = Astro.props;
+const copy = { ...defaultCopy, ...copyOverrides };
 ---
 
 <Reveal client:visible>
-  <section data-archive-root class="space-y-8">
-    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-      <label class="relative block w-full max-w-xl">
-        <svg
-          class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--text-faint)]"
-          viewBox="0 0 20 20"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          aria-hidden="true"
-        >
-          <circle cx="8.5" cy="8.5" r="5.5" />
-          <path d="M13 13l4 4" stroke-linecap="round" />
-        </svg>
-        <input
-          data-archive-search
-          class="archive-search h-14 w-full rounded-2xl border border-[var(--border-strong)] bg-[color:color-mix(in_srgb,var(--bg-elevated)_72%,transparent)] pl-12 pr-4 text-base text-[var(--text-main)] outline-none transition focus:border-[var(--accent)]"
-          type="search"
-          placeholder="Search posts"
-          autocomplete="off"
-        />
-      </label>
-
-      <div class="inline-flex rounded-2xl bg-[color:color-mix(in_srgb,var(--bg-elevated)_72%,transparent)] p-1">
-        <Button
-          type="button"
-          variant="ghost"
-          className={`${archiveViewButtonClass} is-active`}
-          data-archive-view="grid"
-          aria-pressed="true"
-        >
-          <svg
-            class="h-4 w-4"
-            viewBox="0 0 16 16"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.4"
-            aria-hidden="true"
-          >
-            <rect x="1.5" y="1.5" width="4.5" height="4.5" rx="1" />
-            <rect x="10" y="1.5" width="4.5" height="4.5" rx="1" />
-            <rect x="1.5" y="10" width="4.5" height="4.5" rx="1" />
-            <rect x="10" y="10" width="4.5" height="4.5" rx="1" />
-          </svg>
-          <span>Grid</span>
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          className={archiveViewButtonClass}
-          data-archive-view="list"
-          aria-pressed="false"
-        >
-          <span>List</span>
-        </Button>
-      </div>
-    </div>
+  <section data-archive-root class="flex flex-col gap-8">
+    <ArchiveToolbar searchPlaceholder={copy.searchPlaceholder} />
 
     <p data-archive-empty class="hidden border-t border-[var(--border-soft)] py-8 text-[var(--text-muted)]">
-      No posts found.
+      {copy.emptyLabel}
     </p>
 
-    <div data-archive-grid class="space-y-10">
-      {sections.map((section) => (
-        <section class="space-y-5" data-archive-group>
-          <header class="flex items-end justify-between border-b border-[var(--border-strong)] pb-3">
-            <h2 class="font-serif text-3xl text-[var(--text-main)]">{section.year}</h2>
-            <p class="text-xs uppercase tracking-wider text-[var(--text-faint)]">{section.cards.length} posts</p>
-          </header>
-
-          <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {section.cards.map((card, index) => {
-              const post = section.posts[index];
-              const keywords = post.title.toLowerCase();
-
-              return (
-                <div data-archive-item data-archive-scope="grid" data-archive-keywords={keywords}>
-                  <ContentCard {...card} summary="" footerText={undefined} />
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      ))}
-    </div>
-
-    <div data-archive-list class="hidden">
-      <header
-        data-archive-list-head
-        class="mb-2 hidden border-b border-[var(--border-soft)] pb-3 text-xs uppercase tracking-[0.08em] text-[var(--text-faint)] md:grid md:grid-cols-[minmax(0,2.8fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.9fr)] md:gap-5"
-      >
-        <span>Title</span>
-        <span>Category</span>
-        <span>Reading</span>
-        <span>Date</span>
-      </header>
-
-      <div class="border-t border-[var(--border-soft)]">
-        {listRows.map((post) => {
-          const keywords = post.title.toLowerCase();
-
-          return (
-            <a
-              href={`/blog/${post.slug}/`}
-              class="group block border-b border-[var(--border-soft)] py-5 transition-colors hover:text-[var(--text-main)]"
-              data-archive-item
-              data-archive-scope="list"
-              data-archive-keywords={keywords}
-            >
-              <div class="grid gap-3 md:grid-cols-[minmax(0,2.8fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.9fr)] md:items-start md:gap-5">
-                <div>
-                  <h3 class="font-serif text-2xl leading-tight text-[var(--text-main)] transition-colors group-hover:text-[var(--accent)]">
-                    {post.title}
-                  </h3>
-                </div>
-                <p class="text-sm text-[var(--text-muted)]">{post.category}</p>
-                <p class="text-sm text-[var(--text-faint)]">{post.readingTime}</p>
-                <p class="text-sm text-[var(--text-faint)]">{post.dateLabel}</p>
-              </div>
-            </a>
-          );
-        })}
-      </div>
-    </div>
+    <ArchiveGrid sections={sections} countLabel={copy.countLabel} />
+    <ArchiveList sections={sections} copy={copy} />
+    <ArchiveInteractionController client:load />
+    <ArchiveViewMotionController client:load />
   </section>
 </Reveal>
-
-<script>
-  const roots = Array.from(document.querySelectorAll<HTMLElement>("[data-archive-root]"));
-
-  roots.forEach((root) => {
-    const searchInput = root.querySelector<HTMLInputElement>("[data-archive-search]");
-    const gridView = root.querySelector<HTMLElement>("[data-archive-grid]");
-    const listView = root.querySelector<HTMLElement>("[data-archive-list]");
-    const emptyState = root.querySelector<HTMLElement>("[data-archive-empty]");
-    const listHead = root.querySelector<HTMLElement>("[data-archive-list-head]");
-    const groups = Array.from(root.querySelectorAll<HTMLElement>("[data-archive-group]")).map((element) => ({
-      element,
-      gridItems: Array.from(
-        element.querySelectorAll<HTMLElement>('[data-archive-item][data-archive-scope="grid"]'),
-      ),
-    }));
-    const viewButtons = Array.from(root.querySelectorAll<HTMLElement>("[data-archive-view]"));
-    const allItems = Array.from(root.querySelectorAll<HTMLElement>("[data-archive-item]"));
-    const scopeItems = {
-      grid: allItems.filter((item) => item.getAttribute("data-archive-scope") === "grid"),
-      list: allItems.filter((item) => item.getAttribute("data-archive-scope") === "list"),
-    };
-
-    if (!(searchInput instanceof HTMLInputElement) || !gridView || !listView || !emptyState) {
-      return;
-    }
-
-    let activeView: "grid" | "list" = "grid";
-
-    const updateEmptyState = () => {
-      const visibleCount = scopeItems[activeView].filter((item) => !item.hidden).length;
-      emptyState.classList.toggle("hidden", visibleCount > 0);
-    };
-
-    const applyFilter = () => {
-      const query = searchInput.value.trim().toLowerCase();
-
-      allItems.forEach((item) => {
-        const keywords = (item.getAttribute("data-archive-keywords") ?? "").toLowerCase();
-        const visible = query.length === 0 || keywords.includes(query);
-        item.hidden = !visible;
-      });
-
-      groups.forEach((group) => {
-        const hasVisibleGridItem = group.gridItems.some((item) => !item.hidden);
-        group.element.toggleAttribute("hidden", !hasVisibleGridItem);
-      });
-
-      if (listHead) {
-        const hasVisibleListItem = scopeItems.list.some((item) => !item.hidden);
-        listHead.classList.toggle("hidden", !hasVisibleListItem);
-      }
-
-      updateEmptyState();
-    };
-
-    const setView = (view: string) => {
-      activeView = view === "list" ? "list" : "grid";
-      gridView.classList.toggle("hidden", activeView !== "grid");
-      listView.classList.toggle("hidden", activeView !== "list");
-
-      viewButtons.forEach((button) => {
-        const isActive = button.getAttribute("data-archive-view") === activeView;
-        button.classList.toggle("is-active", isActive);
-        button.setAttribute("aria-pressed", String(isActive));
-      });
-
-      updateEmptyState();
-    };
-
-    viewButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        setView(button.getAttribute("data-archive-view") ?? "grid");
-      });
-    });
-
-    searchInput.addEventListener("input", applyFilter);
-
-    setView("grid");
-    applyFilter();
-  });
-</script>
-
-<style>
-  .archive-search::-webkit-search-cancel-button {
-    -webkit-appearance: none;
-    appearance: none;
-  }
-
-  .archive-view-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    border-radius: 0.9rem;
-    border: 1px solid transparent;
-    padding: 0.6rem 0.95rem;
-    font-size: 1rem;
-    color: var(--text-muted);
-    transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease;
-  }
-
-  .archive-view-button:hover {
-    color: var(--text-main);
-  }
-
-  .archive-view-button.is-active {
-    color: var(--text-main);
-    border-color: var(--border-strong);
-    background: color-mix(in srgb, var(--bg-subtle) 88%, transparent);
-  }
-</style>

@@ -1,13 +1,13 @@
 <button
   type="button"
   data-theme-toggle
-  class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-sm transition hover:bg-muted hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+  class="inline-flex size-10 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--surface-parchment)] text-[var(--text-main)] transition hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-action)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-base)]"
   aria-label="Toggle theme"
   aria-pressed="false"
 >
   <svg
     data-theme-icon
-    class="h-5 w-5"
+    class="size-5"
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -15,6 +15,7 @@
   >
     <path
       data-theme-icon-path
+      stroke="currentColor"
       stroke-linecap="round"
       stroke-linejoin="round"
       stroke-width="1.5"
@@ -27,12 +28,13 @@
 <script>
   import { applyTheme, readTheme, toggleTheme } from "../../lib/theme";
 
-  const buttons = Array.from(document.querySelectorAll("[data-theme-toggle]"));
+  const getButtons = () =>
+    Array.from(document.querySelectorAll("[data-theme-toggle]"));
 
   const syncToggleUI = () => {
     const isDark = document.documentElement.classList.contains("dark");
 
-    buttons.forEach((button) => {
+    getButtons().forEach((button) => {
       const label = button.querySelector("[data-theme-label]");
       const iconPath = button.querySelector("[data-theme-icon-path]");
 
@@ -44,20 +46,88 @@
       }
 
       if (iconPath) {
-        iconPath.setAttribute("fill", isDark ? "var(--accent)" : "none");
-        iconPath.setAttribute("stroke", isDark ? "var(--accent)" : "currentColor");
+        iconPath.setAttribute("fill", isDark ? "var(--color-action)" : "none");
+        iconPath.setAttribute("stroke", isDark ? "var(--color-action)" : "currentColor");
       }
     });
   };
 
-  applyTheme(readTheme());
-  syncToggleUI();
+  const handleThemeToggle = async (event: MouseEvent) => {
+    const isAppearanceTransition =
+      // @ts-ignore
+      document.startViewTransition &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  buttons.forEach((button) => {
-    button.addEventListener("click", () => {
+    if (!isAppearanceTransition) {
+      toggleTheme();
+      syncToggleUI();
+      return;
+    }
+
+    const target = event.currentTarget as HTMLElement;
+    const rect = target.getBoundingClientRect();
+    const x = event.clientX ?? (rect.left + rect.width / 2);
+    const y = event.clientY ?? (rect.top + rect.height / 2);
+
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
+
+    // Set attribute to disable other element transitions and avoid duplicate name errors
+    document.documentElement.setAttribute("data-theme-transitioning", "true");
+
+    // @ts-ignore
+    const transition = document.startViewTransition(() => {
       toggleTheme();
       syncToggleUI();
     });
+
+    try {
+      await transition.ready;
+
+      const clipPath = [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`,
+      ];
+
+      document.documentElement.animate(
+        {
+          clipPath: clipPath,
+        },
+        {
+          duration: 400,
+          easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+          pseudoElement: "::view-transition-new(root)",
+        }
+      );
+    } catch (e) {
+      console.warn("View transition ready failed:", e);
+    }
+
+    // Always clean up after transition is finished or aborted
+    transition.finished.finally(() => {
+      document.documentElement.removeAttribute("data-theme-transitioning");
+    });
+  };
+
+  const bindButtons = () => {
+    getButtons().forEach((button) => {
+      if (button.hasAttribute("data-theme-bound")) return;
+      button.setAttribute("data-theme-bound", "");
+      button.addEventListener("click", (e) => {
+        handleThemeToggle(e as MouseEvent);
+      });
+    });
+    syncToggleUI();
+  };
+
+  applyTheme(readTheme());
+  bindButtons();
+
+  document.addEventListener("astro:page-load", () => {
+    applyTheme(readTheme());
+    bindButtons();
   });
 
   window.addEventListener("storage", () => {

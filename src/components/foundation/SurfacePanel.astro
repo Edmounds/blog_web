@@ -8,6 +8,6 @@ interface Props {
 const { class: className = "" } = Astro.props;
 ---
 
-<Card className={`ui-panel !gap-0 !py-0 !ring-0 ${className}`.trim()}>
+<Card className={`ui-panel !gap-0 !py-0 ${className}`.trim()}>
   <slot />
 </Card>

@@ -42,9 +42,9 @@ export interface ArchiveFilterModel {
 }
 
 export interface ArchivePostSummaryModel {
-  slug: string;
   title: string;
   summary: string;
+  href: string;
   category: string;
   dateLabel: string;
   readingTime: string;
@@ -55,6 +55,22 @@ export interface ArchivePostSectionModel {
   year: number;
   cards: ContentCardModel[];
   posts: ArchivePostSummaryModel[];
+}
+
+export interface ArchiveViewCopy {
+  emptyLabel: string;
+  searchPlaceholder: string;
+  countLabel: string;
+  listTitleLabel: string;
+  listCategoryLabel: string;
+  listReadingLabel: string;
+  listDateLabel: string;
+}
+
+export interface SeriesSummaryModel {
+  title: string;
+  href: string;
+  count: number;
 }
 
 export interface TimelineItemModel {

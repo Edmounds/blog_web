@@ -1,5 +1,11 @@
 ﻿import { routes } from "./routes";
-import type { ArchiveFilterModel, ArticleMetaModel, ContentCardModel, TimelineItemModel } from "../types/ui";
+import type {
+  ArchiveFilterModel,
+  ArchivePostSectionModel,
+  ArticleMetaModel,
+  ContentCardModel,
+  SeriesSummaryModel,
+} from "../types/ui";
 
 interface BlogCardSource {
   slug: string;
@@ -19,6 +25,7 @@ interface BlogCardCopy {
 }
 
 interface ProjectCardSource {
+  slug: string;
   title: string;
   summary: string;
   cover: string;
@@ -34,18 +41,23 @@ interface ArchiveCategorySummarySource {
   count: number;
 }
 
-interface TimelineProjectSource {
+interface ArchiveBlogSectionSource {
+  year: number;
+  posts: BlogCardSource[];
+}
+
+interface ArchiveProjectSectionSource {
+  year: number;
+  posts: (ProjectCardSource & { dateLabel: string })[];
+}
+
+interface SeriesSummarySource {
   title: string;
-  year: string;
-  category: string;
-  summary: string;
-  cover: string;
-  href?: string;
-  side: "left" | "right";
+  slug: string;
+  count: number;
 }
 
 interface ArticleMetaSource {
-  slug: string;
   category: string;
   dateLong: string;
   readingTime: string;
@@ -55,7 +67,6 @@ interface ArticleMetaLabels {
   categoryLabel: string;
   publishedLabel: string;
   readingTimeLabel: string;
-  slugLabel: string;
 }
 
 const DEFAULT_BLOG_CARD_COPY: BlogCardCopy = {
@@ -68,7 +79,6 @@ const DEFAULT_ARTICLE_META_LABELS: ArticleMetaLabels = {
   categoryLabel: "Category",
   publishedLabel: "Published",
   readingTimeLabel: "Reading time",
-  slugLabel: "Slug",
 };
 
 export const toBlogCardModel = (post: BlogCardSource, copy: BlogCardCopy = DEFAULT_BLOG_CARD_COPY): ContentCardModel => ({
@@ -91,7 +101,7 @@ export const toProjectCardModel = (project: ProjectCardSource): ContentCardModel
   variant: "project",
   title: project.title,
   summary: project.summary,
-  href: project.href ?? routes.projects,
+  href: project.href ?? routes.project(project.slug),
   image: project.cover,
   imageAlt: project.title,
   eyebrow: project.category,
@@ -103,37 +113,64 @@ export const toArchiveFilters = (
   categories: ArchiveCategorySummarySource[],
   allLabel = "All Categories",
   activeCategorySlug?: string,
+  options: { allHref?: string; categoryHref?: (slug: string) => string } = {},
 ): ArchiveFilterModel[] => {
   const totalCount = categories.reduce((total, category) => total + category.count, 0);
+  const allHref = options.allHref ?? routes.blogs;
+  const categoryHref = options.categoryHref ?? routes.blogCategory;
 
   return [
     {
       label: allLabel,
       count: totalCount,
-      href: routes.blogs,
+      href: allHref,
       active: !activeCategorySlug,
     },
     ...categories.map((category) => ({
       label: category.label,
       count: category.count,
-      href: routes.blogCategory(category.slug),
+      href: categoryHref(category.slug),
       active: category.slug === activeCategorySlug,
     })),
   ];
 };
 
-export const toTimelineItemModel = (
-  project: TimelineProjectSource,
-  options: { fallbackHref?: string; ctaLabel?: string } = {},
-): TimelineItemModel => ({
-  title: project.title,
-  year: project.year,
-  category: project.category,
-  summary: project.summary,
-  image: project.cover,
-  href: project.href ?? options.fallbackHref ?? routes.projects,
-  side: project.side,
-  ctaLabel: options.ctaLabel ?? "View case study",
+export const toArchivePostSections = (
+  sections: ArchiveBlogSectionSource[],
+  copy: BlogCardCopy = DEFAULT_BLOG_CARD_COPY,
+): ArchivePostSectionModel[] =>
+  sections.map((section) => ({
+    year: section.year,
+    cards: section.posts.map((post) => toBlogCardModel(post, copy)),
+    posts: section.posts.map((post) => ({
+      title: post.title,
+      summary: post.summary,
+      href: `/blog/${post.slug}/`,
+      category: post.category,
+      dateLabel: post.dateLabel,
+      readingTime: post.readingTime,
+      tags: post.archiveTags,
+    })),
+  }));
+
+export const toArchiveProjectSections = (sections: ArchiveProjectSectionSource[]): ArchivePostSectionModel[] =>
+  sections.map((section) => ({
+    year: section.year,
+    cards: section.posts.map(toProjectCardModel),
+    posts: section.posts.map((project) => ({
+      title: project.title,
+      summary: project.summary,
+      href: project.href ?? routes.project(project.slug),
+      category: project.category,
+      dateLabel: project.dateLabel,
+      readingTime: project.type,
+    })),
+  }));
+
+export const toSeriesSummaryModel = (series: SeriesSummarySource): SeriesSummaryModel => ({
+  title: series.title,
+  href: routes.seriesDetail(series.slug),
+  count: series.count,
 });
 
 export const toArticleMetaItems = (
@@ -146,6 +183,5 @@ export const toArticleMetaItems = (
     { label: resolved.categoryLabel, value: post.category },
     { label: resolved.publishedLabel, value: post.dateLong },
     { label: resolved.readingTimeLabel, value: post.readingTime },
-    { label: resolved.slugLabel, value: post.slug },
   ];
 };

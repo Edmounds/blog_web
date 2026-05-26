@@ -11,22 +11,22 @@ interface Props {
 const { jobs } = Astro.props;
 ---
 
-<section class="space-y-6">
+<section class="flex flex-col gap-6">
   <Reveal client:visible>
-    <h2 class="font-serif text-4xl text-[var(--text-main)]">Selected Experience</h2>
+    <h2 class="ui-section-title text-[var(--text-main)]">Selected Experience</h2>
   </Reveal>
-  <Stagger className="space-y-0 border-t border-[var(--border-strong)]" delay={0.08} stagger={0.06} client:visible>
+  <Stagger className="border-t border-[var(--border-soft)]" delay={0.08} stagger={0.06} client:visible>
     {jobs.map((job, index) => (
       <>
         <article class="grid gap-4 py-6 md:grid-cols-[140px_1fr] md:gap-8">
           <p class="text-sm text-[var(--text-faint)]">{job.years}</p>
-          <div class="space-y-2">
-            <h3 class="font-serif text-2xl text-[var(--text-main)]">{job.role}</h3>
-            <p class="text-xs uppercase tracking-wider text-[var(--text-faint)]">{job.company}</p>
+          <div class="flex flex-col gap-2">
+            <h3 class="text-2xl font-semibold text-[var(--text-main)]">{job.role}</h3>
+            <p class="text-xs text-[var(--text-faint)]">{job.company}</p>
             <p class="max-w-2xl text-sm leading-relaxed text-[var(--text-muted)]">{job.text}</p>
           </div>
         </article>
-        {index < jobs.length - 1 && <Divider class="!bg-[var(--border-strong)]" />}
+        {index < jobs.length - 1 && <Divider class="!bg-[var(--border-soft)]" />}
       </>
     ))}
   </Stagger>

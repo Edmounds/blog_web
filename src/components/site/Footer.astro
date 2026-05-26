@@ -1,29 +1,18 @@
-﻿---
+---
 import Reveal from "../animation/Reveal";
-import type { FooterLink } from "../../types/ui";
 
 interface Props {
   brand?: string;
-  links?: FooterLink[];
 }
 
-const { brand = "Site", links = [] } = Astro.props;
+const { brand = "Site" } = Astro.props;
 
 const year = new Date().getFullYear();
 ---
 
-<footer class="mt-16 border-t border-border bg-muted/35">
-  <Reveal className="app-container flex flex-col gap-4 py-10 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between" y={10} duration={0.4} client:visible>
+<footer class="mt-20 border-t border-border bg-[var(--surface-parchment)]">
+  <Reveal className="app-container flex flex-col items-center justify-center py-8 text-xs text-muted-foreground text-center" y={10} duration={0.4} client:visible>
     <p>Copyright {year} {brand}. All rights reserved.</p>
-    <div class="flex items-center gap-2">
-      {links.map((link) => (
-        <a
-          href={link.href}
-          class="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-background hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-        >
-          {link.label}
-        </a>
-      ))}
-    </div>
   </Reveal>
 </footer>
+

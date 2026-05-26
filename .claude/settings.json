@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git -C \"/Users/cqc/blog_web/.worktrees/shadcn-local\" status --short)",
+      "Bash(git -C \"/Users/cqc/blog_web/.worktrees/shadcn-local\" log --oneline -5)",
+      "Bash(git -C \"/Users/cqc/blog_web\" status --short)",
+      "Bash(git -C \"/Users/cqc/blog_web/.worktrees/shadcn-local\" add astro.config.mjs package.json package-lock.json tsconfig.json components.json src/styles/global.css src/pages/index.astro src/components/home/ src/components/ui/ src/lib/utils.ts)",
+      "Bash(git -C /Users/cqc/blog_web/.worktrees/shadcn-local commit -m 'Add shadcn setup')",
+      "Bash(git -C \"/Users/cqc/blog_web/.worktrees/shadcn-local\" rev-parse --short HEAD)",
+      "Bash(git -C \"/Users/cqc/blog_web\" rev-parse --short HEAD)",
+      "Bash(git -C \"/Users/cqc/blog_web\" merge shadcn-local)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(python3 -)",
+      "Bash(git -C /Users/cqc/blog_web diff -- src/components/foundation/SurfacePanel.astro src/components/foundation/PillTag.astro src/components/foundation/Divider.astro src/components/domain/ContentCard.astro src/components/domain/ArticleMeta.astro src/components/domain/TimelineItem.astro src/components/domain/ArchiveSidebar.astro src/components/domain/ArchivePostsView.astro src/components/sections/AboutFocusGrid.astro src/components/sections/ExperienceList.astro src/styles/global.css)",
+      "Bash(git -C /Users/cqc/blog_web status --short)",
+      "Bash(git -C \"/Users/cqc/blog_web\" diff -- src/components/foundation/SurfacePanel.astro src/components/foundation/PillTag.astro src/components/foundation/Divider.astro src/components/domain/ContentCard.astro src/components/domain/ArticleMeta.astro src/components/domain/TimelineItem.astro src/components/domain/ArchiveSidebar.astro src/components/domain/ArchivePostsView.astro src/components/sections/AboutFocusGrid.astro src/components/sections/ExperienceList.astro src/styles/global.css)",
+      "Bash(npm --prefix \"/Users/cqc/blog_web\" run check)",
+      "Bash(npm --prefix \"/Users/cqc/blog_web\" run build)",
+      "Bash(git -C /Users/cqc/blog_web diff --stat)",
+      "Bash(git -C /Users/cqc/blog_web diff -- .gitignore)",
+      "Bash(git -C /Users/cqc/blog_web diff -- src/components/domain/ArchivePostsView.astro src/components/domain/ArchiveSidebar.astro src/components/domain/ContentCard.astro src/components/site/Header.astro src/components/foundation/SurfacePanel.astro src/components/foundation/PillTag.astro src/components/foundation/Divider.astro src/components/domain/ArticleMeta.astro src/components/domain/TimelineItem.astro src/components/sections/AboutFocusGrid.astro src/components/sections/ExperienceList.astro scripts/check-encoding.mjs src/content/blog/designing-for-clarity-in-chaos.md)",
+      "Bash(git -C /Users/cqc/blog_web diff --cached --stat)",
+      "Bash(git -C /Users/cqc/blog_web diff --name-status)",
+      "Bash(git -C /Users/cqc/blog_web diff --check)",
+      "Bash(file -I /Users/cqc/blog_web/src/content/blog/designing-for-clarity-in-chaos.md /Users/cqc/blog_web/src/components/domain/ArchiveSidebar.astro)",
+      "Bash(npx tsc *)"
+    ]
+  }
+}

@@ -1,5 +1,6 @@
-﻿---
+---
 import "../styles/global.css";
+import { ClientRouter } from 'astro:transitions';
 import Footer from "../components/site/Footer.astro";
 import Header from "../components/site/Header.astro";
 import { getSiteSettings } from "../lib/content";
@@ -25,16 +26,18 @@ const resolvedDescription = description ?? site.seo.defaultDescription;
 ---
 
 <!doctype html>
-<html lang={site.htmlLang} class="dark">
+<html lang={site.htmlLang} class="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={resolvedDescription} />
+    <meta name="theme-color" content="#000000" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/anthropic-fonts.css" />
     <meta name="generator" content={Astro.generator} />
     <title>{resolvedTitle}</title>
+    <ClientRouter />
     <script is:inline>
       (() => {
         const key = "blog-theme";
@@ -47,13 +50,182 @@ const resolvedDescription = description ?? site.seo.defaultDescription;
       })();
     </script>
   </head>
-  <body class="site-grain min-h-screen bg-background text-foreground antialiased selection:bg-primary/15 selection:text-primary">
-    <div class="relative z-10 flex min-h-screen flex-col bg-[radial-gradient(circle_at_top_left,var(--accent-soft),transparent_32rem)]">
+  <body class="min-h-screen bg-background text-foreground antialiased selection:bg-primary/15 selection:text-primary">
+    <div class="relative flex min-h-screen flex-col bg-background">
       <Header currentPath={currentPath} brand={site.brand} navItems={site.nav} />
-      <main class={`flex-1 ${mainClass}`.trim()}>
+      <main transition:name="page-content" class={`flex-1 ${mainClass}`.trim()}>
         <slot />
       </main>
-      {showFooter && <Footer brand={site.brand} links={site.footerLinks} />}
+      {showFooter && <Footer brand={site.brand} />}
     </div>
+
+    <script>
+      import { navigate } from 'astro:transitions/client';
+
+      const tabs = ['/', '/blogs/', '/projects/', '/about/'];
+
+      function getPathIndex(path: string) {
+        if (path === '/' || path === '') return 0;
+        const normalized = path.replace(/\/$/, '');
+        if (normalized === '') return 0;
+        if (normalized.startsWith('/blogs') || normalized.startsWith('/blog')) return 1;
+        if (normalized.startsWith('/projects')) return 2;
+        if (normalized.startsWith('/about')) return 3;
+        return -1;
+      }
+
+      // 1. View Transition Direction Detection
+      document.addEventListener('astro:before-preparation', (ev) => {
+        const fromPath = ev.from.pathname;
+        const toPath = ev.to.pathname;
+
+        let dir = 'forward';
+
+        const fromIndex = getPathIndex(fromPath);
+        const toIndex = getPathIndex(toPath);
+
+        if (fromIndex !== -1 && toIndex !== -1 && fromIndex !== toIndex) {
+          dir = toIndex > fromIndex ? 'forward' : 'backward';
+        } else {
+          if (ev.navigationType === 'traverse') {
+            dir = ev.direction === 'backward' ? 'backward' : 'forward';
+          } else {
+            if (fromPath.length < toPath.length) {
+              dir = 'forward';
+            } else if (fromPath.length > toPath.length) {
+              dir = 'backward';
+            }
+          }
+        }
+
+        document.documentElement.setAttribute('data-transition-direction', dir);
+      });
+
+      document.addEventListener('astro:before-swap', (ev) => {
+        const dir = document.documentElement.getAttribute('data-transition-direction');
+        if (dir) {
+          ev.newDocument.documentElement.setAttribute('data-transition-direction', dir);
+        }
+      });
+
+      // 2. Touch Swipe Navigation
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let touchEndX = 0;
+      let touchEndY = 0;
+
+      function isHorizontalScrollable(el: HTMLElement | null): boolean {
+        let current = el;
+        while (current && current !== document.body) {
+          const style = window.getComputedStyle(current);
+          const overflowX = style.overflowX;
+          if ((overflowX === 'auto' || overflowX === 'scroll') && current.scrollWidth > current.clientWidth) {
+            return true;
+          }
+          current = current.parentElement;
+        }
+        return false;
+      }
+
+      document.addEventListener('touchstart', (e) => {
+        if (e.touches.length > 1) return;
+        if (isHorizontalScrollable(e.target as HTMLElement)) return;
+        
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+
+      document.addEventListener('touchend', (e) => {
+        if (e.changedTouches.length !== 1) return;
+        
+        touchEndX = e.changedTouches[0].clientX;
+        touchEndY = e.changedTouches[0].clientY;
+        
+        handleSwipe();
+      }, { passive: true });
+
+      function handleSwipe() {
+        const deltaX = touchEndX - touchStartX;
+        const deltaY = touchEndY - touchStartY;
+
+        if (Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+          const minSwipeDistance = 70;
+          if (Math.abs(deltaX) > minSwipeDistance) {
+            const currentTabIdx = getPathIndex(window.location.pathname);
+            if (currentTabIdx === -1) return;
+
+            let nextIdx = currentTabIdx;
+            if (deltaX < 0) {
+              // Swipe Left -> Next tab
+              nextIdx = currentTabIdx + 1;
+            } else {
+              // Swipe Right -> Prev tab
+              nextIdx = currentTabIdx - 1;
+            }
+
+            if (nextIdx >= 0 && nextIdx < tabs.length) {
+              navigate(tabs[nextIdx]);
+            }
+          }
+        }
+      }
+
+      // 3. Trackpad Horizontal Wheel Navigation (two-finger horizontal swipe)
+      // Only responds to horizontal-dominant wheel deltaX, so the mouse vertical
+      // wheel and normal page scrolling are unaffected.
+      let wheelAccumX = 0;
+      let wheelResetTimer: number | null = null;
+      let wheelLocked = false;
+      const WHEEL_THRESHOLD = 90;
+      const WHEEL_RESET_MS = 200;
+      const WHEEL_UNLOCK_MS = 700;
+
+      document.addEventListener(
+        'wheel',
+        (e: WheelEvent) => {
+          // Horizontal-dominant only. Tolerate tiny diagonal noise from trackpads.
+          if (Math.abs(e.deltaX) <= Math.abs(e.deltaY) + 2) return;
+          if (isHorizontalScrollable(e.target as HTMLElement)) return;
+
+          // Take ownership of horizontal gestures so Safari's swipe-to-back
+          // doesn't race with our tab navigation.
+          e.preventDefault();
+
+          if (wheelLocked) return;
+
+          wheelAccumX += e.deltaX;
+
+          if (wheelResetTimer !== null) window.clearTimeout(wheelResetTimer);
+          wheelResetTimer = window.setTimeout(() => {
+            wheelAccumX = 0;
+            wheelResetTimer = null;
+          }, WHEEL_RESET_MS);
+
+          if (Math.abs(wheelAccumX) < WHEEL_THRESHOLD) return;
+
+          const currentTabIdx = getPathIndex(window.location.pathname);
+          const direction = wheelAccumX > 0 ? 1 : -1;
+          wheelAccumX = 0;
+          if (wheelResetTimer !== null) {
+            window.clearTimeout(wheelResetTimer);
+            wheelResetTimer = null;
+          }
+
+          if (currentTabIdx === -1) return;
+          const nextIdx = currentTabIdx + direction;
+          if (nextIdx < 0 || nextIdx >= tabs.length) return;
+
+          wheelLocked = true;
+          // Swallow inertia/momentum wheel events that fire after liftoff.
+          window.setTimeout(() => {
+            wheelLocked = false;
+            wheelAccumX = 0;
+          }, WHEEL_UNLOCK_MS);
+
+          navigate(tabs[nextIdx]);
+        },
+        { passive: false }
+      );
+    </script>
   </body>
 </html>

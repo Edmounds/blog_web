@@ -22,18 +22,18 @@ const {
 } = Astro.props;
 ---
 
-<article class={`group flex h-full flex-col overflow-hidden rounded-xl border border-[var(--border-strong)] bg-[color:color-mix(in_srgb,var(--bg-elevated)_78%,transparent)] shadow-[var(--shadow-soft)] transition duration-300 hover:-translate-y-1 ${className}`.trim()}>
-  <a href={href} class="relative block overflow-hidden border-b border-[var(--border-soft)]">
+<article class={`group flex h-full flex-col overflow-hidden rounded-lg bg-transparent transition duration-300 ${className}`.trim()}>
+  <a href={href} class="relative block overflow-hidden rounded-lg bg-[var(--surface-parchment)]" tabindex="-1" aria-hidden="true">
     <img
       src={image}
       alt={imageAlt}
-      class="h-52 w-full object-cover grayscale transition duration-700 group-hover:scale-105 group-hover:grayscale-0"
+      class="aspect-[4/3] h-auto w-full object-cover transition duration-500 group-hover:scale-[1.025]"
       loading="lazy"
     />
   </a>
 
-  <CardContent className="flex flex-1 flex-col gap-4 !p-5">
-    {eyebrow && <p class="ui-kicker text-[var(--accent)]">{eyebrow}</p>}
+  <CardContent className="flex flex-1 flex-col gap-3 !px-0 !pb-0 !pt-4">
+    {eyebrow && <p class="ui-kicker text-[var(--color-action)]">{eyebrow}</p>}
 
     {meta.length > 0 && (
       <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[var(--text-faint)]">
@@ -46,8 +46,8 @@ const {
     )}
 
     <h3 class:list={[
-      "text-[var(--text-main)] transition group-hover:text-[var(--accent)]",
-      variant === "blog" ? "font-serif text-2xl leading-tight" : "font-serif text-3xl leading-tight",
+      "font-semibold text-[var(--text-main)] transition group-hover:text-[var(--color-action)]",
+      variant === "blog" ? "text-[1.35rem] leading-tight" : "text-[1.55rem] leading-tight",
     ]}>
       <a href={href}>{title}</a>
     </h3>
@@ -63,9 +63,9 @@ const {
     )}
 
     {footerText && (
-      <div class="mt-auto border-t border-[var(--border-soft)] pt-4 text-sm text-[var(--text-muted)] transition group-hover:text-[var(--text-main)]">
-        {footerText} ->
-      </div>
+      <a href={href} class="mt-auto pt-1 text-sm text-[var(--color-action)] transition hover:text-[var(--color-action-focus)]">
+        {footerText} -&gt;
+      </a>
     )}
   </CardContent>
 </article>

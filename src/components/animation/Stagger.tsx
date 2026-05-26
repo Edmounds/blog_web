@@ -25,7 +25,7 @@ export default function Stagger({
   return (
     <motion.div
       className={className}
-      initial={shouldReduceMotion ? false : "hidden"}
+      initial={false}
       whileInView={shouldReduceMotion ? undefined : "show"}
       viewport={{ once: true, margin: "0px 0px -10% 0px" }}
       variants={{

@@ -16,6 +16,13 @@ const blog = defineCollection({
     archiveYear: z.number().optional(),
     archiveTags: z.array(z.string()).optional(),
     archiveExcerpt: z.string().optional(),
+    series: z
+      .object({
+        title: z.string(),
+        slug: z.string(),
+        order: z.number().optional(),
+      })
+      .optional(),
     tags: z.array(z.string()).default([]),
   }),
 });
@@ -115,6 +122,9 @@ const site = defineCollection({
       homeRecentBlogsCta: z.string(),
       homeRecentProjectsTitle: z.string(),
       homeRecentProjectsCta: z.string(),
+      seriesTitle: z.string(),
+      seriesDescription: z.string(),
+      seriesAllPostsCta: z.string(),
     }),
   }),
 });

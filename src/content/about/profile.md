@@ -1,7 +1,7 @@
 ---
-brand: Alex Design
+brand: Chasen Design
 titleLeading: Hello, I'm
-titleName: Alex.
+titleName: Chasen.
 subtitle: A Product Designer based in San Francisco, crafting digital experiences with intention, clarity, and silence.
 portrait: /images/content/about/profile.png
 meta:
@@ -39,7 +39,7 @@ availability: Open to opportunities
 homeFeatured:
   badge: Featured Essay
   title: About me
-  name: Alex Chen
+  name: Chasen Chen
   description: I'm a designer and writer exploring the delicate intersection where large language models meet the unpredictable nature of the human creative process.
   location: Chongqing, China
 ---

@@ -4,13 +4,19 @@
   "version": "0.0.1",
   "scripts": {
     "check:encoding": "node scripts/check-encoding.mjs",
+    "check:post-slugs": "node scripts/check-post-slugs.mjs",
     "dev": "astro dev",
-    "build": "npm run check:encoding && astro build",
+    "build": "npm run check:encoding && npm run check:post-slugs && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "check": "astro check"
+    "check": "astro check",
+    "test": "node --test tests/*.test.mjs",
+    "cf:dev": "npx wrangler pages dev ./dist",
+    "db:migrate:local": "npx wrangler d1 execute blog_web --local --file=./schema/post_stats.sql",
+    "db:migrate:remote": "npx wrangler d1 execute blog_web --remote --file=./schema/post_stats.sql"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^12.6.13",
     "@astrojs/react": "^5.0.4",
     "@tailwindcss/vite": "^4.2.0",
     "astro": "^5.17.1",

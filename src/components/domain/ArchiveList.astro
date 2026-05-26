@@ -1,0 +1,57 @@
+---
+import type { ArchivePostSectionModel, ArchiveViewCopy } from "../../types/ui";
+
+interface Props {
+  sections: ArchivePostSectionModel[];
+  copy?: Pick<ArchiveViewCopy, "listTitleLabel" | "listCategoryLabel" | "listReadingLabel" | "listDateLabel">;
+}
+
+const defaultCopy = {
+  listTitleLabel: "Title",
+  listCategoryLabel: "Category",
+  listReadingLabel: "Reading",
+  listDateLabel: "Date",
+};
+const { sections, copy: copyOverrides = {} } = Astro.props;
+const copy = { ...defaultCopy, ...copyOverrides };
+const posts = sections.flatMap((section) => section.posts.map((post) => ({ ...post, year: section.year })));
+---
+
+<div data-archive-list class="hidden">
+  <header
+    data-archive-list-head
+    class="mb-2 hidden border-b border-[var(--border-soft)] pb-3 text-xs text-[var(--text-faint)] md:grid md:grid-cols-[minmax(0,2.8fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.9fr)] md:gap-5"
+  >
+    <span>{copy.listTitleLabel}</span>
+    <span>{copy.listCategoryLabel}</span>
+    <span>{copy.listReadingLabel}</span>
+    <span>{copy.listDateLabel}</span>
+  </header>
+
+  <div class="border-t border-[var(--border-soft)]">
+    {posts.map((post) => {
+      const keywords = [post.title, post.category, post.readingTime].join(" ").toLowerCase();
+
+      return (
+        <a
+          href={post.href}
+          class="group block border-b border-[var(--border-soft)] py-5 transition-colors hover:text-[var(--text-main)]"
+          data-archive-item
+          data-archive-scope="list"
+          data-archive-keywords={keywords}
+        >
+          <div class="grid gap-3 md:grid-cols-[minmax(0,2.8fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.9fr)] md:items-start md:gap-5">
+            <div>
+              <h3 class="text-2xl font-semibold leading-tight text-[var(--text-main)] transition-colors group-hover:text-[var(--color-action)]">
+                {post.title}
+              </h3>
+            </div>
+            <p class="text-sm text-[var(--text-muted)]">{post.category}</p>
+            <p class="text-sm text-[var(--text-faint)]">{post.readingTime}</p>
+            <p class="text-sm text-[var(--text-faint)]">{post.dateLabel}</p>
+          </div>
+        </a>
+      );
+    })}
+  </div>
+</div>

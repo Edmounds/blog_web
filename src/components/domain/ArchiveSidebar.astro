@@ -13,7 +13,7 @@ const { filters, title = "Filter" } = Astro.props;
 
 <Reveal client:visible>
   <section class="sticky top-28">
-    <h2 class="mb-5 font-serif text-2xl text-[var(--text-main)]">{title}</h2>
+    <h2 class="mb-5 text-2xl font-semibold text-[var(--text-main)]">{title}</h2>
     <nav class="border-t border-[var(--border-soft)] text-sm">
       {filters.map((filter) => (
         <a
@@ -21,7 +21,7 @@ const { filters, title = "Filter" } = Astro.props;
           class:list={[
             "group flex items-center justify-between gap-3 border-b border-[var(--border-soft)] py-4 transition",
             filter.active
-              ? "text-[var(--text-main)]"
+              ? "text-[var(--color-action)]"
               : "text-[var(--text-muted)] hover:text-[var(--text-main)]",
           ]}
           aria-current={filter.active ? "page" : undefined}
@@ -32,7 +32,7 @@ const { filters, title = "Filter" } = Astro.props;
               variant="outline"
               className={[
                 "!h-auto !border-[var(--border-strong)] !bg-transparent !px-2 !py-0.5 !font-mono !text-xs !font-normal transition-colors",
-                filter.active ? "!text-[var(--text-main)]" : "!text-[var(--text-faint)] group-hover:!text-[var(--text-main)]",
+                filter.active ? "!border-[var(--color-action)] !text-[var(--color-action)]" : "!text-[var(--text-faint)] group-hover:!text-[var(--text-main)]",
               ].join(" ")}
             >
               {filter.count}
@@ -40,7 +40,7 @@ const { filters, title = "Filter" } = Astro.props;
             <svg
               class:list={[
                 "h-3.5 w-3.5 transition-colors",
-                filter.active ? "text-[var(--text-main)]" : "text-[var(--text-faint)] group-hover:text-[var(--text-main)]",
+                filter.active ? "text-[var(--color-action)]" : "text-[var(--text-faint)] group-hover:text-[var(--text-main)]",
               ]}
               viewBox="0 0 20 20"
               fill="none"

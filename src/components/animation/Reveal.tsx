@@ -16,14 +16,13 @@ export default function Reveal({
   className,
   delay = 0,
   duration = 0.45,
-  y = 16,
 }: RevealProps) {
   const shouldReduceMotion = useReducedMotion()
 
   return (
     <motion.div
       className={className}
-      initial={shouldReduceMotion ? false : { opacity: 0, y }}
+      initial={false}
       whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "0px 0px -10% 0px" }}
       transition={{ duration, delay, ease }}

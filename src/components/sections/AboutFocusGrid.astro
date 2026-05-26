@@ -2,8 +2,6 @@
 import Reveal from "../animation/Reveal";
 import Stagger from "../animation/Stagger";
 import type { AboutFocusCard } from "../../types/ui";
-import PillTag from "../foundation/PillTag.astro";
-import SurfacePanel from "../foundation/SurfacePanel.astro";
 
 interface Props {
   cards: AboutFocusCard[];
@@ -12,19 +10,19 @@ interface Props {
 const { cards } = Astro.props;
 ---
 
-<section class="space-y-6">
+<section class="flex flex-col gap-6">
   <Reveal client:visible>
-    <h2 class="font-serif text-4xl text-[var(--text-main)]">Current Focus</h2>
+    <h2 class="ui-section-title text-[var(--text-main)]">Current Focus</h2>
   </Reveal>
-  <Stagger className="grid gap-5" delay={0.08} stagger={0.06} client:visible>
+  <Stagger className="grid gap-0 border-t border-[var(--border-soft)]" delay={0.08} stagger={0.06} client:visible>
     {cards.map((card) => (
-      <SurfacePanel class="space-y-3 p-6">
-        <div class="flex items-start justify-between gap-3">
-          <h3 class="font-serif text-2xl text-[var(--text-main)]">{card.title}</h3>
-          <PillTag text={card.icon} class="uppercase" />
+      <section class="grid gap-3 border-b border-[var(--border-soft)] py-6 md:grid-cols-[minmax(0,0.6fr)_minmax(0,1fr)] md:gap-8">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+          <h3 class="text-2xl font-semibold text-[var(--text-main)]">{card.title}</h3>
+          <span class="ui-kicker text-[var(--color-action)]">{card.icon}</span>
         </div>
         <p class="text-sm leading-relaxed text-[var(--text-muted)]">{card.text}</p>
-      </SurfacePanel>
+      </section>
     ))}
   </Stagger>
 </section>

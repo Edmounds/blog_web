@@ -1,45 +1,7 @@
-﻿---
-import Reveal from "../../components/animation/Reveal";
-import PageContainer from "../../components/foundation/PageContainer.astro";
-import AboutFocusGrid from "../../components/sections/AboutFocusGrid.astro";
-import AboutHero from "../../components/sections/AboutHero.astro";
-import ExperienceList from "../../components/sections/ExperienceList.astro";
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getAboutProfile, getSiteSettings } from "../../lib/content";
-import { routes } from "../../lib/routes";
+---
+import SpaLayout from "../../layouts/SpaLayout.astro";
+import { getSiteSettings } from "../../lib/content";
 
 const site = await getSiteSettings();
-const aboutProfile = await getAboutProfile();
-const aboutMeta = aboutProfile.meta;
-const aboutStory = aboutProfile.story;
-const aboutFocusCards = aboutProfile.focusCards;
-const aboutExperience = aboutProfile.experience;
 ---
-
-<BaseLayout title="About" description={`Background, focus, and experience of ${site.brand}.`} currentPath={routes.about}>
-  <PageContainer class="space-y-14 py-12 md:py-16">
-    <AboutHero
-      titleLeading={aboutProfile.titleLeading}
-      titleName={aboutProfile.titleName}
-      subtitle={aboutProfile.subtitle}
-      portrait={aboutProfile.portrait}
-      meta={aboutMeta}
-      availability={aboutProfile.availability}
-    />
-
-    <Reveal client:visible>
-      <section class="space-y-6">
-        <h2 class="font-serif text-4xl text-[var(--text-main)]">The Story</h2>
-        <div class="ui-prose max-w-none">
-          {aboutStory.map((paragraph) => (
-            <p>{paragraph}</p>
-          ))}
-        </div>
-      </section>
-    </Reveal>
-
-    <AboutFocusGrid cards={aboutFocusCards} />
-
-    <ExperienceList jobs={aboutExperience} />
-  </PageContainer>
-</BaseLayout>
+<SpaLayout title="About" description={`Background, focus, and experience of ${site.brand}.`} initialPath="/about/" />

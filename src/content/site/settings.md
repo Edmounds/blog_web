@@ -1,5 +1,5 @@
-﻿---
-brand: Alex Chen
+---
+brand: chasen
 htmlLang: zh-CN
 dateLocale: en-US
 seo:
@@ -38,4 +38,7 @@ copy:
   homeRecentBlogsCta: View all blogs
   homeRecentProjectsTitle: Recent Projects
   homeRecentProjectsCta: View all projects
+  seriesTitle: Series
+  seriesDescription: Themed paths through related essays and notes.
+  seriesAllPostsCta: View series
 ---

@@ -1,0 +1,40 @@
+---
+import Reveal from "../animation/Reveal";
+import PageContainer from "../foundation/PageContainer.astro";
+import AboutFocusGrid from "./AboutFocusGrid.astro";
+import AboutHero from "./AboutHero.astro";
+import ExperienceList from "./ExperienceList.astro";
+import { getAboutProfile, getSiteSettings } from "../../lib/content";
+
+const site = await getSiteSettings();
+const aboutProfile = await getAboutProfile();
+const aboutMeta = aboutProfile.meta;
+const aboutStory = aboutProfile.story;
+const aboutFocusCards = aboutProfile.focusCards;
+const aboutExperience = aboutProfile.experience;
+---
+<PageContainer class="flex flex-col gap-16 py-12 md:py-16">
+  <AboutHero
+    titleLeading={aboutProfile.titleLeading}
+    titleName={aboutProfile.titleName}
+    subtitle={aboutProfile.subtitle}
+    portrait={aboutProfile.portrait}
+    meta={aboutMeta}
+    availability={aboutProfile.availability}
+  />
+
+  <Reveal client:visible>
+    <section class="grid gap-6 md:grid-cols-[minmax(0,0.38fr)_minmax(0,1fr)] md:gap-10">
+      <h2 class="ui-section-title text-[var(--text-main)]">The Story</h2>
+      <div class="ui-prose max-w-3xl">
+        {aboutStory.map((paragraph) => (
+          <p>{paragraph}</p>
+        ))}
+      </div>
+    </section>
+  </Reveal>
+
+  <AboutFocusGrid cards={aboutFocusCards} />
+
+  <ExperienceList jobs={aboutExperience} />
+</PageContainer>

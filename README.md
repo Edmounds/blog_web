@@ -1,7 +1,7 @@
-﻿# 纯中文 Astro 博客模板
+﻿# Astro 内容博客模板
 
 ## 功能
-- 中文站点路由：`/`、`/blogs/`、`/blog/[slug]/`、`/projects/`、`/about/`
+- 站点路由：`/`、`/blogs/`、`/blog/[slug]/`、`/series/`、`/series/[slug]/`、`/projects/`、`/projects/[slug]/`、`/about/`
 - 内容管理：`Astro Content Collections`
 - 样式系统：Tailwind + 全局设计 Token
 - 明暗主题切换：跟随系统 + 本地持久化
@@ -23,5 +23,7 @@ npm run dev
 
 ## 内容目录
 - 博客：`src/content/blog/*.md`
+- 专题：通过博客 frontmatter 的 `series` 字段组织
 - 项目：`src/content/projects/*.md`
 - 关于：`src/content/about/profile.md`
+- 站点配置：`src/content/site/settings.md`

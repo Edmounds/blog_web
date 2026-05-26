@@ -15,29 +15,29 @@ const isLeft = item.side === "left";
   isLeft ? "md:pr-7" : "md:ml-auto md:pl-7",
 ]}>
   <div class:list={[
-    "hidden md:block absolute top-8 h-px w-7 bg-[var(--border-strong)]",
+    "hidden md:block absolute top-8 h-px w-7 bg-[var(--border-soft)]",
     isLeft ? "right-0" : "left-0",
   ]}></div>
   <div class:list={[
-    "hidden md:block absolute top-[1.88rem] h-2.5 w-2.5 rounded-full border border-[var(--border-strong)] bg-[var(--bg-base)]",
+    "hidden md:block absolute top-[1.88rem] h-2.5 w-2.5 rounded-full border border-[var(--border-soft)] bg-[var(--bg-base)]",
     isLeft ? "-right-[5px]" : "-left-[5px]",
   ]}></div>
 
-  <Card className="group !gap-0 overflow-hidden rounded-xl !border !border-[var(--border-strong)] !bg-[color:color-mix(in_srgb,var(--bg-elevated)_78%,transparent)] !py-0 !shadow-[var(--shadow-soft)] !ring-0">
-    <a href={item.href} class="block overflow-hidden border-b border-[var(--border-soft)]">
-      <img src={item.image} alt={item.title} class="h-44 w-full object-cover grayscale transition duration-700 group-hover:scale-105 group-hover:grayscale-0 md:h-48" loading="lazy" />
+  <Card className="group !gap-0 overflow-hidden !rounded-lg !border-0 !bg-transparent !py-0 !shadow-none">
+    <a href={item.href} class="block overflow-hidden rounded-lg bg-[var(--surface-parchment)]" tabindex="-1" aria-hidden="true">
+      <img src={item.image} alt={item.title} class="aspect-[4/3] h-auto w-full object-cover transition duration-500 group-hover:scale-[1.025]" loading="lazy" />
     </a>
 
-    <CardContent className="space-y-3 !p-4">
+    <CardContent className="space-y-3 !px-0 !pb-0 !pt-4">
       <div class="flex items-center justify-between gap-3 text-xs text-[var(--text-faint)]">
-        <span class="ui-kicker text-[var(--accent)]">{item.category}</span>
+        <span class="ui-kicker text-[var(--color-action)]">{item.category}</span>
         <span class="font-mono">{item.year}</span>
       </div>
-      <h3 class="font-serif text-2xl leading-tight text-[var(--text-main)] transition group-hover:text-[var(--accent)] md:text-[1.9rem]">
+      <h3 class="text-2xl font-semibold leading-tight text-[var(--text-main)] transition group-hover:text-[var(--color-action)] md:text-[1.9rem]">
         <a href={item.href}>{item.title}</a>
       </h3>
       <p class="text-sm leading-relaxed text-[var(--text-muted)]">{item.summary}</p>
-      <p class="pt-1 text-sm text-[var(--text-muted)] transition group-hover:text-[var(--text-main)]">{item.ctaLabel} -></p>
+      <a href={item.href} class="block pt-1 text-sm text-[var(--color-action)] transition hover:text-[var(--color-action-focus)]">{item.ctaLabel} -&gt;</a>
     </CardContent>
   </Card>
 </article>

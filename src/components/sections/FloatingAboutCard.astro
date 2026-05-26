@@ -16,20 +16,19 @@ const { badge, title, name, description, location, portrait, href } = Astro.prop
 ---
 
 <SurfacePanel class="relative overflow-hidden p-6">
-  <div class="pointer-events-none absolute -left-12 -top-14 h-40 w-40 rounded-full bg-[var(--accent-soft)] blur-3xl"></div>
-  <div class="relative space-y-5">
+  <div class="relative flex flex-col gap-5">
     <PillTag text={badge} />
-    <h2 class="font-serif text-4xl leading-tight text-[var(--text-main)]">
-      <a href={href} class="transition hover:text-[var(--accent)]">{title}</a>
+    <h2 class="text-4xl font-semibold leading-tight text-[var(--text-main)]">
+      <a href={href} class="transition hover:text-[var(--color-action)]">{title}</a>
     </h2>
-    <h3 class="text-2xl text-[var(--text-main)]">{name}</h3>
+    <h3 class="text-2xl font-semibold text-[var(--text-main)]">{name}</h3>
     <p class="text-base leading-relaxed text-[var(--text-muted)]">{description}</p>
     <p class="text-sm text-[var(--text-faint)]">{location}</p>
-    <a href={href} class="block aspect-square overflow-hidden rounded-lg border border-[var(--border-strong)]">
+    <a href={href} class="block aspect-square overflow-hidden rounded-lg bg-[var(--surface-parchment)]">
       <img
         src={portrait}
         alt={name}
-        class="h-full w-full object-cover grayscale transition duration-700 hover:scale-105 hover:grayscale-0"
+        class="h-full w-full object-cover transition duration-500 hover:scale-[1.025]"
         loading="lazy"
       />
     </a>
