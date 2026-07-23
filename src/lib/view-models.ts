@@ -1,4 +1,5 @@
 ﻿import { routes } from "./routes";
+import { defaultLocale, localizePath, type Locale } from "./i18n";
 import type {
   ArchivePostSectionModel,
   ArticleMetaModel,
@@ -58,10 +59,14 @@ const DEFAULT_ARTICLE_META_LABELS: ArticleMetaLabels = {
   readingTimeLabel: "Reading time",
 };
 
-export const toBlogCardModel = (post: BlogCardSource, copy: BlogCardCopy = DEFAULT_BLOG_CARD_COPY): ContentCardModel => ({
+export const toBlogCardModel = (
+  post: BlogCardSource,
+  copy: BlogCardCopy = DEFAULT_BLOG_CARD_COPY,
+  locale: Locale = defaultLocale,
+): ContentCardModel => ({
   title: post.title,
   summary: post.summary,
-  href: `/blog/${post.slug}/`,
+  href: localizePath(`/blog/${post.slug}/`, locale),
   image: post.cover,
   imageAlt: post.title,
   eyebrow: post.category,
@@ -76,14 +81,15 @@ export const toBlogCardModel = (post: BlogCardSource, copy: BlogCardCopy = DEFAU
 export const toArchivePostSections = (
   sections: ArchiveBlogSectionSource[],
   copy: BlogCardCopy = DEFAULT_BLOG_CARD_COPY,
+  locale: Locale = defaultLocale,
 ): ArchivePostSectionModel[] =>
   sections.map((section) => ({
     year: section.year,
-    cards: section.posts.map((post) => toBlogCardModel(post, copy)),
+    cards: section.posts.map((post) => toBlogCardModel(post, copy, locale)),
     posts: section.posts.map((post) => ({
       title: post.title,
       summary: post.summary,
-      href: `/blog/${post.slug}/`,
+      href: localizePath(`/blog/${post.slug}/`, locale),
       category: post.category,
       dateLabel: post.dateLabel,
       readingTime: post.readingTime,

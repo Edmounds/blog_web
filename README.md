@@ -56,6 +56,28 @@ npm run deploy
 
 平时更新使用 GitHub Actions：把改动提交并推送到 `master`，即会自动构建并发布。GitHub 仓库需要配置 `CLOUDFLARE_API_TOKEN` 和 `CLOUDFLARE_ACCOUNT_ID` Secrets，自定义域名需将 `blog.muelsyse.us` 的 CNAME 指向 `new-blog-c0s.pages.dev`。
 
+## Blog images
+
+Typora 中复制过来的 Markdown 可以继续保留 macOS 绝对图片路径，例如：
+
+```markdown
+![示例](</Users/me/Documents/article/image.png>)
+```
+
+在本机运行 `npm run dev`、`npm run build` 或以下命令时，脚本会把这些图片上传到 R2，并把文章中的路径改写为 `https://img.muelsyse.us/blog/<sha256>.<ext>`：
+
+```bash
+npm run images:sync
+```
+
+Cloudflare 需要一次性完成以下设置：
+
+1. 启用 R2，并创建 Standard bucket `blog-images`。
+2. 在 bucket 的 **Settings > Custom Domains** 中连接 `img.muelsyse.us`。
+3. 给本机 Wrangler 和 GitHub Actions 使用的 API Token 增加 R2 Object Read & Write 权限。
+
+图片必须先在本机同步，再提交被改写的 Markdown。GitHub Actions 无法读取 `/Users/...` 下的本地文件；如果推送的文章仍含本机绝对图片路径，远程构建会明确失败。支持的格式为 PNG、JPEG、WebP、GIF、AVIF 和 SVG。
+
 ## 编码规范
 - 全项目使用 UTF-8。
 - 含中文的 Markdown 文档使用 UTF-8 BOM，避免 Windows PowerShell 中出现 mojibake。

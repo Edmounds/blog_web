@@ -29,10 +29,12 @@ const resolvedTitle = normalizedTitle
     : `${normalizedTitle}${site.seo.titleSeparator}${site.brand}`
   : site.brand;
 const resolvedDescription = description ?? site.seo.defaultDescription;
+const buildId = import.meta.env.PUBLIC_BUILD_ID;
+Astro.response.headers.set("Cache-Control", "no-cache");
 ---
 
 <!doctype html>
-<html lang={localeDefinition.htmlLang} dir={localeDefinition.dir} class="light">
+<html lang={localeDefinition.htmlLang} dir={localeDefinition.dir} class="light" data-build-id={buildId}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -71,6 +73,28 @@ const resolvedDescription = description ?? site.seo.defaultDescription;
       import { navigate } from 'astro:transitions/client';
 
       const tabs = ['/', '/blogs/', '/about/'];
+
+      if (import.meta.env.PROD) {
+        const currentBuildId = document.documentElement.dataset.buildId;
+        const checkForNewDeployment = async () => {
+          if (document.visibilityState !== "visible") return;
+          try {
+            const response = await fetch(`/version.json?t=${Date.now()}`, { cache: "no-store" });
+            if (!response.ok) return;
+            const deployment = await response.json() as { buildId?: string };
+            if (deployment.buildId && deployment.buildId !== currentBuildId) {
+              window.location.reload();
+            }
+          } catch {
+            // A failed version check should never interrupt reading the site.
+          }
+        };
+
+        void checkForNewDeployment();
+        window.setInterval(checkForNewDeployment, 60_000);
+        document.addEventListener("visibilitychange", checkForNewDeployment);
+        window.addEventListener("focus", checkForNewDeployment);
+      }
 
       function getLocalePrefix(path: string) {
         const [firstSegment] = path.split('/').filter(Boolean);

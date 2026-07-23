@@ -1,0 +1,29 @@
+/version.json
+  Cache-Control: no-store
+
+/
+  Cache-Control: no-cache
+
+/about/*
+  Cache-Control: no-cache
+
+/blogs/*
+  Cache-Control: no-cache
+
+/blog/*
+  Cache-Control: no-cache
+
+/art/*
+  Cache-Control: no-cache
+
+/series/*
+  Cache-Control: no-cache
+
+/en/*
+  Cache-Control: no-cache
+
+/ja/*
+  Cache-Control: no-cache
+
+/zh-TW/*
+  Cache-Control: no-cache

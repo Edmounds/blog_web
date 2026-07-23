@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import {
@@ -36,4 +37,12 @@ test("switching locale preserves query strings and hashes", () => {
     "/ja/blog/example/?ref=home#part",
   );
   assert.equal(switchLocaleInUrl("/ja/about/", "zh-CN"), "/about/");
+});
+
+test("localized blog archive links keep the active locale", () => {
+  const viewModels = readFileSync(new URL("../src/lib/view-models.ts", import.meta.url), "utf8");
+  const blogsSection = readFileSync(new URL("../src/components/sections/BlogsSection.astro", import.meta.url), "utf8");
+
+  assert.match(viewModels, /localizePath\(`\/blog\/\$\{post\.slug\}\/`, locale\)/);
+  assert.match(blogsSection, /toArchivePostSections\(archiveBlogSections, cardCopy, locale\)/);
 });

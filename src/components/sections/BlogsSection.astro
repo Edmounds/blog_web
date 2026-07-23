@@ -16,7 +16,7 @@ const cardCopy = {
   readLabel: site.copy.blogMetaRead,
   readArticleLabel: site.copy.blogReadArticle,
 };
-const sections = toArchivePostSections(archiveBlogSections, cardCopy);
+const sections = toArchivePostSections(archiveBlogSections, cardCopy, locale);
 ---
 <PageContainer class="pb-12 pt-8 md:pb-16 md:pt-10">
   <Reveal client:visible>
