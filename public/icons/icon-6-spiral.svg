@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="114" fill="#1d1d1f" />
+  <!-- Mathematical spiral starting from center -->
+  <path d="M256 256 A 20 20 0 0 1 256 216 A 40 40 0 0 1 256 296 A 80 80 0 0 1 256 136 A 160 160 0 0 1 256 456" fill="none" stroke="#ffffff" stroke-width="20" stroke-linecap="round" />
+  <circle cx="256" cy="256" r="20" fill="#0066cc" />
+</svg>

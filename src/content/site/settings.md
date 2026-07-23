@@ -9,12 +9,29 @@ nav:
   - label: Home
     href: /
     match: exact
-  - label: Blogs
+  - label: Content
     href: /blogs/
     match: prefix
-  - label: Projects
-    href: /projects/
+    children:
+      - label: Blog
+        href: /blogs/
+        match: prefix
+      - label: Projects
+        href: /projects/
+        match: prefix
+  - label: Art
+    href: /art/music/
     match: prefix
+    children:
+      - label: Music
+        href: /art/music/
+        match: prefix
+      - label: Book
+        href: /art/book/
+        match: prefix
+      - label: Movie
+        href: /art/movie/
+        match: prefix
   - label: About
     href: /about/
     match: prefix

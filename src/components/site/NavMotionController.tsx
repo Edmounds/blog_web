@@ -1,11 +1,6 @@
 import { useEffect } from "react"
-import { animate } from "motion"
-import { useReducedMotion } from "motion/react"
-const ease = [0.19, 1, 0.22, 1] as const
 
 export default function NavMotionController() {
-  const shouldReduceMotion = useReducedMotion()
-
   useEffect(() => {
     const cleanups: Array<() => void> = []
     const switchers = Array.from(document.querySelectorAll<HTMLElement>("[data-nav-switcher]"))
@@ -16,38 +11,60 @@ export default function NavMotionController() {
       if (!links.length || !indicator) return
 
       const active = () => links.find((link) => link.getAttribute("aria-current") === "page") ?? links[0]
+      
+      let currentTarget: HTMLElement = active()
+
       const moveTo = (link: HTMLElement) => {
-        const x = link.offsetLeft
-        const width = link.offsetWidth
+        currentTarget = link
+        const linkRect = link.getBoundingClientRect()
+        const switcherRect = switcher.getBoundingClientRect()
+        const x = linkRect.left - switcherRect.left
+        const width = linkRect.width
         switcher.setAttribute("data-ready", "true")
 
         indicator.style.setProperty("--x", `${x}px`)
         indicator.style.setProperty("--w", `${width}px`)
-
-        if (shouldReduceMotion) {
-          indicator.style.transform = `translateX(${x}px)`
-          indicator.style.width = `${width}px`
-          indicator.style.opacity = "1"
-          return
-        }
-
-        animate(indicator, { x, width, opacity: 1 }, { duration: 0.28, ease })
       }
-      const reset = () => moveTo(active())
+
+      const updateActiveGroup = () => {
+        const activeLink = active()
+        const parentGroup = activeLink.getAttribute("data-parent")
+        const href = activeLink.getAttribute("href") || ""
+
+        if (parentGroup === "content" || href.startsWith("/blogs") || href.startsWith("/blog") || href.startsWith("/projects")) {
+          switcher.setAttribute("data-active-group", "content")
+        } else if (parentGroup === "art" || href.startsWith("/art")) {
+          switcher.setAttribute("data-active-group", "art")
+        } else {
+          switcher.setAttribute("data-active-group", "none")
+        }
+      }
+
+      const reset = () => {
+        updateActiveGroup()
+        moveTo(active())
+      }
       const onFocusOut = () => {
         requestAnimationFrame(() => {
           if (!switcher.contains(document.activeElement)) reset()
         })
       }
 
+      // Initialize positioning
       reset()
-      window.addEventListener("resize", reset, { passive: true })
+
+      // Set up ResizeObserver to handle layout shifts dynamically
+      const resizeObserver = new ResizeObserver(() => {
+        moveTo(currentTarget)
+      })
+      resizeObserver.observe(switcher)
+
       window.addEventListener("spa:nav-sync", reset)
       switcher.addEventListener("pointerleave", reset)
       switcher.addEventListener("focusout", onFocusOut)
 
       cleanups.push(() => {
-        window.removeEventListener("resize", reset)
+        resizeObserver.disconnect()
         window.removeEventListener("spa:nav-sync", reset)
         switcher.removeEventListener("pointerleave", reset)
         switcher.removeEventListener("focusout", onFocusOut)
@@ -68,7 +85,7 @@ export default function NavMotionController() {
     })
 
     return () => cleanups.forEach((cleanup) => cleanup())
-  }, [shouldReduceMotion])
+  }, [])
 
   return null
 }

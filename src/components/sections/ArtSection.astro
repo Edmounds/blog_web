@@ -1,0 +1,30 @@
+---
+import ArtCard from "../cards/ArtCard.astro";
+import { artData } from "../../lib/artData";
+
+export interface Props {
+  type: "music" | "book" | "movie";
+}
+
+const { type } = Astro.props;
+
+const items = artData.filter(item => item.type === type);
+
+const titleMap = {
+  music: "Music",
+  book: "Books",
+  movie: "Movies"
+};
+---
+<div class="app-container py-24">
+  <div class="mb-12">
+    <h1 class="ui-section-title mb-4">{titleMap[type]}</h1>
+    <p class="ui-lead">A collection of selected {titleMap[type].toLowerCase()}.</p>
+  </div>
+  
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-[var(--spacing-lg,24px)]">
+    {items.map((item) => (
+      <ArtCard item={item} />
+    ))}
+  </div>
+</div>

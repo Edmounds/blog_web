@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="114" fill="#ffffff" />
+  <!-- Thin circle -->
+  <circle cx="256" cy="256" r="140" fill="none" stroke="#1d1d1f" stroke-width="12" />
+  <!-- Minimalist shutter lines -->
+  <path d="M 256 116 L 356 256 M 356 256 L 256 396 M 256 396 L 156 256 M 156 256 L 256 116" fill="none" stroke="#7a7a7a" stroke-width="8" stroke-linecap="round" />
+  <!-- Inner focus ring in Action Blue -->
+  <circle cx="256" cy="256" r="48" fill="none" stroke="#0066cc" stroke-width="16" />
+</svg>

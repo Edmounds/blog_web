@@ -10,6 +10,7 @@ import ArchiveViewMotionController from "./ArchiveViewMotionController";
 interface Props {
   sections: ArchivePostSectionModel[];
   copy?: Partial<ArchiveViewCopy>;
+  hideYearHeader?: boolean;
 }
 
 const defaultCopy: ArchiveViewCopy = {
@@ -22,7 +23,7 @@ const defaultCopy: ArchiveViewCopy = {
   listDateLabel: "Date",
 };
 
-const { sections, copy: copyOverrides = {} } = Astro.props;
+const { sections, copy: copyOverrides = {}, hideYearHeader = false } = Astro.props;
 const copy = { ...defaultCopy, ...copyOverrides };
 ---
 
@@ -34,7 +35,7 @@ const copy = { ...defaultCopy, ...copyOverrides };
       {copy.emptyLabel}
     </p>
 
-    <ArchiveGrid sections={sections} countLabel={copy.countLabel} />
+    <ArchiveGrid sections={sections} countLabel={copy.countLabel} hideYearHeader={hideYearHeader} />
     <ArchiveList sections={sections} copy={copy} />
     <ArchiveInteractionController client:load />
     <ArchiveViewMotionController client:load />

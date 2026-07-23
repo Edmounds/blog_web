@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="114" fill="#1d1d1f" />
+  <!-- Pen Nib outline -->
+  <path d="M 256 116 L 336 296 L 296 396 H 216 L 176 296 Z" fill="none" stroke="#ffffff" stroke-width="24" stroke-linejoin="round" stroke-linecap="round" />
+  <!-- Nib slit line -->
+  <line x1="256" y1="396" x2="256" y2="256" stroke="#ffffff" stroke-width="24" stroke-linecap="round" />
+  <!-- Action Blue lens core as the nib hole -->
+  <circle cx="256" cy="236" r="36" fill="#0066cc" />
+</svg>

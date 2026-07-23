@@ -11,11 +11,12 @@ interface Props {
   navItems?: NavItem[];
 }
 
-const { currentPath = "/", brand = "Site", navItems = [] } = Astro.props;
+const { currentPath = "/", brand = "Chasen", navItems = [] } = Astro.props;
 
+const isHomeServer = currentPath === "/" || currentPath === "";
 ---
 
-<header class="sticky top-0 z-50 bg-[var(--nav-bg)] text-[var(--text-main)] backdrop-blur-md border-b border-[var(--border-soft)] dark:border-transparent transition-colors duration-300">
+<header id="site-header" class={`sticky top-0 z-50 bg-[var(--nav-bg)] text-[var(--text-main)] backdrop-blur-md border-b border-[var(--border-soft)] dark:border-transparent transition-all duration-300 ${isHomeServer ? 'is-homepage' : ''}`}>
   <div class="app-container flex h-16 items-center justify-between gap-4 md:gap-8">
     <div class="flex flex-1 items-center justify-start min-w-0">
       <a
@@ -23,15 +24,7 @@ const { currentPath = "/", brand = "Site", navItems = [] } = Astro.props;
         data-page-transition-link
         class="shrink-0 inline-flex min-w-0 items-center rounded-sm text-base font-normal leading-none text-[var(--text-main)] transition hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-action)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-base)]"
       >
-        {brand}
       </a>
-    </div>
-
-    <div class="flex items-center justify-center max-w-[220px] w-full">
-      <div class="relative w-full">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        <input type="text" placeholder="Search..." class="w-full rounded-full bg-[var(--surface-parchment)] border border-[var(--border-strong)] py-1.5 pl-9 pr-4 text-sm text-[var(--text-main)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-action)] transition-all" />
-      </div>
     </div>
 
     <div class="hidden flex-1 items-center justify-end gap-3 md:flex">
@@ -46,3 +39,50 @@ const { currentPath = "/", brand = "Site", navItems = [] } = Astro.props;
   </div>
   <NavMotionController client:load />
 </header>
+
+<script>
+  function updateHeaderStyle() {
+    const header = document.getElementById('site-header');
+    if (!header) return;
+
+    const isHome = window.location.pathname === '/' || window.location.pathname === '';
+    header.classList.toggle('is-homepage', isHome);
+  }
+
+  updateHeaderStyle();
+
+  document.addEventListener('astro:page-load', updateHeaderStyle);
+  window.addEventListener('spa:nav-sync', updateHeaderStyle);
+  window.addEventListener('popstate', updateHeaderStyle);
+</script>
+
+<style is:global>
+  @keyframes headerSlideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-slide-down {
+    animation: headerSlideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @media (min-width: 768px) {
+    #site-header.is-homepage {
+      position: absolute !important;
+      width: 100% !important;
+      left: 0 !important;
+      right: 0 !important;
+      background-color: transparent !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      border-color: transparent !important;
+    }
+    #site-header.is-homepage * {
+      border-color: transparent !important;
+    }
+  }
+</style>

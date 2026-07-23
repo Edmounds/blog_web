@@ -2,6 +2,8 @@
 import SpaLayout from "../../layouts/SpaLayout.astro";
 import { getSiteSettings } from "../../lib/content";
 
+export const prerender = true;
+
 const site = await getSiteSettings();
 ---
 <SpaLayout title="Projects" description="Selected project work and experiments." initialPath="/projects/" />

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background: Pure White Canvas -->
+  <rect width="512" height="512" rx="114" fill="#ffffff" />
+  <!-- Creative Horizon 'C' Line -->
+  <path d="M196 346 C126 346 126 166 196 166 H316" fill="none" stroke="#1d1d1f" stroke-width="24" stroke-linecap="round" />
+  <!-- Creative Sunrise (Action Blue) -->
+  <circle cx="316" cy="166" r="28" fill="#0066cc" />
+  <!-- Ground Horizon line -->
+  <line x1="166" y1="346" x2="346" y2="346" stroke="#1d1d1f" stroke-width="24" stroke-linecap="round" />
+</svg>

@@ -1,0 +1,9 @@
+---
+import SpaLayout from "../../../layouts/SpaLayout.astro";
+import { getSiteSettings } from "../../../lib/content";
+
+export const prerender = true;
+
+const site = await getSiteSettings();
+---
+<SpaLayout title="Music | Art" description="Music collection" initialPath="/art/music/" />

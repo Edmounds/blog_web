@@ -16,6 +16,14 @@ npm run dev
 ## 环境变量
 当前版本无必填运行时环境变量。
 
+## 部署
+本地发布到 Cloudflare Pages：
+```bash
+npm run deploy
+```
+
+平时更新使用 GitHub Actions：把改动提交并推送到 `master`，即会自动构建并发布。GitHub 仓库需要配置 `CLOUDFLARE_API_TOKEN` 和 `CLOUDFLARE_ACCOUNT_ID` Secrets，自定义域名需将 `blog.muelsyse.us` 的 CNAME 指向 `new-blog-c0s.pages.dev`。
+
 ## 编码规范
 - 全项目使用 UTF-8。
 - 含中文的 Markdown 文档使用 UTF-8 BOM，避免 Windows PowerShell 中出现 mojibake。

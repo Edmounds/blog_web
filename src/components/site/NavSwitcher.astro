@@ -1,5 +1,4 @@
 ---
-import { routes } from "../../lib/routes";
 import type { NavItem } from "../../types/ui";
 
 interface Props {
@@ -11,15 +10,32 @@ interface Props {
 const { currentPath, navItems, variant = "desktop" } = Astro.props;
 const isMobile = variant === "mobile";
 
-const isActive = (item: NavItem) => {
-  if (item.match === "prefix") {
-    if (item.href === routes.blogs) {
-      return currentPath.startsWith(routes.blogs) || currentPath.startsWith("/blog/");
-    }
-    return currentPath.startsWith(item.href);
+const isActive = (item: NavItem): boolean => {
+  if (item.children && item.children.length > 0) {
+    return item.children.some(child => isActive(child));
   }
-  return currentPath === item.href;
+  
+  if (item.match === "prefix") {
+    const normalizedPath = currentPath.replace(/\/$/, "");
+    const normalizedItemHref = item.href.replace(/\/$/, "");
+
+    if (normalizedItemHref === "/blogs") {
+      return currentPath.startsWith("/blogs") || currentPath.startsWith("/blog/");
+    }
+    if (normalizedItemHref === "/projects") {
+      return currentPath.startsWith("/projects");
+    }
+    if (normalizedItemHref.startsWith("/art/")) {
+      return currentPath.startsWith("/art/");
+    }
+    return currentPath.startsWith(item.href) || normalizedPath.startsWith(normalizedItemHref);
+  }
+  return currentPath === item.href || currentPath.replace(/\/$/, "") === item.href.replace(/\/$/, "");
 };
+
+const isContentActive = currentPath.startsWith("/blogs") || currentPath.startsWith("/blog") || currentPath.startsWith("/projects");
+const isArtActive = currentPath.startsWith("/art");
+const activeGroup = isContentActive ? "content" : isArtActive ? "art" : "none";
 ---
 
 <nav
@@ -28,25 +44,74 @@ const isActive = (item: NavItem) => {
     isMobile ? "bg-black/5 dark:bg-white/10 text-sm" : "text-base",
   ]}
   data-nav-switcher
+  data-active-group={activeGroup}
 >
-  {navItems.map((item) => (
-    <a
-      href={item.href}
-      data-nav-link
-      aria-current={isActive(item) ? "page" : undefined}
-      class:list={[
-        "relative z-10 rounded-full leading-none transition duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-action)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-base)]",
-        isMobile ? "px-3 py-2.5" : "px-4 py-2.5",
-        isActive(item) ? "text-[var(--text-main)]" : "text-[var(--text-muted)] hover:text-[var(--text-main)]",
-      ]}
-    >
-      {item.label}
-    </a>
-  ))}
+  {navItems.map((item) => {
+    const hasChildren = item.children && item.children.length > 0;
+    const groupKey = item.label.toLowerCase();
+    
+    return (
+      <>
+        {/* Parent Link */}
+        <a
+          href={item.href}
+          data-nav-link
+          data-nav-item={hasChildren ? `${groupKey}-parent` : groupKey}
+          aria-current={isActive(item) && !hasChildren ? "page" : undefined}
+          class:list={[
+            "relative z-10 rounded-full leading-none transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-action)] shrink-0 whitespace-nowrap",
+            isMobile ? "px-3 py-2.5" : "px-4 py-2.5",
+            isActive(item) ? "text-[var(--text-main)]" : "text-[var(--text-muted)] hover:text-[var(--text-main)]",
+          ]}
+        >
+          {item.label}
+        </a>
+
+        {/* Children Links */}
+        {hasChildren && item.children!.map((child) => (
+          <a
+            href={child.href}
+            data-nav-link
+            data-nav-item={`${groupKey}-child`}
+            data-parent={groupKey}
+            aria-current={isActive(child) ? "page" : undefined}
+            class:list={[
+              "relative z-10 rounded-full leading-none transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-action)] shrink-0 whitespace-nowrap",
+              isMobile ? "px-3 py-2.5" : "px-4 py-2.5",
+              isActive(child) ? "text-[var(--text-main)]" : "text-[var(--text-muted)] hover:text-[var(--text-main)]",
+            ]}
+          >
+            {child.label}
+          </a>
+        ))}
+      </>
+    );
+  })}
   <span class="nav-switcher-indicator" data-nav-indicator aria-hidden="true"></span>
 </nav>
 
 <style>
+  /* By default, hide all children links in the switcher */
+  [data-nav-item$="-child"] {
+    display: none;
+  }
+
+  /* When Content group is active: hide Content parent, show Blog & Projects children */
+  [data-active-group="content"] [data-nav-item="content-parent"] {
+    display: none;
+  }
+  [data-active-group="content"] [data-nav-item="content-child"] {
+    display: inline-flex;
+  }
+
+  /* When Art group is active: hide Art parent, show Music, Book & Movie children */
+  [data-active-group="art"] [data-nav-item="art-parent"] {
+    display: none;
+  }
+  [data-active-group="art"] [data-nav-item="art-child"] {
+    display: inline-flex;
+  }
+
   .nav-switcher-indicator {
     --x: 0px;
     --w: 0px;
@@ -61,9 +126,19 @@ const isActive = (item: NavItem) => {
     box-shadow: var(--shadow-soft);
     transform: translateX(var(--x));
     opacity: 0;
+    transition: 
+      transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+      width 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .nav-switcher[data-ready="true"] .nav-switcher-indicator {
     opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-switcher-indicator {
+      transition: none !important;
+    }
   }
 </style>

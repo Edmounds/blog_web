@@ -1,120 +1,139 @@
 ---
-import Reveal from "../animation/Reveal";
-import Stagger from "../animation/Stagger";
-import Divider from "../foundation/Divider.astro";
-import PageContainer from "../foundation/PageContainer.astro";
-import ContentCard from "../domain/ContentCard.astro";
-import HomeHero from "./HomeHero.astro";
-import SectionHeading from "../site/SectionHeading.astro";
-import { getAboutProfile, getHomeBlogPosts, getHomeProjects, getSiteSettings } from "../../lib/content";
-import { routes } from "../../lib/routes";
-import { toBlogCardModel, toProjectCardModel } from "../../lib/view-models";
+import GradientBackground from "../home/GradientBackground";
+import HomeAbout from "../home/HomeAbout";
+import { getAboutProfile } from "../../lib/content";
 
-const site = await getSiteSettings();
-const homeBlogPosts = await getHomeBlogPosts();
-const homeProjects = await getHomeProjects();
 const { homeFeatured } = await getAboutProfile();
-const blogCardCopy = {
-  publishedLabel: site.copy.blogMetaPublished,
-  readLabel: site.copy.blogMetaRead,
-  readArticleLabel: site.copy.blogReadArticle,
-};
-const blogCards = homeBlogPosts.map((post) => toBlogCardModel(post, blogCardCopy));
-const projectCards = homeProjects.map(toProjectCardModel);
-const compactBlogCards = blogCards.map((card) => ({ ...card, meta: [], summary: "", footerText: undefined }));
-const compactProjectCards = projectCards.map((card) => ({ ...card, meta: [], summary: "", footerText: undefined }));
 ---
-<PageContainer class="home-page-shell py-12 md:py-20">
-  <div class="home-page-grid">
-    <aside class="home-feature-rail">
-      <HomeHero
-        title={homeFeatured.title}
-        name={homeFeatured.name}
-        description={homeFeatured.description}
-        location={homeFeatured.location}
-        href={routes.about}
-      />
-    </aside>
-
-    <div class="home-feed space-y-16">
-      <Reveal client:visible>
-        <Divider />
-      </Reveal>
-
-      <section>
-        <Reveal client:visible>
-          <SectionHeading title={site.copy.homeRecentBlogsTitle} cta={{ label: site.copy.homeRecentBlogsCta, href: routes.blogs }} />
-        </Reveal>
-        <Stagger className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3" delay={0.08} stagger={0.06} client:visible>
-          {compactBlogCards.map((card) => (
-            <ContentCard {...card} />
-          ))}
-        </Stagger>
-      </section>
-
-      <Reveal client:visible>
-        <Divider />
-      </Reveal>
-
-      <section>
-        <Reveal client:visible>
-          <SectionHeading
-            title={site.copy.homeRecentProjectsTitle}
-            cta={{ label: site.copy.homeRecentProjectsCta, href: routes.projects }}
-          />
-        </Reveal>
-        <Stagger className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3" delay={0.08} stagger={0.06} client:visible>
-          {compactProjectCards.map((card) => (
-            <ContentCard {...card} />
-          ))}
-        </Stagger>
-      </section>
-    </div>
-  </div>
-</PageContainer>
+<section class="home-gradient-section">
+  <GradientBackground client:load />
+  <HomeAbout
+    title={homeFeatured.title}
+    name={homeFeatured.name}
+    description={homeFeatured.description}
+    location={homeFeatured.location}
+    client:load
+  />
+</section>
 
 <style>
-  .home-page-shell {
-    max-width: 104rem;
-    padding-inline: clamp(1.25rem, 2.2vw, 2.25rem);
-  }
-
-  .home-page-grid {
-    display: grid;
-    gap: clamp(2.5rem, 4vw, 4.25rem);
-  }
-
-  .home-feature-rail {
-    align-self: start;
+  .home-gradient-section {
+    position: relative;
     width: 100%;
+    padding-top: 128px;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+  @media (min-width: 768px) {
+    .home-gradient-section {
+      padding-top: 64px;
+    }
   }
 
-  .home-feed {
-    width: 100%;
+  /* About Me overlay text styles */
+  :global(.home-about-title) {
+    font-family: var(--font-ui);
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.25em;
   }
 
-  @media (min-width: 1024px) {
-    .home-page-shell {
-      padding-left: clamp(2rem, 4.5vw, 4.5rem);
-      padding-right: clamp(1.5rem, 3vw, 3rem);
-    }
+  :global(.home-about-name) {
+    font-family: var(--font-ui);
+    font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+    font-weight: 500;
+    line-height: 1.2;
+    margin: 0 0 0.75em;
+    opacity: 0.85;
+  }
 
-    .home-page-grid {
-      grid-template-columns: minmax(12rem, 14.5rem) minmax(0, 70rem);
-      column-gap: clamp(4rem, 6.5vw, 7.5rem);
-      align-items: start;
-      justify-content: center;
-    }
+  :global(.home-about-desc) {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    line-height: 1.6;
+    max-width: 36rem;
+    margin: 0 0 0.75em;
+    opacity: 0.7;
+  }
 
-    .home-feature-rail {
-      position: sticky;
-      top: 7rem;
-      width: min(14.5rem, 100%);
-    }
+  :global(.home-about-location) {
+    font-size: 0.875rem;
+    opacity: 0.5;
+    margin: 0 0 2rem;
+  }
 
-    .home-feed {
-      max-width: 70rem;
-      margin-left: 0;
-    }
+  :global(.home-about-socials) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+
+  :global(.home-about-social-link) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Light mode text colors over gradient */
+  :root .home-gradient-section :global(.home-about-title),
+  :root .home-gradient-section :global(.home-about-name),
+  html.light .home-gradient-section :global(.home-about-title),
+  html.light .home-gradient-section :global(.home-about-name) {
+    color: #1a1a2e;
+  }
+
+  :root .home-gradient-section :global(.home-about-desc),
+  :root .home-gradient-section :global(.home-about-location),
+  html.light .home-gradient-section :global(.home-about-desc),
+  html.light .home-gradient-section :global(.home-about-location) {
+    color: #2d2d44;
+  }
+
+  :root :global(.home-about-social-link),
+  html.light :global(.home-about-social-link) {
+    color: #1a1a2e;
+    background: rgba(255, 255, 255, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+
+  :root :global(.home-about-social-link:hover),
+  html.light :global(.home-about-social-link:hover) {
+    background: rgba(255, 255, 255, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Dark mode text colors over gradient */
+  html.dark .home-gradient-section :global(.home-about-title),
+  html.dark .home-gradient-section :global(.home-about-name) {
+    color: #ffffff;
+  }
+
+  html.dark .home-gradient-section :global(.home-about-desc),
+  html.dark .home-gradient-section :global(.home-about-location) {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  html.dark :global(.home-about-social-link) {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  html.dark :global(.home-about-social-link:hover) {
+    background: rgba(255, 255, 255, 0.18);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
 </style>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="grad-book-4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#022C22;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#064E3B;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#grad-book-4)" />
+  <rect x="20" y="20" width="360" height="560" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1.5" rx="12" />
+  
+  <!-- Subtle lighting accent -->
+  <circle cx="200" cy="0" r="220" fill="rgba(255,255,255,0.015)" filter="blur(30px)" />
+  
+  <!-- Book spine visual simulation shadow -->
+  <rect x="0" y="0" width="16" height="600" fill="rgba(0,0,0,0.25)" />
+  <line x1="16" y1="0" x2="16" y2="600" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+
+  
+      <text x="50%" y="41%" dominant-baseline="middle" text-anchor="middle" font-family="'Cinzel', 'Noto Serif SC', 'Playfair Display', serif" font-size="32" font-weight="bold" fill="#ECFDF5" letter-spacing="2">幻夜</text>
+    
+
+  <text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" font-family="'Inter', 'Noto Sans SC', sans-serif" font-size="15" fill="#A7F3D0" letter-spacing="1">
+    东野圭吾
+  </text>
+  
+  <line x1="160" y1="480" x2="240" y2="480" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
+  <text x="50%" y="515" dominant-baseline="middle" text-anchor="middle" font-family="'Inter', sans-serif" font-size="10" fill="rgba(255,255,255,0.25)" letter-spacing="3">
+    SELECTED BOOK
+  </text>
+</svg>

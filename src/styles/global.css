@@ -478,3 +478,9 @@ html[data-theme-transitioning] * {
   view-transition-name: none !important;
 }
 
+/* Hide footer on the home page to avoid the white gap and keep a clean fullscreen layout */
+body:has([data-active-index="0"]) footer {
+  display: none;
+}
+
+

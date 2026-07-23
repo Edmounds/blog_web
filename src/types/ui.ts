@@ -1,7 +1,8 @@
-﻿export interface NavItem {
+export interface NavItem {
   label: string;
   href: string;
   match?: "exact" | "prefix";
+  children?: NavItem[];
 }
 
 export interface FooterLink {

@@ -1,4 +1,4 @@
-﻿---
+---
 import Reveal from "../../../components/animation/Reveal";
 import PageContainer from "../../../components/foundation/PageContainer.astro";
 import ArchiveSidebar from "../../../components/domain/ArchiveSidebar.astro";
@@ -40,24 +40,21 @@ const sections = toArchivePostSections(archiveBlogSections, cardCopy);
 ---
 
 <BaseLayout title={`Blogs: ${activeCategory.label}`} description="Writing archive and notes." currentPath={routes.blogs}>
-  <PageContainer class="py-12 md:py-16">
+  <PageContainer class="pb-12 pt-8 md:pb-16 md:pt-10">
     <Reveal client:visible>
-      <section class="mb-10 flex max-w-3xl flex-col gap-3">
-        <p class="ui-kicker">Archive / {activeCategory.label}</p>
-        <h1 class="ui-page-title text-[var(--text-main)]">Writing Archive</h1>
-        <p class="ui-lead">
-          Essays on design systems, product thinking, and working with AI interfaces.
-        </p>
+      <section class="mb-8 flex flex-col gap-3">
+        <p class="ui-kicker">{activeCategory.label}</p>
+        <h1 class="ui-page-title text-[var(--text-main)]">BLOG</h1>
       </section>
     </Reveal>
 
     <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
-      <aside class="lg:col-span-4 xl:col-span-3">
+      <aside class="flex flex-col gap-8 lg:col-span-4 xl:col-span-3">
         <ArchiveSidebar filters={filters} title={site.copy.archiveSidebarTitle} />
       </aside>
 
       <section class="lg:col-span-8 xl:col-span-9">
-        <ArchivePostsView sections={sections} />
+        <ArchivePostsView sections={sections} hideYearHeader={true} />
       </section>
     </div>
   </PageContainer>

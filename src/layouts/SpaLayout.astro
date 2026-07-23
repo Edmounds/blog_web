@@ -4,6 +4,7 @@ import HomeSection from "../components/sections/HomeSection.astro";
 import BlogsSection from "../components/sections/BlogsSection.astro";
 import ProjectsSection from "../components/sections/ProjectsSection.astro";
 import AboutSection from "../components/sections/AboutSection.astro";
+import ArtSection from "../components/sections/ArtSection.astro";
 
 interface Props {
   initialPath?: string;
@@ -15,16 +16,19 @@ const { initialPath = "/", title, description } = Astro.props;
 
 // Determine initial index
 let initialIndex = 0;
-if (initialPath.startsWith("/blogs")) initialIndex = 1;
+if (initialPath.startsWith("/blogs") || initialPath.startsWith("/blog/")) initialIndex = 1;
 else if (initialPath.startsWith("/projects")) initialIndex = 2;
-else if (initialPath.startsWith("/about")) initialIndex = 3;
+else if (initialPath.startsWith("/art/music")) initialIndex = 3;
+else if (initialPath.startsWith("/art/book")) initialIndex = 4;
+else if (initialPath.startsWith("/art/movie")) initialIndex = 5;
+else if (initialPath.startsWith("/about")) initialIndex = 6;
 ---
 
 <BaseLayout title={title} description={description} currentPath={initialPath}>
   <div class="spa-root" data-spa-root data-active-index={initialIndex}>
     <div class="spa-viewport relative w-full">
       {/* Horizontal track */}
-      <div class="spa-track flex w-[400vw]" data-track style={`transform: translate3d(-${initialIndex * 25}%, 0, 0);`}>
+      <div class="spa-track flex w-[700vw]" data-track style={`transform: translate3d(-${initialIndex * 100}vw, 0, 0);`}>
         
         <section class="w-[100vw]" data-slide-index="0" data-path="/">
           <HomeSection />
@@ -38,7 +42,19 @@ else if (initialPath.startsWith("/about")) initialIndex = 3;
           <ProjectsSection />
         </section>
 
-        <section class="w-[100vw]" data-slide-index="3" data-path="/about/">
+        <section class="w-[100vw]" data-slide-index="3" data-path="/art/music/">
+          <ArtSection type="music" />
+        </section>
+
+        <section class="w-[100vw]" data-slide-index="4" data-path="/art/book/">
+          <ArtSection type="book" />
+        </section>
+
+        <section class="w-[100vw]" data-slide-index="5" data-path="/art/movie/">
+          <ArtSection type="movie" />
+        </section>
+
+        <section class="w-[100vw]" data-slide-index="6" data-path="/about/">
           <AboutSection />
         </section>
 
@@ -64,7 +80,7 @@ else if (initialPath.startsWith("/about")) initialIndex = 3;
 
   .spa-track {
     display: flex;
-    width: 400vw;
+    width: 700vw;
     will-change: transform;
     /* Match showcase timing for silky smooth slide */
     transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
@@ -121,9 +137,12 @@ else if (initialPath.startsWith("/about")) initialIndex = 3;
     function getIndexFromPath(path: string) {
       const normalized = path.replace(/\/$/, '') || '/';
       if (normalized === '/') return 0;
-      if (normalized.startsWith('/blogs')) return 1;
+      if (normalized.startsWith('/blogs') || normalized.startsWith('/blog')) return 1;
       if (normalized.startsWith('/projects')) return 2;
-      if (normalized.startsWith('/about')) return 3;
+      if (normalized.startsWith('/art/music')) return 3;
+      if (normalized.startsWith('/art/book')) return 4;
+      if (normalized.startsWith('/art/movie')) return 5;
+      if (normalized.startsWith('/about')) return 6;
       return -1;
     }
 

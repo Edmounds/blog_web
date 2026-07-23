@@ -2,6 +2,8 @@
 import SpaLayout from "../../layouts/SpaLayout.astro";
 import { getSiteSettings } from "../../lib/content";
 
+export const prerender = true;
+
 const site = await getSiteSettings();
 ---
 <SpaLayout title="About" description={`Background, focus, and experience of ${site.brand}.`} initialPath="/about/" />

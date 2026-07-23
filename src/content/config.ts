@@ -1,4 +1,4 @@
-﻿import { defineCollection, z } from "astro:content";
+import { defineCollection, z } from "astro:content";
 
 const blog = defineCollection({
   type: "content",
@@ -101,6 +101,13 @@ const site = defineCollection({
         label: z.string(),
         href: z.string(),
         match: z.enum(["exact", "prefix"]).optional(),
+        children: z.array(
+          z.object({
+            label: z.string(),
+            href: z.string(),
+            match: z.enum(["exact", "prefix"]).optional(),
+          })
+        ).optional(),
       }),
     ),
     footerLinks: z.array(

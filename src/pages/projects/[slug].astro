@@ -1,6 +1,5 @@
 ---
 import Reveal from "../../components/animation/Reveal";
-import CoverImage from "../../components/ui/CoverImage";
 import ArticleMeta from "../../components/domain/ArticleMeta.astro";
 import PageContainer from "../../components/foundation/PageContainer.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -25,12 +24,6 @@ const metaItems = [
 ---
 
 <BaseLayout title={project.data.title} description={project.data.summary} currentPath={routes.projects}>
-  {project.data.cover && (
-    <PageContainer class="pt-8 pb-0">
-      <CoverImage src={project.data.cover} alt={project.data.title} client:load />
-    </PageContainer>
-  )}
-
   <PageContainer class="py-12 md:py-16">
     <div class="grid grid-cols-1 gap-10 lg:grid-cols-12">
       <aside class="hidden lg:col-span-3 lg:block">

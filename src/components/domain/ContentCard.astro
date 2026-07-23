@@ -10,14 +10,12 @@ interface Props extends ContentCardModel {
 const {
   variant,
   title,
-  summary,
   href,
   image,
   imageAlt = title,
   eyebrow,
   meta = [],
   tags = [],
-  footerText,
   class: className = "",
 } = Astro.props;
 ---
@@ -52,20 +50,12 @@ const {
       <a href={href}>{title}</a>
     </h3>
 
-    {summary && <p class="line-clamp-3 text-sm leading-relaxed text-[var(--text-muted)]">{summary}</p>}
-
     {tags.length > 0 && (
       <div class="mt-auto flex flex-wrap gap-2 pt-2">
         {tags.map((tag) => (
           <PillTag text={tag} />
         ))}
       </div>
-    )}
-
-    {footerText && (
-      <a href={href} class="mt-auto pt-1 text-sm text-[var(--color-action)] transition hover:text-[var(--color-action-focus)]">
-        {footerText} -&gt;
-      </a>
     )}
   </CardContent>
 </article>

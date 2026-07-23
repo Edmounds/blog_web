@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>个人品牌 Logo / 网站图标预览 - 全套候选</title>
+  <style>
+    :root {
+      --ink: #1d1d1f;
+      --canvas: #ffffff;
+      --canvas-parchment: #f5f5f7;
+      --primary: #0066cc;
+      --primary-focus: #0071e3;
+      --hairline: #e0e0e0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "SF Pro Text", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--canvas-parchment);
+      color: var(--ink);
+      line-height: 1.47;
+      letter-spacing: -0.022em;
+      padding: 64px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      text-align: center;
+      max-width: 700px;
+      margin-bottom: 56px;
+    }
+
+    h1 {
+      font-size: 40px;
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin: 32px 0 24px 0;
+      align-self: flex-start;
+      width: 100%;
+      max-width: 1200px;
+      border-bottom: 1px solid var(--hairline);
+      padding-bottom: 12px;
+      color: var(--ink);
+    }
+
+    p.subtitle {
+      color: #7a7a7a;
+      font-size: 17px;
+      margin-bottom: 24px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 32px;
+      width: 100%;
+      max-width: 1200px;
+      margin-bottom: 48px;
+    }
+
+    .card {
+      background-color: var(--canvas);
+      border: 1px solid var(--hairline);
+      border-radius: 18px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.2s ease;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.04);
+    }
+
+    .icon-title {
+      font-size: 17px;
+      font-weight: 600;
+      margin-top: 24px;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .icon-desc {
+      font-size: 13px;
+      color: #7a7a7a;
+      text-align: center;
+      margin-bottom: 24px;
+      min-height: 38px;
+    }
+
+    .preview-container {
+      width: 180px;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #fafafc;
+      border-radius: 12px;
+      border: 1px solid #f0f0f0;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .preview-container img {
+      width: 120px;
+      height: 120px;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover .preview-container img {
+      transform: scale(1.05);
+    }
+
+    .bg-toggle {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(0, 0, 0, 0.05);
+      border: none;
+      border-radius: 9999px;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      z-index: 10;
+    }
+
+    .sizes-container {
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      margin-top: 12px;
+      padding-top: 16px;
+      border-top: 1px solid #f0f0f0;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .size-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: #7a7a7a;
+      font-size: 11px;
+    }
+
+    .size-box {
+      background-color: #fafafc;
+      border: 1px dashed #d2d2d7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .s16 { width: 16px; height: 16px; }
+    .s32 { width: 32px; height: 32px; }
+    .s48 { width: 48px; height: 48px; }
+
+    .size-box img {
+      width: 100%;
+      height: 100%;
+    }
+
+    footer {
+      margin-top: 64px;
+      font-size: 12px;
+      color: #7a7a7a;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>个人品牌图标候选预览</h1>
+    <p class="subtitle">完美对接您的 DESIGN.md 设计系统。我们将极简的摄影语言与博主特质交织，呈现这 10 个高级感满分的 SVG 方案。</p>
+  </header>
+
+  <h2 class="section-title">第一组：极简摄影与经典品牌形态 (1 - 5)</h2>
+  <main class="grid">
+    <!-- Card 1 -->
+    <section class="card">
+      <button class="bg-toggle" onclick="toggleBg(this)" title="切换深浅底板">🌗</button>
+      <div class="preview-container">
+        <img src="icons/icon-1-lens.svg" alt="Lens Icon">
+      </div>
+      <h3 class="icon-title">1. C-Lens (深色几何镜头)</h3>
+      <p class="icon-desc">以极简完美的圆弧刻画出品牌首字母 “C”，聚焦于 Action Blue 核心点，寓意“用主观视角聚焦世界”。</p>
+      
+      <div class="sizes-container">
+        <div class="size-item">
+          <div class="size-box s48"><img src="icons/icon-1-lens.svg"></div>
+          <span>48px</span>
+        </div>
+        <div class="size-item">
+          <div class="size-box s32"><img src="icons/icon-1-lens.svg"></div>
+          <span>32px</span>
+        </div>
+        <div class="size-item">
+          <div class="size-box s16"><img src="icons/icon-1-lens.svg"></div>
+          <span>16px</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Card 2 -->
+    <section class="card">
+      <button class="bg-toggle" onclick="toggleBg(this)" title="切换深浅底板">🌗</button>
+      <div class="preview-container">
+        <img src="icons/icon-2-gallery.svg" alt="Gallery Icon">
+      </div>
+      <h3 class="icon-title">2. Creative Horizon (创意日出)</h3>
+      <p class="icon-desc">以首字母 “C” 演变为地平线上的半圆，衬托着 Action Blue 冉冉升起的太阳，象征灵感与博客的起点。</p>
+      
+      <div class="sizes-container">
+        <div class="size-item">
+          <div class="size-box s48"><img src="icons/icon-2-gallery.svg"></div>
+          <span>48px</span>
+        </div>
+        <div class="size-item">
+          <div class="size-box s32"><img src="icons/icon-2-gallery.svg"></div>
+          <span>32px</span>
+        </div>
+        <div class="size-item">
+          <div class="size-box s16"><img src="icons/icon-2-gallery.svg"></div>
+          <span>16px</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Card 3 -->
+    <section class="card">
+      <button class="bg-toggle" onclick="toggleBg(this)" title="切换深浅底板">🌗</button>
+      <div class="preview-container">
+        <img src="icons/icon-3-tiles.svg" alt="Tiles Icon">
+      </div>
+      <h3 class="icon-title">3. Aperture Asterisk (对焦星号)</h3>
+      <p class="icon-desc">把相机的光圈叶片和文字排版中的“* (星号/脚注)”相结合。既表达摄影的精细，又代表记录与写作。</p>
+      
+      <div class="sizes-container">
+        <div class="size-item">
+          <div class="size-box s48"><img src="icons/icon-3-tiles.svg"></div>
+          <span>48px</span>
+        </div>
+        <div class="size-item">
+          <div class="size-box s32"><img src="icons/icon-3-tiles.svg"></div>
+          <span>32px</span>
+        </div>
+        <div class="size-item">
+          <div class="size-box s16"><img src="icons/icon-3-tiles.svg"></div>
+          <span>16px</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Card 4 -->
+    <section class="card">
+      <button class="bg-toggle" onclick="toggleBg(this)" title="切换深浅底板">🌗</button>
+      <div class="preview-container">
+        <img src="icons/icon-4-focus.svg" alt="Focus Icon">
+      </div>
+      <h3 class="icon-title">4. Dialogue Lens (对话双镜)</h3>
+      <p class="icon-desc">两个相交的圆形成完美对称的叶片核心。代表镜头，更象征作者与读者的思想碰撞交汇。</p>
+      
+      <div class="sizes-container">
+        <div class="size-item">
+          <div class="size-box s48"><img src="icons/icon-4-focus.svg"></div>
+          <span>48px</span>
+        </div>
+        <div class="size-item">
+          <div class="size-box s32"><img src="icons/icon-4-focus.svg"></div>
+          <span>32px</span>
+        </div>
+        <div class="size-item">
+          <div class="size-box s16"><img src="icons/icon-4-focus.svg"></div>
+          <span>16px</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Card 5 -->
+    <section class="card">
+      <button class="bg-toggle" onclick="toggleBg(this)" title="切换深浅底板">🌗</button>
+      <div class="preview-container">
+        <img src="icons/icon-5-pill.svg" alt="Pill Icon">
+      </div>
+      <h3 class="icon-title">5. Signature & Pill (签名胶囊)</h3>
+      <p class="icon-desc">优雅的书写体首字母 “C” 曲线，巧妙收尾于极致圆润的 Action Blue 实体交互胶囊。</p>
+      
+      <div class="sizes-container">
+        <div class="size-item">
+          <div class="size-box s48"><img src="icons/icon-5-pill.svg"></div>
+          <span>48px</span>
+        </div>
+        <div class="size-item">
+          <div class="size-box s32"><img src="icons/icon-5-pill.svg"></div>
+          <span>32px</span>
+        </div>
+        <div class="size-item">
+          <div class="size-box s16"><img src="icons/icon-5-pill.svg"></div>
+          <span>16px</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <h2 class="section-title">第二组：高阶美学、结构与专属 Monogram (6 - 10)</h2>
+  <main class="grid">
+    <!-- Card 6 -->
+    <section class="card">
+      <button class="bg-toggle" onclick="toggleBg(this)" title="切换深浅底板">🌗</button>
+      <div class="preview-container">
+        <img src="icons/icon-6-spiral.svg" alt="Spiral Icon">
+      </div>
+      <h3 class="icon-title">6. Golden Spiral (黄金螺旋线)</h3>
+      <p class="icon-desc">以极高雅的数学比例斐波那契螺旋线描摹摄影构图本源，并在核心注入深邃的 Action Blue 起点。</p>
+      
+      <div class="sizes-container">
+        <div class="size-item">
+          <div class="size-box s48"><img src="icons/icon-6-spiral.svg"></div>
+          <span>48px</span>
+        </div>
+        <div class="size-item">
+          <div class="size-box s32"><img src="icons/icon-6-spiral.svg"></div>
+          <span>32px</span>
+        </div>
+        <div class="size-item">
+          <div class="size-box s16"><img src="icons/icon-6-spiral.svg"></div>
+          <span>16px</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Card 7 -->
+    <section class="card">
+      <button class="bg-toggle" onclick="toggleBg(this)" title="切换深浅底板">🌗</button>
+      <div class="preview-container">
+        <img src="icons/icon-7-prism.svg" alt="Prism Icon">
+      </div>
+      <h3 class="icon-title">7. Prism Spectrum (三棱镜折射)</h3>
+      <p class="icon-desc">以最简约的几何线条呈现光线穿过三棱镜折射出 Action Blue 艺术光束的物理过程。物理与美学交汇。</p>
+      
+      <div class="sizes-container">
+        <div class="size-item">
+          <div class="size-box s48"><img src="icons/icon-7-prism.svg"></div>
+          <span>48px</span>
+        </div>
+        <div class="size-item">
+          <div class="size-box s32"><img src="icons/icon-7-prism.svg"></div>
+          <span>32px</span>
+        </div>
+        <div class="size-item">
+          <div class="size-box s16"><img src="icons/icon-7-prism.svg"></div>
+          <span>16px</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Card 8 -->
+    <section class="card">
+      <button class="bg-toggle" onclick="toggleBg(this)" title="切换深浅底板">🌗</button>
+      <div class="preview-container">
+        <img src="icons/icon-8-cqc.svg" alt="CQC Monogram Icon">
+      </div>
+      <h3 class="icon-title">8. Typographic CQC (CQC 拼合体)</h3>
+      <p class="icon-desc">极致规整对称的专属缩写 Monogram。左右两个“C”完美托举中间圆形的“Q”，斜向划出 Action Blue 轨迹。</p>
+      
+      <div class="sizes-container">
+        <div class="size-item">
+          <div class="size-box s48"><img src="icons/icon-8-cqc.svg"></div>
+          <span>48px</span>
+        </div>
+        <div class="size-item">
+          <div class="size-box s32"><img src="icons/icon-8-cqc.svg"></div>
+          <span>32px</span>
+        </div>
+        <div class="size-item">
+          <div class="size-box s16"><img src="icons/icon-8-cqc.svg"></div>
+          <span>16px</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Card 9 -->
+    <section class="card">
+      <button class="bg-toggle" onclick="toggleBg(this)" title="切换深浅底板">🌗</button>
+      <div class="preview-container">
+        <img src="icons/icon-9-zen.svg" alt="Zen Icon">
+      </div>
+      <h3 class="icon-title">9. Zen Aperture (极简禅意光圈)</h3>
+      <p class="icon-desc">极其考究的极细线艺术。在简约光圈的核心圈以超细线嵌套一环 Action Blue 聚焦圆环，宁静深远。</p>
+      
+      <div class="sizes-container">
+        <div class="size-item">
+          <div class="size-box s48"><img src="icons/icon-9-zen.svg"></div>
+          <span>48px</span>
+        </div>
+        <div class="size-item">
+          <div class="size-box s32"><img src="icons/icon-9-zen.svg"></div>
+          <span>32px</span>
+        </div>
+        <div class="size-item">
+          <div class="size-box s16"><img src="icons/icon-9-zen.svg"></div>
+          <span>16px</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Card 10 -->
+    <section class="card">
+      <button class="bg-toggle" onclick="toggleBg(this)" title="切换深浅底板">🌗</button>
+      <div class="preview-container">
+        <img src="icons/icon-10-nib.svg" alt="Nib Icon">
+      </div>
+      <h3 class="icon-title">10. The Storyteller (笔尖与镜头)</h3>
+      <p class="icon-desc">完美将钢笔笔尖（钢笔缝与呼吸孔）与相机的中央聚焦元素融为一体，是讲述故事与拍照记录的究极图腾。</p>
+      
+      <div class="sizes-container">
+        <div class="size-item">
+          <div class="size-box s48"><img src="icons/icon-10-nib.svg"></div>
+          <span>48px</span>
+        </div>
+        <div class="size-item">
+          <div class="size-box s32"><img src="icons/icon-10-nib.svg"></div>
+          <span>32px</span>
+        </div>
+        <div class="size-item">
+          <div class="size-box s16"><img src="icons/icon-10-nib.svg"></div>
+          <span>16px</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>CQC PERSONAL BRANDING SYSTEM • DESIGN ANALYSIS</p>
+  </footer>
+
+  <script>
+    function toggleBg(btn) {
+      const container = btn.nextElementSibling;
+      const currentBg = window.getComputedStyle(container).backgroundColor;
+      
+      if (currentBg === 'rgb(250, 250, 252)' || currentBg === '#fafafc') {
+        container.style.backgroundColor = '#1d1d1f';
+        container.style.borderColor = '#333333';
+      } else {
+        container.style.backgroundColor = '#fafafc';
+        container.style.borderColor = '#f0f0f0';
+      }
+    }
+  </script>
+</body>
+</html>
