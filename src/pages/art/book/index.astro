@@ -1,9 +1,11 @@
 ---
-import SpaLayout from "../../../layouts/SpaLayout.astro";
-import { getSiteSettings } from "../../../lib/content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ArtSection from "../../../components/sections/ArtSection.astro";
+import { getLocalizedSite } from "../../../lib/localized-content";
 
 export const prerender = true;
-
-const site = await getSiteSettings();
+const site = await getLocalizedSite("zh-CN");
 ---
-<SpaLayout title="Book | Art" description="Book collection" initialPath="/art/book/" />
+<BaseLayout title={site.labels.book} description={site.page.bookDescription} currentPath="/art/book/">
+  <ArtSection type="book" />
+</BaseLayout>

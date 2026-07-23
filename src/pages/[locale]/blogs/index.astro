@@ -1,0 +1,14 @@
+---
+import SpaLayout from "../../../layouts/SpaLayout.astro";
+import { defaultLocale, localeDefinitions, type Locale } from "../../../lib/i18n";
+import { getLocalizedSite } from "../../../lib/localized-content";
+
+export const prerender = true;
+export function getStaticPaths() {
+  return localeDefinitions.filter((item) => item.code !== defaultLocale).map((item) => ({ params: { locale: item.path } }));
+}
+const locale = Astro.params.locale as Locale;
+const site = await getLocalizedSite(locale);
+---
+<SpaLayout title={site.copy.blogTitle} description={site.page.blogsDescription} initialPath={`/${Astro.params.locale}/blogs/`} locale={locale} />
+

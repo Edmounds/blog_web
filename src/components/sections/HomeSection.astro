@@ -1,12 +1,14 @@
 ---
-import GradientBackground from "../home/GradientBackground";
 import HomeAbout from "../home/HomeAbout";
 import { getAboutProfile } from "../../lib/content";
+import { getLocalizedAbout } from "../../lib/localized-content";
+import type { Locale } from "../../lib/i18n";
 
-const { homeFeatured } = await getAboutProfile();
+interface Props { locale?: Locale }
+const { locale = "zh-CN" } = Astro.props;
+const { homeFeatured } = locale === "zh-CN" ? await getAboutProfile() : await getLocalizedAbout(locale);
 ---
 <section class="home-gradient-section">
-  <GradientBackground client:load />
   <HomeAbout
     title={homeFeatured.title}
     name={homeFeatured.name}
@@ -23,6 +25,7 @@ const { homeFeatured } = await getAboutProfile();
     padding-top: 128px;
     min-height: 100vh;
     overflow: hidden;
+    background: var(--bg-base);
   }
   @media (min-width: 768px) {
     .home-gradient-section {
@@ -85,55 +88,25 @@ const { homeFeatured } = await getAboutProfile();
     -webkit-backdrop-filter: blur(12px);
   }
 
-  /* Light mode text colors over gradient */
-  :root .home-gradient-section :global(.home-about-title),
-  :root .home-gradient-section :global(.home-about-name),
-  html.light .home-gradient-section :global(.home-about-title),
-  html.light .home-gradient-section :global(.home-about-name) {
-    color: #1a1a2e;
+  .home-gradient-section :global(.home-about-title),
+  .home-gradient-section :global(.home-about-name) {
+    color: var(--text-main);
   }
 
-  :root .home-gradient-section :global(.home-about-desc),
-  :root .home-gradient-section :global(.home-about-location),
-  html.light .home-gradient-section :global(.home-about-desc),
-  html.light .home-gradient-section :global(.home-about-location) {
-    color: #2d2d44;
+  .home-gradient-section :global(.home-about-desc),
+  .home-gradient-section :global(.home-about-location) {
+    color: var(--text-muted);
   }
 
-  :root :global(.home-about-social-link),
-  html.light :global(.home-about-social-link) {
-    color: #1a1a2e;
-    background: rgba(255, 255, 255, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+  :global(.home-about-social-link) {
+    color: var(--text-main);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-strong);
   }
 
-  :root :global(.home-about-social-link:hover),
-  html.light :global(.home-about-social-link:hover) {
-    background: rgba(255, 255, 255, 0.6);
+  :global(.home-about-social-link:hover) {
+    background: var(--bg-subtle);
     transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  }
-
-  /* Dark mode text colors over gradient */
-  html.dark .home-gradient-section :global(.home-about-title),
-  html.dark .home-gradient-section :global(.home-about-name) {
-    color: #ffffff;
-  }
-
-  html.dark .home-gradient-section :global(.home-about-desc),
-  html.dark .home-gradient-section :global(.home-about-location) {
-    color: rgba(255, 255, 255, 0.8);
-  }
-
-  html.dark :global(.home-about-social-link) {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-  }
-
-  html.dark :global(.home-about-social-link:hover) {
-    background: rgba(255, 255, 255, 0.18);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-soft);
   }
 </style>

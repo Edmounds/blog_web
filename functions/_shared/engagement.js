@@ -2,6 +2,7 @@ import { POST_SLUGS } from "./post-slugs.js";
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const VIEW_WINDOW_SECONDS = 6 * 60 * 60;
+const JSON_CONTENT_TYPE = "application/json";
 
 export function normalizeSlug(value) {
   if (typeof value !== "string") return undefined;
@@ -71,6 +72,17 @@ export async function readBodySlug(request) {
   }
 
   return normalizeSlug(body?.slug);
+}
+
+export function requireSameOriginJson(request) {
+  const contentType = request.headers.get("content-type")?.split(";", 1)[0]?.trim().toLowerCase();
+  const origin = request.headers.get("origin");
+  const isSameOrigin = !origin || origin === new URL(request.url).origin;
+  const isCrossSite = request.headers.get("sec-fetch-site") === "cross-site";
+
+  if (contentType === JSON_CONTENT_TYPE && isSameOrigin && !isCrossSite) return;
+
+  throw error(403, "FORBIDDEN_REQUEST", "A same-origin JSON request is required.");
 }
 
 export function readQuerySlug(request) {

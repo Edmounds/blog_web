@@ -11,6 +11,7 @@ interface Props {
   sections: ArchivePostSectionModel[];
   copy?: Partial<ArchiveViewCopy>;
   hideYearHeader?: boolean;
+  mobileDefaultView?: "grid" | "list";
 }
 
 const defaultCopy: ArchiveViewCopy = {
@@ -23,12 +24,21 @@ const defaultCopy: ArchiveViewCopy = {
   listDateLabel: "Date",
 };
 
-const { sections, copy: copyOverrides = {}, hideYearHeader = false } = Astro.props;
+const {
+  sections,
+  copy: copyOverrides = {},
+  hideYearHeader = false,
+  mobileDefaultView = "grid",
+} = Astro.props;
 const copy = { ...defaultCopy, ...copyOverrides };
 ---
 
 <Reveal client:visible>
-  <section data-archive-root class="flex flex-col gap-8">
+  <section
+    data-archive-root
+    data-mobile-default-view={mobileDefaultView}
+    class="flex flex-col gap-8"
+  >
     <ArchiveToolbar searchPlaceholder={copy.searchPlaceholder} />
 
     <p data-archive-empty class="hidden border-t border-[var(--border-soft)] py-8 text-[var(--text-muted)]">
@@ -41,3 +51,15 @@ const copy = { ...defaultCopy, ...copyOverrides };
     <ArchiveViewMotionController client:load />
   </section>
 </Reveal>
+
+<style>
+  @media (max-width: 767px) {
+    [data-archive-root][data-mobile-default-view="list"]:not([data-archive-initialized]) [data-archive-grid] {
+      display: none;
+    }
+
+    [data-archive-root][data-mobile-default-view="list"]:not([data-archive-initialized]) [data-archive-list] {
+      display: block;
+    }
+  }
+</style>

@@ -1,0 +1,1361 @@
+{
+  "version": "2026-07-23.1",
+  "entries": {
+    "en:messages.site.brand": {
+      "fingerprint": "ce57299bcf666b5743d3d5881081aed689e368822dfa758f831cd43a391cc5ab",
+      "translation": "chasen"
+    },
+    "en:messages.site.defaultDescription": {
+      "fingerprint": "0aa7787118f309dab1fe0008de5c3881c6f11647ea51cd7a7b1d1cb577404c67",
+      "translation": "A personal blog and design journal."
+    },
+    "en:messages.site.nav.home": {
+      "fingerprint": "b01c3ab180d63fb733ba9bb6359cb462c79b549e4b09475588db9f09e34356f5",
+      "translation": "Home"
+    },
+    "en:messages.site.nav.blog": {
+      "fingerprint": "c04ae4903070a1c86185784a5024785c3fe2d7d0c74841daca676c61cd88c5ce",
+      "translation": "Blog"
+    },
+    "en:messages.site.nav.art": {
+      "fingerprint": "f52da76251a403f4c21485dbe9a0e9e4dfd09f9e6cfdbcf812b9dbc61effd24c",
+      "translation": "Collections"
+    },
+    "en:messages.site.nav.music": {
+      "fingerprint": "8aa8cce1b0579addd38d4996c3cdabb73bf71309e6843ad28ef38f610589a65b",
+      "translation": "Albums"
+    },
+    "en:messages.site.nav.book": {
+      "fingerprint": "6aabe9abc123f147afc56bac8450ffc8566e5ad259a23e6246d1a59ad2ffcea5",
+      "translation": "Books"
+    },
+    "en:messages.site.nav.about": {
+      "fingerprint": "1a4e9eb893893de6002f6cf32752e2c5f785d12b6b7a5d4f12cfd33b1cc4f3cf",
+      "translation": "About"
+    },
+    "en:messages.site.copy.blogMetaPublished": {
+      "fingerprint": "3b099614884d35148fcbe6153d56a15cb10b3e1ce80daff7d6e6efcbb91812dd",
+      "translation": "Published"
+    },
+    "en:messages.site.copy.blogMetaRead": {
+      "fingerprint": "a0d149067b5a0ecb8ce70c653aaa46e20b223300ff4aced4e4fffbb9a95e0363",
+      "translation": "Reading time"
+    },
+    "en:messages.site.copy.blogReadArticle": {
+      "fingerprint": "3576fa0375b014b1811a7d24590f9e0be91df47bc44f5fea7abd4d89ba2f6da9",
+      "translation": "Read article"
+    },
+    "en:messages.site.copy.blogNextArticle": {
+      "fingerprint": "e06a45f7b39d032d1e20b77f1d39075f4c8975149125bddb1a7643b504c3b168",
+      "translation": "Next article"
+    },
+    "en:messages.site.copy.blogReadNext": {
+      "fingerprint": "aff8d764be688e1573e4937f22800a9b35859b5a4536279c333212ae186fba9c",
+      "translation": "Continue reading"
+    },
+    "en:messages.site.copy.homeRecentBlogsTitle": {
+      "fingerprint": "0b17ba7b23b4519367440fcd2ebd21f5854f85e4605221ca31d51c9881a85d69",
+      "translation": "Recent posts"
+    },
+    "en:messages.site.copy.homeRecentBlogsCta": {
+      "fingerprint": "16f50fd571b21544a86e78a109fd744cc858758149d94b5f3750405c228d270e",
+      "translation": "View all posts"
+    },
+    "en:messages.site.copy.seriesTitle": {
+      "fingerprint": "505e3c853635cd1d18e95e4037e10160d941ba669a5a17ffe442a2795f9cd0ad",
+      "translation": "Series"
+    },
+    "en:messages.site.copy.seriesDescription": {
+      "fingerprint": "7afb274e489b11e75896f2fe27ad55ea97bac955588763c8adbb25e09b29cc8c",
+      "translation": "Related essays and notes organized around a shared theme."
+    },
+    "en:messages.site.copy.seriesAllPostsCta": {
+      "fingerprint": "478bf8f8d180ed2acd8300d5f159fced1d55045de75620922fdff1504ed2c372",
+      "translation": "View series"
+    },
+    "en:messages.site.copy.blogTitle": {
+      "fingerprint": "c04ae4903070a1c86185784a5024785c3fe2d7d0c74841daca676c61cd88c5ce",
+      "translation": "Blog"
+    },
+    "en:messages.site.copy.searchPosts": {
+      "fingerprint": "81bcc65916c7a1c2834fe3be32eb9b521dab10a85fb16f08f2f45b421ab47abc",
+      "translation": "Search posts"
+    },
+    "en:messages.site.copy.emptyPosts": {
+      "fingerprint": "03a62c51a6030ae9624f2ef7493ff2f43f332c4b7884f1ea46bd8be960e5bafc",
+      "translation": "No posts found."
+    },
+    "en:messages.site.copy.postCount": {
+      "fingerprint": "1502a50ab2d7bc0efd8acb098045a6eb1aff7c0c2c8816dd2cf78973ffcbc633",
+      "translation": "posts"
+    },
+    "en:messages.site.copy.grid": {
+      "fingerprint": "5d027ed380655fefeb3a6a9f98b8756f167b7ba2a66757c066f0ba094c056865",
+      "translation": "Grid"
+    },
+    "en:messages.site.copy.list": {
+      "fingerprint": "b40c43c1f16cfb8b25a40b177a2d189e74fccc1dd300fb0094989f55c1d630ec",
+      "translation": "List"
+    },
+    "en:messages.site.copy.title": {
+      "fingerprint": "3cf6043355fc795abb762694895add592b1f6fabe7e2ebb4daf50006f399b296",
+      "translation": "Title"
+    },
+    "en:messages.site.copy.category": {
+      "fingerprint": "4c16e40b6ceb1ffcf924fc90cd78207aaaec14acf83395de6f9620561d94c8f4",
+      "translation": "Category"
+    },
+    "en:messages.site.copy.reading": {
+      "fingerprint": "ab7ab12a99eb74fa7b89695357d6f69acb7543223372398231e7f5e759c9e640",
+      "translation": "Reading"
+    },
+    "en:messages.site.copy.date": {
+      "fingerprint": "4e8dd0b51d4983d58ba1da93af17f3f007d556dd7eb2a89ec36f26ab1288c6de",
+      "translation": "Date"
+    },
+    "en:messages.site.copy.tableOfContents": {
+      "fingerprint": "fdfc7330dc44b923b881c061d3febcacc2bc57d29e2e3f4c43f672cd19cba302",
+      "translation": "On this page"
+    },
+    "en:messages.site.copy.introduction": {
+      "fingerprint": "5d0fdf2bf27620de0691f7445ee368432bb4b0691f7a2f3bdd41db1d9fc191b5",
+      "translation": "Introduction"
+    },
+    "en:messages.site.copy.collapseSection": {
+      "fingerprint": "d5b7f47527bfc4bbcb4992e9c8830545cceac6f8c24e38f286f22b7e73a2eb08",
+      "translation": "Collapse section"
+    },
+    "en:messages.site.copy.expandSection": {
+      "fingerprint": "8e72a2eca34cba223e7a95d6a7a3a4c9cf5a20cd2804a7ea5931020f116be87b",
+      "translation": "Expand section"
+    },
+    "en:messages.site.copy.views": {
+      "fingerprint": "03767f505ce855981cd71c536acc267480ef57cd9cd10aa7f233652bffb9e2c8",
+      "translation": "Views"
+    },
+    "en:messages.site.copy.likes": {
+      "fingerprint": "bcd804b932ee2b7ba77f5835e7936bb078a2751dfa9ca55613248e94167c7c93",
+      "translation": "Likes"
+    },
+    "en:messages.site.copy.like": {
+      "fingerprint": "62d85c3372077995fcbd6200a60103f1194e8772fca0840518d9130cfc1956f4",
+      "translation": "Like"
+    },
+    "en:messages.site.copy.liking": {
+      "fingerprint": "7e45376a3f1c23cbec1ea32a3f747bf645801a0893ca1bfc1bd308f350c69580",
+      "translation": "Liking"
+    },
+    "en:messages.site.copy.engagementLabel": {
+      "fingerprint": "d6b5b0fd108dda861be9446c539afbee92aedb163cf2bdd713aeaa5d0c7a7fd6",
+      "translation": "Post engagement"
+    },
+    "en:messages.site.copy.statsUnavailable": {
+      "fingerprint": "78f6723605fee11cce7c5e7f88f7ba440578554240f30370697eccbf07c5d5ca",
+      "translation": "Post statistics are temporarily unavailable."
+    },
+    "en:messages.site.copy.comments": {
+      "fingerprint": "5d27523e7727ea59eea12efce0e97d06a883a0fd118a8b0121f473ebfde95690",
+      "translation": "Comments"
+    },
+    "en:messages.site.copy.commentName": {
+      "fingerprint": "19b00671c4050678576c0561b9f0e7b87ca82b664acdc72d74ead59058d263d9",
+      "translation": "Name"
+    },
+    "en:messages.site.copy.commentContent": {
+      "fingerprint": "aaa87fffe31522f66560f6b5964ff4b8449e1513f9a5dd3f9083061830f2ce5d",
+      "translation": "Comment"
+    },
+    "en:messages.site.copy.commentDisclosure": {
+      "fingerprint": "e345753ba7c60eb42a91a4b4ab0f6a5109c2b9933c8e5bbc5fa3707da0cef369",
+      "translation": "After publishing, the inferred device system, approximate region, and Beijing time will be displayed publicly. Your IP address will not be shown."
+    },
+    "en:messages.site.copy.commentSubmit": {
+      "fingerprint": "d1813169f93d5db5ab8373f9266eeca0d98bae869828b663792a455bb191a0aa",
+      "translation": "Post comment"
+    },
+    "en:messages.site.copy.commentSubmitting": {
+      "fingerprint": "0780254965153c3da39c6260df2eac1b215de1512c71ae6b265df1778dabe7d3",
+      "translation": "Posting"
+    },
+    "en:messages.site.copy.commentLoading": {
+      "fingerprint": "5a3968bdb8b8db35f41b941b9ee484379d5525811b551d34f2b77dead7c309e5",
+      "translation": "Loading comments"
+    },
+    "en:messages.site.copy.commentReload": {
+      "fingerprint": "d366dab3a124e164c865d5390d1955ab21b854863b68bc478843c44d056ff4a9",
+      "translation": "Reload"
+    },
+    "en:messages.site.copy.commentEmpty": {
+      "fingerprint": "fe69abf276c0e1fb6ffdad4649ea5e1f01eb03d266e0e2979c9b12110f9ff95e",
+      "translation": "No comments yet. Be the first to leave one."
+    },
+    "en:messages.site.copy.commentLoadMore": {
+      "fingerprint": "828e0cbae5cc5c69476a2416377d74cff3a40fdc44e4a9976e3f1240f1cdfbff",
+      "translation": "Load more"
+    },
+    "en:messages.site.copy.commentLoadingMore": {
+      "fingerprint": "8338eaa563ceb401969be7594d61d8fbfdf51f34ed26a657ef56d2cf18f25ec0",
+      "translation": "Loading"
+    },
+    "en:messages.site.copy.commentNameInvalid": {
+      "fingerprint": "25d9200855b5815bc0ba88e09f9db6b834b86734885d90c53cd894fda8d1a3b1",
+      "translation": "The name must contain 1 to 20 characters."
+    },
+    "en:messages.site.copy.commentContentInvalid": {
+      "fingerprint": "906785609eea9ca4f9072be4c432a8e862b08f7282efb2ab1ae35617926ad529",
+      "translation": "The comment must contain 1 to 500 characters."
+    },
+    "en:messages.site.copy.commentPublished": {
+      "fingerprint": "fb8ef7cacc3119088caef100abefbe9da9cea2d380de788c3185552c75144ffd",
+      "translation": "Comment published."
+    },
+    "en:messages.site.copy.commentLoadFailed": {
+      "fingerprint": "c6cd864648d7e00a50e0e0f3890c154a6656c8714e28b4a31a55ab2011ab5f54",
+      "translation": "Comments could not be loaded. Please try again later."
+    },
+    "en:messages.site.copy.commentSubmitFailed": {
+      "fingerprint": "3e3eb4c63c03f278c26fb9716839eb2cd48ef4a2aad26258d5923c337c2db394",
+      "translation": "The comment could not be published. Please try again later."
+    },
+    "en:messages.site.copy.requestFailed": {
+      "fingerprint": "439b7eeec3070718d72723151cdee80edfeed5cb29c511ce073a98436abeec1f",
+      "translation": "The request failed. Please try again later."
+    },
+    "en:messages.site.copy.themeToggle": {
+      "fingerprint": "3d46429cb1debdf7f4779edc2818fea04835658d619ddf51717c4fd40719f5dc",
+      "translation": "Toggle theme"
+    },
+    "en:messages.site.copy.themeLight": {
+      "fingerprint": "dfe1bdf3e8d1d039f3f28568d5edc0788d037ed298c4db2a1c7dbf3a2883b534",
+      "translation": "Switch to light theme"
+    },
+    "en:messages.site.copy.themeDark": {
+      "fingerprint": "38eb047d2ffc75a1310ad1fa2bc373a8fb2525f96ba455c8941058eb5628ae26",
+      "translation": "Switch to dark theme"
+    },
+    "en:messages.site.copy.languageSelect": {
+      "fingerprint": "eacf80238042e58a527aff36987dbbee463cfed819d3207a39165be61359f8e2",
+      "translation": "Select language"
+    },
+    "en:messages.site.copy.copyright": {
+      "fingerprint": "f574e41d415b7686350911d292a831d85102ed77e0e93bac03ab510b43a447f3",
+      "translation": "All rights reserved."
+    },
+    "en:messages.site.page.homeTitle": {
+      "fingerprint": "b01c3ab180d63fb733ba9bb6359cb462c79b549e4b09475588db9f09e34356f5",
+      "translation": "Home"
+    },
+    "en:messages.site.page.homeDescription": {
+      "fingerprint": "e6e8daff48aa315119a64c48a2b5aa7c412c21e7130d5e2884f56c0cd94ce282",
+      "translation": "Design thoughts, posts, and personal notes."
+    },
+    "en:messages.site.page.blogsDescription": {
+      "fingerprint": "70f15bbe2ba80b81058be8ed6c5afb08055ec2e2c9a87aed7cb4fbb770435c01",
+      "translation": "An archive of posts and notes."
+    },
+    "en:messages.site.page.aboutDescription": {
+      "fingerprint": "2c8191b485dbbaacf01145ee291d686b5d85a3e22a5d4b3abe4ebc043d8771ee",
+      "translation": "Background, interests, and personal notes from chasen."
+    },
+    "en:messages.site.page.musicDescription": {
+      "fingerprint": "e4e6a2c76f000b877592b956e749b4bcf6081401d19d3bc2006effa4593f17df",
+      "translation": "Album collection"
+    },
+    "en:messages.site.page.bookDescription": {
+      "fingerprint": "ec88abbacca586661fdcdd84fdda8533f3c52029ff42485a4a4f33c211145219",
+      "translation": "Book collection"
+    },
+    "en:content.blog.designing-for-clarity-in-chaos.md.frontmatter.title": {
+      "fingerprint": "111b4642e95b07cfdf398740056d29cf2e9661854bcd2cf96276d51b1bf7d964",
+      "translation": "Hello"
+    },
+    "en:content.blog.designing-for-clarity-in-chaos.md.frontmatter.summary": {
+      "fingerprint": "30ab039606aad612f9f2d6ca10baec2b0f10895e486c55074503c2fd31ad4f0e",
+      "translation": "My first blog post."
+    },
+    "en:content.blog.designing-for-clarity-in-chaos.md.frontmatter.readingTime": {
+      "fingerprint": "f540a0231c84048149616831a68656751c2f82b479db0f09f30aabfedf4d94f0",
+      "translation": "1 min"
+    },
+    "en:content.blog.designing-for-clarity-in-chaos.md.frontmatter.category": {
+      "fingerprint": "c1399bdb4690fa815a358abdd3e3a2e412e87591e6d2f89741c78bc13f9c4348",
+      "translation": "Notes"
+    },
+    "en:content.blog.designing-for-clarity-in-chaos.md.frontmatter.tags[0]": {
+      "fingerprint": "c1399bdb4690fa815a358abdd3e3a2e412e87591e6d2f89741c78bc13f9c4348",
+      "translation": "Notes"
+    },
+    "en:content.blog.designing-for-clarity-in-chaos.md.body[0]": {
+      "fingerprint": "350d1f0f4886a9c66c4abcc5efb5a975b2ebc89768e2ae43929d927ca516ada4",
+      "translation": "Hello, and welcome to my blog."
+    },
+    "en:content.blog.designing-for-clarity-in-chaos.md.body[1]": {
+      "fingerprint": "0f42d7129012f5c959a8431b00d20ab93034687b593ea36f3ca7cba71d811c14",
+      "translation": "This is the first post I am leaving here, and a simple beginning."
+    },
+    "en:content.about.profile.md.frontmatter.brand": {
+      "fingerprint": "c318af77e55e9a12eace5eef3a8350e9e90a2ec3643c7456eb205aeb06e3ad07",
+      "translation": "Chasen Design"
+    },
+    "en:content.about.profile.md.frontmatter.titleLeading": {
+      "fingerprint": "8ab6aee601d226ea4c64dd24a3324d6f158954228e84b79b7c391e7a893d7c1f",
+      "translation": "Hello, I am"
+    },
+    "en:content.about.profile.md.frontmatter.titleName": {
+      "fingerprint": "7c1320eaf781ec34911356a93050b628aa73a23dcd30eefbb06b4298ec8d44ae",
+      "translation": "Chasen"
+    },
+    "en:content.about.profile.md.frontmatter.subtitle": {
+      "fingerprint": "6bcfd1b1c6996483dc47bb27ea7a23dcb0051fe2d3ba203980662607eb2f477c",
+      "translation": "A product designer and writer exploring clear, thoughtful digital experiences."
+    },
+    "en:content.about.profile.md.frontmatter.meta[0].label": {
+      "fingerprint": "f2d6bada9e8c95c4359bb17f6f5318dcb3092ac66eed4186491f04ec81e72c3f",
+      "translation": "Role"
+    },
+    "en:content.about.profile.md.frontmatter.meta[0].value": {
+      "fingerprint": "1f9eb3244bff1378f4f82c5de1a6727422533064160cab4065042da4d2fe9ab6",
+      "translation": "Product Designer"
+    },
+    "en:content.about.profile.md.frontmatter.meta[1].label": {
+      "fingerprint": "87a0270949b075883e5ae6622f5cfc6950b284311061fad246591d805edcf131",
+      "translation": "Location"
+    },
+    "en:content.about.profile.md.frontmatter.meta[1].value": {
+      "fingerprint": "689727cf08aebe1105f0d96500bffd365526649bb52a83feb2a1de690e487c5f",
+      "translation": "Chongqing, China"
+    },
+    "en:content.about.profile.md.frontmatter.meta[2].label": {
+      "fingerprint": "f1cffa5534ccf762a43b6ba347bebaf582ea0f6f9c8b8033aafd86a243752a17",
+      "translation": "Focus"
+    },
+    "en:content.about.profile.md.frontmatter.meta[2].value": {
+      "fingerprint": "f3b48e44bcbd54f9cdf76c3de00539e436a3301ec7a183895f28fbc60c02ed2c",
+      "translation": "Design Systems and AI Interfaces"
+    },
+    "en:content.about.profile.md.frontmatter.story[0]": {
+      "fingerprint": "9a49f50dbbb024a4dc8ef06c0cb98b2aaca11ec6f0df535b70f8a25a778c42d6",
+      "translation": "I care about making complex tools feel calm and easy to understand."
+    },
+    "en:content.about.profile.md.frontmatter.story[1]": {
+      "fingerprint": "785e4f155cd041a0768aaa3f8cdedcbefff683a52a9e6e3bea9cae01f9cf5bc1",
+      "translation": "This profile summarizes the principles I return to, while the rest of the site records work and experiments in progress."
+    },
+    "en:content.about.profile.md.frontmatter.story[2]": {
+      "fingerprint": "8e120a97f5355c306eb73c6f23ceda824c643a153773e1f755c2053b0a773394",
+      "translation": "不设计界面的时候，我可能会去马林县的小径徒步旅行、煮咖啡或阅读有关中世纪家具设计的书籍。"
+    },
+    "en:content.about.profile.md.frontmatter.focusCards[0].title": {
+      "fingerprint": "92688c1d16d3b3306f4eb2ca46b55b8535e97293b2c1ec9bc3fbc5273a8f2403",
+      "translation": "Design Systems"
+    },
+    "en:content.about.profile.md.frontmatter.focusCards[0].text": {
+      "fingerprint": "5f64db465b5a73e5e6f6660993da31eb29ef7bbfceed6093ae89dd95a86d9414",
+      "translation": "Building consistent visual languages and reusable product foundations."
+    },
+    "en:content.about.profile.md.frontmatter.focusCards[1].title": {
+      "fingerprint": "3bbc853934bc21fab596d43e467f3f72179a5246d29658ee75a3649fac2879a0",
+      "translation": "AI Interfaces"
+    },
+    "en:content.about.profile.md.frontmatter.focusCards[1].text": {
+      "fingerprint": "1dcf2fd7906c609011890de24b281de35c76ce75afd493e27d3531577b1a97c3",
+      "translation": "Exploring natural-language interaction and new ways for people to work with intelligent tools."
+    },
+    "en:content.about.profile.md.frontmatter.experience[0].years": {
+      "fingerprint": "d30c65c975bdf717095671d86a201ec2020ff51f19c7fa1ac6bd53c063fbd267",
+      "translation": "Present"
+    },
+    "en:content.about.profile.md.frontmatter.experience[0].role": {
+      "fingerprint": "1f9eb3244bff1378f4f82c5de1a6727422533064160cab4065042da4d2fe9ab6",
+      "translation": "Product Designer"
+    },
+    "en:content.about.profile.md.frontmatter.experience[0].company": {
+      "fingerprint": "955fa78050c6f63119c1dad272ebc89a68ecbf6954088df2ed123cfc431c8fda",
+      "translation": "Independent"
+    },
+    "en:content.about.profile.md.frontmatter.experience[0].text": {
+      "fingerprint": "578e2f5c7aa7c01b069f63fc79a01cbf44f559c9faef851b3abc0afe47a5aa43",
+      "translation": "Designing and documenting digital products, interfaces, and experiments."
+    },
+    "en:content.about.profile.md.frontmatter.experience[1].years": {
+      "fingerprint": "32f0ee2a632d4f6f672c777814844077ac5c8347b13c29d45f7417fe575c4729",
+      "translation": "2019 - 2022"
+    },
+    "en:content.about.profile.md.frontmatter.experience[1].role": {
+      "fingerprint": "a648518895d606ccacf93880ac04cc06d77d83f3eb2d87323014e9d32afd58a9",
+      "translation": "用户体验设计师"
+    },
+    "en:content.about.profile.md.frontmatter.experience[1].company": {
+      "fingerprint": "fd22ed95302a7157da8c166c2313860862e69b1f328aafac23bbb419453bc040",
+      "translation": "创意机构 XYZ"
+    },
+    "en:content.about.profile.md.frontmatter.experience[1].text": {
+      "fingerprint": "da9e1767964899619cdb7d71b96612bcbe90c232edf63273eb4c3737c16c3f6c",
+      "translation": "曾与从金融科技到医疗保健的不同客户合作。提供从线框图到高保真原型的端到端设计解决方案。"
+    },
+    "en:content.about.profile.md.frontmatter.experience[2].years": {
+      "fingerprint": "ab8b2ca4018fb8c77a4a4815116bdb2704c3b2578e357e29304ac9cf5cdfc7c3",
+      "translation": "2017 - 2019"
+    },
+    "en:content.about.profile.md.frontmatter.experience[2].role": {
+      "fingerprint": "73ea57fe578e7cfbe2cd7097e2793377a4aa7e135a1ab4bb341799ba89a11eea",
+      "translation": "初级建筑师"
+    },
+    "en:content.about.profile.md.frontmatter.experience[2].company": {
+      "fingerprint": "8422372691721202e35de1d7e56ccace9c441d20e98b5540cb36b11f91682af3",
+      "translation": "建设与合作伙伴"
+    },
+    "en:content.about.profile.md.frontmatter.experience[2].text": {
+      "fingerprint": "0601fa90cf40531ee7ab76a55ea903b47184ab95f3aa462740aa1c38d18badcc",
+      "translation": "专注于可持续住宅项目。物理空间的基础在很大程度上影响了我的数字布局理念。"
+    },
+    "en:content.about.profile.md.frontmatter.availability": {
+      "fingerprint": "dc287de67a57eecffa318b22577072d3912fdedbc7087292bf38da5ec0897c95",
+      "translation": "Open to opportunities"
+    },
+    "en:content.about.profile.md.frontmatter.homeFeatured.badge": {
+      "fingerprint": "35487f46cfcb129f84b74789194970f80527b0db38eff61231486546f922f0be",
+      "translation": "Featured profile"
+    },
+    "en:content.about.profile.md.frontmatter.homeFeatured.title": {
+      "fingerprint": "0c598a16f5e63457c0d3c9c2ccbc10e9a5547d58ada98a7b8dd81bbdf63b5bf0",
+      "translation": "About me"
+    },
+    "en:content.about.profile.md.frontmatter.homeFeatured.name": {
+      "fingerprint": "28456c7d9b551a0be99387f5945828baef742bd499d24b75a101af02b5ab03a6",
+      "translation": "Chasen Chen"
+    },
+    "en:content.about.profile.md.frontmatter.homeFeatured.description": {
+      "fingerprint": "d963625c06066697666c9a531f17a2f4282ef5dd58aaa698d77d0385eb025541",
+      "translation": "I am a designer and writer exploring the subtle intersection between large language models and the unpredictable nature of human creativity."
+    },
+    "en:content.about.profile.md.frontmatter.homeFeatured.location": {
+      "fingerprint": "689727cf08aebe1105f0d96500bffd365526649bb52a83feb2a1de690e487c5f",
+      "translation": "Chongqing, China"
+    },
+    "en:content.about.profile.md.body[0]": {
+      "fingerprint": "6774a97d6528f904d4769a746ade1c7634a829e09cd9e58d021c9ee5d375dbc9",
+      "translation": "I focus on making complex tools feel calm and readable."
+    },
+    "en:content.about.profile.md.body[1]": {
+      "fingerprint": "97fedf2b8279ae5de12d9a3628c68ea4582a4a70bc0d5bcdc4d1d01ff2822934",
+      "translation": "This profile captures the principles I return to. The rest of the site records experiments in progress."
+    },
+    "ja:messages.site.brand": {
+      "fingerprint": "ce57299bcf666b5743d3d5881081aed689e368822dfa758f831cd43a391cc5ab",
+      "translation": "chasen"
+    },
+    "ja:messages.site.defaultDescription": {
+      "fingerprint": "0aa7787118f309dab1fe0008de5c3881c6f11647ea51cd7a7b1d1cb577404c67",
+      "translation": "個人ブログとデザインの記録。"
+    },
+    "ja:messages.site.nav.home": {
+      "fingerprint": "b01c3ab180d63fb733ba9bb6359cb462c79b549e4b09475588db9f09e34356f5",
+      "translation": "ホーム"
+    },
+    "ja:messages.site.nav.blog": {
+      "fingerprint": "c04ae4903070a1c86185784a5024785c3fe2d7d0c74841daca676c61cd88c5ce",
+      "translation": "ブログ"
+    },
+    "ja:messages.site.nav.art": {
+      "fingerprint": "f52da76251a403f4c21485dbe9a0e9e4dfd09f9e6cfdbcf812b9dbc61effd24c",
+      "translation": "コレクション"
+    },
+    "ja:messages.site.nav.music": {
+      "fingerprint": "8aa8cce1b0579addd38d4996c3cdabb73bf71309e6843ad28ef38f610589a65b",
+      "translation": "アルバム"
+    },
+    "ja:messages.site.nav.book": {
+      "fingerprint": "6aabe9abc123f147afc56bac8450ffc8566e5ad259a23e6246d1a59ad2ffcea5",
+      "translation": "本"
+    },
+    "ja:messages.site.nav.about": {
+      "fingerprint": "1a4e9eb893893de6002f6cf32752e2c5f785d12b6b7a5d4f12cfd33b1cc4f3cf",
+      "translation": "プロフィール"
+    },
+    "ja:messages.site.copy.blogMetaPublished": {
+      "fingerprint": "3b099614884d35148fcbe6153d56a15cb10b3e1ce80daff7d6e6efcbb91812dd",
+      "translation": "公開日"
+    },
+    "ja:messages.site.copy.blogMetaRead": {
+      "fingerprint": "a0d149067b5a0ecb8ce70c653aaa46e20b223300ff4aced4e4fffbb9a95e0363",
+      "translation": "読了時間"
+    },
+    "ja:messages.site.copy.blogReadArticle": {
+      "fingerprint": "3576fa0375b014b1811a7d24590f9e0be91df47bc44f5fea7abd4d89ba2f6da9",
+      "translation": "記事を読む"
+    },
+    "ja:messages.site.copy.blogNextArticle": {
+      "fingerprint": "e06a45f7b39d032d1e20b77f1d39075f4c8975149125bddb1a7643b504c3b168",
+      "translation": "次の記事"
+    },
+    "ja:messages.site.copy.blogReadNext": {
+      "fingerprint": "aff8d764be688e1573e4937f22800a9b35859b5a4536279c333212ae186fba9c",
+      "translation": "続きを読む"
+    },
+    "ja:messages.site.copy.homeRecentBlogsTitle": {
+      "fingerprint": "0b17ba7b23b4519367440fcd2ebd21f5854f85e4605221ca31d51c9881a85d69",
+      "translation": "最近の記事"
+    },
+    "ja:messages.site.copy.homeRecentBlogsCta": {
+      "fingerprint": "16f50fd571b21544a86e78a109fd744cc858758149d94b5f3750405c228d270e",
+      "translation": "すべての記事を見る"
+    },
+    "ja:messages.site.copy.seriesTitle": {
+      "fingerprint": "505e3c853635cd1d18e95e4037e10160d941ba669a5a17ffe442a2795f9cd0ad",
+      "translation": "シリーズ"
+    },
+    "ja:messages.site.copy.seriesDescription": {
+      "fingerprint": "7afb274e489b11e75896f2fe27ad55ea97bac955588763c8adbb25e09b29cc8c",
+      "translation": "共通のテーマでまとめたエッセイとメモ。"
+    },
+    "ja:messages.site.copy.seriesAllPostsCta": {
+      "fingerprint": "478bf8f8d180ed2acd8300d5f159fced1d55045de75620922fdff1504ed2c372",
+      "translation": "シリーズを見る"
+    },
+    "ja:messages.site.copy.blogTitle": {
+      "fingerprint": "c04ae4903070a1c86185784a5024785c3fe2d7d0c74841daca676c61cd88c5ce",
+      "translation": "ブログ"
+    },
+    "ja:messages.site.copy.searchPosts": {
+      "fingerprint": "81bcc65916c7a1c2834fe3be32eb9b521dab10a85fb16f08f2f45b421ab47abc",
+      "translation": "記事を検索"
+    },
+    "ja:messages.site.copy.emptyPosts": {
+      "fingerprint": "03a62c51a6030ae9624f2ef7493ff2f43f332c4b7884f1ea46bd8be960e5bafc",
+      "translation": "記事が見つかりませんでした。"
+    },
+    "ja:messages.site.copy.postCount": {
+      "fingerprint": "1502a50ab2d7bc0efd8acb098045a6eb1aff7c0c2c8816dd2cf78973ffcbc633",
+      "translation": "件"
+    },
+    "ja:messages.site.copy.grid": {
+      "fingerprint": "5d027ed380655fefeb3a6a9f98b8756f167b7ba2a66757c066f0ba094c056865",
+      "translation": "グリッド"
+    },
+    "ja:messages.site.copy.list": {
+      "fingerprint": "b40c43c1f16cfb8b25a40b177a2d189e74fccc1dd300fb0094989f55c1d630ec",
+      "translation": "リスト"
+    },
+    "ja:messages.site.copy.title": {
+      "fingerprint": "3cf6043355fc795abb762694895add592b1f6fabe7e2ebb4daf50006f399b296",
+      "translation": "タイトル"
+    },
+    "ja:messages.site.copy.category": {
+      "fingerprint": "4c16e40b6ceb1ffcf924fc90cd78207aaaec14acf83395de6f9620561d94c8f4",
+      "translation": "カテゴリー"
+    },
+    "ja:messages.site.copy.reading": {
+      "fingerprint": "ab7ab12a99eb74fa7b89695357d6f69acb7543223372398231e7f5e759c9e640",
+      "translation": "読了時間"
+    },
+    "ja:messages.site.copy.date": {
+      "fingerprint": "4e8dd0b51d4983d58ba1da93af17f3f007d556dd7eb2a89ec36f26ab1288c6de",
+      "translation": "日付"
+    },
+    "ja:messages.site.copy.tableOfContents": {
+      "fingerprint": "fdfc7330dc44b923b881c061d3febcacc2bc57d29e2e3f4c43f672cd19cba302",
+      "translation": "目次"
+    },
+    "ja:messages.site.copy.introduction": {
+      "fingerprint": "5d0fdf2bf27620de0691f7445ee368432bb4b0691f7a2f3bdd41db1d9fc191b5",
+      "translation": "はじめに"
+    },
+    "ja:messages.site.copy.collapseSection": {
+      "fingerprint": "d5b7f47527bfc4bbcb4992e9c8830545cceac6f8c24e38f286f22b7e73a2eb08",
+      "translation": "セクションを閉じる"
+    },
+    "ja:messages.site.copy.expandSection": {
+      "fingerprint": "8e72a2eca34cba223e7a95d6a7a3a4c9cf5a20cd2804a7ea5931020f116be87b",
+      "translation": "セクションを開く"
+    },
+    "ja:messages.site.copy.views": {
+      "fingerprint": "03767f505ce855981cd71c536acc267480ef57cd9cd10aa7f233652bffb9e2c8",
+      "translation": "閲覧"
+    },
+    "ja:messages.site.copy.likes": {
+      "fingerprint": "bcd804b932ee2b7ba77f5835e7936bb078a2751dfa9ca55613248e94167c7c93",
+      "translation": "いいね"
+    },
+    "ja:messages.site.copy.like": {
+      "fingerprint": "62d85c3372077995fcbd6200a60103f1194e8772fca0840518d9130cfc1956f4",
+      "translation": "いいね"
+    },
+    "ja:messages.site.copy.liking": {
+      "fingerprint": "7e45376a3f1c23cbec1ea32a3f747bf645801a0893ca1bfc1bd308f350c69580",
+      "translation": "送信中"
+    },
+    "ja:messages.site.copy.engagementLabel": {
+      "fingerprint": "d6b5b0fd108dda861be9446c539afbee92aedb163cf2bdd713aeaa5d0c7a7fd6",
+      "translation": "記事への反応"
+    },
+    "ja:messages.site.copy.statsUnavailable": {
+      "fingerprint": "78f6723605fee11cce7c5e7f88f7ba440578554240f30370697eccbf07c5d5ca",
+      "translation": "記事の統計情報は一時的に利用できません。"
+    },
+    "ja:messages.site.copy.comments": {
+      "fingerprint": "5d27523e7727ea59eea12efce0e97d06a883a0fd118a8b0121f473ebfde95690",
+      "translation": "コメント"
+    },
+    "ja:messages.site.copy.commentName": {
+      "fingerprint": "19b00671c4050678576c0561b9f0e7b87ca82b664acdc72d74ead59058d263d9",
+      "translation": "名前"
+    },
+    "ja:messages.site.copy.commentContent": {
+      "fingerprint": "aaa87fffe31522f66560f6b5964ff4b8449e1513f9a5dd3f9083061830f2ce5d",
+      "translation": "コメント内容"
+    },
+    "ja:messages.site.copy.commentDisclosure": {
+      "fingerprint": "e345753ba7c60eb42a91a4b4ab0f6a5109c2b9933c8e5bbc5fa3707da0cef369",
+      "translation": "公開後は、サーバーが推定した端末のOS、おおよその地域、北京時間が表示されます。IPアドレスは公開されません。"
+    },
+    "ja:messages.site.copy.commentSubmit": {
+      "fingerprint": "d1813169f93d5db5ab8373f9266eeca0d98bae869828b663792a455bb191a0aa",
+      "translation": "コメントを投稿"
+    },
+    "ja:messages.site.copy.commentSubmitting": {
+      "fingerprint": "0780254965153c3da39c6260df2eac1b215de1512c71ae6b265df1778dabe7d3",
+      "translation": "投稿中"
+    },
+    "ja:messages.site.copy.commentLoading": {
+      "fingerprint": "5a3968bdb8b8db35f41b941b9ee484379d5525811b551d34f2b77dead7c309e5",
+      "translation": "コメントを読み込み中"
+    },
+    "ja:messages.site.copy.commentReload": {
+      "fingerprint": "d366dab3a124e164c865d5390d1955ab21b854863b68bc478843c44d056ff4a9",
+      "translation": "再読み込み"
+    },
+    "ja:messages.site.copy.commentEmpty": {
+      "fingerprint": "fe69abf276c0e1fb6ffdad4649ea5e1f01eb03d266e0e2979c9b12110f9ff95e",
+      "translation": "まだコメントはありません。最初のコメントを残してみましょう。"
+    },
+    "ja:messages.site.copy.commentLoadMore": {
+      "fingerprint": "828e0cbae5cc5c69476a2416377d74cff3a40fdc44e4a9976e3f1240f1cdfbff",
+      "translation": "さらに読み込む"
+    },
+    "ja:messages.site.copy.commentLoadingMore": {
+      "fingerprint": "8338eaa563ceb401969be7594d61d8fbfdf51f34ed26a657ef56d2cf18f25ec0",
+      "translation": "読み込み中"
+    },
+    "ja:messages.site.copy.commentNameInvalid": {
+      "fingerprint": "25d9200855b5815bc0ba88e09f9db6b834b86734885d90c53cd894fda8d1a3b1",
+      "translation": "名前は1文字以上20文字以内で入力してください。"
+    },
+    "ja:messages.site.copy.commentContentInvalid": {
+      "fingerprint": "906785609eea9ca4f9072be4c432a8e862b08f7282efb2ab1ae35617926ad529",
+      "translation": "コメントは1文字以上500文字以内で入力してください。"
+    },
+    "ja:messages.site.copy.commentPublished": {
+      "fingerprint": "fb8ef7cacc3119088caef100abefbe9da9cea2d380de788c3185552c75144ffd",
+      "translation": "コメントを投稿しました。"
+    },
+    "ja:messages.site.copy.commentLoadFailed": {
+      "fingerprint": "c6cd864648d7e00a50e0e0f3890c154a6656c8714e28b4a31a55ab2011ab5f54",
+      "translation": "コメントを読み込めませんでした。しばらくしてからもう一度お試しください。"
+    },
+    "ja:messages.site.copy.commentSubmitFailed": {
+      "fingerprint": "3e3eb4c63c03f278c26fb9716839eb2cd48ef4a2aad26258d5923c337c2db394",
+      "translation": "コメントを投稿できませんでした。しばらくしてからもう一度お試しください。"
+    },
+    "ja:messages.site.copy.requestFailed": {
+      "fingerprint": "439b7eeec3070718d72723151cdee80edfeed5cb29c511ce073a98436abeec1f",
+      "translation": "リクエストに失敗しました。しばらくしてからもう一度お試しください。"
+    },
+    "ja:messages.site.copy.themeToggle": {
+      "fingerprint": "3d46429cb1debdf7f4779edc2818fea04835658d619ddf51717c4fd40719f5dc",
+      "translation": "テーマを切り替える"
+    },
+    "ja:messages.site.copy.themeLight": {
+      "fingerprint": "dfe1bdf3e8d1d039f3f28568d5edc0788d037ed298c4db2a1c7dbf3a2883b534",
+      "translation": "ライトテーマに切り替える"
+    },
+    "ja:messages.site.copy.themeDark": {
+      "fingerprint": "38eb047d2ffc75a1310ad1fa2bc373a8fb2525f96ba455c8941058eb5628ae26",
+      "translation": "ダークテーマに切り替える"
+    },
+    "ja:messages.site.copy.languageSelect": {
+      "fingerprint": "eacf80238042e58a527aff36987dbbee463cfed819d3207a39165be61359f8e2",
+      "translation": "言語を選択"
+    },
+    "ja:messages.site.copy.copyright": {
+      "fingerprint": "f574e41d415b7686350911d292a831d85102ed77e0e93bac03ab510b43a447f3",
+      "translation": "無断転載を禁じます。"
+    },
+    "ja:messages.site.page.homeTitle": {
+      "fingerprint": "b01c3ab180d63fb733ba9bb6359cb462c79b549e4b09475588db9f09e34356f5",
+      "translation": "ホーム"
+    },
+    "ja:messages.site.page.homeDescription": {
+      "fingerprint": "e6e8daff48aa315119a64c48a2b5aa7c412c21e7130d5e2884f56c0cd94ce282",
+      "translation": "デザインについての考え、記事、個人的なメモ。"
+    },
+    "ja:messages.site.page.blogsDescription": {
+      "fingerprint": "70f15bbe2ba80b81058be8ed6c5afb08055ec2e2c9a87aed7cb4fbb770435c01",
+      "translation": "記事とメモのアーカイブ。"
+    },
+    "ja:messages.site.page.aboutDescription": {
+      "fingerprint": "2c8191b485dbbaacf01145ee291d686b5d85a3e22a5d4b3abe4ebc043d8771ee",
+      "translation": "chasenの経歴、関心、個人的な記録。"
+    },
+    "ja:messages.site.page.musicDescription": {
+      "fingerprint": "e4e6a2c76f000b877592b956e749b4bcf6081401d19d3bc2006effa4593f17df",
+      "translation": "アルバムコレクション"
+    },
+    "ja:messages.site.page.bookDescription": {
+      "fingerprint": "ec88abbacca586661fdcdd84fdda8533f3c52029ff42485a4a4f33c211145219",
+      "translation": "本のコレクション"
+    },
+    "ja:content.blog.designing-for-clarity-in-chaos.md.frontmatter.title": {
+      "fingerprint": "111b4642e95b07cfdf398740056d29cf2e9661854bcd2cf96276d51b1bf7d964",
+      "translation": "こんにちは"
+    },
+    "ja:content.blog.designing-for-clarity-in-chaos.md.frontmatter.summary": {
+      "fingerprint": "30ab039606aad612f9f2d6ca10baec2b0f10895e486c55074503c2fd31ad4f0e",
+      "translation": "私の最初のブログ記事です。"
+    },
+    "ja:content.blog.designing-for-clarity-in-chaos.md.frontmatter.readingTime": {
+      "fingerprint": "f540a0231c84048149616831a68656751c2f82b479db0f09f30aabfedf4d94f0",
+      "translation": "1分"
+    },
+    "ja:content.blog.designing-for-clarity-in-chaos.md.frontmatter.category": {
+      "fingerprint": "c1399bdb4690fa815a358abdd3e3a2e412e87591e6d2f89741c78bc13f9c4348",
+      "translation": "エッセイ"
+    },
+    "ja:content.blog.designing-for-clarity-in-chaos.md.frontmatter.tags[0]": {
+      "fingerprint": "c1399bdb4690fa815a358abdd3e3a2e412e87591e6d2f89741c78bc13f9c4348",
+      "translation": "エッセイ"
+    },
+    "ja:content.blog.designing-for-clarity-in-chaos.md.body[0]": {
+      "fingerprint": "350d1f0f4886a9c66c4abcc5efb5a975b2ebc89768e2ae43929d927ca516ada4",
+      "translation": "こんにちは。私のブログへようこそ。"
+    },
+    "ja:content.blog.designing-for-clarity-in-chaos.md.body[1]": {
+      "fingerprint": "0f42d7129012f5c959a8431b00d20ab93034687b593ea36f3ca7cba71d811c14",
+      "translation": "これはここに残す最初の記事であり、ささやかな始まりでもあります。"
+    },
+    "ja:content.about.profile.md.frontmatter.brand": {
+      "fingerprint": "c318af77e55e9a12eace5eef3a8350e9e90a2ec3643c7456eb205aeb06e3ad07",
+      "translation": "Chasen Design"
+    },
+    "ja:content.about.profile.md.frontmatter.titleLeading": {
+      "fingerprint": "8ab6aee601d226ea4c64dd24a3324d6f158954228e84b79b7c391e7a893d7c1f",
+      "translation": "こんにちは、"
+    },
+    "ja:content.about.profile.md.frontmatter.titleName": {
+      "fingerprint": "7c1320eaf781ec34911356a93050b628aa73a23dcd30eefbb06b4298ec8d44ae",
+      "translation": "Chasenです"
+    },
+    "ja:content.about.profile.md.frontmatter.subtitle": {
+      "fingerprint": "6bcfd1b1c6996483dc47bb27ea7a23dcb0051fe2d3ba203980662607eb2f477c",
+      "translation": "明快で思慮深いデジタル体験を探求するプロダクトデザイナー兼ライターです。"
+    },
+    "ja:content.about.profile.md.frontmatter.meta[0].label": {
+      "fingerprint": "f2d6bada9e8c95c4359bb17f6f5318dcb3092ac66eed4186491f04ec81e72c3f",
+      "translation": "役割"
+    },
+    "ja:content.about.profile.md.frontmatter.meta[0].value": {
+      "fingerprint": "1f9eb3244bff1378f4f82c5de1a6727422533064160cab4065042da4d2fe9ab6",
+      "translation": "プロダクトデザイナー"
+    },
+    "ja:content.about.profile.md.frontmatter.meta[1].label": {
+      "fingerprint": "87a0270949b075883e5ae6622f5cfc6950b284311061fad246591d805edcf131",
+      "translation": "拠点"
+    },
+    "ja:content.about.profile.md.frontmatter.meta[1].value": {
+      "fingerprint": "689727cf08aebe1105f0d96500bffd365526649bb52a83feb2a1de690e487c5f",
+      "translation": "中国・重慶"
+    },
+    "ja:content.about.profile.md.frontmatter.meta[2].label": {
+      "fingerprint": "f1cffa5534ccf762a43b6ba347bebaf582ea0f6f9c8b8033aafd86a243752a17",
+      "translation": "関心"
+    },
+    "ja:content.about.profile.md.frontmatter.meta[2].value": {
+      "fingerprint": "f3b48e44bcbd54f9cdf76c3de00539e436a3301ec7a183895f28fbc60c02ed2c",
+      "translation": "デザインシステムとAIインターフェース"
+    },
+    "ja:content.about.profile.md.frontmatter.story[0]": {
+      "fingerprint": "9a49f50dbbb024a4dc8ef06c0cb98b2aaca11ec6f0df535b70f8a25a778c42d6",
+      "translation": "複雑なツールを落ち着いて理解しやすいものにすることを大切にしています。"
+    },
+    "ja:content.about.profile.md.frontmatter.story[1]": {
+      "fingerprint": "785e4f155cd041a0768aaa3f8cdedcbefff683a52a9e6e3bea9cae01f9cf5bc1",
+      "translation": "このプロフィールでは繰り返し立ち返る原則をまとめ、サイトのほかの部分では進行中の仕事や実験を記録しています。"
+    },
+    "ja:content.about.profile.md.frontmatter.story[2]": {
+      "fingerprint": "8e120a97f5355c306eb73c6f23ceda824c643a153773e1f755c2053b0a773394",
+      "translation": "不设计界面的时候，我可能会去马林县的小径徒步旅行、煮咖啡或阅读有关中世纪家具设计的书籍。"
+    },
+    "ja:content.about.profile.md.frontmatter.focusCards[0].title": {
+      "fingerprint": "92688c1d16d3b3306f4eb2ca46b55b8535e97293b2c1ec9bc3fbc5273a8f2403",
+      "translation": "デザインシステム"
+    },
+    "ja:content.about.profile.md.frontmatter.focusCards[0].text": {
+      "fingerprint": "5f64db465b5a73e5e6f6660993da31eb29ef7bbfceed6093ae89dd95a86d9414",
+      "translation": "一貫したビジュアル言語と再利用可能なプロダクト基盤を設計します。"
+    },
+    "ja:content.about.profile.md.frontmatter.focusCards[1].title": {
+      "fingerprint": "3bbc853934bc21fab596d43e467f3f72179a5246d29658ee75a3649fac2879a0",
+      "translation": "AIインターフェース"
+    },
+    "ja:content.about.profile.md.frontmatter.focusCards[1].text": {
+      "fingerprint": "1dcf2fd7906c609011890de24b281de35c76ce75afd493e27d3531577b1a97c3",
+      "translation": "自然言語による操作と、人が知的なツールと協働する新しい方法を探ります。"
+    },
+    "ja:content.about.profile.md.frontmatter.experience[0].years": {
+      "fingerprint": "d30c65c975bdf717095671d86a201ec2020ff51f19c7fa1ac6bd53c063fbd267",
+      "translation": "現在"
+    },
+    "ja:content.about.profile.md.frontmatter.experience[0].role": {
+      "fingerprint": "1f9eb3244bff1378f4f82c5de1a6727422533064160cab4065042da4d2fe9ab6",
+      "translation": "プロダクトデザイナー"
+    },
+    "ja:content.about.profile.md.frontmatter.experience[0].company": {
+      "fingerprint": "955fa78050c6f63119c1dad272ebc89a68ecbf6954088df2ed123cfc431c8fda",
+      "translation": "個人活動"
+    },
+    "ja:content.about.profile.md.frontmatter.experience[0].text": {
+      "fingerprint": "578e2f5c7aa7c01b069f63fc79a01cbf44f559c9faef851b3abc0afe47a5aa43",
+      "translation": "デジタルプロダクト、インターフェース、実験の設計と記録に取り組んでいます。"
+    },
+    "ja:content.about.profile.md.frontmatter.experience[1].years": {
+      "fingerprint": "32f0ee2a632d4f6f672c777814844077ac5c8347b13c29d45f7417fe575c4729",
+      "translation": "2019 - 2022"
+    },
+    "ja:content.about.profile.md.frontmatter.experience[1].role": {
+      "fingerprint": "a648518895d606ccacf93880ac04cc06d77d83f3eb2d87323014e9d32afd58a9",
+      "translation": "用户体验设计师"
+    },
+    "ja:content.about.profile.md.frontmatter.experience[1].company": {
+      "fingerprint": "fd22ed95302a7157da8c166c2313860862e69b1f328aafac23bbb419453bc040",
+      "translation": "创意机构 XYZ"
+    },
+    "ja:content.about.profile.md.frontmatter.experience[1].text": {
+      "fingerprint": "da9e1767964899619cdb7d71b96612bcbe90c232edf63273eb4c3737c16c3f6c",
+      "translation": "曾与从金融科技到医疗保健的不同客户合作。提供从线框图到高保真原型的端到端设计解决方案。"
+    },
+    "ja:content.about.profile.md.frontmatter.experience[2].years": {
+      "fingerprint": "ab8b2ca4018fb8c77a4a4815116bdb2704c3b2578e357e29304ac9cf5cdfc7c3",
+      "translation": "2017 - 2019"
+    },
+    "ja:content.about.profile.md.frontmatter.experience[2].role": {
+      "fingerprint": "73ea57fe578e7cfbe2cd7097e2793377a4aa7e135a1ab4bb341799ba89a11eea",
+      "translation": "初级建筑师"
+    },
+    "ja:content.about.profile.md.frontmatter.experience[2].company": {
+      "fingerprint": "8422372691721202e35de1d7e56ccace9c441d20e98b5540cb36b11f91682af3",
+      "translation": "建设与合作伙伴"
+    },
+    "ja:content.about.profile.md.frontmatter.experience[2].text": {
+      "fingerprint": "0601fa90cf40531ee7ab76a55ea903b47184ab95f3aa462740aa1c38d18badcc",
+      "translation": "专注于可持续住宅项目。物理空间的基础在很大程度上影响了我的数字布局理念。"
+    },
+    "ja:content.about.profile.md.frontmatter.availability": {
+      "fingerprint": "dc287de67a57eecffa318b22577072d3912fdedbc7087292bf38da5ec0897c95",
+      "translation": "お仕事のご相談を受け付けています"
+    },
+    "ja:content.about.profile.md.frontmatter.homeFeatured.badge": {
+      "fingerprint": "35487f46cfcb129f84b74789194970f80527b0db38eff61231486546f922f0be",
+      "translation": "プロフィール"
+    },
+    "ja:content.about.profile.md.frontmatter.homeFeatured.title": {
+      "fingerprint": "0c598a16f5e63457c0d3c9c2ccbc10e9a5547d58ada98a7b8dd81bbdf63b5bf0",
+      "translation": "私について"
+    },
+    "ja:content.about.profile.md.frontmatter.homeFeatured.name": {
+      "fingerprint": "28456c7d9b551a0be99387f5945828baef742bd499d24b75a101af02b5ab03a6",
+      "translation": "Chasen Chen"
+    },
+    "ja:content.about.profile.md.frontmatter.homeFeatured.description": {
+      "fingerprint": "d963625c06066697666c9a531f17a2f4282ef5dd58aaa698d77d0385eb025541",
+      "translation": "大規模言語モデルと、人間の創造性が持つ予測できない性質の交点を探求するデザイナー兼ライターです。"
+    },
+    "ja:content.about.profile.md.frontmatter.homeFeatured.location": {
+      "fingerprint": "689727cf08aebe1105f0d96500bffd365526649bb52a83feb2a1de690e487c5f",
+      "translation": "中国・重慶"
+    },
+    "ja:content.about.profile.md.body[0]": {
+      "fingerprint": "6774a97d6528f904d4769a746ade1c7634a829e09cd9e58d021c9ee5d375dbc9",
+      "translation": "複雑なツールを落ち着いて読みやすいものにすることを大切にしています。"
+    },
+    "ja:content.about.profile.md.body[1]": {
+      "fingerprint": "97fedf2b8279ae5de12d9a3628c68ea4582a4a70bc0d5bcdc4d1d01ff2822934",
+      "translation": "このプロフィールは、私が繰り返し立ち返る原則をまとめたものです。サイトのほかの部分では、進行中の実験を記録しています。"
+    },
+    "zh-TW:messages.site.nav.home": {
+      "fingerprint": "b01c3ab180d63fb733ba9bb6359cb462c79b549e4b09475588db9f09e34356f5",
+      "translation": "首頁"
+    },
+    "zh-TW:messages.site.page.homeTitle": {
+      "fingerprint": "b01c3ab180d63fb733ba9bb6359cb462c79b549e4b09475588db9f09e34356f5",
+      "translation": "首頁"
+    },
+    "zh-TW:messages.site.defaultDescription": {
+      "fingerprint": "0aa7787118f309dab1fe0008de5c3881c6f11647ea51cd7a7b1d1cb577404c67",
+      "translation": "個人部落格與設計思考。"
+    },
+    "zh-TW:messages.site.nav.blog": {
+      "fingerprint": "c04ae4903070a1c86185784a5024785c3fe2d7d0c74841daca676c61cd88c5ce",
+      "translation": "部落格"
+    },
+    "zh-TW:messages.site.copy.blogTitle": {
+      "fingerprint": "c04ae4903070a1c86185784a5024785c3fe2d7d0c74841daca676c61cd88c5ce",
+      "translation": "部落格"
+    },
+    "zh-TW:messages.site.nav.art": {
+      "fingerprint": "f52da76251a403f4c21485dbe9a0e9e4dfd09f9e6cfdbcf812b9dbc61effd24c",
+      "translation": "收藏"
+    },
+    "zh-TW:messages.site.nav.book": {
+      "fingerprint": "6aabe9abc123f147afc56bac8450ffc8566e5ad259a23e6246d1a59ad2ffcea5",
+      "translation": "書籍"
+    },
+    "zh-TW:messages.site.nav.music": {
+      "fingerprint": "8aa8cce1b0579addd38d4996c3cdabb73bf71309e6843ad28ef38f610589a65b",
+      "translation": "專輯"
+    },
+    "zh-TW:messages.site.nav.about": {
+      "fingerprint": "1a4e9eb893893de6002f6cf32752e2c5f785d12b6b7a5d4f12cfd33b1cc4f3cf",
+      "translation": "關於"
+    },
+    "zh-TW:messages.site.copy.blogMetaPublished": {
+      "fingerprint": "3b099614884d35148fcbe6153d56a15cb10b3e1ce80daff7d6e6efcbb91812dd",
+      "translation": "發布於"
+    },
+    "zh-TW:messages.site.copy.blogMetaRead": {
+      "fingerprint": "a0d149067b5a0ecb8ce70c653aaa46e20b223300ff4aced4e4fffbb9a95e0363",
+      "translation": "閱讀時長"
+    },
+    "zh-TW:messages.site.copy.blogReadArticle": {
+      "fingerprint": "3576fa0375b014b1811a7d24590f9e0be91df47bc44f5fea7abd4d89ba2f6da9",
+      "translation": "閱讀文章"
+    },
+    "zh-TW:messages.site.copy.blogReadNext": {
+      "fingerprint": "aff8d764be688e1573e4937f22800a9b35859b5a4536279c333212ae186fba9c",
+      "translation": "繼續閱讀"
+    },
+    "zh-TW:messages.site.copy.blogNextArticle": {
+      "fingerprint": "e06a45f7b39d032d1e20b77f1d39075f4c8975149125bddb1a7643b504c3b168",
+      "translation": "下一篇文章"
+    },
+    "zh-TW:messages.site.copy.homeRecentBlogsTitle": {
+      "fingerprint": "0b17ba7b23b4519367440fcd2ebd21f5854f85e4605221ca31d51c9881a85d69",
+      "translation": "最近文章"
+    },
+    "zh-TW:messages.site.copy.homeRecentBlogsCta": {
+      "fingerprint": "16f50fd571b21544a86e78a109fd744cc858758149d94b5f3750405c228d270e",
+      "translation": "查看全部文章"
+    },
+    "zh-TW:messages.site.copy.seriesTitle": {
+      "fingerprint": "505e3c853635cd1d18e95e4037e10160d941ba669a5a17ffe442a2795f9cd0ad",
+      "translation": "系列"
+    },
+    "zh-TW:messages.site.copy.seriesDescription": {
+      "fingerprint": "7afb274e489b11e75896f2fe27ad55ea97bac955588763c8adbb25e09b29cc8c",
+      "translation": "圍繞同一主題整理的文章與筆記。"
+    },
+    "zh-TW:messages.site.copy.seriesAllPostsCta": {
+      "fingerprint": "478bf8f8d180ed2acd8300d5f159fced1d55045de75620922fdff1504ed2c372",
+      "translation": "查看系列"
+    },
+    "zh-TW:messages.site.copy.searchPosts": {
+      "fingerprint": "81bcc65916c7a1c2834fe3be32eb9b521dab10a85fb16f08f2f45b421ab47abc",
+      "translation": "搜尋內容"
+    },
+    "zh-TW:messages.site.copy.emptyPosts": {
+      "fingerprint": "03a62c51a6030ae9624f2ef7493ff2f43f332c4b7884f1ea46bd8be960e5bafc",
+      "translation": "沒有找到內容。"
+    },
+    "zh-TW:messages.site.copy.postCount": {
+      "fingerprint": "1502a50ab2d7bc0efd8acb098045a6eb1aff7c0c2c8816dd2cf78973ffcbc633",
+      "translation": "篇"
+    },
+    "zh-TW:messages.site.copy.grid": {
+      "fingerprint": "5d027ed380655fefeb3a6a9f98b8756f167b7ba2a66757c066f0ba094c056865",
+      "translation": "網格"
+    },
+    "zh-TW:messages.site.brand": {
+      "fingerprint": "ce57299bcf666b5743d3d5881081aed689e368822dfa758f831cd43a391cc5ab",
+      "translation": "chasen"
+    },
+    "zh-TW:messages.site.copy.list": {
+      "fingerprint": "b40c43c1f16cfb8b25a40b177a2d189e74fccc1dd300fb0094989f55c1d630ec",
+      "translation": "列表"
+    },
+    "zh-TW:messages.site.copy.title": {
+      "fingerprint": "3cf6043355fc795abb762694895add592b1f6fabe7e2ebb4daf50006f399b296",
+      "translation": "標題"
+    },
+    "zh-TW:messages.site.copy.category": {
+      "fingerprint": "4c16e40b6ceb1ffcf924fc90cd78207aaaec14acf83395de6f9620561d94c8f4",
+      "translation": "分類"
+    },
+    "zh-TW:messages.site.copy.reading": {
+      "fingerprint": "ab7ab12a99eb74fa7b89695357d6f69acb7543223372398231e7f5e759c9e640",
+      "translation": "閱讀"
+    },
+    "zh-TW:messages.site.copy.date": {
+      "fingerprint": "4e8dd0b51d4983d58ba1da93af17f3f007d556dd7eb2a89ec36f26ab1288c6de",
+      "translation": "日期"
+    },
+    "zh-TW:messages.site.copy.tableOfContents": {
+      "fingerprint": "fdfc7330dc44b923b881c061d3febcacc2bc57d29e2e3f4c43f672cd19cba302",
+      "translation": "本文目錄"
+    },
+    "zh-TW:messages.site.copy.introduction": {
+      "fingerprint": "5d0fdf2bf27620de0691f7445ee368432bb4b0691f7a2f3bdd41db1d9fc191b5",
+      "translation": "開篇"
+    },
+    "zh-TW:messages.site.copy.expandSection": {
+      "fingerprint": "8e72a2eca34cba223e7a95d6a7a3a4c9cf5a20cd2804a7ea5931020f116be87b",
+      "translation": "展開章節"
+    },
+    "zh-TW:messages.site.copy.views": {
+      "fingerprint": "03767f505ce855981cd71c536acc267480ef57cd9cd10aa7f233652bffb9e2c8",
+      "translation": "瀏覽"
+    },
+    "zh-TW:messages.site.copy.collapseSection": {
+      "fingerprint": "d5b7f47527bfc4bbcb4992e9c8830545cceac6f8c24e38f286f22b7e73a2eb08",
+      "translation": "收起章節"
+    },
+    "zh-TW:messages.site.copy.likes": {
+      "fingerprint": "bcd804b932ee2b7ba77f5835e7936bb078a2751dfa9ca55613248e94167c7c93",
+      "translation": "喜歡"
+    },
+    "zh-TW:messages.site.copy.like": {
+      "fingerprint": "62d85c3372077995fcbd6200a60103f1194e8772fca0840518d9130cfc1956f4",
+      "translation": "點讚"
+    },
+    "zh-TW:messages.site.copy.liking": {
+      "fingerprint": "7e45376a3f1c23cbec1ea32a3f747bf645801a0893ca1bfc1bd308f350c69580",
+      "translation": "按讚中"
+    },
+    "zh-TW:messages.site.copy.comments": {
+      "fingerprint": "5d27523e7727ea59eea12efce0e97d06a883a0fd118a8b0121f473ebfde95690",
+      "translation": "評論"
+    },
+    "zh-TW:messages.site.copy.statsUnavailable": {
+      "fingerprint": "78f6723605fee11cce7c5e7f88f7ba440578554240f30370697eccbf07c5d5ca",
+      "translation": "文章統計暫時不可用。"
+    },
+    "zh-TW:messages.site.copy.commentName": {
+      "fingerprint": "19b00671c4050678576c0561b9f0e7b87ca82b664acdc72d74ead59058d263d9",
+      "translation": "名稱"
+    },
+    "zh-TW:messages.site.copy.engagementLabel": {
+      "fingerprint": "d6b5b0fd108dda861be9446c539afbee92aedb163cf2bdd713aeaa5d0c7a7fd6",
+      "translation": "文章互動"
+    },
+    "zh-TW:messages.site.copy.commentContent": {
+      "fingerprint": "aaa87fffe31522f66560f6b5964ff4b8449e1513f9a5dd3f9083061830f2ce5d",
+      "translation": "評論內容"
+    },
+    "zh-TW:messages.site.copy.commentSubmitting": {
+      "fingerprint": "0780254965153c3da39c6260df2eac1b215de1512c71ae6b265df1778dabe7d3",
+      "translation": "發布中"
+    },
+    "zh-TW:messages.site.copy.commentDisclosure": {
+      "fingerprint": "e345753ba7c60eb42a91a4b4ab0f6a5109c2b9933c8e5bbc5fa3707da0cef369",
+      "translation": "發布後會公開展示服務端推斷的設備系統、大致地區和北京時間，但不會公開 IP。"
+    },
+    "zh-TW:messages.site.copy.commentLoading": {
+      "fingerprint": "5a3968bdb8b8db35f41b941b9ee484379d5525811b551d34f2b77dead7c309e5",
+      "translation": "正在載入評論"
+    },
+    "zh-TW:messages.site.copy.commentReload": {
+      "fingerprint": "d366dab3a124e164c865d5390d1955ab21b854863b68bc478843c44d056ff4a9",
+      "translation": "重新載入"
+    },
+    "zh-TW:messages.site.copy.commentEmpty": {
+      "fingerprint": "fe69abf276c0e1fb6ffdad4649ea5e1f01eb03d266e0e2979c9b12110f9ff95e",
+      "translation": "還沒有評論，來留下第一條吧。"
+    },
+    "zh-TW:messages.site.copy.commentLoadMore": {
+      "fingerprint": "828e0cbae5cc5c69476a2416377d74cff3a40fdc44e4a9976e3f1240f1cdfbff",
+      "translation": "載入更多"
+    },
+    "zh-TW:messages.site.copy.commentLoadingMore": {
+      "fingerprint": "8338eaa563ceb401969be7594d61d8fbfdf51f34ed26a657ef56d2cf18f25ec0",
+      "translation": "載入中"
+    },
+    "zh-TW:messages.site.copy.commentSubmit": {
+      "fingerprint": "d1813169f93d5db5ab8373f9266eeca0d98bae869828b663792a455bb191a0aa",
+      "translation": "發佈評論"
+    },
+    "zh-TW:messages.site.copy.commentNameInvalid": {
+      "fingerprint": "25d9200855b5815bc0ba88e09f9db6b834b86734885d90c53cd894fda8d1a3b1",
+      "translation": "名稱需為 1 至 20 個字元。"
+    },
+    "zh-TW:messages.site.copy.commentPublished": {
+      "fingerprint": "fb8ef7cacc3119088caef100abefbe9da9cea2d380de788c3185552c75144ffd",
+      "translation": "評論已發布。"
+    },
+    "zh-TW:messages.site.copy.commentContentInvalid": {
+      "fingerprint": "906785609eea9ca4f9072be4c432a8e862b08f7282efb2ab1ae35617926ad529",
+      "translation": "評論需為 1 至 500 個字元。"
+    },
+    "zh-TW:messages.site.copy.requestFailed": {
+      "fingerprint": "439b7eeec3070718d72723151cdee80edfeed5cb29c511ce073a98436abeec1f",
+      "translation": "請求失敗，請稍後重試。"
+    },
+    "zh-TW:messages.site.copy.commentSubmitFailed": {
+      "fingerprint": "3e3eb4c63c03f278c26fb9716839eb2cd48ef4a2aad26258d5923c337c2db394",
+      "translation": "評論發布失敗，請稍後重試。"
+    },
+    "zh-TW:messages.site.copy.commentLoadFailed": {
+      "fingerprint": "c6cd864648d7e00a50e0e0f3890c154a6656c8714e28b4a31a55ab2011ab5f54",
+      "translation": "暫時無法載入評論，請稍後重試。"
+    },
+    "zh-TW:messages.site.copy.themeToggle": {
+      "fingerprint": "3d46429cb1debdf7f4779edc2818fea04835658d619ddf51717c4fd40719f5dc",
+      "translation": "切換主題"
+    },
+    "zh-TW:messages.site.copy.themeLight": {
+      "fingerprint": "dfe1bdf3e8d1d039f3f28568d5edc0788d037ed298c4db2a1c7dbf3a2883b534",
+      "translation": "切換到淺色主題"
+    },
+    "zh-TW:messages.site.copy.copyright": {
+      "fingerprint": "f574e41d415b7686350911d292a831d85102ed77e0e93bac03ab510b43a447f3",
+      "translation": "版權所有。"
+    },
+    "zh-TW:messages.site.copy.languageSelect": {
+      "fingerprint": "eacf80238042e58a527aff36987dbbee463cfed819d3207a39165be61359f8e2",
+      "translation": "選擇語言"
+    },
+    "zh-TW:messages.site.copy.themeDark": {
+      "fingerprint": "38eb047d2ffc75a1310ad1fa2bc373a8fb2525f96ba455c8941058eb5628ae26",
+      "translation": "切換到深色主題"
+    },
+    "zh-TW:messages.site.page.homeDescription": {
+      "fingerprint": "e6e8daff48aa315119a64c48a2b5aa7c412c21e7130d5e2884f56c0cd94ce282",
+      "translation": "設計思考、文章與隨筆。"
+    },
+    "zh-TW:messages.site.page.blogsDescription": {
+      "fingerprint": "70f15bbe2ba80b81058be8ed6c5afb08055ec2e2c9a87aed7cb4fbb770435c01",
+      "translation": "文章歸檔與隨筆記錄。"
+    },
+    "zh-TW:messages.site.page.aboutDescription": {
+      "fingerprint": "2c8191b485dbbaacf01145ee291d686b5d85a3e22a5d4b3abe4ebc043d8771ee",
+      "translation": "關於 chasen 的經歷、關注方向與個人故事。"
+    },
+    "zh-TW:messages.site.page.bookDescription": {
+      "fingerprint": "ec88abbacca586661fdcdd84fdda8533f3c52029ff42485a4a4f33c211145219",
+      "translation": "書籍收藏"
+    },
+    "zh-TW:messages.site.page.musicDescription": {
+      "fingerprint": "e4e6a2c76f000b877592b956e749b4bcf6081401d19d3bc2006effa4593f17df",
+      "translation": "專輯收藏"
+    },
+    "zh-TW:content.blog.designing-for-clarity-in-chaos.md.frontmatter.title": {
+      "fingerprint": "111b4642e95b07cfdf398740056d29cf2e9661854bcd2cf96276d51b1bf7d964",
+      "translation": "你好"
+    },
+    "zh-TW:content.blog.designing-for-clarity-in-chaos.md.frontmatter.readingTime": {
+      "fingerprint": "f540a0231c84048149616831a68656751c2f82b479db0f09f30aabfedf4d94f0",
+      "translation": "1 分鐘"
+    },
+    "zh-TW:content.blog.designing-for-clarity-in-chaos.md.frontmatter.summary": {
+      "fingerprint": "30ab039606aad612f9f2d6ca10baec2b0f10895e486c55074503c2fd31ad4f0e",
+      "translation": "我的第一篇部落格文章。"
+    },
+    "zh-TW:content.blog.designing-for-clarity-in-chaos.md.frontmatter.category": {
+      "fingerprint": "c1399bdb4690fa815a358abdd3e3a2e412e87591e6d2f89741c78bc13f9c4348",
+      "translation": "隨筆"
+    },
+    "zh-TW:content.blog.designing-for-clarity-in-chaos.md.frontmatter.tags[0]": {
+      "fingerprint": "c1399bdb4690fa815a358abdd3e3a2e412e87591e6d2f89741c78bc13f9c4348",
+      "translation": "隨筆"
+    },
+    "zh-TW:content.blog.designing-for-clarity-in-chaos.md.body[1]": {
+      "fingerprint": "0f42d7129012f5c959a8431b00d20ab93034687b593ea36f3ca7cba71d811c14",
+      "translation": "這是我在這裡留下的第一篇文章，也是一個簡單的開始。"
+    },
+    "zh-TW:content.blog.designing-for-clarity-in-chaos.md.body[0]": {
+      "fingerprint": "350d1f0f4886a9c66c4abcc5efb5a975b2ebc89768e2ae43929d927ca516ada4",
+      "translation": "你好，歡迎來到我的部落格。"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.titleLeading": {
+      "fingerprint": "8ab6aee601d226ea4c64dd24a3324d6f158954228e84b79b7c391e7a893d7c1f",
+      "translation": "你好，我是"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.brand": {
+      "fingerprint": "c318af77e55e9a12eace5eef3a8350e9e90a2ec3643c7456eb205aeb06e3ad07",
+      "translation": "Chasen Design"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.subtitle": {
+      "fingerprint": "6bcfd1b1c6996483dc47bb27ea7a23dcb0051fe2d3ba203980662607eb2f477c",
+      "translation": "一名關注清晰、克制與體驗細節的產品設計師和寫作者。"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.titleName": {
+      "fingerprint": "7c1320eaf781ec34911356a93050b628aa73a23dcd30eefbb06b4298ec8d44ae",
+      "translation": "茶筅"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.meta[0].label": {
+      "fingerprint": "f2d6bada9e8c95c4359bb17f6f5318dcb3092ac66eed4186491f04ec81e72c3f",
+      "translation": "角色"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.meta[0].value": {
+      "fingerprint": "1f9eb3244bff1378f4f82c5de1a6727422533064160cab4065042da4d2fe9ab6",
+      "translation": "產品設計師"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.experience[0].role": {
+      "fingerprint": "1f9eb3244bff1378f4f82c5de1a6727422533064160cab4065042da4d2fe9ab6",
+      "translation": "產品設計師"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.meta[1].label": {
+      "fingerprint": "87a0270949b075883e5ae6622f5cfc6950b284311061fad246591d805edcf131",
+      "translation": "地點"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.meta[1].value": {
+      "fingerprint": "689727cf08aebe1105f0d96500bffd365526649bb52a83feb2a1de690e487c5f",
+      "translation": "中國重慶"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.homeFeatured.location": {
+      "fingerprint": "689727cf08aebe1105f0d96500bffd365526649bb52a83feb2a1de690e487c5f",
+      "translation": "中國重慶"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.meta[2].label": {
+      "fingerprint": "f1cffa5534ccf762a43b6ba347bebaf582ea0f6f9c8b8033aafd86a243752a17",
+      "translation": "聚焦"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.meta[2].value": {
+      "fingerprint": "f3b48e44bcbd54f9cdf76c3de00539e436a3301ec7a183895f28fbc60c02ed2c",
+      "translation": "設計系統，人工智慧使用者介面"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.story[1]": {
+      "fingerprint": "785e4f155cd041a0768aaa3f8cdedcbefff683a52a9e6e3bea9cae01f9cf5bc1",
+      "translation": "這個頁面記錄我反覆回到的原則，網站的其他部分則保存正在進行的工作、文章和實驗。"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.story[0]": {
+      "fingerprint": "9a49f50dbbb024a4dc8ef06c0cb98b2aaca11ec6f0df535b70f8a25a778c42d6",
+      "translation": "我關注如何讓複雜的工具變得平和、清晰、容易理解。"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.focusCards[0].title": {
+      "fingerprint": "92688c1d16d3b3306f4eb2ca46b55b8535e97293b2c1ec9bc3fbc5273a8f2403",
+      "translation": "設計系統"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.focusCards[0].text": {
+      "fingerprint": "5f64db465b5a73e5e6f6660993da31eb29ef7bbfceed6093ae89dd95a86d9414",
+      "translation": "構建一致的視覺語言和可複用的產品基礎。"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.focusCards[1].title": {
+      "fingerprint": "3bbc853934bc21fab596d43e467f3f72179a5246d29658ee75a3649fac2879a0",
+      "translation": "AI 介面"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.experience[0].years": {
+      "fingerprint": "d30c65c975bdf717095671d86a201ec2020ff51f19c7fa1ac6bd53c063fbd267",
+      "translation": "現在"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.experience[0].company": {
+      "fingerprint": "955fa78050c6f63119c1dad272ebc89a68ecbf6954088df2ed123cfc431c8fda",
+      "translation": "獨立創作"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.availability": {
+      "fingerprint": "dc287de67a57eecffa318b22577072d3912fdedbc7087292bf38da5ec0897c95",
+      "translation": "對機會持開放態度"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.focusCards[1].text": {
+      "fingerprint": "1dcf2fd7906c609011890de24b281de35c76ce75afd493e27d3531577b1a97c3",
+      "translation": "探索自然語言互動，以及人與智能工具協作的新方式。"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.experience[0].text": {
+      "fingerprint": "578e2f5c7aa7c01b069f63fc79a01cbf44f559c9faef851b3abc0afe47a5aa43",
+      "translation": "設計並記錄數位產品、介面和個人實驗。"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.homeFeatured.title": {
+      "fingerprint": "0c598a16f5e63457c0d3c9c2ccbc10e9a5547d58ada98a7b8dd81bbdf63b5bf0",
+      "translation": "關於我"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.homeFeatured.badge": {
+      "fingerprint": "35487f46cfcb129f84b74789194970f80527b0db38eff61231486546f922f0be",
+      "translation": "個人簡介"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.homeFeatured.description": {
+      "fingerprint": "d963625c06066697666c9a531f17a2f4282ef5dd58aaa698d77d0385eb025541",
+      "translation": "我是一名設計師和作家，探索大型語言模型與人類創作過程不可預知的本質之間的微妙交集。"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.homeFeatured.name": {
+      "fingerprint": "28456c7d9b551a0be99387f5945828baef742bd499d24b75a101af02b5ab03a6",
+      "translation": "Chasen Chen"
+    },
+    "zh-TW:content.about.profile.md.body[1]": {
+      "fingerprint": "97fedf2b8279ae5de12d9a3628c68ea4582a4a70bc0d5bcdc4d1d01ff2822934",
+      "translation": "該簡介頁面總結了長期原則。網站的其他部分則記錄了正在進行的實驗。"
+    },
+    "zh-TW:content.about.profile.md.body[0]": {
+      "fingerprint": "6774a97d6528f904d4769a746ade1c7634a829e09cd9e58d021c9ee5d375dbc9",
+      "translation": "我注重讓複雜的工具變得平和易讀。"
+    },
+    "en:messages.site.nav.screen": {
+      "fingerprint": "67c4c3f68bed715f9862ab1d80778a8a41d3189e2bed4737e158e0990fbf3dcd",
+      "translation": "Screen"
+    },
+    "en:messages.site.nav.film": {
+      "fingerprint": "a6b208126a4db80400cd6d6ab5f2d62c33418154f894664aea9b0f104d30d220",
+      "translation": "Films"
+    },
+    "en:messages.site.nav.series": {
+      "fingerprint": "7571a2f70a3f58f9b710573869c0de80f227b3abe9b35eefb2be7b1743152078",
+      "translation": "Series"
+    },
+    "en:messages.site.nav.anime": {
+      "fingerprint": "dbe26f5145215424b072fa00de9b8cd30ae6eaf9f5c4b346d39f3600f5d6874d",
+      "translation": "Anime"
+    },
+    "en:messages.site.copy.artEmpty": {
+      "fingerprint": "76b34f6deea73f7385fd055ef6d76357ce39291240661949a001b44e63385041",
+      "translation": "Nothing has been added here yet."
+    },
+    "en:messages.site.page.screenDescription": {
+      "fingerprint": "15d002688fb0f0e29d34463d18617f8317f45e6bc1c56a08d49ef06681e8ad6f",
+      "translation": "Films, series, and anime"
+    },
+    "ja:messages.site.nav.screen": {
+      "fingerprint": "67c4c3f68bed715f9862ab1d80778a8a41d3189e2bed4737e158e0990fbf3dcd",
+      "translation": "映像"
+    },
+    "ja:messages.site.nav.film": {
+      "fingerprint": "a6b208126a4db80400cd6d6ab5f2d62c33418154f894664aea9b0f104d30d220",
+      "translation": "映画"
+    },
+    "ja:messages.site.nav.series": {
+      "fingerprint": "7571a2f70a3f58f9b710573869c0de80f227b3abe9b35eefb2be7b1743152078",
+      "translation": "ドラマ"
+    },
+    "ja:messages.site.nav.anime": {
+      "fingerprint": "dbe26f5145215424b072fa00de9b8cd30ae6eaf9f5c4b346d39f3600f5d6874d",
+      "translation": "アニメ"
+    },
+    "ja:messages.site.copy.artEmpty": {
+      "fingerprint": "76b34f6deea73f7385fd055ef6d76357ce39291240661949a001b44e63385041",
+      "translation": "まだコレクションはありません。"
+    },
+    "ja:messages.site.page.screenDescription": {
+      "fingerprint": "15d002688fb0f0e29d34463d18617f8317f45e6bc1c56a08d49ef06681e8ad6f",
+      "translation": "映画、ドラマ、アニメのコレクション"
+    },
+    "zh-TW:messages.site.nav.screen": {
+      "fingerprint": "67c4c3f68bed715f9862ab1d80778a8a41d3189e2bed4737e158e0990fbf3dcd",
+      "translation": "影視"
+    },
+    "zh-TW:messages.site.nav.film": {
+      "fingerprint": "a6b208126a4db80400cd6d6ab5f2d62c33418154f894664aea9b0f104d30d220",
+      "translation": "電影"
+    },
+    "zh-TW:messages.site.nav.series": {
+      "fingerprint": "7571a2f70a3f58f9b710573869c0de80f227b3abe9b35eefb2be7b1743152078",
+      "translation": "劇集"
+    },
+    "zh-TW:messages.site.nav.anime": {
+      "fingerprint": "dbe26f5145215424b072fa00de9b8cd30ae6eaf9f5c4b346d39f3600f5d6874d",
+      "translation": "番劇"
+    },
+    "zh-TW:messages.site.copy.artEmpty": {
+      "fingerprint": "76b34f6deea73f7385fd055ef6d76357ce39291240661949a001b44e63385041",
+      "translation": "這裡還沒有收藏。"
+    },
+    "zh-TW:messages.site.page.screenDescription": {
+      "fingerprint": "15d002688fb0f0e29d34463d18617f8317f45e6bc1c56a08d49ef06681e8ad6f",
+      "translation": "電影、劇集與番劇收藏"
+    }
+  }
+}

@@ -2,7 +2,7 @@
   type="button"
   data-theme-toggle
   class="inline-flex size-10 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--surface-parchment)] text-[var(--text-main)] transition hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-action)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-base)]"
-  aria-label="Toggle theme"
+  aria-label="切换主题"
   aria-pressed="false"
 >
   <svg
@@ -22,7 +22,7 @@
       d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"
     ></path>
   </svg>
-  <span class="sr-only" data-theme-label>Light</span>
+  <span class="sr-only" data-theme-label>浅色</span>
 </button>
 
 <script>
@@ -39,10 +39,10 @@
       const iconPath = button.querySelector("[data-theme-icon-path]");
 
       button.setAttribute("aria-pressed", String(isDark));
-      button.setAttribute("aria-label", isDark ? "Switch to light theme" : "Switch to dark theme");
+      button.setAttribute("aria-label", isDark ? "切换到浅色主题" : "切换到深色主题");
 
       if (label) {
-        label.textContent = isDark ? "Dark mode enabled" : "Light mode enabled";
+        label.textContent = isDark ? "已启用深色主题" : "已启用浅色主题";
       }
 
       if (iconPath) {
@@ -52,7 +52,7 @@
     });
   };
 
-  const handleThemeToggle = async (event: MouseEvent) => {
+  const handleThemeToggle = async (button: HTMLElement) => {
     const isAppearanceTransition =
       // @ts-ignore
       document.startViewTransition &&
@@ -64,10 +64,9 @@
       return;
     }
 
-    const target = event.currentTarget as HTMLElement;
-    const rect = target.getBoundingClientRect();
-    const x = event.clientX ?? (rect.left + rect.width / 2);
-    const y = event.clientY ?? (rect.top + rect.height / 2);
+    const rect = button.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
 
     const endRadius = Math.hypot(
       Math.max(x, window.innerWidth - x),
@@ -93,7 +92,7 @@
 
       document.documentElement.animate(
         {
-          clipPath: clipPath,
+          clipPath,
         },
         {
           duration: 400,
@@ -112,15 +111,25 @@
   };
 
   const bindButtons = () => {
-    getButtons().forEach((button) => {
-      if (button.hasAttribute("data-theme-bound")) return;
-      button.setAttribute("data-theme-bound", "");
-      button.addEventListener("click", (e) => {
-        handleThemeToggle(e as MouseEvent);
-      });
-    });
     syncToggleUI();
   };
+
+  const handleThemeClick = (event: MouseEvent) => {
+    const button = (event.target as Element | null)?.closest<HTMLElement>("[data-theme-toggle]");
+    if (!button) return;
+    event.preventDefault();
+    handleThemeToggle(button);
+  };
+
+  const themeDocument = document as Document & {
+    themeToggleClickHandler?: (event: MouseEvent) => void;
+  };
+
+  if (themeDocument.themeToggleClickHandler) {
+    document.removeEventListener("click", themeDocument.themeToggleClickHandler);
+  }
+  themeDocument.themeToggleClickHandler = handleThemeClick;
+  document.addEventListener("click", handleThemeClick);
 
   applyTheme(readTheme());
   bindButtons();

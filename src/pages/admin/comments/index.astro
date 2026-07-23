@@ -1,0 +1,24 @@
+---
+import CommentsAdmin from "../../../components/domain/CommentsAdmin";
+import PageContainer from "../../../components/foundation/PageContainer.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+export const prerender = false;
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+  .map((post) => ({ slug: post.slug, title: post.data.title }));
+---
+
+<BaseLayout title="评论管理" description="管理博客文章评论" currentPath="/admin/comments/" showFooter={false}>
+  <PageContainer class="py-12 md:py-16">
+    <div class="mx-auto max-w-5xl">
+      <header class="mb-10 space-y-3">
+        <p class="ui-kicker text-[var(--color-action)]">ADMIN</p>
+        <h1 class="text-4xl font-semibold text-[var(--text-main)] md:text-5xl">评论管理</h1>
+      </header>
+      <CommentsAdmin posts={posts} client:load />
+    </div>
+  </PageContainer>
+</BaseLayout>

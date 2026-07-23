@@ -1,6 +1,5 @@
 ﻿import { routes } from "./routes";
 import type {
-  ArchiveFilterModel,
   ArchivePostSectionModel,
   ArticleMetaModel,
   ContentCardModel,
@@ -24,31 +23,9 @@ interface BlogCardCopy {
   readArticleLabel: string;
 }
 
-interface ProjectCardSource {
-  slug: string;
-  title: string;
-  summary: string;
-  cover: string;
-  category: string;
-  type: string;
-  cta: string;
-  href?: string;
-}
-
-interface ArchiveCategorySummarySource {
-  label: string;
-  slug: string;
-  count: number;
-}
-
 interface ArchiveBlogSectionSource {
   year: number;
   posts: BlogCardSource[];
-}
-
-interface ArchiveProjectSectionSource {
-  year: number;
-  posts: (ProjectCardSource & { dateLabel: string })[];
 }
 
 interface SeriesSummarySource {
@@ -82,7 +59,6 @@ const DEFAULT_ARTICLE_META_LABELS: ArticleMetaLabels = {
 };
 
 export const toBlogCardModel = (post: BlogCardSource, copy: BlogCardCopy = DEFAULT_BLOG_CARD_COPY): ContentCardModel => ({
-  variant: "blog",
   title: post.title,
   summary: post.summary,
   href: `/blog/${post.slug}/`,
@@ -96,44 +72,6 @@ export const toBlogCardModel = (post: BlogCardSource, copy: BlogCardCopy = DEFAU
   tags: post.archiveTags,
   footerText: copy.readArticleLabel,
 });
-
-export const toProjectCardModel = (project: ProjectCardSource): ContentCardModel => ({
-  variant: "project",
-  title: project.title,
-  summary: project.summary,
-  href: project.href ?? routes.project(project.slug),
-  image: project.cover,
-  imageAlt: project.title,
-  eyebrow: project.category,
-  meta: [{ label: "Type", value: project.type }],
-  footerText: project.cta,
-});
-
-export const toArchiveFilters = (
-  categories: ArchiveCategorySummarySource[],
-  allLabel = "All Categories",
-  activeCategorySlug?: string,
-  options: { allHref?: string; categoryHref?: (slug: string) => string } = {},
-): ArchiveFilterModel[] => {
-  const totalCount = categories.reduce((total, category) => total + category.count, 0);
-  const allHref = options.allHref ?? routes.blogs;
-  const categoryHref = options.categoryHref ?? routes.blogCategory;
-
-  return [
-    {
-      label: allLabel,
-      count: totalCount,
-      href: allHref,
-      active: !activeCategorySlug,
-    },
-    ...categories.map((category) => ({
-      label: category.label,
-      count: category.count,
-      href: categoryHref(category.slug),
-      active: category.slug === activeCategorySlug,
-    })),
-  ];
-};
 
 export const toArchivePostSections = (
   sections: ArchiveBlogSectionSource[],
@@ -150,20 +88,6 @@ export const toArchivePostSections = (
       dateLabel: post.dateLabel,
       readingTime: post.readingTime,
       tags: post.archiveTags,
-    })),
-  }));
-
-export const toArchiveProjectSections = (sections: ArchiveProjectSectionSource[]): ArchivePostSectionModel[] =>
-  sections.map((section) => ({
-    year: section.year,
-    cards: section.posts.map(toProjectCardModel),
-    posts: section.posts.map((project) => ({
-      title: project.title,
-      summary: project.summary,
-      href: project.href ?? routes.project(project.slug),
-      category: project.category,
-      dateLabel: project.dateLabel,
-      readingTime: project.type,
     })),
   }));
 

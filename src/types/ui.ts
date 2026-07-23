@@ -20,10 +20,7 @@ export interface CardMeta {
   value: string;
 }
 
-export type CardVariant = "blog" | "project";
-
 export interface ContentCardModel {
-  variant: CardVariant;
   title: string;
   summary: string;
   href: string;
@@ -33,13 +30,6 @@ export interface ContentCardModel {
   meta?: CardMeta[];
   tags?: string[];
   footerText?: string;
-}
-
-export interface ArchiveFilterModel {
-  label: string;
-  count: number;
-  href: string;
-  active: boolean;
 }
 
 export interface ArchivePostSummaryModel {
@@ -72,17 +62,6 @@ export interface SeriesSummaryModel {
   title: string;
   href: string;
   count: number;
-}
-
-export interface TimelineItemModel {
-  title: string;
-  year: string;
-  category: string;
-  summary: string;
-  image: string;
-  href: string;
-  side: "left" | "right";
-  ctaLabel: string;
 }
 
 export interface ArticleMetaModel {

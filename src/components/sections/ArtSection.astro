@@ -1,30 +1,133 @@
 ---
 import ArtCard from "../cards/ArtCard.astro";
-import { artData } from "../../lib/artData";
+import { artData, type ArtItem } from "../../lib/artData";
+import { getLocalizedSite } from "../../lib/localized-content";
+import type { Locale } from "../../lib/i18n";
 
 export interface Props {
-  type: "music" | "book" | "movie";
+  type: "music" | "book" | "screen";
+  locale?: Locale;
 }
 
-const { type } = Astro.props;
+const { type, locale = "zh-CN" } = Astro.props;
+const site = await getLocalizedSite(locale);
 
-const items = artData.filter(item => item.type === type);
-
-const titleMap = {
-  music: "Music",
-  book: "Books",
-  movie: "Movies"
-};
+const screenTypes: ArtItem["type"][] = ["movie", "series", "anime"];
+const items = artData.filter((item) => type === "screen" ? screenTypes.includes(item.type) : item.type === type);
+const title = site.labels[type];
+const description = site.page[`${type}Description`];
+const screenTabs = [
+  { type: "movie", label: site.labels.film },
+  { type: "series", label: site.labels.series },
+  { type: "anime", label: site.labels.anime },
+] as const;
 ---
-<div class="app-container py-24">
-  <div class="mb-12">
-    <h1 class="ui-section-title mb-4">{titleMap[type]}</h1>
-    <p class="ui-lead">A collection of selected {titleMap[type].toLowerCase()}.</p>
+
+<div class="app-container py-12 md:py-24">
+  <div class="mb-8 md:mb-12">
+    <h1 class="ui-section-title mb-4">{title}</h1>
+    <p class="ui-lead">{description}</p>
   </div>
-  
-  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-[var(--spacing-lg,24px)]">
+
+  {type === "screen" && (
+    <div
+      class="mb-8 inline-flex rounded-full bg-[var(--bg-subtle)] p-1"
+      role="tablist"
+      aria-label={title}
+      data-screen-tabs
+    >
+      {screenTabs.map((tab, index) => (
+        <button
+          type="button"
+          role="tab"
+          aria-selected={index === 0 ? "true" : "false"}
+          tabindex={index === 0 ? 0 : -1}
+          data-screen-tab={tab.type}
+          class:list={[
+            "min-w-16 rounded-full px-4 py-2 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-action)]",
+            index === 0 ? "bg-[var(--surface-canvas)] text-[var(--text-main)] shadow-sm" : "text-[var(--text-muted)]",
+          ]}
+        >
+          {tab.label}
+        </button>
+      ))}
+    </div>
+  )}
+
+  <div
+    class="grid min-h-48 grid-cols-1 gap-4 min-[480px]:grid-cols-2 md:grid-cols-3 md:gap-[var(--spacing-lg,24px)] lg:grid-cols-5"
+    data-art-grid
+  >
     {items.map((item) => (
-      <ArtCard item={item} />
+      <div data-art-type={item.type} class={type === "screen" && item.type !== "movie" ? "hidden" : undefined}>
+        <ArtCard item={item} />
+      </div>
+    ))}
+    {type === "screen" && screenTabs.map((tab) => (
+      <p
+        class="hidden min-h-48 items-center text-sm text-[var(--text-muted)] min-[480px]:col-span-2 md:col-span-3 lg:col-span-5"
+        role="status"
+        data-art-empty={tab.type}
+      >
+        {site.copy.artEmpty}
+      </p>
     ))}
   </div>
 </div>
+
+{type === "screen" && (
+  <script>
+    function bindScreenTabs() {
+      document.querySelectorAll<HTMLElement>("[data-screen-tabs]").forEach((root) => {
+        if (root.dataset.bound === "true") return;
+        root.dataset.bound = "true";
+
+        const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-screen-tab]"));
+        const grid = root.parentElement?.querySelector<HTMLElement>("[data-art-grid]");
+        if (!grid) return;
+
+        const select = (selected: HTMLButtonElement) => {
+          const type = selected.dataset.screenTab;
+          let visibleItems = 0;
+
+          tabs.forEach((tab) => {
+            const active = tab === selected;
+            tab.setAttribute("aria-selected", String(active));
+            tab.tabIndex = active ? 0 : -1;
+            tab.classList.toggle("bg-[var(--surface-canvas)]", active);
+            tab.classList.toggle("text-[var(--text-main)]", active);
+            tab.classList.toggle("shadow-sm", active);
+            tab.classList.toggle("text-[var(--text-muted)]", !active);
+          });
+
+          grid.querySelectorAll<HTMLElement>("[data-art-type]").forEach((item) => {
+            const visible = item.dataset.artType === type;
+            item.classList.toggle("hidden", !visible);
+            if (visible) visibleItems += 1;
+          });
+
+          grid.querySelectorAll<HTMLElement>("[data-art-empty]").forEach((empty) => {
+            const visible = empty.dataset.artEmpty === type && visibleItems === 0;
+            empty.classList.toggle("hidden", !visible);
+            empty.classList.toggle("flex", visible);
+          });
+        };
+
+        tabs.forEach((tab, index) => {
+          tab.addEventListener("click", () => select(tab));
+          tab.addEventListener("keydown", (event) => {
+            if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+            event.preventDefault();
+            const direction = event.key === "ArrowRight" ? 1 : -1;
+            const next = tabs[(index + direction + tabs.length) % tabs.length];
+            select(next);
+            next.focus();
+          });
+        });
+      });
+    }
+
+    bindScreenTabs();
+    document.addEventListener("astro:page-load", bindScreenTabs);
+  </script>
+)}

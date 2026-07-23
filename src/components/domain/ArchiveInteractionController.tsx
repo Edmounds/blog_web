@@ -26,13 +26,20 @@ export default function ArchiveInteractionController() {
 
       if (!searchInput || !gridView || !listView || !emptyState) return
 
-      let activeView: ArchiveView = "grid"
+      const mobileDefaultView = getArchiveView(root.getAttribute("data-mobile-default-view"))
+      const initialView = window.matchMedia("(max-width: 767px)").matches ? mobileDefaultView : "grid"
+      let activeView: ArchiveView = initialView
       const scopeItems: Record<ArchiveView, HTMLElement[]> = {
         grid: allItems.filter((item) => item.getAttribute("data-archive-scope") === "grid"),
         list: allItems.filter((item) => item.getAttribute("data-archive-scope") === "list"),
       }
       const visibleItems = () => scopeItems[activeView].filter((item) => !item.hidden)
       const updateEmptyState = () => emptyState.classList.toggle("hidden", visibleItems().length > 0)
+      const updateListHead = () => {
+        const hasVisibleItems = scopeItems.list.some((item) => !item.hidden)
+        const isMobile = window.matchMedia("(max-width: 767px)").matches
+        listHead?.classList.toggle("hidden", isMobile || !hasVisibleItems)
+      }
       const dispatchChange = (type: "filter" | "view") => {
         root.dispatchEvent(new CustomEvent("archive-view-change", { detail: { type, view: activeView } }))
       }
@@ -57,12 +64,13 @@ export default function ArchiveInteractionController() {
           group.element.toggleAttribute("hidden", !group.gridItems.some((item) => !item.hidden))
         })
 
-        listHead?.classList.toggle("hidden", !scopeItems.list.some((item) => !item.hidden))
+        updateListHead()
         updateEmptyState()
         dispatchChange("filter")
       }
       const setView = (view: ArchiveView) => {
         activeView = view
+        root.setAttribute("data-active-view", activeView)
         gridView.classList.toggle("hidden", activeView !== "grid")
         listView.classList.toggle("hidden", activeView !== "list")
 
@@ -77,7 +85,10 @@ export default function ArchiveInteractionController() {
         dispatchChange("view")
       }
       const onSearchInput = () => applyFilter()
-      const onResize = () => moveIndicator()
+      const onResize = () => {
+        moveIndicator()
+        updateListHead()
+      }
 
       viewButtons.forEach((button) => {
         const onClick = () => setView(getArchiveView(button.getAttribute("data-archive-view")))
@@ -92,7 +103,8 @@ export default function ArchiveInteractionController() {
         window.removeEventListener("resize", onResize)
       })
 
-      setView("grid")
+      setView(initialView)
+      root.setAttribute("data-archive-initialized", "true")
       applyFilter()
     })
 

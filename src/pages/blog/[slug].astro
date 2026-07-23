@@ -3,10 +3,11 @@ import { getCollection } from "astro:content";
 import Reveal from "../../components/animation/Reveal";
 import ArticleMeta from "../../components/domain/ArticleMeta.astro";
 import PostEngagement from "../../components/domain/PostEngagement";
+import CommentsSection from "../../components/domain/CommentsSection";
 import PageContainer from "../../components/foundation/PageContainer.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getBlogStaticPaths, getNextBlogPost, getSiteSettings } from "../../lib/content";
-import { routes } from "../../lib/routes";
+import { getLocalizedSite } from "../../lib/localized-content";
 import { toArticleMetaItems } from "../../lib/view-models";
 import TableOfContents from "../../components/domain/TableOfContents";
 
@@ -26,6 +27,7 @@ if (!post) {
 
 const { Content, headings } = await post.render();
 const site = await getSiteSettings();
+const localizedSite = await getLocalizedSite("zh-CN");
 const nextPost = await getNextBlogPost(post.slug);
 const dateLong = post.data.publishedAt.toLocaleDateString(site.dateLocale, {
   month: "long",
@@ -45,13 +47,13 @@ const metaItems = toArticleMetaItems(
 );
 ---
 
-<BaseLayout title={post.data.title} description={post.data.summary} currentPath={routes.blogs}>
+<BaseLayout title={post.data.title} description={post.data.summary} currentPath={`/blog/${post.slug}/`}>
   <PageContainer class="py-12 md:py-16">
     <div class="grid grid-cols-1 gap-10 lg:grid-cols-12">
       <aside class="hidden lg:col-span-3 lg:block">
         <div class="sticky top-28 space-y-5">
           <Reveal delay={0.08} y={10} client:visible>
-            <TableOfContents headings={headings} client:load />
+            <TableOfContents headings={headings} labels={{ title: localizedSite.copy.tableOfContents, introduction: localizedSite.copy.introduction, collapse: localizedSite.copy.collapseSection, expand: localizedSite.copy.expandSection }} client:load />
           </Reveal>
         </div>
       </aside>
@@ -65,7 +67,7 @@ const metaItems = toArticleMetaItems(
               <p class="ui-lead max-w-3xl">{post.data.summary}</p>
             </div>
             <ArticleMeta items={metaItems} variant="grid" />
-            <PostEngagement slug={post.slug} client:load />
+            <PostEngagement slug={post.slug} labels={localizedSite.copy} locale="zh-CN" client:load />
           </header>
         </Reveal>
 
@@ -87,6 +89,8 @@ const metaItems = toArticleMetaItems(
             </div>
           </section>
         </Reveal>
+
+        <CommentsSection slug={post.slug} labels={localizedSite.copy} client:load />
       </article>
 
       <div class="hidden lg:col-span-2 lg:block"></div>

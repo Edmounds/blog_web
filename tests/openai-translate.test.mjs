@@ -1,0 +1,56 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+
+import { createOpenAITranslateClient } from "../scripts/lib/openai-translate.mjs";
+
+test("OpenAI-compatible client sends a Chat Completions request", async () => {
+  let request;
+  const translate = createOpenAITranslateClient({
+    baseUrl: "https://openai.example/v1/",
+    apiKey: "secret",
+    model: "translation-model",
+    fetchImpl: async (url, init) => {
+      request = { url, init };
+      return new Response(JSON.stringify({ choices: [{ message: { content: "你好" } }] }), { status: 200 });
+    },
+  });
+
+  assert.equal(await translate({ text: "你好", sourceLang: "ZH", targetLang: "ZH-TW" }), "你好");
+  assert.equal(request.url, "https://openai.example/v1/chat/completions");
+  assert.equal(request.init.headers.authorization, "Bearer secret");
+  const body = JSON.parse(request.init.body);
+  assert.equal(body.model, "translation-model");
+  assert.match(body.messages[1].content, /Traditional Chinese/);
+  assert.match(body.messages[1].content, /你好/);
+});
+
+test("OpenAI-compatible client requires all configuration", async () => {
+  const translate = createOpenAITranslateClient({ baseUrl: "", apiKey: "", model: "", retries: 1 });
+  await assert.rejects(() => translate({ text: "你好", sourceLang: "ZH", targetLang: "EN" }), /OPENAI_BASE_URL, API_KEY, and MODEL/);
+});
+
+test("OpenAI-compatible client rejects malformed responses", async () => {
+  const translate = createOpenAITranslateClient({
+    baseUrl: "https://openai.example/v1",
+    apiKey: "secret",
+    model: "translation-model",
+    retries: 1,
+    fetchImpl: async () => new Response(JSON.stringify({ choices: [] }), { status: 200 }),
+  });
+  await assert.rejects(() => translate({ text: "你好", sourceLang: "ZH", targetLang: "JA" }), /invalid or empty/);
+});
+
+test("OpenAI-compatible client does not retry permanent 4xx responses", async () => {
+  let requests = 0;
+  const translate = createOpenAITranslateClient({
+    baseUrl: "https://openai.example/v1",
+    apiKey: "secret",
+    model: "translation-model",
+    fetchImpl: async () => {
+      requests += 1;
+      return new Response(JSON.stringify({ error: "bad request" }), { status: 400 });
+    },
+  });
+  await assert.rejects(() => translate({ text: "你好", sourceLang: "ZH", targetLang: "EN" }), /HTTP 400/);
+  assert.equal(requests, 1);
+});

@@ -1,15 +1,16 @@
 ---
 import Reveal from "../animation/Reveal";
 import PageContainer from "../foundation/PageContainer.astro";
-import ArchiveSidebar from "../domain/ArchiveSidebar.astro";
 import ArchivePostsView from "../domain/ArchivePostsView.astro";
-import { getArchiveBlogSections, getArchiveCategorySummaries, getSiteSettings } from "../../lib/content";
-import { toArchiveFilters, toArchivePostSections } from "../../lib/view-models";
+import { getArchiveBlogSections, getSiteSettings } from "../../lib/content";
+import { getLocalizedBlogSections, getLocalizedSite } from "../../lib/localized-content";
+import type { Locale } from "../../lib/i18n";
+import { toArchivePostSections } from "../../lib/view-models";
 
-const site = await getSiteSettings();
-const archiveBlogSections = await getArchiveBlogSections();
-const archiveCategorySummaries = await getArchiveCategorySummaries();
-const filters = toArchiveFilters(archiveCategorySummaries, site.copy.archiveAllCategories);
+interface Props { locale?: Locale }
+const { locale = "zh-CN" } = Astro.props;
+const site = locale === "zh-CN" ? { ...(await getSiteSettings()), ...(await getLocalizedSite(locale)) } : await getLocalizedSite(locale);
+const archiveBlogSections = locale === "zh-CN" ? await getArchiveBlogSections() : await getLocalizedBlogSections(locale);
 const cardCopy = {
   publishedLabel: site.copy.blogMetaPublished,
   readLabel: site.copy.blogMetaRead,
@@ -20,17 +21,9 @@ const sections = toArchivePostSections(archiveBlogSections, cardCopy);
 <PageContainer class="pb-12 pt-8 md:pb-16 md:pt-10">
   <Reveal client:visible>
     <section class="mb-8 flex flex-col gap-3">
-      <h1 class="ui-page-title text-[var(--text-main)]">BLOG</h1>
+      <h1 class="ui-page-title text-[var(--text-main)]">{site.copy.blogTitle}</h1>
     </section>
   </Reveal>
 
-  <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
-    <aside class="flex flex-col gap-8 lg:col-span-4 xl:col-span-3">
-      <ArchiveSidebar filters={filters} title={site.copy.archiveSidebarTitle} />
-    </aside>
-
-    <section class="lg:col-span-8 xl:col-span-9">
-      <ArchivePostsView sections={sections} hideYearHeader={true} />
-    </section>
-  </div>
+  <ArchivePostsView sections={sections} copy={{ emptyLabel: site.copy.emptyPosts, searchPlaceholder: site.copy.searchPosts, countLabel: site.copy.postCount, listTitleLabel: site.copy.title, listCategoryLabel: site.copy.category, listReadingLabel: site.copy.reading, listDateLabel: site.copy.date }} hideYearHeader={true} mobileDefaultView="list" />
 </PageContainer>

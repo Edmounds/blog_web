@@ -1,0 +1,11 @@
+---
+import ArtSection from "../../../components/sections/ArtSection.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { getLocalizedSite } from "../../../lib/localized-content";
+
+export const prerender = true;
+const site = await getLocalizedSite("zh-CN");
+---
+<BaseLayout title={site.labels.screen} description={site.page.screenDescription} currentPath="/art/screen/">
+  <ArtSection type="screen" />
+</BaseLayout>

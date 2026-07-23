@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "new-blog-smoke",
+  "main": "functions/api/comments.js",
+  "compatibility_date": "2026-05-17",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "blog_web",
+      "database_id": "38848e98-47d9-47b5-82b2-3a37acb84c7a"
+    }
+  ]
+}

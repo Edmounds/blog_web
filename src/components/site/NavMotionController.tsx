@@ -6,11 +6,20 @@ export default function NavMotionController() {
     const switchers = Array.from(document.querySelectorAll<HTMLElement>("[data-nav-switcher]"))
 
     switchers.forEach((switcher) => {
-      const links = Array.from(switcher.querySelectorAll<HTMLElement>("[data-nav-link]"))
+      const links = Array.from(switcher.querySelectorAll<HTMLElement>("[data-nav-link], [data-nav-dropdown-trigger]"))
       const indicator = switcher.querySelector<HTMLElement>("[data-nav-indicator]")
       if (!links.length || !indicator) return
 
-      const active = () => links.find((link) => link.getAttribute("aria-current") === "page") ?? links[0]
+      const visibleLinks = () => links.filter((link) => link.getClientRects().length > 0)
+      const active = () => {
+        const visible = visibleLinks()
+        const activeLink = visible.find((link) => link.getAttribute("aria-current") === "page")
+        if (activeLink?.getAttribute("role") === "menuitem") {
+          return activeLink.closest<HTMLElement>("[data-nav-dropdown]")?.querySelector<HTMLElement>("[data-nav-dropdown-trigger]") ?? activeLink
+        }
+        return activeLink ?? visible[0] ?? links[0]
+      }
+      const scrollContainer = switcher.closest<HTMLElement>("[data-mobile-nav-scroll]")
       
       let currentTarget: HTMLElement = active()
 
@@ -26,23 +35,25 @@ export default function NavMotionController() {
         indicator.style.setProperty("--w", `${width}px`)
       }
 
-      const updateActiveGroup = () => {
+      const scrollActiveIntoView = () => {
         const activeLink = active()
-        const parentGroup = activeLink.getAttribute("data-parent")
-        const href = activeLink.getAttribute("href") || ""
+        if (!scrollContainer || !activeLink) return
 
-        if (parentGroup === "content" || href.startsWith("/blogs") || href.startsWith("/blog") || href.startsWith("/projects")) {
-          switcher.setAttribute("data-active-group", "content")
-        } else if (parentGroup === "art" || href.startsWith("/art")) {
-          switcher.setAttribute("data-active-group", "art")
-        } else {
-          switcher.setAttribute("data-active-group", "none")
+        const linkLeft = activeLink.offsetLeft
+        const linkRight = linkLeft + activeLink.offsetWidth
+        const visibleLeft = scrollContainer.scrollLeft
+        const visibleRight = visibleLeft + scrollContainer.clientWidth
+
+        if (linkLeft < visibleLeft) {
+          scrollContainer.scrollTo({ left: linkLeft, behavior: "smooth" })
+        } else if (linkRight > visibleRight) {
+          scrollContainer.scrollTo({ left: linkRight - scrollContainer.clientWidth, behavior: "smooth" })
         }
       }
 
       const reset = () => {
-        updateActiveGroup()
         moveTo(active())
+        requestAnimationFrame(scrollActiveIntoView)
       }
       const onFocusOut = () => {
         requestAnimationFrame(() => {
@@ -60,12 +71,16 @@ export default function NavMotionController() {
       resizeObserver.observe(switcher)
 
       window.addEventListener("spa:nav-sync", reset)
+      window.addEventListener("popstate", reset)
+      document.addEventListener("astro:page-load", reset)
       switcher.addEventListener("pointerleave", reset)
       switcher.addEventListener("focusout", onFocusOut)
 
       cleanups.push(() => {
         resizeObserver.disconnect()
         window.removeEventListener("spa:nav-sync", reset)
+        window.removeEventListener("popstate", reset)
+        document.removeEventListener("astro:page-load", reset)
         switcher.removeEventListener("pointerleave", reset)
         switcher.removeEventListener("focusout", onFocusOut)
       })

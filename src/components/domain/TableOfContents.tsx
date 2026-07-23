@@ -11,6 +11,7 @@ interface Heading {
 
 interface TableOfContentsProps {
   headings: Heading[];
+  labels?: { title: string; introduction: string; collapse: string; expand: string };
 }
 
 interface TOCItem {
@@ -21,7 +22,7 @@ interface TOCItem {
   subheadings: TOCItem[];
 }
 
-export default function TableOfContents({ headings }: TableOfContentsProps) {
+export default function TableOfContents({ headings, labels = { title: "On this page", introduction: "Introduction", collapse: "Collapse section", expand: "Expand section" } }: TableOfContentsProps) {
   const [activeId, setActiveId] = useState<string>("");
   const [expandedState, setExpandedState] = useState<Record<string, boolean>>({});
 
@@ -34,7 +35,7 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
     list.push({
       id: "intro-top",
       slug: "",
-      text: "Introduction",
+      text: labels.introduction,
       depth: 2,
       subheadings: [],
     });
@@ -66,7 +67,7 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
       }
     }
     return list;
-  }, [headings]);
+  }, [headings, labels.introduction]);
 
   // 2. High-precision Scroll Active Heading Tracking
   useEffect(() => {
@@ -154,7 +155,7 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
   return (
     <div className="flex flex-col gap-4 border border-[var(--border-soft)] bg-[var(--surface-canvas)] rounded-[18px] p-5 shadow-none select-none">
       <span className="text-xs font-semibold uppercase tracking-wider text-[var(--text-faint)] border-b border-[var(--border-soft)] pb-2 block">
-        On this page
+        {labels.title}
       </span>
       <nav className="flex flex-col gap-1 text-sm">
         {tree.map((item) => {
@@ -187,7 +188,7 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
                       toggleExpand(item.id);
                     }}
                     className="p-1 text-[var(--text-faint)] hover:text-[var(--text-main)] transition-colors rounded hover:bg-[var(--bg-subtle)]"
-                    aria-label={isExpanded(item.id) ? "Collapse section" : "Expand section"}
+                    aria-label={isExpanded(item.id) ? labels.collapse : labels.expand}
                   >
                     <ChevronRight
                       className={cn(

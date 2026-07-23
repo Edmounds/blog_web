@@ -473,7 +473,7 @@ body {
   z-index: 9999;
 }
 
-/* Disable all other view transitions during theme switch to avoid conflicts and duplicate names */
+/* Disable named page transitions while the root snapshot handles the theme reveal. */
 html[data-theme-transitioning] * {
   view-transition-name: none !important;
 }
@@ -482,5 +482,3 @@ html[data-theme-transitioning] * {
 body:has([data-active-index="0"]) footer {
   display: none;
 }
-
-

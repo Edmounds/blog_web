@@ -1,50 +1,40 @@
----
+﻿---
 brand: Chasen Design
-titleLeading: Hello, I'm
-titleName: Chasen.
-subtitle: A Product Designer based in San Francisco, crafting digital experiences with intention, clarity, and silence.
+titleLeading: 你好，我是
+titleName: Chasen
+subtitle: 一名关注清晰、克制与体验细节的产品设计师和写作者。
 portrait: /images/content/about/profile.png
 meta:
-  - label: Role
-    value: Senior Product Designer
-  - label: Location
-    value: San Francisco, CA
-  - label: Focus
-    value: Design Systems, AI UI
+  - label: 角色
+    value: 产品设计师
+  - label: 地点
+    value: 中国重庆
+  - label: 聚焦
+    value: 设计系统，人工智能用户界面
 story:
-  - I believe that good design is as much about what you leave out as what you put in. My journey started in architecture, where I learned the importance of structure, light, and flow. The constraints of physical materials taught me to appreciate the honesty of construction.
-  - Transitioning to digital product design allowed me to apply these principles to interactive spaces. I focus on creating tools that feel invisible, empowering users to achieve their goals without friction. I'm obsessed with typography, white space, and the subtle interactions that make software feel alive.
-  - When I'm not designing interfaces, I'm likely hiking the trails of Marin County, brewing pour-over coffee, or reading about mid-century furniture design.
+  - 我关注如何让复杂的工具变得平和、清晰、容易理解。
+  - 这个页面记录我反复回到的原则，网站的其他部分则保存正在进行的工作、文章和实验。
 focusCards:
-  - title: Design Systems at TechCorp
+  - title: 设计系统
     icon: layers
-    text: Leading the reconstruction of our core design language to improve consistency and developer velocity across 4 different product lines.
-  - title: Exploring AI Interfaces
+    text: 构建一致的视觉语言和可复用的产品基础。
+  - title: AI 界面
     icon: psychology
-    text: Researching and prototyping new paradigms for human-AI interaction, focusing on natural language inputs and generative UI components.
+    text: 探索自然语言交互，以及人与智能工具协作的新方式。
 experience:
-  - years: 2022 - Present
-    role: Senior Product Designer
-    company: TechCorp Inc.
-    text: Spearheading the consumer mobile app redesign. Improved retention by 15% through streamlined onboarding flows.
-  - years: 2019 - 2022
-    role: UX Designer
-    company: Creative Agency XYZ
-    text: Worked with diverse clients from fintech to healthcare. Delivered end-to-end design solutions from wireframes to high-fidelity prototypes.
-  - years: 2017 - 2019
-    role: Junior Architect
-    company: Build & Partners
-    text: Focused on sustainable residential projects. This foundation in physical space heavily influences my digital layout philosophy.
-availability: Open to opportunities
+  - years: 现在
+    role: 产品设计师
+    company: 独立创作
+    text: 设计并记录数字产品、界面和个人实验。
+availability: 对机会持开放态度
 homeFeatured:
-  badge: Featured Essay
-  title: About me
+  badge: 个人简介
+  title: 关于我
   name: Chasen Chen
-  description: I'm a designer and writer exploring the delicate intersection where large language models meet the unpredictable nature of the human creative process.
-  location: Chongqing, China
+  description: 我是一名设计师和作家，探索大型语言模型与人类创作过程不可预知的本质之间的微妙交集。
+  location: 中国重庆
 ---
 
-I care about making complex tools feel calm and legible.
+我注重让复杂的工具变得平和易读。
 
-This profile page summarizes long-term principles. The rest of the site captures the ongoing experiments.
-
+该简介页面总结了长期原则。网站的其他部分则记录了正在进行的实验。

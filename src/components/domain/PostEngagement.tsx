@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 
 interface PostEngagementProps {
   slug: string;
+  locale?: string;
+  labels?: Record<string, string>;
 }
 
 interface PostStats {
@@ -16,12 +18,13 @@ interface PostStats {
 
 type LoadState = "idle" | "ready" | "unavailable";
 
-const formatCount = (value: number | undefined): string => {
+const formatCount = (value: number | undefined, locale: string): string => {
   if (typeof value !== "number") return "-";
-  return new Intl.NumberFormat("en-US").format(value);
+  return new Intl.NumberFormat(locale).format(value);
 };
 
-export default function PostEngagement({ slug }: PostEngagementProps) {
+export default function PostEngagement({ slug, locale = "zh-CN", labels = {} }: PostEngagementProps) {
+  const copy = { engagementLabel: "文章互动", views: "浏览", likes: "喜欢", like: "点赞", liking: "点赞中", statsUnavailable: "文章统计暂时不可用。", ...labels };
   const [stats, setStats] = useState<PostStats>();
   const [loadState, setLoadState] = useState<LoadState>("idle");
   const [isLiking, setIsLiking] = useState(false);
@@ -83,11 +86,11 @@ export default function PostEngagement({ slug }: PostEngagementProps) {
   return (
     <section
       className="flex flex-col gap-4 border-y border-[var(--border-soft)] py-4 sm:flex-row sm:items-center sm:justify-between"
-      aria-label="Post engagement"
+      aria-label={copy.engagementLabel}
     >
       <div className="flex flex-wrap gap-3 text-sm text-[var(--text-muted)]" aria-live="polite">
-        <StatItem icon={<Eye aria-hidden="true" />} label="Views" value={formatCount(stats?.views)} />
-        <StatItem icon={<Heart aria-hidden="true" />} label="Likes" value={formatCount(stats?.likes)} />
+        <StatItem icon={<Eye aria-hidden="true" />} label={copy.views} value={formatCount(stats?.views, locale)} />
+        <StatItem icon={<Heart aria-hidden="true" />} label={copy.likes} value={formatCount(stats?.likes, locale)} />
       </div>
 
       <Button
@@ -97,15 +100,15 @@ export default function PostEngagement({ slug }: PostEngagementProps) {
         onClick={handleLike}
         disabled={isLiking || loadState === "unavailable"}
         className="w-full justify-center sm:w-auto"
-        aria-label="Like this post"
+        aria-label={copy.like}
       >
         <Heart aria-hidden="true" className={isLiking ? "fill-current" : undefined} />
-        {isLiking ? "Liking" : "Like"}
+        {isLiking ? copy.liking : copy.like}
       </Button>
 
       {loadState === "unavailable" && (
         <span className="sr-only" role="status">
-          Post statistics are unavailable.
+          {copy.statsUnavailable}
         </span>
       )}
     </section>

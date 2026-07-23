@@ -3,16 +3,16 @@ import Reveal from "../animation/Reveal";
 
 interface Props {
   brand?: string;
+  copyright?: string;
 }
 
-const { brand = "Site" } = Astro.props;
+const { brand = "Site", copyright = "版权所有。" } = Astro.props;
 
 const year = new Date().getFullYear();
 ---
 
 <footer class="mt-20 border-t border-border bg-[var(--surface-parchment)]">
   <Reveal className="app-container flex flex-col items-center justify-center py-8 text-xs text-muted-foreground text-center" y={10} duration={0.4} client:visible>
-    <p>Copyright {year} {brand}. All rights reserved.</p>
+    <p>Copyright {year} {brand}. {copyright}</p>
   </Reveal>
 </footer>
-

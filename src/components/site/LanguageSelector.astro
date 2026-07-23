@@ -1,0 +1,76 @@
+---
+import { Check, Globe2 } from "lucide-react";
+
+import { localeDefinitions, switchLocaleInUrl, type Locale } from "../../lib/i18n";
+
+interface Props {
+  locale: Locale;
+  currentPath: string;
+  label?: string;
+}
+
+const { locale, currentPath, label = "选择语言" } = Astro.props;
+---
+
+<div class="relative" data-language-selector>
+  <button
+    type="button"
+    class="inline-flex size-10 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--surface-parchment)] text-[var(--text-main)] transition hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-action)]"
+    aria-label={label}
+    aria-haspopup="menu"
+    aria-expanded="false"
+    data-language-trigger
+  >
+    <Globe2 className="size-5" aria-hidden="true" />
+  </button>
+  <div
+    class="absolute right-0 z-50 mt-2 hidden max-h-80 w-52 overflow-y-auto rounded-lg border border-[var(--border-strong)] bg-[var(--surface-canvas)] p-1 shadow-lg"
+    role="menu"
+    data-language-menu
+  >
+    {localeDefinitions.map((definition) => (
+      <a
+        href={switchLocaleInUrl(currentPath, definition.code)}
+        role="menuitemradio"
+        aria-checked={definition.code === locale}
+        class="flex min-h-10 items-center justify-between gap-3 rounded-md px-3 py-2 text-sm text-[var(--text-muted)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-main)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-action)]"
+      >
+        <span lang={definition.htmlLang} dir={definition.dir}>{definition.label}</span>
+        {definition.code === locale && <Check className="size-4 text-[var(--color-action)]" aria-hidden="true" />}
+      </a>
+    ))}
+  </div>
+</div>
+
+<script>
+  function bindLanguageSelectors() {
+    document.querySelectorAll<HTMLElement>("[data-language-selector]").forEach((root) => {
+      if (root.dataset.bound === "true") return;
+      root.dataset.bound = "true";
+      const trigger = root.querySelector<HTMLButtonElement>("[data-language-trigger]");
+      const menu = root.querySelector<HTMLElement>("[data-language-menu]");
+      if (!trigger || !menu) return;
+
+      const close = (restoreFocus = false) => {
+        menu.classList.add("hidden");
+        trigger.setAttribute("aria-expanded", "false");
+        if (restoreFocus) trigger.focus();
+      };
+      const open = () => {
+        menu.classList.remove("hidden");
+        trigger.setAttribute("aria-expanded", "true");
+        menu.querySelector<HTMLElement>("[aria-checked='true']")?.focus();
+      };
+      trigger.addEventListener("click", () => menu.classList.contains("hidden") ? open() : close());
+      root.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") close(true);
+      });
+      document.addEventListener("pointerdown", (event) => {
+        if (!root.contains(event.target as Node)) close();
+      });
+    });
+  }
+  bindLanguageSelectors();
+  document.addEventListener("astro:page-load", bindLanguageSelectors);
+</script>
+

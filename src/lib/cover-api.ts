@@ -9,6 +9,14 @@
  * @param type Either 'movie' or 'album'.
  * @returns A promise that resolves to the high-resolution image URL, or null if not found.
  */
+interface ItunesSearchResponse {
+  results?: Array<{ artworkUrl100?: string }>;
+}
+
+interface GoogleBooksResponse {
+  items?: Array<{ volumeInfo?: { imageLinks?: { thumbnail?: string } } }>;
+}
+
 export async function getMediaCover(query: string, type: 'movie' | 'album'): Promise<string | null> {
   try {
     const url = new URL('https://itunes.apple.com/search');
@@ -20,7 +28,7 @@ export async function getMediaCover(query: string, type: 'movie' | 'album'): Pro
     const res = await fetch(url.toString());
     if (!res.ok) return null;
 
-    const data = await res.json();
+    const data = await res.json() as ItunesSearchResponse;
     if (data.results && data.results.length > 0) {
       // The API typically returns a 100x100 image. We can ask for a much larger one by string replacement.
       const artwork = data.results[0].artworkUrl100;
@@ -49,12 +57,12 @@ export async function getBookCover(query: string): Promise<string | null> {
     const res = await fetch(url.toString());
     if (!res.ok) return null;
 
-    const data = await res.json();
+    const data = await res.json() as GoogleBooksResponse;
     if (data.items && data.items.length > 0) {
       const volumeInfo = data.items[0].volumeInfo;
       // Use the thumbnail, which is generally provided if any image exists.
       // Use HTTPS to prevent mixed content warnings.
-      const thumbnail = volumeInfo.imageLinks?.thumbnail;
+      const thumbnail = volumeInfo?.imageLinks?.thumbnail;
       if (thumbnail) {
         return thumbnail.replace('http:', 'https:');
       }

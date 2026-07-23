@@ -4,6 +4,8 @@ import { ClientRouter } from 'astro:transitions';
 import Footer from "../components/site/Footer.astro";
 import Header from "../components/site/Header.astro";
 import { getSiteSettings } from "../lib/content";
+import { defaultLocale, getAlternatePaths, getLocaleDefinition, localizePath, type Locale } from "../lib/i18n";
+import { getLocalizedSite } from "../lib/localized-content";
 
 interface Props {
   title: string;
@@ -11,10 +13,14 @@ interface Props {
   currentPath?: string;
   mainClass?: string;
   showFooter?: boolean;
+  locale?: Locale;
 }
 
-const { title, description, currentPath = "/", mainClass = "", showFooter = true } = Astro.props;
-const site = await getSiteSettings();
+const { title, description, currentPath = "/", mainClass = "", showFooter = true, locale = defaultLocale } = Astro.props;
+const localizedSite = await getLocalizedSite(locale);
+const site = locale === defaultLocale ? { ...(await getSiteSettings()), ...localizedSite } : localizedSite;
+const localeDefinition = getLocaleDefinition(locale);
+const alternatePaths = getAlternatePaths(currentPath);
 const normalizedTitle = title.trim();
 const hasBrand = normalizedTitle.toLowerCase().includes(site.brand.toLowerCase());
 const resolvedTitle = normalizedTitle
@@ -26,7 +32,7 @@ const resolvedDescription = description ?? site.seo.defaultDescription;
 ---
 
 <!doctype html>
-<html lang={site.htmlLang} class="light">
+<html lang={localeDefinition.htmlLang} dir={localeDefinition.dir} class="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -35,6 +41,9 @@ const resolvedDescription = description ?? site.seo.defaultDescription;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
     <link rel="stylesheet" href="/anthropic-fonts.css" />
     <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={localizePath(currentPath, locale)} />
+    {alternatePaths.map((alternate) => <link rel="alternate" hreflang={alternate.htmlLang} href={alternate.href} />)}
+    <link rel="alternate" hreflang="x-default" href={localizePath(currentPath, defaultLocale)} />
     <title>{resolvedTitle}</title>
     <ClientRouter />
     <script is:inline>
@@ -51,26 +60,40 @@ const resolvedDescription = description ?? site.seo.defaultDescription;
   </head>
   <body class="min-h-screen bg-background text-foreground antialiased selection:bg-primary/15 selection:text-primary">
     <div class="relative flex min-h-screen flex-col bg-background">
-      <Header currentPath={currentPath} brand={site.brand} navItems={site.nav} />
+      <Header currentPath={currentPath} brand={site.brand} navItems={site.nav} locale={locale} languageLabel={site.copy.languageSelect} />
       <main transition:name="page-content" class={`flex-1 ${mainClass}`.trim()}>
         <slot />
       </main>
-      {showFooter && <Footer brand={site.brand} />}
+      {showFooter && <Footer brand={site.brand} copyright={site.copy.copyright} />}
     </div>
 
     <script>
       import { navigate } from 'astro:transitions/client';
 
-      const tabs = ['/', '/blogs/', '/projects/', '/art/music/', '/about/'];
+      const tabs = ['/', '/blogs/', '/about/'];
+
+      function getLocalePrefix(path: string) {
+        const [firstSegment] = path.split('/').filter(Boolean);
+        return ['en', 'ja', 'zh-TW'].includes(firstSegment) ? `/${firstSegment}` : '';
+      }
+
+      function stripLocale(path: string) {
+        const prefix = getLocalePrefix(path);
+        const stripped = prefix ? path.slice(prefix.length) : path;
+        return stripped || '/';
+      }
+
+      function getTabPath(path: string, index: number) {
+        return `${getLocalePrefix(path)}${tabs[index]}`;
+      }
 
       function getPathIndex(path: string) {
-        if (path === '/' || path === '') return 0;
-        const normalized = path.replace(/\/$/, '');
+        const routePath = stripLocale(path);
+        if (routePath === '/' || routePath === '') return 0;
+        const normalized = routePath.replace(/\/$/, '');
         if (normalized === '') return 0;
         if (normalized.startsWith('/blogs') || normalized.startsWith('/blog')) return 1;
-        if (normalized.startsWith('/projects')) return 2;
-        if (normalized.startsWith('/art')) return 3;
-        if (normalized.startsWith('/about')) return 4;
+        if (normalized.startsWith('/about')) return 2;
         return -1;
       }
 
@@ -164,7 +187,7 @@ const resolvedDescription = description ?? site.seo.defaultDescription;
             }
 
             if (nextIdx >= 0 && nextIdx < tabs.length) {
-              navigate(tabs[nextIdx]);
+              navigate(getTabPath(window.location.pathname, nextIdx));
             }
           }
         }
@@ -222,7 +245,7 @@ const resolvedDescription = description ?? site.seo.defaultDescription;
             wheelAccumX = 0;
           }, WHEEL_UNLOCK_MS);
 
-          navigate(tabs[nextIdx]);
+          navigate(getTabPath(window.location.pathname, nextIdx));
         },
         { passive: false }
       );

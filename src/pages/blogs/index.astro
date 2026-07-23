@@ -1,9 +1,8 @@
 ---
 import SpaLayout from "../../layouts/SpaLayout.astro";
-import { getSiteSettings } from "../../lib/content";
+import { getLocalizedSite } from "../../lib/localized-content";
 
 export const prerender = true;
-
-const site = await getSiteSettings();
+const site = await getLocalizedSite("zh-CN");
 ---
-<SpaLayout title="Blogs" description="Writing archive and notes." initialPath="/blogs/" />
+<SpaLayout title={site.copy.blogTitle} description={site.page.blogsDescription} initialPath="/blogs/" />

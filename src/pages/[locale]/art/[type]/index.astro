@@ -1,0 +1,22 @@
+---
+import ArtSection from "../../../../components/sections/ArtSection.astro";
+import BaseLayout from "../../../../layouts/BaseLayout.astro";
+import { defaultLocale, localeDefinitions, type Locale } from "../../../../lib/i18n";
+import { getLocalizedSite } from "../../../../lib/localized-content";
+
+export const prerender = true;
+export function getStaticPaths() {
+  const types = ["music", "book", "screen"];
+  return localeDefinitions.filter((item) => item.code !== defaultLocale).flatMap((item) =>
+    types.map((type) => ({ params: { locale: item.path, type } })),
+  );
+}
+const locale = Astro.params.locale as Locale;
+const type = Astro.params.type as "music" | "book" | "screen";
+const site = await getLocalizedSite(locale);
+const title = site.labels[type];
+const description = site.page[`${type}Description`];
+---
+<BaseLayout title={title} description={description} currentPath={`/${Astro.params.locale}/art/${type}/`} locale={locale}>
+  <ArtSection type={type} locale={locale} />
+</BaseLayout>

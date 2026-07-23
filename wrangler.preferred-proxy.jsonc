@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "blog-preferred-proxy",
+  "main": "workers/blog-preferred-proxy.js",
+  "compatibility_date": "2026-07-23",
+  "workers_dev": true,
+  "routes": [
+    {
+      "pattern": "blog.muelsyse.us/*",
+      "zone_name": "muelsyse.us"
+    }
+  ],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  }
+}

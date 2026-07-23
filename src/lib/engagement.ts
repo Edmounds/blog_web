@@ -73,6 +73,16 @@ export async function readBodySlug(request: Request): Promise<string | undefined
   return normalizeSlug(body?.slug);
 }
 
+export function requireSameOriginJson(request: Request): void {
+  const contentType = request.headers.get("content-type")?.split(";", 1)[0]?.trim().toLowerCase();
+  const origin = request.headers.get("origin");
+  const isSameOrigin = !origin || origin === new URL(request.url).origin;
+  const isCrossSite = request.headers.get("sec-fetch-site") === "cross-site";
+  if (contentType === "application/json" && isSameOrigin && !isCrossSite) return;
+
+  throw errorResponse(403, "FORBIDDEN_REQUEST", "A same-origin JSON request is required.");
+}
+
 export function readQuerySlug(request: Request): string | undefined {
   const url = new URL(request.url);
   return normalizeSlug(url.searchParams.get("slug"));

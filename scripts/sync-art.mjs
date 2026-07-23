@@ -253,7 +253,7 @@ export interface ArtItem {
   title: string;
   creator: string;
   cover: string;
-  type: "music" | "book" | "movie";
+  type: "music" | "book" | "movie" | "series" | "anime";
   extra?: string;
 }
 
