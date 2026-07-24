@@ -1,0 +1,249 @@
+---
+interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = "/" } = Astro.props;
+const particles = Array.from({ length: 44 }, (_, index) => ({
+  left: (index * 37 + 11) % 100,
+  top: (index * 53 + 7) % 100,
+  size: 2 + (index % 4),
+  duration: 16 + (index * 7) % 29,
+  delay: -((index * 11) % 31),
+}));
+const keywords = [
+  "Chasen", "design", "writing", "clarity", "systems", "interface", "AI", "experience",
+  "重庆", "设计", "写作", "工具", "协作", "产品", "内容", "思考", "layers", "psychology",
+];
+const drops = Array.from({ length: 60 }, (_, index) => ({
+  word: keywords[index % keywords.length],
+  left: (index * 43 + 5) % 100,
+  size: 12 + (index * 5) % 11,
+  duration: 14 + (index * 9) % 21,
+  delay: -((index * 13) % 34),
+  opacity: index % 13 === 0 ? 0.14 : 0.03 + (index % 6) * 0.01,
+}));
+const nodes = [
+  [10, 21], [24, 13], [37, 31], [51, 18], [66, 28], [82, 15], [91, 38],
+  [18, 53], [34, 64], [49, 49], [64, 62], [79, 52], [89, 73], [58, 82], [28, 85],
+];
+const lines = [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[0,7],[2,7],[2,9],[3,9],[4,10],[6,11],[7,8],[8,9],[9,10],[10,11],[11,12],[8,14],[10,13],[13,12]];
+---
+
+<div class="route-background" data-route-background data-path={currentPath} aria-hidden="true">
+  <div class="route-background__layer route-background__particles" data-background-kind="particles">
+    {particles.map((particle) => (
+      <span
+        style={`--x:${particle.left}%;--y:${particle.top}%;--size:${particle.size}px;--duration:${particle.duration}s;--delay:${particle.delay}s`}
+      ></span>
+    ))}
+  </div>
+
+  <div class="route-background__layer route-background__grid" data-background-kind="grid"></div>
+
+  <div class="route-background__layer route-background__rain" data-background-kind="rain">
+    {drops.map((drop) => (
+      <span style={`--x:${drop.left}%;--size:${drop.size}px;--duration:${drop.duration}s;--delay:${drop.delay}s;--opacity:${drop.opacity}`}>{drop.word}</span>
+    ))}
+  </div>
+
+  <svg class="route-background__layer route-background__constellation" data-background-kind="constellation" viewBox="0 0 100 100" preserveAspectRatio="none">
+    {lines.map(([start, end]) => (
+      <line x1={nodes[start][0]} y1={nodes[start][1]} x2={nodes[end][0]} y2={nodes[end][1]} vector-effect="non-scaling-stroke" />
+    ))}
+    {nodes.map(([x, y]) => <circle cx={x} cy={y} r="0.34" vector-effect="non-scaling-stroke" />)}
+  </svg>
+</div>
+
+<script is:inline define:vars={{ currentPath }}>
+  (() => {
+    const root = document.currentScript?.previousElementSibling;
+    if (!root) return;
+    const segments = currentPath.split("/").filter(Boolean);
+    if (["en", "ja", "zh-TW"].includes(segments[0])) segments.shift();
+    const path = `/${segments.join("/")}${currentPath.endsWith("/") && segments.length ? "/" : ""}` || "/";
+    const kind = path.startsWith("/admin")
+      ? "plain"
+      : path === "/about/" || path === "/about"
+        ? "rain"
+        : path === "/project/" || path === "/project" || path.startsWith("/project/") || path === "/art/screen/" || path === "/art/screen"
+          ? "constellation"
+          : path.startsWith("/art/")
+            ? "plain"
+            : path === "/blog/" || path.startsWith("/blog/") || path === "/note/" || path.startsWith("/note/")
+              ? "grid"
+              : "particles";
+    root.setAttribute("data-active-kind", kind);
+  })();
+</script>
+
+<script>
+  const localeSegments = new Set(["en", "ja", "zh-TW"]);
+
+  function stripLocale(pathname: string) {
+    const segments = pathname.split("/").filter(Boolean);
+    if (localeSegments.has(segments[0])) segments.shift();
+    return `/${segments.join("/")}${pathname.endsWith("/") && segments.length ? "/" : ""}` || "/";
+  }
+
+  function getBackgroundKind(pathname: string) {
+    const path = stripLocale(pathname);
+    if (path.startsWith("/admin")) return "plain";
+    if (path === "/about/" || path === "/about") return "rain";
+    if (path === "/project/" || path.startsWith("/project/") || path === "/art/screen/" || path === "/art/screen") return "constellation";
+    if (path.startsWith("/art/")) return "plain";
+    if (path === "/blog/" || path.startsWith("/blog/") || path === "/note/" || path.startsWith("/note/")) return "grid";
+    return "particles";
+  }
+
+  function syncRouteBackground() {
+    const root = document.querySelector<HTMLElement>("[data-route-background]");
+    if (!root) return;
+    root.dataset.path = window.location.pathname;
+    root.dataset.activeKind = getBackgroundKind(window.location.pathname);
+  }
+
+  syncRouteBackground();
+  document.addEventListener("astro:page-load", syncRouteBackground);
+  window.addEventListener("spa:nav-sync", syncRouteBackground);
+  window.addEventListener("popstate", syncRouteBackground);
+</script>
+
+<style>
+  .route-background {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    color: var(--foreground);
+  }
+
+  .route-background__layer {
+    position: absolute;
+    inset: 0;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 240ms ease;
+  }
+
+  .route-background[data-active-kind="particles"] [data-background-kind="particles"],
+  .route-background[data-active-kind="grid"] [data-background-kind="grid"],
+  .route-background[data-active-kind="rain"] [data-background-kind="rain"],
+  .route-background[data-active-kind="constellation"] [data-background-kind="constellation"] {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .route-background__particles span {
+    position: absolute;
+    top: var(--y);
+    left: var(--x);
+    width: var(--size);
+    height: var(--size);
+    background: color-mix(in srgb, var(--foreground) 24%, transparent);
+    border-radius: 50%;
+    animation: particle-drift var(--duration) linear var(--delay) infinite;
+  }
+
+  html.light .route-background__particles span {
+    background: color-mix(in srgb, #7d7d7d 38%, transparent);
+  }
+
+  .route-background__grid {
+    --grid-size: 24px;
+    --grid-major-size: 120px;
+    background-color: color-mix(in srgb, var(--canvas) 98%, var(--foreground) 2%);
+    background-image:
+      linear-gradient(to right, color-mix(in srgb, var(--foreground) 9.5%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--foreground) 9.5%, transparent) 1px, transparent 1px),
+      linear-gradient(to right, color-mix(in srgb, var(--foreground) 16%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--foreground) 16%, transparent) 1px, transparent 1px);
+    background-size:
+      var(--grid-size) var(--grid-size),
+      var(--grid-size) var(--grid-size),
+      var(--grid-major-size) var(--grid-major-size),
+      var(--grid-major-size) var(--grid-major-size);
+  }
+
+  html.dark .route-background__grid {
+    background-color: #030303;
+  }
+
+  .route-background__rain span {
+    position: absolute;
+    top: -12vh;
+    left: var(--x);
+    color: var(--foreground);
+    font-family: var(--font-mono);
+    font-size: var(--size);
+    line-height: 1;
+    white-space: nowrap;
+    opacity: var(--opacity);
+    animation: code-rain var(--duration) linear var(--delay) infinite;
+  }
+
+  .route-background__constellation {
+    width: 100%;
+    height: 100%;
+    animation: constellation-drift 24s ease-in-out infinite alternate;
+  }
+
+  .route-background__constellation line {
+    stroke: color-mix(in srgb, var(--foreground) 13%, transparent);
+    stroke-width: 1px;
+  }
+
+  .route-background__constellation circle {
+    fill: color-mix(in srgb, var(--foreground) 31%, transparent);
+  }
+
+  @keyframes particle-drift {
+    from { transform: translate3d(0, -10vh, 0); }
+    to { transform: translate3d(1.4rem, 110vh, 0); }
+  }
+
+  @keyframes code-rain {
+    from { transform: translate3d(0, -10vh, 0); }
+    to { transform: translate3d(0.6rem, 125vh, 0); }
+  }
+
+  @keyframes constellation-drift {
+    from { transform: translate3d(-0.35%, -0.2%, 0); }
+    to { transform: translate3d(0.35%, 0.2%, 0); }
+  }
+
+  @media (max-width: 48rem) {
+    .route-background__grid {
+      --grid-size: 20px;
+      --grid-major-size: 100px;
+    }
+
+    .route-background__particles span:nth-child(2n),
+    .route-background__rain span:nth-child(2n) {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .route-background__particles span,
+    .route-background__rain span,
+    .route-background__constellation {
+      animation: none;
+    }
+
+    .route-background__particles span {
+      transform: none;
+    }
+
+    .route-background__rain span {
+      display: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .route-background {
+      display: none;
+    }
+  }
+</style>

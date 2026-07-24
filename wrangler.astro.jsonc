@@ -1,0 +1,41 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "new-blog-ssr",
+  "compatibility_date": "2026-05-17",
+  "compatibility_flags": ["nodejs_compat"],
+  "keep_vars": true,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 0.05
+  },
+  "assets": {
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none",
+    "run_worker_first": [
+      "/api/*",
+      "/admin/*",
+      "/art/*",
+      "/media/*"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "blog_web",
+      "database_id": "38848e98-47d9-47b5-82b2-3a37acb84c7a"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "ART_COVERS",
+      "bucket_name": "blog-art-covers"
+    }
+  ],
+  "services": [
+    {
+      "binding": "ART_COVER_FETCHER",
+      "service": "blog-art-cover-fetcher"
+    }
+  ]
+}

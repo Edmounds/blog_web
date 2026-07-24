@@ -1,0 +1,19 @@
+---
+import AdminNav from "../../../components/domain/AdminNav.astro";
+import ArtAdmin from "../../../components/domain/ArtAdmin";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+export const prerender = false;
+Astro.response.headers.set("Cache-Control", "no-store");
+---
+
+<BaseLayout title="收藏管理" description="搜索、编辑与管理收藏" currentPath="/admin/art/" showFooter={false}>
+  <main class="app-container py-10 md:py-14">
+    <AdminNav current="art" />
+    <div class="mb-8">
+      <h1 class="ui-page-title">收藏管理</h1>
+      <p class="mt-2 text-sm text-[var(--text-muted)]">搜索来源只生成候选，保存前确认封面、分类和多语言文字。</p>
+    </div>
+    <ArtAdmin client:load />
+  </main>
+</BaseLayout>

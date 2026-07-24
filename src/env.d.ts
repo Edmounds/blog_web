@@ -1,17 +1,36 @@
 /// <reference types="astro/client" />
 /// <reference types="@cloudflare/workers-types" />
 
-type Runtime = import('@astrojs/cloudflare').Runtime<Env>;
+interface ImportMetaEnv {
+  readonly WAKA_TIME_API_KEY?: string;
+  readonly WAKATIME_API_KEY?: string;
+}
 
-interface Env {
-  DB: D1Database;
-  COMMENT_HASH_SALT?: string;
-  CF_ACCESS_TEAM_DOMAIN?: string;
-  CF_ACCESS_AUD?: string;
+declare namespace Cloudflare {
+  interface Env {
+    [key: string]: unknown;
+    DB: D1Database;
+    ART_COVERS: R2Bucket;
+    ART_COVER_FETCHER?: Fetcher;
+    GOOGLE_BOOKS_API_KEY?: string;
+    TMDB_API_KEY?: string;
+    SERVICE_TYPE?: string;
+    DEEPLX_BASE_URL?: string;
+    DEEPLX_API_KEY?: string;
+    OPENAI_BASE_URL?: string;
+    API_KEY?: string;
+    MODEL?: string;
+    WAKA_TIME_API_KEY?: string;
+    WAKATIME_API_KEY?: string;
+    COMMENT_HASH_SALT?: string;
+    CF_ACCESS_TEAM_DOMAIN?: string;
+    CF_ACCESS_AUD?: string;
+  }
 }
 
 declare namespace App {
-  interface Locals extends Runtime {
-    // Add other locals here
+  interface Locals {
+    runtime: { env: Cloudflare.Env; cf?: IncomingRequestCfProperties; ctx?: ExecutionContext };
+    cfContext?: ExecutionContext;
   }
 }

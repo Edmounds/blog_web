@@ -1,16 +1,4 @@
-export interface NavItem {
-  label: string;
-  href: string;
-  match?: "exact" | "prefix";
-  children?: NavItem[];
-}
-
 export interface FooterLink {
-  label: string;
-  href: string;
-}
-
-export interface SectionCta {
   label: string;
   href: string;
 }
@@ -56,33 +44,4 @@ export interface ArchiveViewCopy {
   listCategoryLabel: string;
   listReadingLabel: string;
   listDateLabel: string;
-}
-
-export interface SeriesSummaryModel {
-  title: string;
-  href: string;
-  count: number;
-}
-
-export interface ArticleMetaModel {
-  label: string;
-  value: string;
-}
-
-export interface AboutMetaItem {
-  label: string;
-  value: string;
-}
-
-export interface AboutFocusCard {
-  title: string;
-  icon: string;
-  text: string;
-}
-
-export interface ExperienceItem {
-  years: string;
-  role: string;
-  company: string;
-  text: string;
 }

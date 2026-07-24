@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare Pages
+name: Deploy Astro SSR Worker
 
 on:
   push:
@@ -20,13 +20,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build and deploy to Cloudflare Pages
+      - name: Build and deploy Astro SSR Worker
         run: npm run deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

@@ -1,12 +1,12 @@
 import { jwtVerify, createRemoteJWKSet, type JWTPayload } from "jose";
 
-import { POST_SLUGS } from "./post-slugs";
+import { CONTENT_IDS } from "./post-slugs";
 
 export const COMMENT_PAGE_SIZE = 20;
 export const COMMENT_RATE_LIMIT_SECONDS = 60;
 export const MAX_COMMENT_BODY_BYTES = 4_096;
 
-const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const CONTENT_ID_PATTERN = /^(blog|note|project)\/[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const CHINA_REGIONS: Record<string, string> = {
   AH: "安徽", BJ: "北京", CQ: "重庆", FJ: "福建", GD: "广东", GS: "甘肃", GX: "广西", GZ: "贵州",
   HA: "河南", HB: "湖北", HE: "河北", HI: "海南", HK: "中国香港", HL: "黑龙江", HN: "湖南",
@@ -32,7 +32,7 @@ const BEIJING_FORMATTER = new Intl.DateTimeFormat("zh-CN", {
 
 export interface PublicComment {
   id: number;
-  slug: string;
+  contentId: string;
   name: string;
   content: string;
   device: string;
@@ -58,10 +58,10 @@ interface CommentRow {
   hidden_at: string | null;
 }
 
-export function normalizeCommentSlug(value: unknown): string | undefined {
+export function normalizeCommentContentId(value: unknown): string | undefined {
   if (typeof value !== "string") return undefined;
-  const slug = value.trim().replace(/^\/+|\/+$/g, "");
-  return SLUG_PATTERN.test(slug) && POST_SLUGS.includes(slug) ? slug : undefined;
+  const contentId = value.trim().replace(/^\/+|\/+$/g, "");
+  return CONTENT_ID_PATTERN.test(contentId) && (CONTENT_IDS as readonly string[]).includes(contentId) ? contentId : undefined;
 }
 
 export function getCommentCursor(value: string | null): number | undefined {
@@ -71,18 +71,18 @@ export function getCommentCursor(value: string | null): number | undefined {
 }
 
 export function validateCommentInput(value: unknown):
-  | { ok: true; value: { slug: string; name: string; content: string } }
+  | { ok: true; value: { contentId: string; name: string; content: string } }
   | { ok: false; error: { code: string; message: string } } {
   if (!value || typeof value !== "object") return invalid("INVALID_COMMENT", "评论数据无效。");
   const body = value as Record<string, unknown>;
   if (typeof body.website === "string" && body.website.trim()) return invalid("INVALID_COMMENT", "评论数据无效。");
-  const slug = normalizeCommentSlug(body.slug);
-  if (!slug) return invalid("INVALID_SLUG", "请选择一篇已发布的文章。");
+  const contentId = normalizeCommentContentId(body.contentId);
+  if (!contentId) return invalid("INVALID_CONTENT_ID", "请选择一篇已发布的内容。");
   const name = typeof body.name === "string" ? body.name.trim() : "";
   if (!name || Array.from(name).length > 20) return invalid("INVALID_NAME", "名称需为 1 至 20 个字符。");
   const content = typeof body.content === "string" ? body.content : "";
   if (!content.trim() || Array.from(content).length > 500) return invalid("INVALID_CONTENT", "评论需为 1 至 500 个字符。");
-  return { ok: true, value: { slug, name, content } };
+  return { ok: true, value: { contentId, name, content } };
 }
 
 export function inferDevice(userAgent = ""): string {
@@ -115,19 +115,19 @@ export function formatBeijingTime(value: string): string {
   return Number.isNaN(date.getTime()) ? "未知时间" : BEIJING_FORMATTER.format(date);
 }
 
-export async function listPublicComments(db: D1Database, slug: string, cursor?: number) {
-  return queryComments(db, slug, cursor, "is_hidden = 0", toPublicComment);
+export async function listPublicComments(db: D1Database, contentId: string, cursor?: number) {
+  return queryComments(db, contentId, cursor, "is_hidden = 0", toPublicComment);
 }
 
-export async function listAdminComments(db: D1Database, slug: string, status: string, cursor?: number) {
+export async function listAdminComments(db: D1Database, contentId: string, status: string, cursor?: number) {
   const where = status === "visible" ? "is_hidden = 0" : status === "hidden" ? "is_hidden = 1" : "1 = 1";
-  return queryComments(db, slug, cursor, where, toAdminComment);
+  return queryComments(db, contentId, cursor, where, toAdminComment);
 }
 
 export async function createComment(
   db: D1Database,
   request: Request,
-  input: { slug: string; name: string; content: string },
+  input: { contentId: string; name: string; content: string },
   salt: string,
   cf: IncomingRequestCfProperties | undefined,
   now = new Date(),
@@ -150,7 +150,7 @@ export async function createComment(
   const insert = await db.prepare(
     `INSERT INTO comments (slug, name, content, device_label, region_label, created_at)
      VALUES (?, ?, ?, ?, ?, ?)`,
-  ).bind(input.slug, input.name, input.content, device, region, createdAt).run();
+  ).bind(input.contentId, input.name, input.content, device, region, createdAt).run();
   await db.prepare(
     `INSERT INTO comment_rate_limits (visitor_hash, last_submitted_at) VALUES (?, ?)
      ON CONFLICT(visitor_hash) DO UPDATE SET last_submitted_at = excluded.last_submitted_at`,
@@ -160,7 +160,9 @@ export async function createComment(
     ok: true,
     comment: {
       id: Number(insert.meta.last_row_id),
-      ...input,
+      contentId: input.contentId,
+      name: input.name,
+      content: input.content,
       device,
       region,
       createdAt,
@@ -213,7 +215,7 @@ function normalizeUtcTimestamp(value: string): string {
 function toPublicComment(row: CommentRow): PublicComment {
   const createdAt = normalizeUtcTimestamp(row.created_at);
   return {
-    id: Number(row.id), slug: row.slug, name: row.name, content: row.content,
+    id: Number(row.id), contentId: row.slug, name: row.name, content: row.content,
     device: row.device_label, region: row.region_label, createdAt, createdAtLabel: formatBeijingTime(createdAt),
   };
 }
@@ -224,7 +226,7 @@ function toAdminComment(row: CommentRow): AdminComment {
 
 async function queryComments<T>(
   db: D1Database,
-  slug: string,
+  contentId: string,
   cursor: number | undefined,
   where: string,
   mapper: (row: CommentRow) => T,
@@ -232,8 +234,8 @@ async function queryComments<T>(
   const cursorClause = cursor ? "AND id < ?" : "";
   const statement = db.prepare(`SELECT * FROM comments WHERE slug = ? AND ${where} ${cursorClause} ORDER BY id DESC LIMIT ?`);
   const result = cursor
-    ? await statement.bind(slug, cursor, COMMENT_PAGE_SIZE + 1).all<CommentRow>()
-    : await statement.bind(slug, COMMENT_PAGE_SIZE + 1).all<CommentRow>();
+    ? await statement.bind(contentId, cursor, COMMENT_PAGE_SIZE + 1).all<CommentRow>()
+    : await statement.bind(contentId, COMMENT_PAGE_SIZE + 1).all<CommentRow>();
   const rows = result.results ?? [];
   const page = rows.slice(0, COMMENT_PAGE_SIZE);
   return { items: page.map(mapper), nextCursor: rows.length > COMMENT_PAGE_SIZE ? String(page.at(-1)?.id) : null };

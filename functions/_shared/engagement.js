@@ -1,17 +1,19 @@
-import { POST_SLUGS } from "./post-slugs.js";
+import { CONTENT_IDS } from "./post-slugs.js";
 
-const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const CONTENT_ID_PATTERN = /^(blog|note|project)\/[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const VIEW_WINDOW_SECONDS = 6 * 60 * 60;
+const VIEW_PRUNE_INTERVAL_MS = 6 * 60 * 60 * 1000;
 const JSON_CONTENT_TYPE = "application/json";
+let nextViewPruneAt = 0;
 
-export function normalizeSlug(value) {
+export function normalizeContentId(value) {
   if (typeof value !== "string") return undefined;
 
-  const slug = value.trim().replace(/^\/+|\/+$/g, "");
-  if (!SLUG_PATTERN.test(slug)) return undefined;
-  if (!POST_SLUGS.includes(slug)) return undefined;
+  const contentId = value.trim().replace(/^\/+|\/+$/g, "");
+  if (!CONTENT_ID_PATTERN.test(contentId)) return undefined;
+  if (!CONTENT_IDS.includes(contentId)) return undefined;
 
-  return slug;
+  return contentId;
 }
 
 export function getViewWindowStart(now = Date.now()) {
@@ -62,7 +64,7 @@ export function requireDb(env) {
   return env.DB;
 }
 
-export async function readBodySlug(request) {
+export async function readBodyContentId(request) {
   let body;
 
   try {
@@ -71,7 +73,7 @@ export async function readBodySlug(request) {
     body = {};
   }
 
-  return normalizeSlug(body?.slug);
+  return normalizeContentId(body?.contentId);
 }
 
 export function requireSameOriginJson(request) {
@@ -85,23 +87,23 @@ export function requireSameOriginJson(request) {
   throw error(403, "FORBIDDEN_REQUEST", "A same-origin JSON request is required.");
 }
 
-export function readQuerySlug(request) {
+export function readQueryContentId(request) {
   const url = new URL(request.url);
-  return normalizeSlug(url.searchParams.get("slug"));
+  return normalizeContentId(url.searchParams.get("contentId"));
 }
 
-export async function ensureStatsRow(db, slug) {
+export async function ensureStatsRow(db, contentId) {
   await db
     .prepare(
       `INSERT OR IGNORE INTO post_stats (slug, views, likes, updated_at)
        VALUES (?, 0, 0, CURRENT_TIMESTAMP)`,
     )
-    .bind(slug)
+    .bind(contentId)
     .run();
 }
 
-export async function getStats(db, slug) {
-  await ensureStatsRow(db, slug);
+export async function getStats(db, contentId) {
+  await ensureStatsRow(db, contentId);
 
   const row = await db
     .prepare(
@@ -109,63 +111,82 @@ export async function getStats(db, slug) {
        FROM post_stats
        WHERE slug = ?`,
     )
-    .bind(slug)
+    .bind(contentId)
     .first();
 
   return {
-    slug,
+    contentId,
     views: Number(row?.views ?? 0),
     likes: Number(row?.likes ?? 0),
   };
 }
 
-export async function incrementLike(db, slug) {
-  await ensureStatsRow(db, slug);
-  await db
+export async function incrementLike(db, contentId) {
+  await ensureStatsRow(db, contentId);
+  const row = await db
     .prepare(
       `UPDATE post_stats
        SET likes = likes + 1,
            updated_at = CURRENT_TIMESTAMP
-       WHERE slug = ?`,
+       WHERE slug = ?
+       RETURNING slug, views, likes`,
     )
-    .bind(slug)
-    .run();
+    .bind(contentId)
+    .first();
 
-  return getStats(db, slug);
+  return statsFromRow(contentId, row);
 }
 
-export async function recordView(db, request, slug) {
-  await ensureStatsRow(db, slug);
-  await pruneOldViewEvents(db);
+export async function recordView(db, request, contentId) {
+  await ensureStatsRow(db, contentId);
 
-  const visitorHash = await getVisitorHash(request, slug);
+  const visitorHash = await getVisitorHash(request, contentId);
   const windowStart = getViewWindowStart();
   const result = await db
     .prepare(
       `INSERT OR IGNORE INTO post_view_events (slug, visitor_hash, window_start)
        VALUES (?, ?, ?)`,
     )
-    .bind(slug, visitorHash, windowStart)
+    .bind(contentId, visitorHash, windowStart)
     .run();
 
   const counted = Number(result?.meta?.changes ?? 0) > 0;
 
   if (counted) {
-    await db
+    const row = await db
       .prepare(
         `UPDATE post_stats
          SET views = views + 1,
              updated_at = CURRENT_TIMESTAMP
-         WHERE slug = ?`,
+         WHERE slug = ?
+         RETURNING slug, views, likes`,
       )
-      .bind(slug)
-      .run();
+      .bind(contentId)
+      .first();
+
+    return { ...statsFromRow(contentId, row), counted };
   }
 
   return {
-    ...(await getStats(db, slug)),
+    ...(await getStats(db, contentId)),
     counted,
   };
+}
+
+export function scheduleViewEventPrune(db, context, now = Date.now()) {
+  if (!context || typeof context.waitUntil !== "function" || now < nextViewPruneAt) return false;
+  nextViewPruneAt = now + VIEW_PRUNE_INTERVAL_MS;
+  try {
+    context.waitUntil(pruneOldViewEvents(db).catch(() => {}));
+    return true;
+  } catch {
+    nextViewPruneAt = 0;
+    return false;
+  }
+}
+
+export function resetViewPruneScheduleForTests() {
+  nextViewPruneAt = 0;
 }
 
 async function pruneOldViewEvents(db) {
@@ -179,10 +200,14 @@ async function pruneOldViewEvents(db) {
     .run();
 }
 
-async function getVisitorHash(request, slug) {
+function statsFromRow(contentId, row) {
+  return { contentId, views: Number(row?.views ?? 0), likes: Number(row?.likes ?? 0) };
+}
+
+export async function getVisitorHash(request, contentId) {
   const ip = getClientAddress(request);
   const userAgent = request.headers.get("user-agent") ?? "";
-  const value = `${slug}:${ip}:${userAgent}`;
+  const value = `${contentId}:${ip}:${userAgent}`;
   const bytes = new TextEncoder().encode(value);
   const digest = await crypto.subtle.digest("SHA-256", bytes);
 

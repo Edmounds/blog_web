@@ -1,11 +1,8 @@
 ---
-import Reveal from "../animation/Reveal";
 import type { ArchivePostSectionModel, ArchiveViewCopy } from "../../types/ui";
 import ArchiveGrid from "./ArchiveGrid.astro";
-import ArchiveInteractionController from "./ArchiveInteractionController";
 import ArchiveList from "./ArchiveList.astro";
 import ArchiveToolbar from "./ArchiveToolbar.astro";
-import ArchiveViewMotionController from "./ArchiveViewMotionController";
 
 interface Props {
   sections: ArchivePostSectionModel[];
@@ -33,12 +30,7 @@ const {
 const copy = { ...defaultCopy, ...copyOverrides };
 ---
 
-<Reveal client:visible>
-  <section
-    data-archive-root
-    data-mobile-default-view={mobileDefaultView}
-    class="flex flex-col gap-8"
-  >
+<section data-archive-root data-mobile-default-view={mobileDefaultView} class="archive-reveal flex flex-col gap-8">
     <ArchiveToolbar searchPlaceholder={copy.searchPlaceholder} />
 
     <p data-archive-empty class="hidden border-t border-[var(--border-soft)] py-8 text-[var(--text-muted)]">
@@ -47,10 +39,43 @@ const copy = { ...defaultCopy, ...copyOverrides };
 
     <ArchiveGrid sections={sections} countLabel={copy.countLabel} hideYearHeader={hideYearHeader} />
     <ArchiveList sections={sections} copy={copy} />
-    <ArchiveInteractionController client:load />
-    <ArchiveViewMotionController client:load />
   </section>
-</Reveal>
+
+<script>
+  const initArchives = () => {
+    document.querySelectorAll<HTMLElement>("[data-archive-root]:not([data-archive-initialized])").forEach((root) => {
+      root.setAttribute("data-archive-initialized", "true");
+      const search = root.querySelector<HTMLInputElement>("[data-archive-search]");
+      const grid = root.querySelector<HTMLElement>("[data-archive-grid]");
+      const list = root.querySelector<HTMLElement>("[data-archive-list]");
+      const empty = root.querySelector<HTMLElement>("[data-archive-empty]");
+      const listHead = root.querySelector<HTMLElement>("[data-archive-list-head]");
+      const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-archive-view]"));
+      const indicator = root.querySelector<HTMLElement>("[data-archive-view-indicator]");
+      const switcher = root.querySelector<HTMLElement>("[data-archive-view-switcher]");
+      const all = Array.from(root.querySelectorAll<HTMLElement>("[data-archive-item]"));
+      if (!search || !grid || !list || !empty) return;
+      let view = matchMedia("(max-width: 767px)").matches && root.dataset.mobileDefaultView === "list" ? "list" : "grid";
+      const items = () => all.filter((item) => item.dataset.archiveScope === view);
+      const update = () => {
+        const query = search.value.trim().toLowerCase();
+        all.forEach((item) => item.hidden = Boolean(query && !(item.dataset.archiveKeywords ?? "").toLowerCase().includes(query)));
+        root.querySelectorAll<HTMLElement>("[data-archive-group]").forEach((group) => group.hidden = !Array.from(group.querySelectorAll<HTMLElement>('[data-archive-scope="grid"]')).some((item) => !item.hidden));
+        empty.classList.toggle("hidden", items().some((item) => !item.hidden));
+        listHead?.classList.toggle("hidden", matchMedia("(max-width: 767px)").matches || !all.some((item) => item.dataset.archiveScope === "list" && !item.hidden));
+      };
+      const setView = (next: string) => {
+        view = next === "list" ? "list" : "grid"; grid.classList.toggle("hidden", view !== "grid"); list.classList.toggle("hidden", view !== "list");
+        buttons.forEach((button) => { const active = button.dataset.archiveView === view; button.classList.toggle("is-active", active); button.setAttribute("aria-pressed", String(active)); });
+        const active = buttons.find((button) => button.dataset.archiveView === view); if (active && indicator && switcher) { indicator.style.transform = `translateX(${active.offsetLeft}px)`; indicator.style.width = `${active.offsetWidth}px`; indicator.style.opacity = "1"; switcher.dataset.ready = "true"; }
+        update();
+      };
+      buttons.forEach((button) => button.addEventListener("click", () => setView(button.dataset.archiveView ?? "grid")));
+      search.addEventListener("input", update); window.addEventListener("resize", () => setView(view), { passive: true }); setView(view);
+    });
+  };
+  document.addEventListener("astro:page-load", initArchives); initArchives();
+</script>
 
 <style>
   @media (max-width: 767px) {

@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { getPublishedContent, type ContentSection } from "../../../lib/content";
+import { localeDefinitions, defaultLocale, localizePath, type Locale } from "../../../lib/i18n";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const definition of localeDefinitions.filter((item) => item.code !== defaultLocale)) {
+    for (const section of ["blog", "note"] as const) {
+      const items = await getPublishedContent(section, definition.code);
+      for (const category of new Set(items.map((item) => item.category))) {
+        paths.push({
+          params: { locale: definition.path, section, archiveSlug: category },
+          props: { locale: definition.code, section, category, items: items.filter((item) => item.category === category) },
+        });
+      }
+    }
+  }
+  return paths;
+}
+
+const { locale, section, category, items } = Astro.props as {
+  locale: Locale;
+  section: ContentSection;
+  category: string;
+  items: Awaited<ReturnType<typeof getPublishedContent>>;
+};
+const currentPath = localizePath(`/${section}-archive/${category}/`, locale);
+---
+
+<BaseLayout title={`${category} | ${section}`} currentPath={currentPath} description={`${category} ${section} archive`} locale={locale}>
+  <div class="app-container py-20">
+    <p class="ui-kicker">{section}</p>
+    <h1 class="ui-page-title mt-2">{category}</h1>
+    <ol class="mt-10 border-t border-[var(--border-soft)]">
+      {items.map((item) => <li class="border-b border-[var(--border-soft)] py-5"><a class="text-[var(--foreground)] no-underline" href={localizePath(`/${section}/${item.slug}/`, locale)}>{item.title}</a></li>)}
+    </ol>
+  </div>
+</BaseLayout>

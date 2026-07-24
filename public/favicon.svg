@@ -1,11 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Background: Near-Black Tile for perfect visibility on both light and dark browser tabs -->
-  <rect width="512" height="512" rx="114" fill="#1d1d1f" />
-  <!-- Shutter & Footnote (Asterisk) in white and Action Blue -->
-  <g stroke="#ffffff" stroke-width="24" stroke-linecap="round">
-    <line x1="256" y1="130" x2="256" y2="382" />
-    <line x1="130" y1="256" x2="382" y2="256" />
-    <line x1="167" y1="167" x2="345" y2="345" />
-    <line x1="167" y1="345" x2="345" y2="167" stroke="#0066cc" stroke-width="28" />
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">Rhine-style infinity mark</title>
+  <rect width="512" height="512" rx="112" fill="#111111" />
+
+  <path
+    d="M 256 256
+       L 199 199
+       C 181 181 159 171 133 171
+       C 82 171 48 208 48 256
+       C 48 304 82 341 133 341
+       C 159 341 181 331 199 313
+       Z
+
+       M 256 256
+       L 313 313
+       C 331 331 353 341 379 341
+       C 430 341 464 304 464 256
+       C 464 208 430 171 379 171
+       C 353 171 331 181 313 199"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="43"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <path d="M 112 256 H 154 M 133 235 V 277" fill="none" stroke="#ffffff" stroke-width="21" stroke-linecap="round" />
+  <path d="M 358 256 H 400" fill="none" stroke="#ffffff" stroke-width="21" stroke-linecap="round" />
 </svg>

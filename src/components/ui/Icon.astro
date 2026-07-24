@@ -1,0 +1,15 @@
+---
+interface Props {
+  svg: string;
+  label?: string;
+  decorative?: boolean;
+}
+
+const { svg, label, decorative = true } = Astro.props;
+const accessibility = decorative
+  ? ' aria-hidden="true" focusable="false"'
+  : ` role="img" aria-label="${label ?? ""}" focusable="false"`;
+const markup = svg.replace("<svg", `<svg${accessibility}`);
+---
+
+<Fragment set:html={markup} />

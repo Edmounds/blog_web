@@ -1,0 +1,366 @@
+---
+import { defaultLocale, getLocaleDefinition, localizePath, stripLocaleFromPath } from "../lib/i18n";
+
+const { locale } = stripLocaleFromPath(Astro.url.pathname);
+const homeLabels = {
+  "zh-CN": "返回首页",
+  "zh-TW": "返回首頁",
+  en: "Back home",
+  ja: "ホームへ",
+} as const;
+
+const homeHref = localizePath("/", locale);
+const homeLabel = homeLabels[locale] ?? homeLabels[defaultLocale];
+const htmlLang = getLocaleDefinition(locale).htmlLang;
+
+Astro.response.status = 404;
+Astro.response.statusText = "Not Found";
+---
+
+<!doctype html>
+<html lang={htmlLang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#18191b" />
+    <link rel="stylesheet" href="/anthropic-fonts.css" />
+    <title>404 | Page Not Found</title>
+  </head>
+  <body>
+    <main class="not-found">
+      <picture class="not-found__background" aria-hidden="true">
+        <source
+          type="image/webp"
+          srcset="/images/404-background-1280.webp 1280w, /images/404-background-1920.webp 1920w, /images/404-background-3840.webp 3840w"
+          sizes="100vw"
+        />
+        <img
+          src="/images/404-background.png"
+          alt=""
+          width="3840"
+          height="2160"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </picture>
+
+      <div class="not-found__shade" aria-hidden="true"></div>
+
+      <div class="not-found__stage">
+        <section class="not-found__message" aria-labelledby="not-found-title">
+          <h1 id="not-found-title">404</h1>
+          <p>PAGE NOT FOUND</p>
+          <img
+            class="not-found__mark"
+            src="/images/404-rhine-mark.png"
+            alt=""
+            width="477"
+            height="232"
+            loading="eager"
+            decoding="async"
+          />
+          <a href={homeHref}>{homeLabel}<span aria-hidden="true">&nbsp;→</span></a>
+        </section>
+
+        <picture class="not-found__character" aria-hidden="true">
+          <source
+            type="image/webp"
+            srcset="/images/404-character-768.webp 768w, /images/404-character-802.webp 802w, /images/404-character-1024.webp 1024w"
+            sizes="(max-width: 40rem) 78vw, (max-width: 70rem) 66vw, min(52vw, 94vh)"
+          />
+          <img
+            src="/images/404-character.png"
+            alt=""
+            width="802"
+            height="1657"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </picture>
+      </div>
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    width: 100%;
+    min-width: 20rem;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    color-scheme: dark;
+    background: #18191b;
+  }
+
+  body {
+    color: #f5f3ed;
+    font-family: var(--font-ui, "Biotif", "PingFang SC", "Noto Sans SC", sans-serif);
+  }
+
+  .not-found {
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    height: 100svh;
+    height: 100dvh;
+    min-height: 30rem;
+    overflow: hidden;
+    background: #18191b;
+  }
+
+  .not-found__background,
+  .not-found__background img,
+  .not-found__shade {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .not-found__background {
+    z-index: -3;
+    display: block;
+    opacity: 0;
+    animation: background-in 900ms ease-out forwards;
+  }
+
+  .not-found__background img {
+    display: block;
+    object-fit: cover;
+    object-position: center center;
+  }
+
+  .not-found__shade {
+    z-index: -2;
+    background:
+      linear-gradient(90deg, rgba(12, 13, 15, 0.76) 0%, rgba(15, 16, 18, 0.31) 47%, rgba(12, 13, 15, 0.15) 72%, rgba(12, 13, 15, 0.46) 100%),
+      linear-gradient(180deg, rgba(9, 10, 12, 0.14), rgba(9, 10, 12, 0.36));
+  }
+
+  .not-found__stage {
+    position: relative;
+    width: min(100%, 120rem);
+    height: 100%;
+    margin-inline: auto;
+    padding:
+      max(2.5rem, env(safe-area-inset-top))
+      max(3rem, env(safe-area-inset-right))
+      max(2rem, env(safe-area-inset-bottom))
+      max(4rem, env(safe-area-inset-left));
+  }
+
+  .not-found__message {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: max(5rem, env(safe-area-inset-left));
+    width: min(34rem, 40%);
+    transform: translateY(-50%);
+    opacity: 0;
+    animation: message-in 700ms 120ms ease-out forwards;
+  }
+
+  .not-found__message h1,
+  .not-found__message p {
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .not-found__message h1 {
+    font-size: 10rem;
+    font-weight: 600;
+    line-height: 0.78;
+    letter-spacing: 0;
+    text-shadow: 0 0 2.2rem rgba(255, 255, 255, 0.12);
+  }
+
+  .not-found__message p {
+    margin-top: 1.5rem;
+    color: rgba(245, 243, 237, 0.88);
+    font-size: 1.35rem;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: 0.32em;
+  }
+
+  .not-found__mark {
+    display: block;
+    width: 7.75rem;
+    height: auto;
+    margin-top: 1.65rem;
+    opacity: 0.62;
+  }
+
+  .not-found__message a {
+    display: inline-block;
+    margin-top: 1.65rem;
+    padding: 0.25rem 0;
+    color: #f5f3ed;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.4;
+    text-decoration-color: rgba(245, 243, 237, 0.55);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.35rem;
+  }
+
+  .not-found__message a:hover {
+    text-decoration-color: #f5f3ed;
+  }
+
+  .not-found__message a:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 0.4rem;
+  }
+
+  .not-found__character {
+    position: absolute;
+    z-index: 1;
+    right: max(2.5rem, env(safe-area-inset-right));
+    bottom: max(0.25rem, env(safe-area-inset-bottom));
+    display: block;
+    width: min(52vw, 94vh);
+    height: min(96vh, 66vw);
+    pointer-events: none;
+    opacity: 0;
+    animation: character-in 850ms 180ms ease-out forwards;
+  }
+
+  .not-found__character img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: right bottom;
+    filter: drop-shadow(0 1.3rem 1.7rem rgba(0, 0, 0, 0.52));
+  }
+
+  @media (max-width: 70rem) {
+    .not-found__stage {
+      padding-left: max(2.5rem, env(safe-area-inset-left));
+      padding-right: max(1.75rem, env(safe-area-inset-right));
+    }
+
+    .not-found__message {
+      left: max(2.5rem, env(safe-area-inset-left));
+      width: 42%;
+    }
+
+    .not-found__message h1 {
+      font-size: 7.5rem;
+    }
+
+    .not-found__message p {
+      margin-top: 1.15rem;
+      font-size: 1.05rem;
+      letter-spacing: 0.24em;
+    }
+
+    .not-found__mark {
+      width: 6.5rem;
+      margin-top: 1.35rem;
+    }
+
+    .not-found__message a {
+      margin-top: 1.35rem;
+      font-size: 0.95rem;
+    }
+
+    .not-found__character {
+      right: max(0.75rem, env(safe-area-inset-right));
+      width: min(62vw, 89vh);
+      height: min(94vh, 82vw);
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .not-found__shade {
+      background:
+        linear-gradient(90deg, rgba(10, 11, 13, 0.88) 0%, rgba(12, 13, 15, 0.45) 48%, rgba(12, 13, 15, 0.12) 100%),
+        linear-gradient(180deg, rgba(9, 10, 12, 0.18), rgba(9, 10, 12, 0.43));
+    }
+
+    .not-found__stage {
+      padding: max(1rem, env(safe-area-inset-top)) max(0.5rem, env(safe-area-inset-right)) max(0.75rem, env(safe-area-inset-bottom)) max(1.25rem, env(safe-area-inset-left));
+    }
+
+    .not-found__message {
+      top: 37%;
+      left: max(1.25rem, env(safe-area-inset-left));
+      width: 43%;
+    }
+
+    .not-found__message h1 {
+      font-size: 4.45rem;
+      line-height: 0.82;
+    }
+
+    .not-found__message p {
+      margin-top: 0.85rem;
+      font-size: 0.7rem;
+      line-height: 1.35;
+      letter-spacing: 0.12em;
+    }
+
+    .not-found__mark {
+      width: 4.35rem;
+      margin-top: 1rem;
+    }
+
+    .not-found__message a {
+      margin-top: 1rem;
+      font-size: 0.8rem;
+    }
+
+    .not-found__character {
+      right: max(-0.5rem, calc(env(safe-area-inset-right) - 0.5rem));
+      bottom: max(0.25rem, env(safe-area-inset-bottom));
+      width: 78vw;
+      height: min(88vh, 171vw);
+    }
+  }
+
+  @keyframes background-in {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes message-in {
+    from {
+      opacity: 0;
+      transform: translate(-1.25rem, -50%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(0, -50%);
+    }
+  }
+
+  @keyframes character-in {
+    from {
+      opacity: 0;
+      transform: translateY(1.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .not-found__background,
+    .not-found__message,
+    .not-found__character {
+      animation: none;
+      opacity: 1;
+    }
+  }
+</style>

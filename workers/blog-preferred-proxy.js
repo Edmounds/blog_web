@@ -1,4 +1,3 @@
-const ORIGIN_HOST = "new-blog-c0s.pages.dev";
 const SECURITY_HEADERS = {
   "content-security-policy": [
     "default-src 'self'",
@@ -7,7 +6,7 @@ const SECURITY_HEADERS = {
     "font-src 'self' https://assets-proxy.anthropic.com",
     "form-action 'self'",
     "frame-ancestors 'none'",
-    "img-src 'self' data:",
+    "img-src 'self' data: https://raw.githubusercontent.com",
     "object-src 'none'",
     "script-src 'self' 'unsafe-inline'",
     "style-src 'self' 'unsafe-inline'",
@@ -21,34 +20,28 @@ const SECURITY_HEADERS = {
   "x-frame-options": "DENY",
 };
 
-function isSameOriginJsonRequest(request) {
-  const contentType = request.headers.get("content-type")?.split(";", 1)[0]?.trim().toLowerCase();
+function isSameOriginRequest(request) {
   const origin = request.headers.get("origin");
-  return contentType === "application/json" && (!origin || origin === new URL(request.url).origin);
+  const isCrossSite = request.headers.get("sec-fetch-site") === "cross-site";
+  return !isCrossSite && (!origin || origin === new URL(request.url).origin);
 }
 
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
     const incomingUrl = new URL(request.url);
-    if (incomingUrl.hostname !== "blog.muelsyse.us") {
+    if (incomingUrl.hostname !== "blog.muelsyse.us" && !incomingUrl.hostname.endsWith(".workers.dev")) {
       return new Response("Not Found", { status: 404 });
     }
 
-    if (["POST", "PUT", "PATCH", "DELETE"].includes(request.method) && !isSameOriginJsonRequest(request)) {
+    if (["POST", "PUT", "PATCH", "DELETE"].includes(request.method) && !isSameOriginRequest(request)) {
       return new Response(JSON.stringify({ error: { code: "FORBIDDEN_REQUEST", message: "Forbidden request." } }), {
         status: 403,
         headers: { "content-type": "application/json; charset=utf-8" },
       });
     }
 
-    const target = new URL(request.url);
-    target.protocol = "https:";
-    target.hostname = ORIGIN_HOST;
-    target.port = "";
-
     const upstreamHeaders = new Headers(request.headers);
-    if (upstreamHeaders.has("origin")) upstreamHeaders.set("origin", target.origin);
-    const response = await fetch(new Request(target, { ...request, headers: upstreamHeaders }));
+    const response = await env.ORIGIN.fetch(new Request(request, { headers: upstreamHeaders }));
     const headers = new Headers(response.headers);
     headers.delete("access-control-allow-origin");
     for (const [name, value] of Object.entries(SECURITY_HEADERS)) {

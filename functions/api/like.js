@@ -1,12 +1,14 @@
-import { error, incrementLike, json, readBodySlug, requireDb } from "../_shared/engagement.js";
+import { error, incrementLike, json, readBodyContentId, requireDb, requireSameOriginJson } from "../_shared/engagement.js";
+import { noStore } from "../_shared/edge-cache.js";
 
 export async function onRequestPost({ env, request }) {
   try {
-    const slug = await readBodySlug(request);
-    if (!slug) return error(400, "INVALID_SLUG", "A valid published post slug is required.");
+    requireSameOriginJson(request);
+    const contentId = await readBodyContentId(request);
+    if (!contentId) return error(400, "INVALID_CONTENT_ID", "A valid published content ID is required.");
 
-    const stats = await incrementLike(requireDb(env), slug);
-    return json({ ok: true, ...stats });
+    const stats = await incrementLike(requireDb(env), contentId);
+    return noStore(json({ ok: true, ...stats }));
   } catch (err) {
     if (err instanceof Response) return err;
     return error(500, "LIKE_WRITE_FAILED", "Unable to record the post like.");

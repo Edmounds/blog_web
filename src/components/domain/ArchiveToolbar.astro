@@ -7,13 +7,13 @@ interface Props {
 
 const { searchPlaceholder = "Search posts" } = Astro.props;
 const archiveViewButtonClass =
-  "archive-view-button !h-auto !rounded-full !px-4 !py-2 !text-sm !text-[var(--text-muted)] hover:!bg-transparent hover:!text-[var(--text-main)]";
+  "archive-view-button !h-11 !rounded-[var(--radius-control)] !px-3.5 !py-2 !text-sm !text-[var(--text-muted)] hover:!bg-transparent hover:!text-[var(--text-main)]";
 ---
 
-<div class="flex flex-col gap-4 rounded-lg bg-[var(--surface-parchment)] p-3 lg:flex-row lg:items-center lg:justify-between">
+<div class="flex flex-col gap-4 border-y border-[var(--border-soft)] py-3 lg:flex-row lg:items-center lg:justify-between">
   <label class="relative block w-full max-w-xl">
     <svg
-      class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--text-faint)]"
+      class="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--text-faint)]"
       viewBox="0 0 20 20"
       fill="none"
       stroke="currentColor"
@@ -25,7 +25,7 @@ const archiveViewButtonClass =
     </svg>
     <input
       data-archive-search
-      class="archive-search h-11 w-full rounded-full border border-[var(--border-strong)] bg-[var(--surface-canvas)] pl-12 pr-4 text-base text-[var(--text-main)] outline-none transition focus:border-[var(--color-action)]"
+      class="archive-search h-11 w-full rounded-[var(--radius-control)] border border-[var(--border-strong)] bg-[var(--canvas)] pl-11 pr-4 text-base text-[var(--text-main)] outline-none transition focus:border-[var(--foreground)] focus:ring-2 focus:ring-[var(--focus-ring)]"
       type="search"
       placeholder={searchPlaceholder}
       autocomplete="off"
@@ -33,7 +33,7 @@ const archiveViewButtonClass =
   </label>
 
   <div
-    class="archive-view-switcher relative inline-flex self-start rounded-full bg-[var(--surface-canvas)] p-1"
+    class="archive-view-switcher relative inline-flex self-start rounded-[var(--radius-control)] border border-[var(--border-strong)] bg-[var(--canvas)] p-0.5"
     data-archive-view-switcher
   >
     <span class="archive-view-indicator" data-archive-view-indicator aria-hidden="true"></span>
@@ -67,12 +67,11 @@ const archiveViewButtonClass =
   .archive-view-indicator {
     position: absolute;
     left: 0;
-    top: 0.25rem;
-    bottom: 0.25rem;
+    top: 0.125rem;
+    bottom: 0.125rem;
     width: 0;
-    border-radius: 9999px;
-    border: 1px solid color-mix(in srgb, var(--color-action) 20%, var(--border-strong));
-    background: color-mix(in srgb, var(--color-action) 10%, var(--surface-canvas));
+    border-radius: calc(var(--radius-control) - 2px);
+    background: var(--foreground);
     opacity: 0;
   }
 
@@ -82,7 +81,7 @@ const archiveViewButtonClass =
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    border-radius: 9999px;
+    border-radius: calc(var(--radius-control) - 2px);
     border: 1px solid transparent;
     padding: 0.6rem 0.95rem;
     font-size: 1rem;
@@ -95,6 +94,6 @@ const archiveViewButtonClass =
   }
 
   .archive-view-button.is-active {
-    color: var(--color-action);
+    color: var(--canvas) !important;
   }
 </style>

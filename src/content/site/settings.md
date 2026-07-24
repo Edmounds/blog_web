@@ -6,31 +6,34 @@ seo:
   defaultDescription: Personal blog and design reflections.
   titleSeparator: " | "
 nav:
-  - label: 首页
-    href: /
-    match: exact
-  - label: 博客
-    href: /blogs/
-    match: prefix
-  - label: 关于
+  - label: About
     href: /about/
     match: prefix
-  - label: 收藏
-    href: /art/screen/
+  - label: Blog
+    href: /blog/
+    match: prefix
+  - label: Note
+    href: /note/
+    match: prefix
+  - label: Project
+    href: /project/
+    match: prefix
+  - label: Life
+    href: /art/book/
     match: prefix
     children:
-      - label: 书籍
+      - label: Books
         href: /art/book/
         match: prefix
-      - label: 专辑
+      - label: Music
         href: /art/music/
         match: prefix
-      - label: 影视
+      - label: Screen
         href: /art/screen/
         match: prefix
 footerLinks:
-  - label: Blogs
-    href: /blogs/
+  - label: Blog
+    href: /blog/
   - label: About
     href: /about/
 copy:
@@ -41,7 +44,4 @@ copy:
   blogReadNext: Read next
   homeRecentBlogsTitle: Recent Blogs
   homeRecentBlogsCta: View all blogs
-  seriesTitle: Series
-  seriesDescription: Themed paths through related essays and notes.
-  seriesAllPostsCta: View series
 ---

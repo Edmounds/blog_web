@@ -1,13 +1,7 @@
-﻿import { routes } from "./routes";
-import { defaultLocale, localizePath, type Locale } from "./i18n";
-import type {
-  ArchivePostSectionModel,
-  ArticleMetaModel,
-  ContentCardModel,
-  SeriesSummaryModel,
-} from "../types/ui";
+﻿import { defaultLocale, localizePath, type Locale } from "./i18n";
+import type { ArchivePostSectionModel, ContentCardModel } from "../types/ui";
 
-interface BlogCardSource {
+interface ContentCardSource {
   slug: string;
   title: string;
   summary: string;
@@ -18,55 +12,32 @@ interface BlogCardSource {
   archiveTags?: string[];
 }
 
-interface BlogCardCopy {
+interface ContentCardCopy {
   publishedLabel: string;
   readLabel: string;
   readArticleLabel: string;
 }
 
-interface ArchiveBlogSectionSource {
+interface ArchiveSectionSource {
   year: number;
-  posts: BlogCardSource[];
+  posts: ContentCardSource[];
 }
 
-interface SeriesSummarySource {
-  title: string;
-  slug: string;
-  count: number;
-}
-
-interface ArticleMetaSource {
-  category: string;
-  dateLong: string;
-  readingTime: string;
-}
-
-interface ArticleMetaLabels {
-  categoryLabel: string;
-  publishedLabel: string;
-  readingTimeLabel: string;
-}
-
-const DEFAULT_BLOG_CARD_COPY: BlogCardCopy = {
+const DEFAULT_CARD_COPY: ContentCardCopy = {
   publishedLabel: "Published",
   readLabel: "Read",
   readArticleLabel: "Read article",
 };
 
-const DEFAULT_ARTICLE_META_LABELS: ArticleMetaLabels = {
-  categoryLabel: "Category",
-  publishedLabel: "Published",
-  readingTimeLabel: "Reading time",
-};
-
-export const toBlogCardModel = (
-  post: BlogCardSource,
-  copy: BlogCardCopy = DEFAULT_BLOG_CARD_COPY,
+export const toContentCardModel = (
+  post: ContentCardSource,
+  copy: ContentCardCopy = DEFAULT_CARD_COPY,
   locale: Locale = defaultLocale,
+  section = "blog",
 ): ContentCardModel => ({
   title: post.title,
   summary: post.summary,
-  href: localizePath(`/blog/${post.slug}/`, locale),
+  href: localizePath(`/${section}/${post.slug}/`, locale),
   image: post.cover,
   imageAlt: post.title,
   eyebrow: post.category,
@@ -79,39 +50,20 @@ export const toBlogCardModel = (
 });
 
 export const toArchivePostSections = (
-  sections: ArchiveBlogSectionSource[],
-  copy: BlogCardCopy = DEFAULT_BLOG_CARD_COPY,
+  sections: ArchiveSectionSource[],
+  copy: ContentCardCopy = DEFAULT_CARD_COPY,
   locale: Locale = defaultLocale,
-): ArchivePostSectionModel[] =>
-  sections.map((section) => ({
-    year: section.year,
-    cards: section.posts.map((post) => toBlogCardModel(post, copy, locale)),
-    posts: section.posts.map((post) => ({
-      title: post.title,
-      summary: post.summary,
-      href: localizePath(`/blog/${post.slug}/`, locale),
-      category: post.category,
-      dateLabel: post.dateLabel,
-      readingTime: post.readingTime,
-      tags: post.archiveTags,
-    })),
-  }));
-
-export const toSeriesSummaryModel = (series: SeriesSummarySource): SeriesSummaryModel => ({
-  title: series.title,
-  href: routes.seriesDetail(series.slug),
-  count: series.count,
-});
-
-export const toArticleMetaItems = (
-  post: ArticleMetaSource,
-  labels: Partial<ArticleMetaLabels> = {},
-): ArticleMetaModel[] => {
-  const resolved = { ...DEFAULT_ARTICLE_META_LABELS, ...labels };
-
-  return [
-    { label: resolved.categoryLabel, value: post.category },
-    { label: resolved.publishedLabel, value: post.dateLong },
-    { label: resolved.readingTimeLabel, value: post.readingTime },
-  ];
-};
+  contentSection = "blog",
+): ArchivePostSectionModel[] => sections.map((group) => ({
+  year: group.year,
+  cards: group.posts.map((post) => toContentCardModel(post, copy, locale, contentSection)),
+  posts: group.posts.map((post) => ({
+    title: post.title,
+    summary: post.summary,
+    href: localizePath(`/${contentSection}/${post.slug}/`, locale),
+    category: post.category,
+    dateLabel: post.dateLabel,
+    readingTime: post.readingTime,
+    tags: post.archiveTags,
+  })),
+}));

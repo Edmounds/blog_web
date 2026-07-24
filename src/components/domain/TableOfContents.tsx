@@ -1,7 +1,5 @@
-import { ChevronRight } from "lucide-react";
-import { useEffect, useState, useMemo } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { cn } from "@/lib/utils";
+import { ChevronDown, ChevronRight } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 
 interface Heading {
   depth: number;
@@ -12,6 +10,7 @@ interface Heading {
 interface TableOfContentsProps {
   headings: Heading[];
   labels?: { title: string; introduction: string; collapse: string; expand: string };
+  mode?: "desktop" | "mobile";
 }
 
 interface TOCItem {
@@ -22,219 +21,135 @@ interface TOCItem {
   subheadings: TOCItem[];
 }
 
-export default function TableOfContents({ headings, labels = { title: "On this page", introduction: "Introduction", collapse: "Collapse section", expand: "Expand section" } }: TableOfContentsProps) {
-  const [activeId, setActiveId] = useState<string>("");
+const defaultLabels = {
+  title: "On this page",
+  introduction: "Introduction",
+  collapse: "Collapse section",
+  expand: "Expand section",
+};
+
+export default function TableOfContents({ headings, labels = defaultLabels, mode = "desktop" }: TableOfContentsProps) {
+  const [activeId, setActiveId] = useState("");
+  const [open, setOpen] = useState(false);
   const [expandedState, setExpandedState] = useState<Record<string, boolean>>({});
 
-  // 1. Build collapsible hierarchical tree of headings
   const tree = useMemo(() => {
-    const list: TOCItem[] = [];
+    const list: TOCItem[] = [{ id: "intro-top", slug: "", text: labels.introduction, depth: 2, subheadings: [] }];
     let currentTop: TOCItem | null = null;
 
-    // Always prepend "Introduction" as the first top-level element pointing to top of page
-    list.push({
-      id: "intro-top",
-      slug: "",
-      text: labels.introduction,
-      depth: 2,
-      subheadings: [],
-    });
-
-    for (const h of headings) {
-      if (h.depth === 2 || h.depth === 1) {
-        currentTop = {
-          id: h.slug,
-          slug: h.slug,
-          text: h.text,
-          depth: h.depth,
-          subheadings: [],
-        };
-        list.push(currentTop);
-      } else if (h.depth === 3) {
-        const subItem: TOCItem = {
-          id: h.slug,
-          slug: h.slug,
-          text: h.text,
-          depth: h.depth,
-          subheadings: [],
-        };
-        if (currentTop) {
-          currentTop.subheadings.push(subItem);
-        } else {
-          // If H3 appears before any H2, add it as a top level item
-          list.push(subItem);
-        }
+    for (const heading of headings) {
+      const item: TOCItem = { id: heading.slug, slug: heading.slug, text: heading.text, depth: heading.depth, subheadings: [] };
+      if (heading.depth <= 2) {
+        currentTop = item;
+        list.push(item);
+      } else if (currentTop) {
+        currentTop.subheadings.push(item);
+      } else {
+        list.push(item);
       }
     }
+
     return list;
   }, [headings, labels.introduction]);
 
-  // 2. High-precision Scroll Active Heading Tracking
   useEffect(() => {
-    // Collect all element IDs we are tracking (excluding empty slug for Intro)
-    const headingElements = tree
+    const elements = tree
       .flatMap((item) => [item, ...item.subheadings])
-      .filter((item) => item.slug !== "")
+      .filter((item) => item.slug)
       .map((item) => document.getElementById(item.slug))
-      .filter((el): el is HTMLElement => el !== null);
+      .filter((element): element is HTMLElement => Boolean(element));
 
-    if (headingElements.length === 0) {
-      setActiveId("");
-      return;
-    }
-
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      
-      // If we are near the top of the page, automatically highlight "Introduction"
-      if (scrollPosition < 120) {
+    const update = () => {
+      if (window.scrollY < 120) {
         setActiveId("");
         return;
       }
 
-      // Check if we have scrolled to the bottom of the page
-      const isBottom =
-        window.innerHeight + window.scrollY >=
-        document.documentElement.scrollHeight - 30;
-
-      if (isBottom) {
-        setActiveId(headingElements[headingElements.length - 1].id);
-        return;
+      let current = "";
+      for (const element of elements) {
+        if (element.offsetTop - 120 <= window.scrollY) current = element.id;
+        else break;
       }
-
-      const threshold = 110; // offset for sticky nav bars (cumulative height is 96px)
-      let currentActive = "";
-
-      for (let i = 0; i < headingElements.length; i++) {
-        const el = headingElements[i];
-        if (el.offsetTop - threshold <= scrollPosition) {
-          currentActive = el.id;
-        } else {
-          break; // Stop since elements are ordered down the page
-        }
-      }
-
-      setActiveId(currentActive);
+      setActiveId(current);
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // Initialize on mount
-
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", update, { passive: true });
+    update();
+    return () => window.removeEventListener("scroll", update);
   }, [tree]);
 
-  // 3. Auto-Expand Parent when a subheading inside it becomes active
   useEffect(() => {
-    if (!activeId) return;
-
-    const activeParent = tree.find((item) =>
-      item.slug === activeId || item.subheadings.some((sub) => sub.slug === activeId)
-    );
-
-    if (activeParent && activeParent.subheadings.length > 0) {
-      setExpandedState((prev) => {
-        if (prev[activeParent.id]) return prev; // Already expanded
-        return { ...prev, [activeParent.id]: true };
-      });
-    }
+    const parent = tree.find((item) => item.subheadings.some((subheading) => subheading.slug === activeId));
+    if (parent) setExpandedState((state) => state[parent.id] ? state : { ...state, [parent.id]: true });
   }, [activeId, tree]);
 
-  // Toggle expanded state of a top-level heading group
-  const toggleExpand = (id: string) => {
-    setExpandedState((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
+  const content = (
+    <nav className="toc-nav" aria-label={labels.title}>
+      {tree.map((item) => {
+        const active = activeId === item.slug;
+        const hasChildren = item.subheadings.length > 0;
+        const expanded = Boolean(expandedState[item.id]);
 
-  // Helper check if a group is currently expanded
-  const isExpanded = (id: string) => {
-    return !!expandedState[id];
-  };
+        return (
+          <div className="toc-group" key={item.id}>
+            <div className="toc-row">
+              <a
+                href={item.slug ? `#${item.slug}` : "#"}
+                className={active ? "toc-link is-active" : "toc-link"}
+                onClick={() => mode === "mobile" && setOpen(false)}
+              >
+                {item.text}
+              </a>
+              {hasChildren && (
+                <button
+                  type="button"
+                  className="toc-expand"
+                  aria-label={expanded ? labels.collapse : labels.expand}
+                  aria-expanded={expanded}
+                  onClick={() => setExpandedState((state) => ({ ...state, [item.id]: !state[item.id] }))}
+                >
+                  <ChevronRight aria-hidden="true" className={expanded ? "is-expanded" : ""} />
+                </button>
+              )}
+            </div>
+
+            {hasChildren && expanded && (
+              <ul className="toc-children">
+                {item.subheadings.map((subheading) => (
+                  <li key={subheading.id}>
+                    <a
+                      href={`#${subheading.slug}`}
+                      className={activeId === subheading.slug ? "toc-link toc-link--sub is-active" : "toc-link toc-link--sub"}
+                      onClick={() => mode === "mobile" && setOpen(false)}
+                    >
+                      {subheading.text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        );
+      })}
+    </nav>
+  );
+
+  if (mode === "mobile") {
+    return (
+      <section className="toc-mobile">
+        <button type="button" className="toc-mobile__trigger" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+          <span>{labels.title}</span>
+          <ChevronDown aria-hidden="true" className={open ? "is-expanded" : ""} />
+        </button>
+        {open && <div className="toc-mobile__panel">{content}</div>}
+      </section>
+    );
+  }
 
   return (
-    <div className="flex flex-col gap-4 border border-[var(--border-soft)] bg-[var(--surface-canvas)] rounded-[18px] p-5 shadow-none select-none">
-      <span className="text-xs font-semibold uppercase tracking-wider text-[var(--text-faint)] border-b border-[var(--border-soft)] pb-2 block">
-        {labels.title}
-      </span>
-      <nav className="flex flex-col gap-1 text-sm">
-        {tree.map((item) => {
-          const hasChildren = item.subheadings.length > 0;
-          const isItemActive = activeId === item.slug;
-          const isAnyChildActive = item.subheadings.some((sub) => activeId === sub.slug);
-          
-          return (
-            <div key={item.id} className="flex flex-col">
-              <div className="group/toc flex items-center justify-between py-1 px-1 rounded-md transition-colors hover:bg-[var(--surface-parchment)]">
-                <a
-                  href={item.slug === "" ? "#" : `#${item.slug}`}
-                  className={cn(
-                    "flex-1 text-sm truncate transition-colors duration-150 py-0.5",
-                    isItemActive
-                      ? "font-semibold text-[var(--color-action)]"
-                      : isAnyChildActive
-                      ? "font-medium text-[var(--text-main)]"
-                      : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
-                  )}
-                >
-                  {item.text}
-                </a>
-
-                {hasChildren && (
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      toggleExpand(item.id);
-                    }}
-                    className="p-1 text-[var(--text-faint)] hover:text-[var(--text-main)] transition-colors rounded hover:bg-[var(--bg-subtle)]"
-                    aria-label={isExpanded(item.id) ? labels.collapse : labels.expand}
-                  >
-                    <ChevronRight
-                      className={cn(
-                        "size-3.5 transform transition-transform duration-200",
-                        isExpanded(item.id) && "rotate-90"
-                      )}
-                    />
-                  </button>
-                )}
-              </div>
-
-              {/* Collapsible Subheadings Panel */}
-              <AnimatePresence initial={false}>
-                {hasChildren && isExpanded(item.id) && (
-                  <motion.ul
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2, ease: "easeInOut" }}
-                    className="overflow-hidden pl-3.5 ml-3 border-l border-[var(--border-soft)] space-y-1 mt-1 mb-2"
-                  >
-                    {item.subheadings.map((sub) => {
-                      const isSubActive = activeId === sub.slug;
-                      return (
-                        <li key={sub.id}>
-                          <a
-                            href={`#${sub.slug}`}
-                            className={cn(
-                              "block text-xs py-1 transition-colors duration-150 truncate",
-                              isSubActive
-                                ? "font-semibold text-[var(--color-action)]"
-                                : "text-[var(--text-faint)] hover:text-[var(--text-muted)]"
-                            )}
-                          >
-                            {sub.text}
-                          </a>
-                        </li>
-                      );
-                    })}
-                  </motion.ul>
-                )}
-              </AnimatePresence>
-            </div>
-          );
-        })}
-      </nav>
-    </div>
+    <section className="toc-desktop">
+      <h2>{labels.title}</h2>
+      {content}
+    </section>
   );
 }

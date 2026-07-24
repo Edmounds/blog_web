@@ -1,7 +1,12 @@
-﻿export const routes = {
+export const routes = {
   home: "/",
-  blogs: "/blogs/",
-  series: "/series/",
-  seriesDetail: (slug: string) => `/series/${slug}/`,
   about: "/about/",
+  blog: "/blog/",
+  note: "/note/",
+  project: "/project/",
+  life: {
+    books: "/art/book/",
+    music: "/art/music/",
+    screen: "/art/screen/",
+  },
 };

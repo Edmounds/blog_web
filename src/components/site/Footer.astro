@@ -1,6 +1,4 @@
 ---
-import Reveal from "../animation/Reveal";
-
 interface Props {
   brand?: string;
   copyright?: string;
@@ -11,8 +9,8 @@ const { brand = "Site", copyright = "版权所有。" } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
-<footer class="mt-20 border-t border-border bg-[var(--surface-parchment)]">
-  <Reveal className="app-container flex flex-col items-center justify-center py-8 text-xs text-muted-foreground text-center" y={10} duration={0.4} client:visible>
+<footer class="mt-20 border-t border-[var(--border-soft)] bg-transparent">
+  <div class="app-container footer-reveal flex flex-col items-center justify-center py-7 text-center text-[var(--type-xs)] text-[var(--foreground-soft)] md:items-start md:text-left">
     <p>Copyright {year} {brand}. {copyright}</p>
-  </Reveal>
+  </div>
 </footer>

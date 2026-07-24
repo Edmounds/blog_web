@@ -20,9 +20,13 @@ pnpm-debug.log*
 # environment variables
 .env
 .env.production
+.dev.vars
 
 # macOS-specific files
 .DS_Store
 
 # jetbrains setting folder
 .idea/
+
+tmp/
+8c489a39e6257edc869f3a9e50df479b1775cf9f7a8f79071b01cf7796fdfb0c

@@ -1,0 +1,6 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "blog-art-cover-fetcher",
+  "main": "workers/art-cover-fetcher.js",
+  "compatibility_date": "2026-05-17"
+}

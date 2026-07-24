@@ -1,0 +1,82 @@
+---
+interface Props { contentId: string; labels?: Record<string, string>; }
+const { contentId, labels = {} } = Astro.props;
+const copy = { comments: "评论", commentName: "名称", commentContent: "评论内容", commentDisclosure: "发布后会公开展示服务端推断的设备系统、大致地区和北京时间，但不会公开 IP。", commentSubmit: "发布评论", commentSubmitting: "发布中", commentLoading: "正在加载评论", commentReload: "重新加载", commentEmpty: "还没有评论，来留下第一条吧。", commentLoadMore: "加载更多", commentLoadingMore: "加载中", commentNameInvalid: "名称需为 1 至 20 个字符。", commentContentInvalid: "评论需为 1 至 500 个字符。", commentPublished: "评论已发布。", commentLoadFailed: "暂时无法加载评论，请稍后重试。", commentSubmitFailed: "评论发布失败，请稍后重试。", ...labels };
+---
+
+<section id="comments" class="comments-section" aria-labelledby="comments-title" data-comments data-content-id={contentId} data-copy={JSON.stringify(copy)}>
+  <div class="comments-section__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z"/></svg><h2 id="comments-title">{copy.comments}</h2></div>
+  <form class="comments-form" data-comment-form>
+    <div class="comments-field"><div><label for="comment-name">{copy.commentName}</label><span data-name-count>0/20</span></div><input id="comment-name" name="name" required maxlength="20" autocomplete="name" /></div>
+    <div class="comments-field"><div><label for="comment-content">{copy.commentContent}</label><span data-content-count>0/500</span></div><textarea id="comment-content" name="content" required maxlength="500" rows="6"></textarea></div>
+    <div class="comments-honeypot" aria-hidden="true"><label for="comment-website">网站</label><input id="comment-website" name="website" tabindex="-1" autocomplete="off" /></div>
+    <div class="comments-form__footer"><p>{copy.commentDisclosure}</p><button type="submit" data-submit><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg><span>{copy.commentSubmit}</span></button></div>
+    <p class="comments-status" role="status" aria-live="polite" data-submit-status></p>
+  </form>
+  <div class="comments-list" data-comment-list><p class="comments-list__message" role="status" data-list-message>{copy.commentLoading}</p><ol data-comment-items></ol><button type="button" class="comments-secondary" data-retry hidden>{copy.commentReload}</button><button type="button" class="comments-secondary comments-more" data-more hidden>{copy.commentLoadMore}</button></div>
+</section>
+
+<script>
+  interface CommentItem { id: string; name: string; content: string; createdAtLabel: string; device: string; region: string; }
+  interface CommentPage { items: CommentItem[]; nextCursor: string | null; }
+  const initComments = () => {
+    document.querySelectorAll<HTMLElement>("[data-comments]:not([data-initialized])").forEach((root) => {
+      root.dataset.initialized = "true";
+      const copy = JSON.parse(root.dataset.copy ?? "{}") as Record<string, string>;
+      const contentId = root.dataset.contentId ?? "";
+      const form = root.querySelector<HTMLFormElement>("[data-comment-form]")!;
+      const name = form.elements.namedItem("name") as HTMLInputElement;
+      const content = form.elements.namedItem("content") as HTMLTextAreaElement;
+      const website = form.elements.namedItem("website") as HTMLInputElement;
+      const submit = root.querySelector<HTMLButtonElement>("[data-submit]")!;
+      const submitLabel = submit.querySelector("span")!;
+      const submitStatus = root.querySelector<HTMLElement>("[data-submit-status]")!;
+      const listMessage = root.querySelector<HTMLElement>("[data-list-message]")!;
+      const commentItems = root.querySelector<HTMLOListElement>("[data-comment-items]")!;
+      const retry = root.querySelector<HTMLButtonElement>("[data-retry]")!;
+      const more = root.querySelector<HTMLButtonElement>("[data-more]")!;
+      const controller = new AbortController();
+      let nextCursor: string | null = null;
+      let loaded = false;
+      let loading = false;
+      const count = () => { root.querySelector("[data-name-count]")!.textContent = `${Array.from(name.value).length}/20`; root.querySelector("[data-content-count]")!.textContent = `${Array.from(content.value).length}/500`; };
+      name.addEventListener("input", count); content.addEventListener("input", count);
+      const makeItem = (item: CommentItem) => {
+        const li = document.createElement("li");
+        const heading = document.createElement("h3"); heading.textContent = item.name;
+        const body = document.createElement("p"); body.className = "comments-list__body"; body.textContent = item.content;
+        const meta = document.createElement("p"); meta.className = "comments-list__meta"; meta.textContent = `${item.createdAtLabel} · ${item.device} · ${item.region}`;
+        li.appendChild(heading); li.appendChild(body); li.appendChild(meta); return li;
+      };
+      const fetchPage = async (reset: boolean) => {
+        if (loading) return; loading = true; retry.hidden = true; more.disabled = true; listMessage.textContent = reset ? copy.commentLoading : copy.commentLoadingMore;
+        const query = new URLSearchParams({ contentId }); if (!reset && nextCursor) query.set("cursor", nextCursor);
+        try {
+          const response = await fetch(`/api/comments?${query}`, { signal: controller.signal });
+          const data = await response.json() as CommentPage & { error?: { message?: string } }; if (!response.ok) throw new Error(data.error?.message ?? copy.commentLoadFailed);
+          if (reset) commentItems.replaceChildren(); data.items.forEach((item) => commentItems.appendChild(makeItem(item))); nextCursor = data.nextCursor; loaded = true;
+          listMessage.textContent = commentItems.children.length ? "" : copy.commentEmpty; more.hidden = !nextCursor; more.textContent = copy.commentLoadMore;
+        } catch (error) { if ((error as Error).name !== "AbortError") { listMessage.textContent = (error as Error).message || copy.commentLoadFailed; retry.hidden = false; } }
+        finally { loading = false; more.disabled = false; }
+      };
+      retry.addEventListener("click", () => void fetchPage(!loaded)); more.addEventListener("click", () => void fetchPage(false));
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault(); const cleanName = name.value.trim();
+        if (!cleanName || Array.from(cleanName).length > 20) { submitStatus.textContent = copy.commentNameInvalid; return; }
+        if (!content.value.trim() || Array.from(content.value).length > 500) { submitStatus.textContent = copy.commentContentInvalid; return; }
+        submit.disabled = true; submitLabel.textContent = copy.commentSubmitting; submitStatus.textContent = "";
+        try {
+          const response = await fetch("/api/comments", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ contentId, name: name.value, content: content.value, website: website.value }), signal: controller.signal });
+          const data = await response.json() as { item?: CommentItem; error?: { message?: string } }; if (!response.ok || !data.item) throw new Error(data.error?.message ?? copy.commentSubmitFailed);
+          commentItems.insertBefore(makeItem(data.item), commentItems.firstChild); content.value = ""; count(); loaded = true; listMessage.textContent = ""; submitStatus.textContent = copy.commentPublished;
+        } catch (error) { if ((error as Error).name !== "AbortError") submitStatus.textContent = (error as Error).message || copy.commentSubmitFailed; }
+        finally { submit.disabled = false; submitLabel.textContent = copy.commentSubmit; }
+      });
+      const observer = new IntersectionObserver((entries) => { if (entries.some((entry) => entry.isIntersecting)) { observer.disconnect(); void fetchPage(true); } }, { rootMargin: "500px 0px" });
+      observer.observe(root);
+      document.addEventListener("astro:before-swap", () => { controller.abort(); observer.disconnect(); }, { once: true });
+    });
+  };
+  document.addEventListener("astro:page-load", initComments);
+  initComments();
+</script>

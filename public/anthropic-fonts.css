@@ -1,96 +1,42 @@
 @font-face {
-  font-family: anthropicSans;
-  src: url("https://assets-proxy.anthropic.com/claude-ai/v1/_next/static/media/01d1396bd69a228a-s.p.woff2") format("woff2");
-  font-display: swap;
-  font-weight: 300 800;
+  font-family: "Biotif";
+  src: url("/fonts/Biotif-Regular.woff2") format("woff2");
   font-style: normal;
-}
-
-@font-face {
-  font-family: anthropicSans;
-  src: url("https://assets-proxy.anthropic.com/claude-ai/v1/_next/static/media/8d6f5db32d507c08-s.p.woff2") format("woff2");
+  font-weight: 400;
   font-display: swap;
-  font-weight: 300 800;
-  font-style: italic;
 }
 
 @font-face {
-  font-family: "anthropicSans Fallback";
-  src: local("Arial");
-  ascent-override: 92.99%;
-  descent-override: 24.13%;
-  line-gap-override: 0%;
-  size-adjust: 106.73%;
-}
-
-@font-face {
-  font-family: anthropicSerif;
-  src: url("https://assets-proxy.anthropic.com/claude-ai/v1/_next/static/media/fe66948be403232d-s.p.woff2") format("woff2");
-  font-display: swap;
-  font-weight: 300 800;
+  font-family: "Biotif";
+  src: url("/fonts/Biotif-Medium.woff2") format("woff2");
   font-style: normal;
-}
-
-@font-face {
-  font-family: anthropicSerif;
-  src: url("https://assets-proxy.anthropic.com/claude-ai/v1/_next/static/media/56139cc7a3934d47-s.p.woff2") format("woff2");
+  font-weight: 500;
   font-display: swap;
-  font-weight: 300 800;
-  font-style: italic;
 }
 
 @font-face {
-  font-family: "anthropicSerif Fallback";
-  src: local("Arial");
-  ascent-override: 93.6%;
-  descent-override: 24.28%;
-  line-gap-override: 0%;
-  size-adjust: 106.03%;
-}
-
-@font-face {
-  font-family: anthropicMono;
-  src: url("https://assets-proxy.anthropic.com/claude-ai/v1/_next/static/media/5ab84f5ed5bd55bd-s.p.woff2") format("woff2");
-  font-display: swap;
-  font-weight: 300 800;
+  font-family: "Biotif";
+  src: url("/fonts/Biotif-SemiBold.woff2") format("woff2");
   font-style: normal;
-}
-
-@font-face {
-  font-family: anthropicMono;
-  src: url("https://assets-proxy.anthropic.com/claude-ai/v1/_next/static/media/c25fe61b276783b5-s.p.woff2") format("woff2");
+  font-weight: 600;
   font-display: swap;
-  font-weight: 300 800;
-  font-style: italic;
 }
 
 @font-face {
-  font-family: "anthropicMono Fallback";
-  src: local("Arial");
-  ascent-override: 75.48%;
-  descent-override: 19.58%;
-  line-gap-override: 0%;
-  size-adjust: 131.49%;
+  font-family: "Biotif";
+  src: url("/fonts/Biotif-Bold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
 }
 
 :root {
-  --font-anthropic-sans: "anthropicSans", "anthropicSans Fallback", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-anthropic-serif: "anthropicSerif", "anthropicSerif Fallback", Georgia, "Times New Roman", Times, serif;
-  --font-anthropic-mono: "anthropicMono", "anthropicMono Fallback", ui-monospace, "SFMono-Regular", Menlo, Monaco, monospace;
-  --font-ui: var(--font-anthropic-sans);
-  --font-ui-serif: var(--font-anthropic-serif);
-  --font-mono: var(--font-anthropic-mono);
+  --font-ui: "Biotif", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --font-ui-serif: var(--font-ui);
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
 }
 
 html,
 body {
   font-family: var(--font-ui);
-}
-
-.font-mono,
-code,
-kbd,
-pre,
-samp {
-  font-family: var(--font-mono) !important;
 }

@@ -35,20 +35,20 @@ const posts = sections.flatMap((section) => section.posts.map((post) => ({ ...po
       return (
         <a
           href={post.href}
-          class="group block border-b border-[var(--border-soft)] py-5 transition-colors hover:text-[var(--text-main)]"
+          class="group block border-b border-[var(--border-soft)] py-5 text-inherit no-underline transition-colors hover:text-[var(--text-main)]"
           data-archive-item
           data-archive-scope="list"
           data-archive-keywords={keywords}
         >
           <div class="grid gap-3 md:grid-cols-[minmax(0,2.8fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.9fr)] md:items-start md:gap-5">
             <div>
-              <h3 class="text-2xl font-semibold leading-tight text-[var(--text-main)] transition-colors group-hover:text-[var(--color-action)]">
+              <h3 class="text-[var(--type-lg)] font-semibold leading-tight text-[var(--text-main)] transition-transform duration-200 group-hover:translate-x-[0.14rem]">
                 {post.title}
               </h3>
             </div>
             <p class="text-sm text-[var(--text-muted)]">{post.category}</p>
             <p class="text-sm text-[var(--text-faint)]">{post.readingTime}</p>
-            <p class="text-sm text-[var(--text-faint)]">{post.dateLabel}</p>
+            <p class="font-mono text-sm tabular-nums text-[var(--text-faint)]">{post.dateLabel}</p>
           </div>
         </a>
       );

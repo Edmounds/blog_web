@@ -1,0 +1,9 @@
+---
+import ContentDetail from "../../../components/domain/ContentDetail.astro";
+import { getLocalizedContentStaticPaths, getNextContent } from "../../../lib/content";
+export const prerender = true;
+export function getStaticPaths() { return getLocalizedContentStaticPaths("note"); }
+const { item, locale } = Astro.props;
+const next = await getNextContent("note", item.slug, locale);
+---
+<ContentDetail item={item} next={next} locale={locale} />

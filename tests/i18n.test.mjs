@@ -43,6 +43,6 @@ test("localized blog archive links keep the active locale", () => {
   const viewModels = readFileSync(new URL("../src/lib/view-models.ts", import.meta.url), "utf8");
   const blogsSection = readFileSync(new URL("../src/components/sections/BlogsSection.astro", import.meta.url), "utf8");
 
-  assert.match(viewModels, /localizePath\(`\/blog\/\$\{post\.slug\}\/`, locale\)/);
-  assert.match(blogsSection, /toArchivePostSections\(archiveBlogSections, cardCopy, locale\)/);
+  assert.match(viewModels, /localizePath\(`\/\$\{contentSection\}\/\$\{post\.slug\}\/`, locale\)/);
+  assert.match(blogsSection, /ContentSection section="blog" locale=\{locale\}/);
 });

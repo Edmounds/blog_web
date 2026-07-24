@@ -1,21 +1,19 @@
 ---
 import ArtCard from "../cards/ArtCard.astro";
-import { artData, type ArtItem } from "../../lib/artData";
+import type { ArtItem } from "../../lib/art";
 import { getLocalizedSite } from "../../lib/localized-content";
 import type { Locale } from "../../lib/i18n";
 
 export interface Props {
   type: "music" | "book" | "screen";
+  items: ArtItem[];
   locale?: Locale;
 }
 
-const { type, locale = "zh-CN" } = Astro.props;
+const { type, items, locale = "zh-CN" } = Astro.props;
 const site = await getLocalizedSite(locale);
 
-const screenTypes: ArtItem["type"][] = ["movie", "series", "anime"];
-const items = artData.filter((item) => type === "screen" ? screenTypes.includes(item.type) : item.type === type);
 const title = site.labels[type];
-const description = site.page[`${type}Description`];
 const screenTabs = [
   { type: "movie", label: site.labels.film },
   { type: "series", label: site.labels.series },
@@ -23,15 +21,14 @@ const screenTabs = [
 ] as const;
 ---
 
-<div class="app-container py-12 md:py-24">
-  <div class="mb-8 md:mb-12">
-    <h1 class="ui-section-title mb-4">{title}</h1>
-    <p class="ui-lead">{description}</p>
+<div class="app-container py-12 md:py-20">
+  <div class="mb-8 border-b border-[var(--border-soft)] pb-8 md:mb-12">
+    <h1 class="ui-page-title">{title}</h1>
   </div>
 
   {type === "screen" && (
     <div
-      class="mb-8 inline-flex rounded-full bg-[var(--bg-subtle)] p-1"
+      class="mb-8 inline-flex rounded-[var(--radius-control)] border border-[var(--border-strong)] bg-[var(--canvas)] p-0.5"
       role="tablist"
       aria-label={title}
       data-screen-tabs
@@ -44,8 +41,8 @@ const screenTabs = [
           tabindex={index === 0 ? 0 : -1}
           data-screen-tab={tab.type}
           class:list={[
-            "min-w-16 rounded-full px-4 py-2 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-action)]",
-            index === 0 ? "bg-[var(--surface-canvas)] text-[var(--text-main)] shadow-sm" : "text-[var(--text-muted)]",
+            "min-h-11 min-w-16 rounded-[calc(var(--radius-control)-2px)] px-4 py-2 text-sm transition",
+            index === 0 ? "bg-[var(--foreground)] text-[var(--canvas)]" : "text-[var(--text-muted)]",
           ]}
         >
           {tab.label}
@@ -55,7 +52,7 @@ const screenTabs = [
   )}
 
   <div
-    class="grid min-h-48 grid-cols-1 gap-4 min-[480px]:grid-cols-2 md:grid-cols-3 md:gap-[var(--spacing-lg,24px)] lg:grid-cols-5"
+    class="grid min-h-48 grid-cols-1 gap-x-5 gap-y-10 min-[480px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-5"
     data-art-grid
   >
     {items.map((item) => (
@@ -94,9 +91,8 @@ const screenTabs = [
             const active = tab === selected;
             tab.setAttribute("aria-selected", String(active));
             tab.tabIndex = active ? 0 : -1;
-            tab.classList.toggle("bg-[var(--surface-canvas)]", active);
-            tab.classList.toggle("text-[var(--text-main)]", active);
-            tab.classList.toggle("shadow-sm", active);
+            tab.classList.toggle("bg-[var(--foreground)]", active);
+            tab.classList.toggle("text-[var(--canvas)]", active);
             tab.classList.toggle("text-[var(--text-muted)]", !active);
           });
 

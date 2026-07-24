@@ -1,0 +1,102 @@
+---
+import { BookOpen, ExternalLink } from "lucide-static";
+import type { ContentSummary } from "../../lib/content";
+import { render } from "astro:content";
+import { getLocaleDefinition, localizePath, type Locale } from "../../lib/i18n";
+import { getLocalizedSite } from "../../lib/localized-content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CommentsSection from "./CommentsSection.astro";
+import PostEngagement from "./PostEngagement.astro";
+import TableOfContents from "./TableOfContents.astro";
+import Icon from "../ui/Icon.astro";
+
+interface Props {
+  item: ContentSummary;
+  locale?: Locale;
+  next?: Pick<ContentSummary, "slug" | "title">;
+}
+
+const { item, locale = "zh-CN", next } = Astro.props;
+const { Content, headings } = await render(item.entry);
+const site = await getLocalizedSite(locale);
+const dateLabel = new Intl.DateTimeFormat(getLocaleDefinition(locale).dateLocale, { dateStyle: "long" }).format(item.createdAt);
+const canonicalPath = localizePath(`/${item.section}/${item.slug}/`, locale);
+const labels = site.copy;
+const hasMath = /(^|\n)\s*\$\$?|\\\(|\\\[/.test(item.entry.body ?? "");
+const articleJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": item.section === "project" ? "CreativeWork" : "BlogPosting",
+  headline: item.title,
+  description: item.description,
+  datePublished: item.createdAt.toISOString(),
+  dateModified: (item.updatedAt ?? item.createdAt).toISOString(),
+  url: new URL(canonicalPath, "https://blog.muelsyse.us").toString(),
+  image: item.image ? new URL(item.image, "https://blog.muelsyse.us").toString() : undefined,
+  author: { "@type": "Person", name: "Chasen Chen" },
+}).replace(/</g, "\\u003c");
+---
+
+<BaseLayout
+  title={`${item.title} | chasen`}
+  description={item.description}
+  currentPath={canonicalPath}
+  locale={locale}
+  imageUrl={item.image}
+  ogType="article"
+  hasMath={hasMath}
+>
+  <script slot="head" is:inline type="application/ld+json" set:html={articleJsonLd} />
+  <article class="article-page app-container">
+    <header class="article-page__header">
+      <a href={localizePath(`/${item.section}/`, locale)}>Back to {item.section}</a>
+      <p>{item.category}</p>
+      <h1>{item.title}</h1>
+      <p class="article-page__description">{item.description}</p>
+      <div class="article-page__meta"><time datetime={item.createdAt.toISOString()}>{dateLabel}</time><span>{item.readingTime}</span></div>
+      {item.section === "project" && (item.projectUrl || item.docUrl) && (
+        <nav class="article-page__links" aria-label="Project links">
+          {item.projectUrl && <a href={item.projectUrl} target="_blank" rel="noreferrer"><Icon svg={ExternalLink} />Project</a>}
+          {item.docUrl && <a href={item.docUrl} target="_blank" rel="noreferrer"><Icon svg={BookOpen} />Docs</a>}
+        </nav>
+      )}
+    </header>
+
+    {item.image && <img class="article-page__cover" src={item.image} alt="" width="512" height="512" fetchpriority="high" decoding="async" />}
+
+    <div class="article-page__body">
+      <aside><TableOfContents headings={headings} labels={{ title: labels.tableOfContents, introduction: labels.introduction, collapse: labels.collapseSection, expand: labels.expandSection }} /></aside>
+      <div class="article-prose"><Content /></div>
+    </div>
+
+    <div class="article-page__interaction">
+      <PostEngagement contentId={item.contentId} locale={locale} labels={labels} />
+      <CommentsSection contentId={item.contentId} labels={labels} />
+    </div>
+
+    {next && <a class="article-page__next" href={localizePath(`/${item.section}/${next.slug}/`, locale)}><span>Next</span><strong>{next.title}</strong></a>}
+  </article>
+</BaseLayout>
+
+<style>
+  .article-page { padding-block: clamp(4rem, 9vw, 8rem) 6rem; }
+  .article-page__header { max-width: 60rem; margin-inline: auto; }
+  .article-page__header > a, .article-page__header > p:first-of-type { color: var(--text-faint); font-size: var(--type-sm); text-decoration: none; }
+  .article-page__header h1 { margin: 1rem 0; font-size: clamp(2.6rem, 7vw, 6.5rem); line-height: 0.98; overflow-wrap: anywhere; }
+  .article-page__description { max-width: 46rem; color: var(--text-muted); font-size: var(--type-md); }
+  .article-page__meta { display: flex; gap: 1rem; margin-top: 1.25rem; color: var(--text-faint); font-size: var(--type-sm); }
+  .article-page__links { display: flex; flex-wrap: wrap; gap: 1.25rem; margin-top: 1.5rem; }
+  .article-page__links a { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--foreground); font-size: var(--type-sm); text-decoration: none; }
+  .article-page__links :global(svg) { width: 1rem; height: 1rem; }
+  .article-page__cover { display: block; width: min(100%, 76rem); height: auto; aspect-ratio: 1; max-height: 42rem; margin: 3rem auto; object-fit: cover; border-radius: var(--radius-control); }
+  .article-page__body { display: grid; grid-template-columns: minmax(12rem, 16rem) minmax(0, 46rem); justify-content: center; gap: clamp(2rem, 5vw, 5rem); margin-top: 4rem; }
+  .article-page__body aside { position: sticky; top: 6rem; align-self: start; }
+  .article-prose { min-width: 0; font-size: var(--type-content-body); line-height: 1.85; }
+  .article-prose :global(h2), .article-prose :global(h3) { scroll-margin-top: 6rem; line-height: 1.25; }
+  .article-prose :global(img) { max-width: 100%; border-radius: var(--radius-control); }
+  .article-prose :global(pre) { max-width: 100%; overflow: auto; padding: 1rem; border: 1px solid var(--border-soft); border-radius: var(--radius-control); }
+  .article-page__interaction, .article-page__next { display: block; max-width: 46rem; margin: 4rem auto 0; }
+  .article-page__next { padding-top: 1.5rem; color: var(--foreground); text-decoration: none; border-top: 1px solid var(--border-soft); }
+  .article-page__next span { display: block; color: var(--text-faint); font-size: var(--type-xs); }
+  .article-page__next strong { display: block; margin-top: 0.4rem; font-size: var(--type-lg); }
+  @media (max-width: 56rem) { .article-page__body { grid-template-columns: 1fr; } .article-page__body aside { position: static; } }
+</style>

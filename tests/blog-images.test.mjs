@@ -17,6 +17,11 @@ const createFixture = async () => {
   return { root, contentDir, imageDir };
 };
 
+const writeManifest = (root, keys) => writeFile(
+  path.join(root, ".blog-images-manifest.json"),
+  `${JSON.stringify({ version: 1, keys }, null, 2)}\n`,
+);
+
 test("uploads Typora absolute images and rewrites body and cover URLs", async () => {
   const { root, contentDir, imageDir } = await createFixture();
   const coverPath = path.join(imageDir, "cover image.png");
@@ -82,7 +87,7 @@ test("ignores remote, site-root, and relative image references", async () => {
     upload: async () => assert.fail("no upload expected"),
   });
 
-  assert.deepEqual(result, { scannedFiles: 1, uploaded: 0, rewrittenFiles: 0 });
+  assert.deepEqual(result, { scannedFiles: 1, uploaded: 0, rewrittenFiles: 0, deleted: 0 });
   assert.equal(await readFile(postPath, "utf8"), source);
 });
 
@@ -133,7 +138,7 @@ test("is a no-op after local paths have already been rewritten", async () => {
     upload: async () => assert.fail("no upload expected"),
   });
 
-  assert.deepEqual(result, { scannedFiles: 1, uploaded: 0, rewrittenFiles: 0 });
+  assert.deepEqual(result, { scannedFiles: 1, uploaded: 0, rewrittenFiles: 0, deleted: 0 });
   assert.equal(await readFile(postPath, "utf8"), source);
 });
 
@@ -166,5 +171,116 @@ test("rejects unsupported local image types before upload", async () => {
   await assert.rejects(
     syncBlogImages({ root, upload: async () => assert.fail("no upload expected") }),
     /unsupported image type/,
+  );
+});
+
+test("deletes managed R2 images that are no longer referenced", async () => {
+  const { root, contentDir } = await createFixture();
+  const keptKey = `blog/${"a".repeat(64)}.png`;
+  const deletedKey = `blog/${"b".repeat(64)}.jpg`;
+  await writeManifest(root, [keptKey, deletedKey]);
+  await writeFile(
+    path.join(contentDir, "post.md"),
+    `${bom}---\ncover: https://img.muelsyse.us/${keptKey}\n---\n\nNo body image.\n`,
+  );
+
+  const deleted = [];
+  const result = await syncBlogImages({
+    root,
+    upload: async () => assert.fail("no upload expected"),
+    deleteObject: async (object) => deleted.push(object),
+  });
+
+  assert.deepEqual(deleted, [{ bucket: "blog-images", key: deletedKey }]);
+  assert.equal(result.deleted, 1);
+  assert.deepEqual(
+    JSON.parse(await readFile(path.join(root, ".blog-images-manifest.json"), "utf8")),
+    { version: 1, keys: [keptKey] },
+  );
+});
+
+test("keeps images that are still referenced by another article", async () => {
+  const { root, contentDir } = await createFixture();
+  const sharedKey = `blog/${"c".repeat(64)}.webp`;
+  await writeManifest(root, [sharedKey]);
+  await writeFile(path.join(contentDir, "first.md"), `${bom}---\ncover: /images/default.png\n---\n\nNo image.\n`);
+  await writeFile(
+    path.join(contentDir, "second.md"),
+    `${bom}---\ncover: /images/default.png\n---\n\n![Shared](https://img.muelsyse.us/${sharedKey})\n`,
+  );
+
+  const result = await syncBlogImages({
+    root,
+    upload: async () => assert.fail("no upload expected"),
+    deleteObject: async () => assert.fail("referenced image must not be deleted"),
+  });
+
+  assert.equal(result.deleted, 0);
+});
+
+test("records newly uploaded images in the managed manifest", async () => {
+  const { root, contentDir, imageDir } = await createFixture();
+  const imagePath = path.join(imageDir, "new.png");
+  await writeFile(imagePath, Buffer.from("new image"));
+  await writeFile(
+    path.join(contentDir, "post.md"),
+    `${bom}---\ncover: /images/default.png\n---\n\n![New](<${imagePath}>)\n`,
+  );
+
+  const result = await syncBlogImages({ root, upload: async () => {}, deleteObject: async () => {} });
+  const manifest = JSON.parse(await readFile(path.join(root, ".blog-images-manifest.json"), "utf8"));
+
+  assert.equal(result.uploaded, 1);
+  assert.equal(manifest.version, 1);
+  assert.match(manifest.keys[0], /^blog\/[a-f0-9]{64}\.png$/);
+});
+
+test("does not forget a stale image when R2 deletion fails", async () => {
+  const { root, contentDir } = await createFixture();
+  const staleKey = `blog/${"d".repeat(64)}.gif`;
+  await writeManifest(root, [staleKey]);
+  await writeFile(path.join(contentDir, "post.md"), `${bom}---\ncover: /images/default.png\n---\n\nNo image.\n`);
+
+  await assert.rejects(
+    syncBlogImages({
+      root,
+      upload: async () => {},
+      deleteObject: async () => { throw new Error("delete failed"); },
+    }),
+    /delete failed/,
+  );
+
+  assert.deepEqual(
+    JSON.parse(await readFile(path.join(root, ".blog-images-manifest.json"), "utf8")),
+    { version: 1, keys: [staleKey] },
+  );
+});
+
+test("does not delete untracked R2 objects", async () => {
+  const { root, contentDir } = await createFixture();
+  await writeFile(path.join(contentDir, "post.md"), `${bom}---\ncover: /images/default.png\n---\n\nNo image.\n`);
+
+  const result = await syncBlogImages({
+    root,
+    upload: async () => {},
+    deleteObject: async () => assert.fail("objects absent from the manifest are outside sync ownership"),
+  });
+
+  assert.equal(result.deleted, 0);
+});
+
+test("refuses to drop stale manifest entries without an R2 deleter", async () => {
+  const { root, contentDir } = await createFixture();
+  const staleKey = `blog/${"e".repeat(64)}.png`;
+  await writeManifest(root, [staleKey]);
+  await writeFile(path.join(contentDir, "post.md"), `${bom}---\ncover: /images/default.png\n---\n\nNo image.\n`);
+
+  await assert.rejects(
+    syncBlogImages({ root, upload: async () => {} }),
+    /requires a deleteObject function/,
+  );
+  assert.deepEqual(
+    JSON.parse(await readFile(path.join(root, ".blog-images-manifest.json"), "utf8")),
+    { version: 1, keys: [staleKey] },
   );
 });

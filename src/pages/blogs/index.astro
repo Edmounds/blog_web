@@ -1,8 +1,3 @@
 ---
-import SpaLayout from "../../layouts/SpaLayout.astro";
-import { getLocalizedSite } from "../../lib/localized-content";
-
-export const prerender = true;
-const site = await getLocalizedSite("zh-CN");
+return Astro.redirect("/blog/", 301);
 ---
-<SpaLayout title={site.copy.blogTitle} description={site.page.blogsDescription} initialPath="/blogs/" />

@@ -1,7 +1,8 @@
 <button
   type="button"
   data-theme-toggle
-  class="inline-flex size-10 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--surface-parchment)] text-[var(--text-main)] transition hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-action)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-base)]"
+  class="inline-flex size-11 items-center justify-center rounded-[var(--radius-control)] border border-[var(--border-strong)] bg-transparent text-[var(--foreground-soft)] transition-colors hover:bg-[var(--surface-soft)] hover:text-[var(--foreground)]"
+  title="切换主题"
   aria-label="切换主题"
   aria-pressed="false"
 >
@@ -46,8 +47,8 @@
       }
 
       if (iconPath) {
-        iconPath.setAttribute("fill", isDark ? "var(--color-action)" : "none");
-        iconPath.setAttribute("stroke", isDark ? "var(--color-action)" : "currentColor");
+        iconPath.setAttribute("fill", isDark ? "currentColor" : "none");
+        iconPath.setAttribute("stroke", "currentColor");
       }
     });
   };

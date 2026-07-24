@@ -1,3 +1,3 @@
-export const POST_SLUGS = [
-  "designing-for-clarity-in-chaos",
-];
+export const CONTENT_IDS = [
+  "blog/designing-for-clarity-in-chaos",
+] as const;

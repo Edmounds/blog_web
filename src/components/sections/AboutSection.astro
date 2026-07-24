@@ -1,44 +1,43 @@
 ---
-import Reveal from "../animation/Reveal";
-import PageContainer from "../foundation/PageContainer.astro";
-import AboutFocusGrid from "./AboutFocusGrid.astro";
-import AboutHero from "./AboutHero.astro";
-import ExperienceList from "./ExperienceList.astro";
+import { render } from "astro:content";
 import { getAboutProfile } from "../../lib/content";
-import { getLocalizedAbout, getLocalizedSite } from "../../lib/localized-content";
 import type { Locale } from "../../lib/i18n";
+import { getLocalizedAbout, getLocalizedSite } from "../../lib/localized-content";
 
 interface Props { locale?: Locale }
+
 const { locale = "zh-CN" } = Astro.props;
 const site = await getLocalizedSite(locale);
-const aboutProfile = locale === "zh-CN" ? await getAboutProfile() : await getLocalizedAbout(locale);
-const aboutMeta = aboutProfile.meta;
-const aboutStory = aboutProfile.story as string[];
-const aboutFocusCards = aboutProfile.focusCards;
-const aboutExperience = aboutProfile.experience;
+const profile = locale === "zh-CN" ? await getAboutProfile() : await getLocalizedAbout(locale);
+const { Content } = await render(profile);
 ---
-<PageContainer class="flex flex-col gap-16 py-12 md:py-16">
-  <AboutHero
-    titleLeading={aboutProfile.titleLeading}
-    titleName={aboutProfile.titleName}
-    subtitle={aboutProfile.subtitle}
-    portrait={aboutProfile.portrait}
-    meta={aboutMeta}
-    availability={aboutProfile.availability}
-  />
 
-  <Reveal client:visible>
-    <section class="grid gap-6 md:grid-cols-[minmax(0,0.38fr)_minmax(0,1fr)] md:gap-10">
-      <h2 class="ui-section-title text-[var(--text-main)]">{locale === "zh-CN" ? "我的故事" : site.labels.about}</h2>
-      <div class="ui-prose max-w-3xl">
-        {aboutStory.map((paragraph) => (
-          <p>{paragraph}</p>
-        ))}
-      </div>
-    </section>
-  </Reveal>
+<article class="about-article app-container" aria-label={site.labels.about}>
+  <header class="about-article__header">
+    <div>
+      <h1>{profile.data.name}</h1>
+      <p>{profile.data.motto}</p>
+      <p class="about-article__meta">{profile.data.major} · {profile.data.city}</p>
+    </div>
+    <img src={profile.data.portrait} alt={profile.data.name} />
+  </header>
 
-  <AboutFocusGrid cards={aboutFocusCards} />
+  <div class="about-article__body ui-prose">
+    <Content />
+  </div>
+</article>
 
-  <ExperienceList jobs={aboutExperience} />
-</PageContainer>
+<style>
+  .about-article { width: min(100%, 52rem); min-height: calc(100vh - 4.5rem); padding-block: clamp(4rem, 8vh, 7rem) 6rem; }
+  .about-article__header { display: grid; grid-template-columns: minmax(0, 1fr) 8rem; gap: 2rem; align-items: end; padding-bottom: 2rem; border-bottom: 1px solid var(--border-soft); }
+  .about-article__header h1 { margin: 0; font-size: clamp(2.8rem, 7vw, 5.5rem); line-height: 1; overflow-wrap: anywhere; }
+  .about-article__header p { max-width: 38rem; margin: 1rem 0 0; color: var(--text-muted); line-height: 1.7; }
+  .about-article__header .about-article__meta { margin-top: 0.5rem; color: var(--text-faint); font-size: var(--type-sm); }
+  .about-article__header img { display: block; width: 8rem; aspect-ratio: 1; object-fit: cover; border: 1px solid var(--border-soft); border-radius: 50%; }
+  .about-article__body { margin-top: 3rem; }
+  .about-article__body :global(img) { width: auto; max-height: 2rem; border: 0; border-radius: 0; }
+  @media (max-width: 34rem) {
+    .about-article__header { grid-template-columns: 1fr; align-items: start; }
+    .about-article__header img { order: -1; width: 6rem; }
+  }
+</style>

@@ -1,47 +1,9 @@
 ---
-import Reveal from "../../../components/animation/Reveal";
-import ArticleMeta from "../../../components/domain/ArticleMeta.astro";
-import CommentsSection from "../../../components/domain/CommentsSection";
-import PostEngagement from "../../../components/domain/PostEngagement";
-import TableOfContents from "../../../components/domain/TableOfContents";
-import PageContainer from "../../../components/foundation/PageContainer.astro";
-import BaseLayout from "../../../layouts/BaseLayout.astro";
-import { defaultLocale, localeDefinitions, localizePath, type Locale } from "../../../lib/i18n";
-import { getLocalizedBlogEntries, getLocalizedBlogEntry, getLocalizedNextPost, getLocalizedSite } from "../../../lib/localized-content";
-import { toArticleMetaItems } from "../../../lib/view-models";
-
+import ContentDetail from "../../../components/domain/ContentDetail.astro";
+import { getLocalizedContentStaticPaths, getNextContent } from "../../../lib/content";
 export const prerender = true;
-export async function getStaticPaths() {
-  const paths = [];
-  for (const definition of localeDefinitions.filter((item) => item.code !== defaultLocale)) {
-    for (const entry of await getLocalizedBlogEntries(definition.code)) {
-      paths.push({ params: { locale: definition.path, slug: entry.id.split("/").pop()?.replace(/\.md$/, "") } });
-    }
-  }
-  return paths;
-}
-const locale = Astro.params.locale as Locale;
-const slug = Astro.params.slug!;
-const post = await getLocalizedBlogEntry(locale, slug);
-if (!post) throw new Error(`Unknown localized blog slug: ${slug}`);
-const { Content, headings } = await post.render();
-const site = await getLocalizedSite(locale);
-const nextPost = await getLocalizedNextPost(locale, slug);
-const dateLong = new Date(post.data.publishedAt).toLocaleDateString(site.dateLocale, { month: "long", day: "numeric", year: "numeric" });
-const metaItems = toArticleMetaItems({ category: post.data.category, dateLong, readingTime: post.data.readingTime }, { publishedLabel: site.copy.blogMetaPublished, readingTimeLabel: site.copy.blogMetaRead, categoryLabel: site.copy.category });
-const currentPath = localizePath(`/blog/${slug}/`, locale);
+export function getStaticPaths() { return getLocalizedContentStaticPaths("blog"); }
+const { item, locale } = Astro.props;
+const next = await getNextContent("blog", item.slug, locale);
 ---
-<BaseLayout title={post.data.title} description={post.data.summary} currentPath={currentPath} locale={locale}>
-  <PageContainer class="py-12 md:py-16">
-    <div class="grid grid-cols-1 gap-10 lg:grid-cols-12">
-      <aside class="hidden lg:col-span-3 lg:block"><div class="sticky top-28 space-y-5"><Reveal delay={0.08} y={10} client:visible><TableOfContents headings={headings} labels={{ title: site.copy.tableOfContents, introduction: site.copy.introduction, collapse: site.copy.collapseSection, expand: site.copy.expandSection }} client:load /></Reveal></div></aside>
-      <article class="flex flex-col gap-8 lg:col-span-7">
-        <Reveal client:visible><header class="flex flex-col gap-6"><div class="flex flex-col gap-5"><p class="ui-kicker text-[var(--color-action)]">{post.data.category}</p><h1 class="ui-page-title text-[var(--text-main)]">{post.data.title}</h1><p class="ui-lead max-w-3xl">{post.data.summary}</p></div><ArticleMeta items={metaItems} variant="grid" /><PostEngagement slug={slug} labels={site.copy} locale={locale} client:load /></header></Reveal>
-        <section class="ui-prose"><Content /></section>
-        <Reveal y={12} client:visible><section class="border-t border-[var(--border-soft)] bg-[var(--surface-parchment)] px-5 py-6"><div class="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between"><div class="flex max-w-2xl flex-col gap-3"><p class="ui-kicker">{site.copy.blogNextArticle}</p><h2 class="text-3xl font-semibold leading-tight text-[var(--text-main)] md:text-4xl">{nextPost.title}</h2></div><a href={localizePath(`/blog/${nextPost.slug}/`, locale)} class="ui-link ui-link-accent shrink-0 text-sm">{site.copy.blogReadNext} -&gt;</a></div></section></Reveal>
-        <CommentsSection slug={slug} labels={site.copy} client:load />
-      </article>
-      <div class="hidden lg:col-span-2 lg:block"></div>
-    </div>
-  </PageContainer>
-</BaseLayout>
+<ContentDetail item={item} next={next} locale={locale} />

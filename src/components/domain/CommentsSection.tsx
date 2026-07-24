@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import type { PublicComment } from "@/lib/comments";
 
 interface CommentsSectionProps {
-  slug: string;
+  contentId: string;
   labels?: Record<string, string>;
 }
 
@@ -18,7 +18,7 @@ interface ApiError {
   error?: { code?: string; message?: string };
 }
 
-export default function CommentsSection({ slug, labels = {} }: CommentsSectionProps) {
+export default function CommentsSection({ contentId, labels = {} }: CommentsSectionProps) {
   const copy = { comments: "评论", commentName: "名称", commentContent: "评论内容", commentDisclosure: "发布后会公开展示服务端推断的设备系统、大致地区和北京时间，但不会公开 IP。", commentSubmit: "发布评论", commentSubmitting: "发布中", commentLoading: "正在加载评论", commentReload: "重新加载", commentEmpty: "还没有评论，来留下第一条吧。", commentLoadMore: "加载更多", commentLoadingMore: "加载中", commentNameInvalid: "名称需为 1 至 20 个字符。", commentContentInvalid: "评论需为 1 至 500 个字符。", commentPublished: "评论已发布。", commentLoadFailed: "暂时无法加载评论，请稍后重试。", commentSubmitFailed: "评论发布失败，请稍后重试。", ...labels };
   const [comments, setComments] = useState<PublicComment[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
@@ -34,7 +34,7 @@ export default function CommentsSection({ slug, labels = {} }: CommentsSectionPr
 
   useEffect(() => {
     void loadComments(true);
-  }, [slug]);
+  }, [contentId]);
 
   async function loadComments(reset: boolean) {
     reset ? setIsLoading(true) : setIsLoadingMore(true);
@@ -42,7 +42,7 @@ export default function CommentsSection({ slug, labels = {} }: CommentsSectionPr
 
     try {
       const cursor = reset ? null : nextCursor;
-      const query = new URLSearchParams({ slug });
+      const query = new URLSearchParams({ contentId });
       if (cursor) query.set("cursor", cursor);
       const page = await fetchJson<CommentPage>(`/api/comments?${query}`);
       setComments((current) => reset ? page.items : [...current, ...page.items]);
@@ -75,7 +75,7 @@ export default function CommentsSection({ slug, labels = {} }: CommentsSectionPr
       const result = await fetchJson<{ item: PublicComment }>("/api/comments", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ slug, name, content, website }),
+        body: JSON.stringify({ contentId, name, content, website }),
       });
       setComments((current) => [result.item, ...current.filter((item) => item.id !== result.item.id)]);
       setContent("");
@@ -90,7 +90,7 @@ export default function CommentsSection({ slug, labels = {} }: CommentsSectionPr
   return (
     <section id="comments" className="border-t border-[var(--border-soft)] pt-10" aria-labelledby="comments-title">
       <div className="flex items-center gap-3">
-        <MessageSquareText className="size-5 text-[var(--color-action)]" aria-hidden="true" />
+        <MessageSquareText className="size-5 text-[var(--foreground-soft)]" aria-hidden="true" />
         <h2 id="comments-title" className="text-2xl font-semibold text-[var(--text-main)]">{copy.comments}</h2>
       </div>
 
@@ -108,7 +108,7 @@ export default function CommentsSection({ slug, labels = {} }: CommentsSectionPr
             value={name}
             onChange={(event) => setName(event.target.value)}
             autoComplete="name"
-            className="h-11 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-base)] px-3 text-base text-[var(--text-main)] outline-none transition focus:border-[var(--color-action)] focus:ring-2 focus:ring-[var(--accent-soft)]"
+            className="h-11 w-full rounded-[var(--radius-control)] border border-[var(--border-strong)] bg-[var(--canvas)] px-3 text-base text-[var(--text-main)] outline-none transition focus:border-[var(--foreground)] focus:ring-2 focus:ring-[var(--focus-ring)]"
           />
         </div>
 
@@ -125,7 +125,7 @@ export default function CommentsSection({ slug, labels = {} }: CommentsSectionPr
             rows={6}
             value={content}
             onChange={(event) => setContent(event.target.value)}
-            className="min-h-32 w-full resize-y rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-base)] px-3 py-3 text-base leading-6 text-[var(--text-main)] outline-none transition focus:border-[var(--color-action)] focus:ring-2 focus:ring-[var(--accent-soft)]"
+            className="min-h-32 w-full resize-y rounded-[var(--radius-control)] border border-[var(--border-strong)] bg-[var(--canvas)] px-3 py-3 text-base leading-6 text-[var(--text-main)] outline-none transition focus:border-[var(--foreground)] focus:ring-2 focus:ring-[var(--focus-ring)]"
           />
         </div>
 

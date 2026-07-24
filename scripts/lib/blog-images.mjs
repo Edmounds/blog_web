@@ -6,6 +6,9 @@ import { fileURLToPath } from "node:url";
 const DEFAULT_BUCKET = "blog-images";
 const DEFAULT_PUBLIC_URL = "https://img.muelsyse.us";
 const CACHE_CONTROL = "public, max-age=31536000, immutable";
+const MANIFEST_FILE = ".blog-images-manifest.json";
+const MANIFEST_VERSION = 1;
+export const CONTENT_GROUPS = ["blog", "note", "project"];
 
 const contentTypes = new Map([
   [".avif", "image/avif"],
@@ -108,7 +111,7 @@ const collectBodyReferences = (source, offset, references) => {
 const collectCoverReference = (source, frontmatterEnd, references) => {
   if (frontmatterEnd === -1) return;
   const frontmatter = source.slice(0, frontmatterEnd);
-  const coverPattern = /^(cover:[ \t]*)([^\r\n]+)$/m;
+  const coverPattern = /^((?:cover|image):[ \t]*)([^\r\n]+)$/m;
   const match = coverPattern.exec(frontmatter);
   if (!match) return;
 
@@ -186,25 +189,52 @@ const atomicWrite = async (filePath, contents) => {
   }
 };
 
+const readManifest = async (manifestPath) => {
+  try {
+    const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+    if (manifest.version !== MANIFEST_VERSION || !Array.isArray(manifest.keys)) {
+      throw new Error(`${manifestPath} has an unsupported format`);
+    }
+    return new Set(manifest.keys.filter((key) => typeof key === "string" && key.startsWith("blog/")));
+  } catch (error) {
+    if (error?.code === "ENOENT") return new Set();
+    throw error;
+  }
+};
+
+const collectManagedKeys = (source, publicUrl) => {
+  const keys = new Set();
+  const escapedBase = publicUrl.replace(/\/$/, "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const pattern = new RegExp(`${escapedBase}/(blog/[a-f0-9]{64}\\.(?:avif|gif|jpe?g|png|svg|webp))`, "gi");
+  for (const match of source.matchAll(pattern)) keys.add(match[1]);
+  return keys;
+};
+
 export const syncBlogImages = async ({
   root = process.cwd(),
   bucket = DEFAULT_BUCKET,
   publicUrl = DEFAULT_PUBLIC_URL,
   upload,
+  deleteObject,
 } = {}) => {
   if (typeof upload !== "function") throw new Error("syncBlogImages requires an upload function");
 
-  const contentDir = path.join(root, "src/content/blog");
-  const fileNames = (await readdir(contentDir)).filter((name) => name.endsWith(".md")).sort();
+  const manifestPath = path.join(root, MANIFEST_FILE);
+  const previousKeys = await readManifest(manifestPath);
   const articles = [];
   const localPaths = new Set();
+  const referencedKeys = new Set();
 
-  for (const fileName of fileNames) {
-    const filePath = path.join(contentDir, fileName);
+  for (const group of CONTENT_GROUPS) {
+    const contentDir = path.join(root, "src/content", group);
+    const filePaths = await walkContentFiles(contentDir);
+    for (const filePath of filePaths) {
     const source = await readFile(filePath, "utf8");
     const references = collectReferences(source);
     for (const reference of references) localPaths.add(reference.localPath);
+    for (const key of collectManagedKeys(source, publicUrl)) referencedKeys.add(key);
     articles.push({ filePath, source, references });
+    }
   }
 
   const imagesByPath = new Map();
@@ -243,14 +273,51 @@ export const syncBlogImages = async ({
     rewrittenFiles += 1;
   }
 
+  for (const image of imagesByKey.values()) referencedKeys.add(image.key);
+
+  const staleKeys = [...previousKeys].filter((key) => !referencedKeys.has(key)).sort();
+  if (staleKeys.length > 0 && typeof deleteObject !== "function") {
+    throw new Error("syncBlogImages requires a deleteObject function to remove stale images");
+  }
+  const deleteErrors = [];
+  for (const key of staleKeys) {
+    try {
+      await deleteObject({ bucket, key });
+    } catch (error) {
+      deleteErrors.push(`${key}: ${error.message}`);
+    }
+  }
+  if (deleteErrors.length > 0) throw new Error(deleteErrors.join("\n"));
+
+  const manifestKeys = [...new Set([...previousKeys, ...referencedKeys])]
+    .filter((key) => !staleKeys.includes(key))
+    .sort();
+  await atomicWrite(
+    manifestPath,
+    `${JSON.stringify({ version: MANIFEST_VERSION, keys: manifestKeys }, null, 2)}\n`,
+  );
+
   return {
     scannedFiles: articles.length,
     uploaded: imagesByKey.size,
     rewrittenFiles,
+    deleted: staleKeys.length,
   };
 };
 
-export const blogImageDefaults = {
-  bucket: DEFAULT_BUCKET,
-  publicUrl: DEFAULT_PUBLIC_URL,
+const walkContentFiles = async (directory) => {
+  const files = [];
+  let entries;
+  try {
+    entries = await readdir(directory, { withFileTypes: true });
+  } catch (error) {
+    if (error?.code === "ENOENT") return files;
+    throw error;
+  }
+  for (const entry of entries) {
+    const fullPath = path.join(directory, entry.name);
+    if (entry.isDirectory()) files.push(...await walkContentFiles(fullPath));
+    else if (/\.(md|mdx)$/.test(entry.name)) files.push(fullPath);
+  }
+  return files.sort();
 };

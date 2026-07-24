@@ -1,4 +1,4 @@
-import { normalizeSlug } from "./engagement.js";
+import { normalizeContentId } from "./engagement.js";
 
 export const COMMENT_PAGE_SIZE = 20;
 export const COMMENT_RATE_LIMIT_SECONDS = 60;
@@ -52,8 +52,8 @@ export function validateCommentInput(value) {
   if (!value || typeof value !== "object") return invalid("INVALID_COMMENT", "评论数据无效。");
   if (typeof value.website === "string" && value.website.trim()) return invalid("INVALID_COMMENT", "评论数据无效。");
 
-  const slug = normalizeSlug(value.slug);
-  if (!slug) return invalid("INVALID_SLUG", "请选择一篇已发布的文章。");
+  const contentId = normalizeContentId(value.contentId);
+  if (!contentId) return invalid("INVALID_CONTENT_ID", "请选择一篇已发布的内容。");
 
   const name = typeof value.name === "string" ? value.name.trim() : "";
   if (!name || countCharacters(name) > 20) return invalid("INVALID_NAME", "名称需为 1 至 20 个字符。");
@@ -61,7 +61,7 @@ export function validateCommentInput(value) {
   const content = typeof value.content === "string" ? value.content : "";
   if (!content.trim() || countCharacters(content) > 500) return invalid("INVALID_CONTENT", "评论需为 1 至 500 个字符。");
 
-  return { ok: true, value: { slug, name, content } };
+  return { ok: true, value: { contentId, name, content } };
 }
 
 export function getCommentCursor(value) {
@@ -110,7 +110,7 @@ export function toPublicComment(row) {
   const createdAt = normalizeUtcTimestamp(row.created_at);
   return {
     id: Number(row.id),
-    slug: String(row.slug),
+    contentId: String(row.slug),
     name: String(row.name),
     content: String(row.content),
     device: String(row.device_label),
@@ -141,18 +141,18 @@ export async function hashClientAddress(request, salt) {
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
-export async function listPublicComments(db, slug, cursor) {
+export async function listPublicComments(db, contentId, cursor) {
   const rows = await queryComments(db, {
-    slug,
+    contentId,
     cursor,
     where: "is_hidden = 0",
   });
   return pageRows(rows, toPublicComment);
 }
 
-export async function listAdminComments(db, slug, status, cursor) {
+export async function listAdminComments(db, contentId, status, cursor) {
   const where = status === "visible" ? "is_hidden = 0" : status === "hidden" ? "is_hidden = 1" : "1 = 1";
-  const rows = await queryComments(db, { slug, cursor, where });
+  const rows = await queryComments(db, { contentId, cursor, where });
   return pageRows(rows, toAdminComment);
 }
 
@@ -182,7 +182,7 @@ export async function createComment(db, request, input, salt, now = new Date(), 
       `INSERT INTO comments (slug, name, content, device_label, region_label, created_at)
        VALUES (?, ?, ?, ?, ?, ?)`,
     )
-    .bind(input.slug, input.name, input.content, device, region, createdAt)
+    .bind(input.contentId, input.name, input.content, device, region, createdAt)
     .run();
 
   await db
@@ -198,7 +198,7 @@ export async function createComment(db, request, input, salt, now = new Date(), 
     ok: true,
     comment: {
       id: Number(insert.meta.last_row_id),
-      slug: input.slug,
+      contentId: input.contentId,
       name: input.name,
       content: input.content,
       device,
@@ -242,7 +242,7 @@ function getClientAddress(request) {
   return forwarded.split(",")[0]?.trim() || "unknown";
 }
 
-async function queryComments(db, { slug, cursor, where }) {
+async function queryComments(db, { contentId, cursor, where }) {
   const cursorClause = cursor ? "AND id < ?" : "";
   const statement = db.prepare(
     `SELECT * FROM comments
@@ -251,8 +251,8 @@ async function queryComments(db, { slug, cursor, where }) {
      LIMIT ?`,
   );
   const bound = cursor
-    ? statement.bind(slug, cursor, COMMENT_PAGE_SIZE + 1)
-    : statement.bind(slug, COMMENT_PAGE_SIZE + 1);
+    ? statement.bind(contentId, cursor, COMMENT_PAGE_SIZE + 1)
+    : statement.bind(contentId, COMMENT_PAGE_SIZE + 1);
   const result = await bound.all();
   return result.results ?? [];
 }

@@ -1,11 +1,15 @@
 ---
 import ArtSection from "../../../components/sections/ArtSection.astro";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { getPublicArtItems } from "../../../lib/art";
 import { getLocalizedSite } from "../../../lib/localized-content";
+import { getRuntimeEnv } from "../../../lib/runtime";
 
-export const prerender = true;
+export const prerender = false;
 const site = await getLocalizedSite("zh-CN");
+const items = await getPublicArtItems(getRuntimeEnv().DB, "zh-CN", ["movie", "series", "anime"]);
+Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=300");
 ---
 <BaseLayout title={site.labels.screen} description={site.page.screenDescription} currentPath="/art/screen/">
-  <ArtSection type="screen" />
+  <ArtSection type="screen" items={items} />
 </BaseLayout>

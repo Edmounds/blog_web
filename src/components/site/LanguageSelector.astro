@@ -1,7 +1,8 @@
 ---
-import { Check, Globe2 } from "lucide-react";
+import { Check, Globe2 } from "lucide-static";
 
 import { localeDefinitions, switchLocaleInUrl, type Locale } from "../../lib/i18n";
+import Icon from "../ui/Icon.astro";
 
 interface Props {
   locale: Locale;
@@ -15,16 +16,17 @@ const { locale, currentPath, label = "选择语言" } = Astro.props;
 <div class="relative" data-language-selector>
   <button
     type="button"
-    class="inline-flex size-10 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--surface-parchment)] text-[var(--text-main)] transition hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-action)]"
+    class="inline-flex size-11 items-center justify-center rounded-[var(--radius-control)] border border-[var(--border-strong)] bg-transparent text-[var(--foreground-soft)] transition-colors hover:bg-[var(--surface-soft)] hover:text-[var(--foreground)]"
+    title={label}
     aria-label={label}
     aria-haspopup="menu"
     aria-expanded="false"
     data-language-trigger
   >
-    <Globe2 className="size-5" aria-hidden="true" />
+    <span class="size-5"><Icon svg={Globe2} /></span>
   </button>
   <div
-    class="absolute right-0 z-50 mt-2 hidden max-h-80 w-52 overflow-y-auto rounded-lg border border-[var(--border-strong)] bg-[var(--surface-canvas)] p-1 shadow-lg"
+    class="absolute right-0 z-50 mt-2 hidden max-h-80 w-52 overflow-y-auto rounded-[var(--radius-control)] border border-[var(--border-strong)] bg-[var(--surface-panel)] p-1 shadow-[var(--shadow-soft)] backdrop-blur-md"
     role="menu"
     data-language-menu
   >
@@ -33,10 +35,10 @@ const { locale, currentPath, label = "选择语言" } = Astro.props;
         href={switchLocaleInUrl(currentPath, definition.code)}
         role="menuitemradio"
         aria-checked={definition.code === locale}
-        class="flex min-h-10 items-center justify-between gap-3 rounded-md px-3 py-2 text-sm text-[var(--text-muted)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-main)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-action)]"
+        class="flex min-h-11 items-center justify-between gap-3 rounded-[var(--radius-control)] px-3 py-2 text-sm text-[var(--text-muted)] hover:bg-[var(--surface-soft)] hover:text-[var(--text-main)]"
       >
         <span lang={definition.htmlLang} dir={definition.dir}>{definition.label}</span>
-        {definition.code === locale && <Check className="size-4 text-[var(--color-action)]" aria-hidden="true" />}
+        {definition.code === locale && <span class="size-4 text-[var(--foreground)]"><Icon svg={Check} /></span>}
       </a>
     ))}
   </div>
@@ -73,4 +75,3 @@ const { locale, currentPath, label = "选择语言" } = Astro.props;
   bindLanguageSelectors();
   document.addEventListener("astro:page-load", bindLanguageSelectors);
 </script>
-

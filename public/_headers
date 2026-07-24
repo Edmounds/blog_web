@@ -1,3 +1,12 @@
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/images/content/*
+  Cache-Control: public, max-age=31536000, immutable
+
 /version.json
   Cache-Control: no-store
 
@@ -7,23 +16,43 @@
 /about/*
   Cache-Control: no-cache
 
-/blogs/*
-  Cache-Control: no-cache
-
 /blog/*
   Cache-Control: no-cache
 
 /art/*
+  Cache-Control: public, max-age=0, s-maxage=60, stale-while-revalidate=300
+
+/note/*
   Cache-Control: no-cache
 
-/series/*
+/project/*
   Cache-Control: no-cache
+
+/media/art/*
+  Cache-Control: public, max-age=31536000, immutable
 
 /en/*
   Cache-Control: no-cache
 
+/en/art/*
+  Cache-Control: public, max-age=0, s-maxage=60, stale-while-revalidate=300
+
 /ja/*
   Cache-Control: no-cache
 
+/ja/art/*
+  Cache-Control: public, max-age=0, s-maxage=60, stale-while-revalidate=300
+
 /zh-TW/*
   Cache-Control: no-cache
+
+/zh-TW/art/*
+  Cache-Control: public, max-age=0, s-maxage=60, stale-while-revalidate=300
+
+/*
+  Content-Security-Policy: default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()

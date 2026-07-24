@@ -10,5 +10,17 @@
       "database_name": "blog_web",
       "database_id": "38848e98-47d9-47b5-82b2-3a37acb84c7a"
     }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "ART_COVERS",
+      "bucket_name": "blog-art-covers"
+    }
+  ],
+  "services": [
+    {
+      "binding": "ART_COVER_FETCHER",
+      "service": "blog-art-cover-fetcher"
+    }
   ]
 }

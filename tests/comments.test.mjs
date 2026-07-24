@@ -13,7 +13,7 @@ import {
 test("validateCommentInput trims names and preserves comment line breaks", () => {
   assert.deepEqual(
     validateCommentInput({
-      slug: "designing-for-clarity-in-chaos",
+      contentId: "blog/designing-for-clarity-in-chaos",
       name: "  访客  ",
       content: "第一行\n第二行  ",
       website: "",
@@ -21,7 +21,7 @@ test("validateCommentInput trims names and preserves comment line breaks", () =>
     {
       ok: true,
       value: {
-        slug: "designing-for-clarity-in-chaos",
+        contentId: "blog/designing-for-clarity-in-chaos",
         name: "访客",
         content: "第一行\n第二行  ",
       },
@@ -30,12 +30,12 @@ test("validateCommentInput trims names and preserves comment line breaks", () =>
 });
 
 test("validateCommentInput enforces name and content boundaries", () => {
-  assert.equal(validateCommentInput({ slug: "designing-for-clarity-in-chaos", name: " ", content: "内容" }).error.code, "INVALID_NAME");
-  assert.equal(validateCommentInput({ slug: "designing-for-clarity-in-chaos", name: "名".repeat(21), content: "内容" }).error.code, "INVALID_NAME");
-  assert.equal(validateCommentInput({ slug: "designing-for-clarity-in-chaos", name: "访客", content: " \n " }).error.code, "INVALID_CONTENT");
-  assert.equal(validateCommentInput({ slug: "designing-for-clarity-in-chaos", name: "访客", content: "文".repeat(501) }).error.code, "INVALID_CONTENT");
-  assert.equal(validateCommentInput({ slug: "missing-post", name: "访客", content: "内容" }).error.code, "INVALID_SLUG");
-  assert.equal(validateCommentInput({ slug: "designing-for-clarity-in-chaos", name: "访客", content: "内容", website: "bot" }).error.code, "INVALID_COMMENT");
+  assert.equal(validateCommentInput({ contentId: "blog/designing-for-clarity-in-chaos", name: " ", content: "内容" }).error.code, "INVALID_NAME");
+  assert.equal(validateCommentInput({ contentId: "blog/designing-for-clarity-in-chaos", name: "名".repeat(21), content: "内容" }).error.code, "INVALID_NAME");
+  assert.equal(validateCommentInput({ contentId: "blog/designing-for-clarity-in-chaos", name: "访客", content: " \n " }).error.code, "INVALID_CONTENT");
+  assert.equal(validateCommentInput({ contentId: "blog/designing-for-clarity-in-chaos", name: "访客", content: "文".repeat(501) }).error.code, "INVALID_CONTENT");
+  assert.equal(validateCommentInput({ contentId: "blog/missing-post", name: "访客", content: "内容" }).error.code, "INVALID_CONTENT_ID");
+  assert.equal(validateCommentInput({ contentId: "blog/designing-for-clarity-in-chaos", name: "访客", content: "内容", website: "bot" }).error.code, "INVALID_COMMENT");
 });
 
 test("inferDevice exposes only coarse operating-system labels", () => {

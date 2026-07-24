@@ -1,7 +1,5 @@
 ---
 import type { ContentCardModel } from "../../types/ui";
-import PillTag from "../foundation/PillTag.astro";
-import { CardContent } from "../ui/card";
 
 interface Props extends ContentCardModel {
   class?: string;
@@ -9,6 +7,7 @@ interface Props extends ContentCardModel {
 
 const {
   title,
+  summary,
   href,
   image,
   imageAlt = title,
@@ -19,39 +18,39 @@ const {
 } = Astro.props;
 ---
 
-<article class={`group flex h-full flex-col overflow-hidden rounded-lg bg-transparent transition duration-300 ${className}`.trim()}>
-  <a href={href} class="relative block overflow-hidden rounded-lg bg-[var(--surface-parchment)]" tabindex="-1" aria-hidden="true">
+<article class={`group flex h-full flex-col border-b border-[var(--border-soft)] pb-7 ${className}`.trim()}>
+  <a href={href} class="block overflow-hidden rounded-[var(--radius-control)] border border-[var(--border-soft)] bg-[var(--surface-soft)]" tabindex="-1" aria-hidden="true">
     <img
       src={image}
       alt={imageAlt}
-      class="aspect-[4/3] h-auto w-full object-cover transition duration-500 group-hover:scale-[1.025]"
+      width="512"
+      height="512"
+      class="aspect-[4/3] h-auto w-full object-cover transition-transform duration-300 group-hover:scale-[1.025]"
       loading="lazy"
+      decoding="async"
     />
   </a>
 
-  <CardContent className="flex flex-1 flex-col gap-3 !px-0 !pb-0 !pt-4">
-    {eyebrow && <p class="ui-kicker text-[var(--color-action)]">{eyebrow}</p>}
+  <div class="flex flex-1 flex-col gap-3 pt-4">
+    <div class="flex flex-wrap items-center justify-between gap-2">
+      {eyebrow && <p class="ui-kicker text-[var(--foreground-soft)]">{eyebrow}</p>}
+      {meta.length > 0 && (
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs tabular-nums text-[var(--text-faint)]">
+          {meta.map((item) => <span>{item.value}</span>)}
+        </div>
+      )}
+    </div>
 
-    {meta.length > 0 && (
-      <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[var(--text-faint)]">
-        {meta.map((item) => (
-          <span>
-            {item.label}: {item.value}
-          </span>
-        ))}
-      </div>
-    )}
-
-    <h3 class="text-[1.35rem] font-semibold leading-tight text-[var(--text-main)] transition group-hover:text-[var(--color-action)]">
-      <a href={href}>{title}</a>
+    <h3 class="text-[var(--type-lg)] font-semibold leading-tight text-[var(--text-main)]">
+      <a class="text-inherit no-underline underline-offset-4 group-hover:underline" href={href}>{title}</a>
     </h3>
 
+    <p class="line-clamp-3 text-sm leading-6 text-[var(--text-muted)]">{summary}</p>
+
     {tags.length > 0 && (
-      <div class="mt-auto flex flex-wrap gap-2 pt-2">
-        {tags.map((tag) => (
-          <PillTag text={tag} />
-        ))}
+      <div class="mt-auto flex flex-wrap gap-x-3 gap-y-1 pt-2 text-xs text-[var(--text-faint)]">
+        {tags.map((tag) => <span>#{tag}</span>)}
       </div>
     )}
-  </CardContent>
+  </div>
 </article>

@@ -293,153 +293,13 @@
       "fingerprint": "0f42d7129012f5c959a8431b00d20ab93034687b593ea36f3ca7cba71d811c14",
       "translation": "This is the first post I am leaving here, and a simple beginning."
     },
-    "en:content.about.profile.md.frontmatter.brand": {
-      "fingerprint": "c318af77e55e9a12eace5eef3a8350e9e90a2ec3643c7456eb205aeb06e3ad07",
-      "translation": "Chasen Design"
-    },
-    "en:content.about.profile.md.frontmatter.titleLeading": {
-      "fingerprint": "8ab6aee601d226ea4c64dd24a3324d6f158954228e84b79b7c391e7a893d7c1f",
-      "translation": "Hello, I am"
-    },
-    "en:content.about.profile.md.frontmatter.titleName": {
-      "fingerprint": "7c1320eaf781ec34911356a93050b628aa73a23dcd30eefbb06b4298ec8d44ae",
-      "translation": "Chasen"
-    },
-    "en:content.about.profile.md.frontmatter.subtitle": {
-      "fingerprint": "6bcfd1b1c6996483dc47bb27ea7a23dcb0051fe2d3ba203980662607eb2f477c",
-      "translation": "A product designer and writer exploring clear, thoughtful digital experiences."
-    },
-    "en:content.about.profile.md.frontmatter.meta[0].label": {
-      "fingerprint": "f2d6bada9e8c95c4359bb17f6f5318dcb3092ac66eed4186491f04ec81e72c3f",
-      "translation": "Role"
-    },
-    "en:content.about.profile.md.frontmatter.meta[0].value": {
-      "fingerprint": "1f9eb3244bff1378f4f82c5de1a6727422533064160cab4065042da4d2fe9ab6",
-      "translation": "Product Designer"
-    },
-    "en:content.about.profile.md.frontmatter.meta[1].label": {
-      "fingerprint": "87a0270949b075883e5ae6622f5cfc6950b284311061fad246591d805edcf131",
-      "translation": "Location"
-    },
-    "en:content.about.profile.md.frontmatter.meta[1].value": {
-      "fingerprint": "689727cf08aebe1105f0d96500bffd365526649bb52a83feb2a1de690e487c5f",
-      "translation": "Chongqing, China"
-    },
-    "en:content.about.profile.md.frontmatter.meta[2].label": {
-      "fingerprint": "f1cffa5534ccf762a43b6ba347bebaf582ea0f6f9c8b8033aafd86a243752a17",
-      "translation": "Focus"
-    },
-    "en:content.about.profile.md.frontmatter.meta[2].value": {
-      "fingerprint": "f3b48e44bcbd54f9cdf76c3de00539e436a3301ec7a183895f28fbc60c02ed2c",
-      "translation": "Design Systems and AI Interfaces"
-    },
-    "en:content.about.profile.md.frontmatter.story[0]": {
-      "fingerprint": "9a49f50dbbb024a4dc8ef06c0cb98b2aaca11ec6f0df535b70f8a25a778c42d6",
-      "translation": "I care about making complex tools feel calm and easy to understand."
-    },
-    "en:content.about.profile.md.frontmatter.story[1]": {
-      "fingerprint": "785e4f155cd041a0768aaa3f8cdedcbefff683a52a9e6e3bea9cae01f9cf5bc1",
-      "translation": "This profile summarizes the principles I return to, while the rest of the site records work and experiments in progress."
-    },
-    "en:content.about.profile.md.frontmatter.story[2]": {
-      "fingerprint": "8e120a97f5355c306eb73c6f23ceda824c643a153773e1f755c2053b0a773394",
-      "translation": "不设计界面的时候，我可能会去马林县的小径徒步旅行、煮咖啡或阅读有关中世纪家具设计的书籍。"
-    },
-    "en:content.about.profile.md.frontmatter.focusCards[0].title": {
-      "fingerprint": "92688c1d16d3b3306f4eb2ca46b55b8535e97293b2c1ec9bc3fbc5273a8f2403",
-      "translation": "Design Systems"
-    },
-    "en:content.about.profile.md.frontmatter.focusCards[0].text": {
-      "fingerprint": "5f64db465b5a73e5e6f6660993da31eb29ef7bbfceed6093ae89dd95a86d9414",
-      "translation": "Building consistent visual languages and reusable product foundations."
-    },
-    "en:content.about.profile.md.frontmatter.focusCards[1].title": {
-      "fingerprint": "3bbc853934bc21fab596d43e467f3f72179a5246d29658ee75a3649fac2879a0",
-      "translation": "AI Interfaces"
-    },
-    "en:content.about.profile.md.frontmatter.focusCards[1].text": {
-      "fingerprint": "1dcf2fd7906c609011890de24b281de35c76ce75afd493e27d3531577b1a97c3",
-      "translation": "Exploring natural-language interaction and new ways for people to work with intelligent tools."
-    },
-    "en:content.about.profile.md.frontmatter.experience[0].years": {
-      "fingerprint": "d30c65c975bdf717095671d86a201ec2020ff51f19c7fa1ac6bd53c063fbd267",
-      "translation": "Present"
-    },
-    "en:content.about.profile.md.frontmatter.experience[0].role": {
-      "fingerprint": "1f9eb3244bff1378f4f82c5de1a6727422533064160cab4065042da4d2fe9ab6",
-      "translation": "Product Designer"
-    },
-    "en:content.about.profile.md.frontmatter.experience[0].company": {
-      "fingerprint": "955fa78050c6f63119c1dad272ebc89a68ecbf6954088df2ed123cfc431c8fda",
-      "translation": "Independent"
-    },
-    "en:content.about.profile.md.frontmatter.experience[0].text": {
-      "fingerprint": "578e2f5c7aa7c01b069f63fc79a01cbf44f559c9faef851b3abc0afe47a5aa43",
-      "translation": "Designing and documenting digital products, interfaces, and experiments."
-    },
-    "en:content.about.profile.md.frontmatter.experience[1].years": {
-      "fingerprint": "32f0ee2a632d4f6f672c777814844077ac5c8347b13c29d45f7417fe575c4729",
-      "translation": "2019 - 2022"
-    },
-    "en:content.about.profile.md.frontmatter.experience[1].role": {
-      "fingerprint": "a648518895d606ccacf93880ac04cc06d77d83f3eb2d87323014e9d32afd58a9",
-      "translation": "用户体验设计师"
-    },
-    "en:content.about.profile.md.frontmatter.experience[1].company": {
-      "fingerprint": "fd22ed95302a7157da8c166c2313860862e69b1f328aafac23bbb419453bc040",
-      "translation": "创意机构 XYZ"
-    },
-    "en:content.about.profile.md.frontmatter.experience[1].text": {
-      "fingerprint": "da9e1767964899619cdb7d71b96612bcbe90c232edf63273eb4c3737c16c3f6c",
-      "translation": "曾与从金融科技到医疗保健的不同客户合作。提供从线框图到高保真原型的端到端设计解决方案。"
-    },
-    "en:content.about.profile.md.frontmatter.experience[2].years": {
-      "fingerprint": "ab8b2ca4018fb8c77a4a4815116bdb2704c3b2578e357e29304ac9cf5cdfc7c3",
-      "translation": "2017 - 2019"
-    },
-    "en:content.about.profile.md.frontmatter.experience[2].role": {
-      "fingerprint": "73ea57fe578e7cfbe2cd7097e2793377a4aa7e135a1ab4bb341799ba89a11eea",
-      "translation": "初级建筑师"
-    },
-    "en:content.about.profile.md.frontmatter.experience[2].company": {
-      "fingerprint": "8422372691721202e35de1d7e56ccace9c441d20e98b5540cb36b11f91682af3",
-      "translation": "建设与合作伙伴"
-    },
-    "en:content.about.profile.md.frontmatter.experience[2].text": {
-      "fingerprint": "0601fa90cf40531ee7ab76a55ea903b47184ab95f3aa462740aa1c38d18badcc",
-      "translation": "专注于可持续住宅项目。物理空间的基础在很大程度上影响了我的数字布局理念。"
-    },
-    "en:content.about.profile.md.frontmatter.availability": {
-      "fingerprint": "dc287de67a57eecffa318b22577072d3912fdedbc7087292bf38da5ec0897c95",
-      "translation": "Open to opportunities"
-    },
-    "en:content.about.profile.md.frontmatter.homeFeatured.badge": {
-      "fingerprint": "35487f46cfcb129f84b74789194970f80527b0db38eff61231486546f922f0be",
-      "translation": "Featured profile"
-    },
-    "en:content.about.profile.md.frontmatter.homeFeatured.title": {
-      "fingerprint": "0c598a16f5e63457c0d3c9c2ccbc10e9a5547d58ada98a7b8dd81bbdf63b5bf0",
-      "translation": "About me"
-    },
-    "en:content.about.profile.md.frontmatter.homeFeatured.name": {
-      "fingerprint": "28456c7d9b551a0be99387f5945828baef742bd499d24b75a101af02b5ab03a6",
-      "translation": "Chasen Chen"
-    },
-    "en:content.about.profile.md.frontmatter.homeFeatured.description": {
-      "fingerprint": "d963625c06066697666c9a531f17a2f4282ef5dd58aaa698d77d0385eb025541",
-      "translation": "I am a designer and writer exploring the subtle intersection between large language models and the unpredictable nature of human creativity."
-    },
-    "en:content.about.profile.md.frontmatter.homeFeatured.location": {
-      "fingerprint": "689727cf08aebe1105f0d96500bffd365526649bb52a83feb2a1de690e487c5f",
-      "translation": "Chongqing, China"
-    },
     "en:content.about.profile.md.body[0]": {
-      "fingerprint": "6774a97d6528f904d4769a746ade1c7634a829e09cd9e58d021c9ee5d375dbc9",
-      "translation": "I focus on making complex tools feel calm and readable."
+      "fingerprint": "0c598a16f5e63457c0d3c9c2ccbc10e9a5547d58ada98a7b8dd81bbdf63b5bf0",
+      "translation": "About Me"
     },
     "en:content.about.profile.md.body[1]": {
-      "fingerprint": "97fedf2b8279ae5de12d9a3628c68ea4582a4a70bc0d5bcdc4d1d01ff2822934",
-      "translation": "This profile captures the principles I return to. The rest of the site records experiments in progress."
+      "fingerprint": "7b424ff606c16ac322e28eed64d4786185611dddb9d02dc95552f6ebea665af9",
+      "translation": "I care about making complex tools feel calm, clear, and easy to understand. This page records the principles I return to, while the rest of the site holds work, writing, and experiments in progress."
     },
     "ja:messages.site.brand": {
       "fingerprint": "ce57299bcf666b5743d3d5881081aed689e368822dfa758f831cd43a391cc5ab",
@@ -733,153 +593,13 @@
       "fingerprint": "0f42d7129012f5c959a8431b00d20ab93034687b593ea36f3ca7cba71d811c14",
       "translation": "これはここに残す最初の記事であり、ささやかな始まりでもあります。"
     },
-    "ja:content.about.profile.md.frontmatter.brand": {
-      "fingerprint": "c318af77e55e9a12eace5eef3a8350e9e90a2ec3643c7456eb205aeb06e3ad07",
-      "translation": "Chasen Design"
-    },
-    "ja:content.about.profile.md.frontmatter.titleLeading": {
-      "fingerprint": "8ab6aee601d226ea4c64dd24a3324d6f158954228e84b79b7c391e7a893d7c1f",
-      "translation": "こんにちは、"
-    },
-    "ja:content.about.profile.md.frontmatter.titleName": {
-      "fingerprint": "7c1320eaf781ec34911356a93050b628aa73a23dcd30eefbb06b4298ec8d44ae",
-      "translation": "Chasenです"
-    },
-    "ja:content.about.profile.md.frontmatter.subtitle": {
-      "fingerprint": "6bcfd1b1c6996483dc47bb27ea7a23dcb0051fe2d3ba203980662607eb2f477c",
-      "translation": "明快で思慮深いデジタル体験を探求するプロダクトデザイナー兼ライターです。"
-    },
-    "ja:content.about.profile.md.frontmatter.meta[0].label": {
-      "fingerprint": "f2d6bada9e8c95c4359bb17f6f5318dcb3092ac66eed4186491f04ec81e72c3f",
-      "translation": "役割"
-    },
-    "ja:content.about.profile.md.frontmatter.meta[0].value": {
-      "fingerprint": "1f9eb3244bff1378f4f82c5de1a6727422533064160cab4065042da4d2fe9ab6",
-      "translation": "プロダクトデザイナー"
-    },
-    "ja:content.about.profile.md.frontmatter.meta[1].label": {
-      "fingerprint": "87a0270949b075883e5ae6622f5cfc6950b284311061fad246591d805edcf131",
-      "translation": "拠点"
-    },
-    "ja:content.about.profile.md.frontmatter.meta[1].value": {
-      "fingerprint": "689727cf08aebe1105f0d96500bffd365526649bb52a83feb2a1de690e487c5f",
-      "translation": "中国・重慶"
-    },
-    "ja:content.about.profile.md.frontmatter.meta[2].label": {
-      "fingerprint": "f1cffa5534ccf762a43b6ba347bebaf582ea0f6f9c8b8033aafd86a243752a17",
-      "translation": "関心"
-    },
-    "ja:content.about.profile.md.frontmatter.meta[2].value": {
-      "fingerprint": "f3b48e44bcbd54f9cdf76c3de00539e436a3301ec7a183895f28fbc60c02ed2c",
-      "translation": "デザインシステムとAIインターフェース"
-    },
-    "ja:content.about.profile.md.frontmatter.story[0]": {
-      "fingerprint": "9a49f50dbbb024a4dc8ef06c0cb98b2aaca11ec6f0df535b70f8a25a778c42d6",
-      "translation": "複雑なツールを落ち着いて理解しやすいものにすることを大切にしています。"
-    },
-    "ja:content.about.profile.md.frontmatter.story[1]": {
-      "fingerprint": "785e4f155cd041a0768aaa3f8cdedcbefff683a52a9e6e3bea9cae01f9cf5bc1",
-      "translation": "このプロフィールでは繰り返し立ち返る原則をまとめ、サイトのほかの部分では進行中の仕事や実験を記録しています。"
-    },
-    "ja:content.about.profile.md.frontmatter.story[2]": {
-      "fingerprint": "8e120a97f5355c306eb73c6f23ceda824c643a153773e1f755c2053b0a773394",
-      "translation": "不设计界面的时候，我可能会去马林县的小径徒步旅行、煮咖啡或阅读有关中世纪家具设计的书籍。"
-    },
-    "ja:content.about.profile.md.frontmatter.focusCards[0].title": {
-      "fingerprint": "92688c1d16d3b3306f4eb2ca46b55b8535e97293b2c1ec9bc3fbc5273a8f2403",
-      "translation": "デザインシステム"
-    },
-    "ja:content.about.profile.md.frontmatter.focusCards[0].text": {
-      "fingerprint": "5f64db465b5a73e5e6f6660993da31eb29ef7bbfceed6093ae89dd95a86d9414",
-      "translation": "一貫したビジュアル言語と再利用可能なプロダクト基盤を設計します。"
-    },
-    "ja:content.about.profile.md.frontmatter.focusCards[1].title": {
-      "fingerprint": "3bbc853934bc21fab596d43e467f3f72179a5246d29658ee75a3649fac2879a0",
-      "translation": "AIインターフェース"
-    },
-    "ja:content.about.profile.md.frontmatter.focusCards[1].text": {
-      "fingerprint": "1dcf2fd7906c609011890de24b281de35c76ce75afd493e27d3531577b1a97c3",
-      "translation": "自然言語による操作と、人が知的なツールと協働する新しい方法を探ります。"
-    },
-    "ja:content.about.profile.md.frontmatter.experience[0].years": {
-      "fingerprint": "d30c65c975bdf717095671d86a201ec2020ff51f19c7fa1ac6bd53c063fbd267",
-      "translation": "現在"
-    },
-    "ja:content.about.profile.md.frontmatter.experience[0].role": {
-      "fingerprint": "1f9eb3244bff1378f4f82c5de1a6727422533064160cab4065042da4d2fe9ab6",
-      "translation": "プロダクトデザイナー"
-    },
-    "ja:content.about.profile.md.frontmatter.experience[0].company": {
-      "fingerprint": "955fa78050c6f63119c1dad272ebc89a68ecbf6954088df2ed123cfc431c8fda",
-      "translation": "個人活動"
-    },
-    "ja:content.about.profile.md.frontmatter.experience[0].text": {
-      "fingerprint": "578e2f5c7aa7c01b069f63fc79a01cbf44f559c9faef851b3abc0afe47a5aa43",
-      "translation": "デジタルプロダクト、インターフェース、実験の設計と記録に取り組んでいます。"
-    },
-    "ja:content.about.profile.md.frontmatter.experience[1].years": {
-      "fingerprint": "32f0ee2a632d4f6f672c777814844077ac5c8347b13c29d45f7417fe575c4729",
-      "translation": "2019 - 2022"
-    },
-    "ja:content.about.profile.md.frontmatter.experience[1].role": {
-      "fingerprint": "a648518895d606ccacf93880ac04cc06d77d83f3eb2d87323014e9d32afd58a9",
-      "translation": "用户体验设计师"
-    },
-    "ja:content.about.profile.md.frontmatter.experience[1].company": {
-      "fingerprint": "fd22ed95302a7157da8c166c2313860862e69b1f328aafac23bbb419453bc040",
-      "translation": "创意机构 XYZ"
-    },
-    "ja:content.about.profile.md.frontmatter.experience[1].text": {
-      "fingerprint": "da9e1767964899619cdb7d71b96612bcbe90c232edf63273eb4c3737c16c3f6c",
-      "translation": "曾与从金融科技到医疗保健的不同客户合作。提供从线框图到高保真原型的端到端设计解决方案。"
-    },
-    "ja:content.about.profile.md.frontmatter.experience[2].years": {
-      "fingerprint": "ab8b2ca4018fb8c77a4a4815116bdb2704c3b2578e357e29304ac9cf5cdfc7c3",
-      "translation": "2017 - 2019"
-    },
-    "ja:content.about.profile.md.frontmatter.experience[2].role": {
-      "fingerprint": "73ea57fe578e7cfbe2cd7097e2793377a4aa7e135a1ab4bb341799ba89a11eea",
-      "translation": "初级建筑师"
-    },
-    "ja:content.about.profile.md.frontmatter.experience[2].company": {
-      "fingerprint": "8422372691721202e35de1d7e56ccace9c441d20e98b5540cb36b11f91682af3",
-      "translation": "建设与合作伙伴"
-    },
-    "ja:content.about.profile.md.frontmatter.experience[2].text": {
-      "fingerprint": "0601fa90cf40531ee7ab76a55ea903b47184ab95f3aa462740aa1c38d18badcc",
-      "translation": "专注于可持续住宅项目。物理空间的基础在很大程度上影响了我的数字布局理念。"
-    },
-    "ja:content.about.profile.md.frontmatter.availability": {
-      "fingerprint": "dc287de67a57eecffa318b22577072d3912fdedbc7087292bf38da5ec0897c95",
-      "translation": "お仕事のご相談を受け付けています"
-    },
-    "ja:content.about.profile.md.frontmatter.homeFeatured.badge": {
-      "fingerprint": "35487f46cfcb129f84b74789194970f80527b0db38eff61231486546f922f0be",
-      "translation": "プロフィール"
-    },
-    "ja:content.about.profile.md.frontmatter.homeFeatured.title": {
+    "ja:content.about.profile.md.body[0]": {
       "fingerprint": "0c598a16f5e63457c0d3c9c2ccbc10e9a5547d58ada98a7b8dd81bbdf63b5bf0",
       "translation": "私について"
     },
-    "ja:content.about.profile.md.frontmatter.homeFeatured.name": {
-      "fingerprint": "28456c7d9b551a0be99387f5945828baef742bd499d24b75a101af02b5ab03a6",
-      "translation": "Chasen Chen"
-    },
-    "ja:content.about.profile.md.frontmatter.homeFeatured.description": {
-      "fingerprint": "d963625c06066697666c9a531f17a2f4282ef5dd58aaa698d77d0385eb025541",
-      "translation": "大規模言語モデルと、人間の創造性が持つ予測できない性質の交点を探求するデザイナー兼ライターです。"
-    },
-    "ja:content.about.profile.md.frontmatter.homeFeatured.location": {
-      "fingerprint": "689727cf08aebe1105f0d96500bffd365526649bb52a83feb2a1de690e487c5f",
-      "translation": "中国・重慶"
-    },
-    "ja:content.about.profile.md.body[0]": {
-      "fingerprint": "6774a97d6528f904d4769a746ade1c7634a829e09cd9e58d021c9ee5d375dbc9",
-      "translation": "複雑なツールを落ち着いて読みやすいものにすることを大切にしています。"
-    },
     "ja:content.about.profile.md.body[1]": {
-      "fingerprint": "97fedf2b8279ae5de12d9a3628c68ea4582a4a70bc0d5bcdc4d1d01ff2822934",
-      "translation": "このプロフィールは、私が繰り返し立ち返る原則をまとめたものです。サイトのほかの部分では、進行中の実験を記録しています。"
+      "fingerprint": "7b424ff606c16ac322e28eed64d4786185611dddb9d02dc95552f6ebea665af9",
+      "translation": "私は、複雑なツールを穏やかで、明確で、理解しやすいものにする方法に関心を持っています。このページは私が繰り返し立ち返る原則を記録し、ウェブサイトの他の部分は進行中の作業、記事、実験を保存しています。"
     },
     "zh-TW:messages.site.nav.home": {
       "fingerprint": "b01c3ab180d63fb733ba9bb6359cb462c79b549e4b09475588db9f09e34356f5",
@@ -1173,117 +893,13 @@
       "fingerprint": "350d1f0f4886a9c66c4abcc5efb5a975b2ebc89768e2ae43929d927ca516ada4",
       "translation": "你好，歡迎來到我的部落格。"
     },
-    "zh-TW:content.about.profile.md.frontmatter.titleLeading": {
-      "fingerprint": "8ab6aee601d226ea4c64dd24a3324d6f158954228e84b79b7c391e7a893d7c1f",
-      "translation": "你好，我是"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.brand": {
-      "fingerprint": "c318af77e55e9a12eace5eef3a8350e9e90a2ec3643c7456eb205aeb06e3ad07",
-      "translation": "Chasen Design"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.subtitle": {
-      "fingerprint": "6bcfd1b1c6996483dc47bb27ea7a23dcb0051fe2d3ba203980662607eb2f477c",
-      "translation": "一名關注清晰、克制與體驗細節的產品設計師和寫作者。"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.titleName": {
-      "fingerprint": "7c1320eaf781ec34911356a93050b628aa73a23dcd30eefbb06b4298ec8d44ae",
-      "translation": "茶筅"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.meta[0].label": {
-      "fingerprint": "f2d6bada9e8c95c4359bb17f6f5318dcb3092ac66eed4186491f04ec81e72c3f",
-      "translation": "角色"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.meta[0].value": {
-      "fingerprint": "1f9eb3244bff1378f4f82c5de1a6727422533064160cab4065042da4d2fe9ab6",
-      "translation": "產品設計師"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.experience[0].role": {
-      "fingerprint": "1f9eb3244bff1378f4f82c5de1a6727422533064160cab4065042da4d2fe9ab6",
-      "translation": "產品設計師"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.meta[1].label": {
-      "fingerprint": "87a0270949b075883e5ae6622f5cfc6950b284311061fad246591d805edcf131",
-      "translation": "地點"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.meta[1].value": {
-      "fingerprint": "689727cf08aebe1105f0d96500bffd365526649bb52a83feb2a1de690e487c5f",
-      "translation": "中國重慶"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.homeFeatured.location": {
-      "fingerprint": "689727cf08aebe1105f0d96500bffd365526649bb52a83feb2a1de690e487c5f",
-      "translation": "中國重慶"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.meta[2].label": {
-      "fingerprint": "f1cffa5534ccf762a43b6ba347bebaf582ea0f6f9c8b8033aafd86a243752a17",
-      "translation": "聚焦"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.meta[2].value": {
-      "fingerprint": "f3b48e44bcbd54f9cdf76c3de00539e436a3301ec7a183895f28fbc60c02ed2c",
-      "translation": "設計系統，人工智慧使用者介面"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.story[1]": {
-      "fingerprint": "785e4f155cd041a0768aaa3f8cdedcbefff683a52a9e6e3bea9cae01f9cf5bc1",
-      "translation": "這個頁面記錄我反覆回到的原則，網站的其他部分則保存正在進行的工作、文章和實驗。"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.story[0]": {
-      "fingerprint": "9a49f50dbbb024a4dc8ef06c0cb98b2aaca11ec6f0df535b70f8a25a778c42d6",
-      "translation": "我關注如何讓複雜的工具變得平和、清晰、容易理解。"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.focusCards[0].title": {
-      "fingerprint": "92688c1d16d3b3306f4eb2ca46b55b8535e97293b2c1ec9bc3fbc5273a8f2403",
-      "translation": "設計系統"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.focusCards[0].text": {
-      "fingerprint": "5f64db465b5a73e5e6f6660993da31eb29ef7bbfceed6093ae89dd95a86d9414",
-      "translation": "構建一致的視覺語言和可複用的產品基礎。"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.focusCards[1].title": {
-      "fingerprint": "3bbc853934bc21fab596d43e467f3f72179a5246d29658ee75a3649fac2879a0",
-      "translation": "AI 介面"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.experience[0].years": {
-      "fingerprint": "d30c65c975bdf717095671d86a201ec2020ff51f19c7fa1ac6bd53c063fbd267",
-      "translation": "現在"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.experience[0].company": {
-      "fingerprint": "955fa78050c6f63119c1dad272ebc89a68ecbf6954088df2ed123cfc431c8fda",
-      "translation": "獨立創作"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.availability": {
-      "fingerprint": "dc287de67a57eecffa318b22577072d3912fdedbc7087292bf38da5ec0897c95",
-      "translation": "對機會持開放態度"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.focusCards[1].text": {
-      "fingerprint": "1dcf2fd7906c609011890de24b281de35c76ce75afd493e27d3531577b1a97c3",
-      "translation": "探索自然語言互動，以及人與智能工具協作的新方式。"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.experience[0].text": {
-      "fingerprint": "578e2f5c7aa7c01b069f63fc79a01cbf44f559c9faef851b3abc0afe47a5aa43",
-      "translation": "設計並記錄數位產品、介面和個人實驗。"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.homeFeatured.title": {
-      "fingerprint": "0c598a16f5e63457c0d3c9c2ccbc10e9a5547d58ada98a7b8dd81bbdf63b5bf0",
-      "translation": "關於我"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.homeFeatured.badge": {
-      "fingerprint": "35487f46cfcb129f84b74789194970f80527b0db38eff61231486546f922f0be",
-      "translation": "個人簡介"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.homeFeatured.description": {
-      "fingerprint": "d963625c06066697666c9a531f17a2f4282ef5dd58aaa698d77d0385eb025541",
-      "translation": "我是一名設計師和作家，探索大型語言模型與人類創作過程不可預知的本質之間的微妙交集。"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.homeFeatured.name": {
-      "fingerprint": "28456c7d9b551a0be99387f5945828baef742bd499d24b75a101af02b5ab03a6",
-      "translation": "Chasen Chen"
-    },
     "zh-TW:content.about.profile.md.body[1]": {
-      "fingerprint": "97fedf2b8279ae5de12d9a3628c68ea4582a4a70bc0d5bcdc4d1d01ff2822934",
-      "translation": "該簡介頁面總結了長期原則。網站的其他部分則記錄了正在進行的實驗。"
+      "fingerprint": "7b424ff606c16ac322e28eed64d4786185611dddb9d02dc95552f6ebea665af9",
+      "translation": "我關注如何讓複雜的工具變得平和、清晰、容易理解。這個頁面記錄我反覆回到的原則，網站的其他部分則保存正在進行的工作、文章和實驗。"
     },
     "zh-TW:content.about.profile.md.body[0]": {
-      "fingerprint": "6774a97d6528f904d4769a746ade1c7634a829e09cd9e58d021c9ee5d375dbc9",
-      "translation": "我注重讓複雜的工具變得平和易讀。"
+      "fingerprint": "0c598a16f5e63457c0d3c9c2ccbc10e9a5547d58ada98a7b8dd81bbdf63b5bf0",
+      "translation": "關於我"
     },
     "en:messages.site.nav.screen": {
       "fingerprint": "67c4c3f68bed715f9862ab1d80778a8a41d3189e2bed4737e158e0990fbf3dcd",
@@ -1356,6 +972,366 @@
     "zh-TW:messages.site.page.screenDescription": {
       "fingerprint": "15d002688fb0f0e29d34463d18617f8317f45e6bc1c56a08d49ef06681e8ad6f",
       "translation": "電影、劇集與番劇收藏"
+    },
+    "en:messages.site.nav.project": {
+      "fingerprint": "cb891134c80f667c79dd8c76e4d850a3442640178df3849775dea39058627655",
+      "translation": "Project"
+    },
+    "en:messages.site.nav.note": {
+      "fingerprint": "4bdb9d51affa6422e7d3925f2233d13ae3808c76b635b3dabe958aee5ecbd0e3",
+      "translation": "Notes"
+    },
+    "en:messages.site.page.projectsDescription": {
+      "fingerprint": "ce8e6e4d214ac64d311082e6561d5ea00655bc89e16c54b4293379dd730299e4",
+      "translation": "Projects, Works, and Experiments."
+    },
+    "en:messages.site.page.notesDescription": {
+      "fingerprint": "c4cd7de18e023c267bb3e4ca79ac8a48009ce89324708ac6a6daca93be904759",
+      "translation": "Short notes and phased ideas."
+    },
+    "en:content.blog.designing-for-clarity-in-chaos.md.frontmatter.description": {
+      "fingerprint": "30ab039606aad612f9f2d6ca10baec2b0f10895e486c55074503c2fd31ad4f0e",
+      "translation": "My first blog post."
+    },
+    "ja:messages.site.nav.project": {
+      "fingerprint": "cb891134c80f667c79dd8c76e4d850a3442640178df3849775dea39058627655",
+      "translation": "プロジェクト"
+    },
+    "ja:messages.site.page.notesDescription": {
+      "fingerprint": "c4cd7de18e023c267bb3e4ca79ac8a48009ce89324708ac6a6daca93be904759",
+      "translation": "短いメモと段階的なアイデア。"
+    },
+    "ja:messages.site.nav.note": {
+      "fingerprint": "4bdb9d51affa6422e7d3925f2233d13ae3808c76b635b3dabe958aee5ecbd0e3",
+      "translation": "ノート"
+    },
+    "ja:messages.site.page.projectsDescription": {
+      "fingerprint": "ce8e6e4d214ac64d311082e6561d5ea00655bc89e16c54b4293379dd730299e4",
+      "translation": "プロジェクト、作品と実験。"
+    },
+    "ja:content.blog.designing-for-clarity-in-chaos.md.frontmatter.description": {
+      "fingerprint": "30ab039606aad612f9f2d6ca10baec2b0f10895e486c55074503c2fd31ad4f0e",
+      "translation": "私の最初のブログ記事。"
+    },
+    "zh-TW:messages.site.nav.note": {
+      "fingerprint": "4bdb9d51affa6422e7d3925f2233d13ae3808c76b635b3dabe958aee5ecbd0e3",
+      "translation": "筆記"
+    },
+    "zh-TW:messages.site.nav.project": {
+      "fingerprint": "cb891134c80f667c79dd8c76e4d850a3442640178df3849775dea39058627655",
+      "translation": "項目"
+    },
+    "zh-TW:messages.site.page.notesDescription": {
+      "fingerprint": "c4cd7de18e023c267bb3e4ca79ac8a48009ce89324708ac6a6daca93be904759",
+      "translation": "短筆記與階段性想法。"
+    },
+    "zh-TW:messages.site.page.projectsDescription": {
+      "fingerprint": "ce8e6e4d214ac64d311082e6561d5ea00655bc89e16c54b4293379dd730299e4",
+      "translation": "項目、作品與實驗。"
+    },
+    "zh-TW:content.blog.designing-for-clarity-in-chaos.md.frontmatter.description": {
+      "fingerprint": "30ab039606aad612f9f2d6ca10baec2b0f10895e486c55074503c2fd31ad4f0e",
+      "translation": "我的第一篇部落格文章。"
+    },
+    "en:content.note..empty.md.frontmatter.title": {
+      "fingerprint": "effa77d402d9c784f1f6e94e87dc0ce72a582cbfebce01a3bc33b9f8c60eaf6d",
+      "translation": "Empty Note Placeholder"
+    },
+    "en:content.note..empty.md.frontmatter.description": {
+      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
+      "translation": "Not published."
+    },
+    "en:content.project..empty.md.frontmatter.description": {
+      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
+      "translation": "Not published."
+    },
+    "en:content.project..empty.md.frontmatter.title": {
+      "fingerprint": "d0226270f1e2d2069e1e34c79e8312d741e8c19a82bd26a2f45f91c578857b2a",
+      "translation": "Empty Project Placeholder"
+    },
+    "ja:content.note..empty.md.frontmatter.description": {
+      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
+      "translation": "未公開。"
+    },
+    "ja:content.note..empty.md.frontmatter.title": {
+      "fingerprint": "effa77d402d9c784f1f6e94e87dc0ce72a582cbfebce01a3bc33b9f8c60eaf6d",
+      "translation": "空のノートのプレースホルダー"
+    },
+    "ja:content.project..empty.md.frontmatter.description": {
+      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
+      "translation": "未公開。"
+    },
+    "ja:content.project..empty.md.frontmatter.title": {
+      "fingerprint": "d0226270f1e2d2069e1e34c79e8312d741e8c19a82bd26a2f45f91c578857b2a",
+      "translation": "空のプロジェクトプレースホルダー"
+    },
+    "zh-TW:content.note..empty.md.frontmatter.description": {
+      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
+      "translation": "未出版。"
+    },
+    "zh-TW:content.note..empty.md.frontmatter.title": {
+      "fingerprint": "effa77d402d9c784f1f6e94e87dc0ce72a582cbfebce01a3bc33b9f8c60eaf6d",
+      "translation": "空白筆記佔位符"
+    },
+    "zh-TW:content.project..empty.md.frontmatter.description": {
+      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
+      "translation": "未出版。"
+    },
+    "zh-TW:content.project..empty.md.frontmatter.title": {
+      "fingerprint": "d0226270f1e2d2069e1e34c79e8312d741e8c19a82bd26a2f45f91c578857b2a",
+      "translation": "空白專案佔位符"
+    },
+    "en:content.note._empty.md.frontmatter.title": {
+      "fingerprint": "effa77d402d9c784f1f6e94e87dc0ce72a582cbfebce01a3bc33b9f8c60eaf6d",
+      "translation": "Empty Note Placeholder"
+    },
+    "en:content.note._empty.md.frontmatter.description": {
+      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
+      "translation": "Not published."
+    },
+    "en:content.project._empty.md.frontmatter.description": {
+      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
+      "translation": "Not published."
+    },
+    "en:content.project._empty.md.frontmatter.title": {
+      "fingerprint": "d0226270f1e2d2069e1e34c79e8312d741e8c19a82bd26a2f45f91c578857b2a",
+      "translation": "Empty Project Placeholder"
+    },
+    "ja:content.note._empty.md.frontmatter.description": {
+      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
+      "translation": "未公開。"
+    },
+    "ja:content.note._empty.md.frontmatter.title": {
+      "fingerprint": "effa77d402d9c784f1f6e94e87dc0ce72a582cbfebce01a3bc33b9f8c60eaf6d",
+      "translation": "空のノートのプレースホルダー"
+    },
+    "ja:content.project._empty.md.frontmatter.description": {
+      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
+      "translation": "未公開。"
+    },
+    "ja:content.project._empty.md.frontmatter.title": {
+      "fingerprint": "d0226270f1e2d2069e1e34c79e8312d741e8c19a82bd26a2f45f91c578857b2a",
+      "translation": "空のプロジェクトプレースホルダー"
+    },
+    "zh-TW:content.note._empty.md.frontmatter.title": {
+      "fingerprint": "effa77d402d9c784f1f6e94e87dc0ce72a582cbfebce01a3bc33b9f8c60eaf6d",
+      "translation": "空白筆記佔位符"
+    },
+    "zh-TW:content.note._empty.md.frontmatter.description": {
+      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
+      "translation": "未發表。"
+    },
+    "zh-TW:content.project._empty.md.frontmatter.description": {
+      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
+      "translation": "未發表。"
+    },
+    "zh-TW:content.project._empty.md.frontmatter.title": {
+      "fingerprint": "d0226270f1e2d2069e1e34c79e8312d741e8c19a82bd26a2f45f91c578857b2a",
+      "translation": "空白專案佔位符"
+    },
+    "en:content.about.profile.md.frontmatter.city": {
+      "fingerprint": "689727cf08aebe1105f0d96500bffd365526649bb52a83feb2a1de690e487c5f",
+      "translation": "Chongqing, China"
+    },
+    "en:content.about.profile.md.frontmatter.major": {
+      "fingerprint": "842f83b9ef70f82cac09ecd6221c9c2b9e3ae33780766b1915ef1a6ca4162e15",
+      "translation": "Product Design"
+    },
+    "en:content.about.profile.md.frontmatter.motto": {
+      "fingerprint": "6774a97d6528f904d4769a746ade1c7634a829e09cd9e58d021c9ee5d375dbc9",
+      "translation": "I focus on making complex tools feel calm and readable."
+    },
+    "en:content.about.profile.md.body[2]": {
+      "fingerprint": "5dc1d22341d7f9f53a933ef22e1098c95d2bc681828feaee73a7aea8bfc2830f",
+      "translation": "Current Focus"
+    },
+    "en:content.about.profile.md.body[3]": {
+      "fingerprint": "92688c1d16d3b3306f4eb2ca46b55b8535e97293b2c1ec9bc3fbc5273a8f2403",
+      "translation": "Design Systems"
+    },
+    "en:content.about.profile.md.body[4]": {
+      "fingerprint": "5f64db465b5a73e5e6f6660993da31eb29ef7bbfceed6093ae89dd95a86d9414",
+      "translation": "Building consistent visual languages and reusable product foundations."
+    },
+    "en:content.about.profile.md.body[5]": {
+      "fingerprint": "3bbc853934bc21fab596d43e467f3f72179a5246d29658ee75a3649fac2879a0",
+      "translation": "AI Interfaces"
+    },
+    "en:content.about.profile.md.body[6]": {
+      "fingerprint": "1dcf2fd7906c609011890de24b281de35c76ce75afd493e27d3531577b1a97c3",
+      "translation": "Exploring natural-language interaction and new ways for people to work with intelligent tools."
+    },
+    "en:content.about.profile.md.body[7]": {
+      "fingerprint": "8b9ad50a9c85b0aec4fda51e06b27895a1e397ea6c44148e3ec2398376041a37",
+      "translation": "Experience"
+    },
+    "en:content.about.profile.md.body[8]": {
+      "fingerprint": "1f9eb3244bff1378f4f82c5de1a6727422533064160cab4065042da4d2fe9ab6",
+      "translation": "Product Designer"
+    },
+    "en:content.about.profile.md.body[9]": {
+      "fingerprint": "fefb38d9b3e3a81da2edb94c2db5d7ea1d9a8df6a25688c5840a7252421bb409",
+      "translation": "Present, independent. Designing and documenting digital products, interfaces, and personal experiments."
+    },
+    "en:content.about.profile.md.body[10]": {
+      "fingerprint": "dbba58f50f4ebc4f73617d59072e339ae31b5e12c39ff6153f69c2c660000231",
+      "translation": "Contact"
+    },
+    "en:content.about.profile.md.body[11]": {
+      "fingerprint": "d029d656f5eb23a9e28157e9a110928f499d4082fd6a814271e5089d5ad4d2dc",
+      "translation": "GitHub"
+    },
+    "en:content.about.profile.md.body[12]": {
+      "fingerprint": "67a00167d0dc80b09e7816d5ffe97d6b0eec45ca61d0a8648bcdac8ee91aa6fb",
+      "translation": "Bilibili"
+    },
+    "en:content.about.profile.md.body[13]": {
+      "fingerprint": "b64094a579f0641a63351088886e3ecc2f64fa76016deb5ca2bdb10c6ec5cb7e",
+      "translation": "i@muelsyse.us"
+    },
+    "en:content.about.profile.md.body[14]": {
+      "fingerprint": "b8aa60c27934ab757d90279c4d79d1afa63b111a5e91617d8c41477a48e1685e",
+      "translation": "Credits"
+    },
+    "en:content.about.profile.md.body[15]": {
+      "fingerprint": "cc8b0411d6449b76f2556f94c27e901148316357c49d03df6e0bd8d03ec0e3a5",
+      "translation": "This product uses the TMDB API but is not endorsed or certified by TMDB."
+    },
+    "ja:content.about.profile.md.frontmatter.city": {
+      "fingerprint": "689727cf08aebe1105f0d96500bffd365526649bb52a83feb2a1de690e487c5f",
+      "translation": "中国重慶"
+    },
+    "ja:content.about.profile.md.frontmatter.major": {
+      "fingerprint": "842f83b9ef70f82cac09ecd6221c9c2b9e3ae33780766b1915ef1a6ca4162e15",
+      "translation": "プロダクトデザイン"
+    },
+    "ja:content.about.profile.md.frontmatter.motto": {
+      "fingerprint": "6774a97d6528f904d4769a746ade1c7634a829e09cd9e58d021c9ee5d375dbc9",
+      "translation": "私は複雑なツールを穏やかで読みやすくすることに重点を置いています。"
+    },
+    "ja:content.about.profile.md.body[3]": {
+      "fingerprint": "92688c1d16d3b3306f4eb2ca46b55b8535e97293b2c1ec9bc3fbc5273a8f2403",
+      "translation": "デザインシステム"
+    },
+    "ja:content.about.profile.md.body[2]": {
+      "fingerprint": "5dc1d22341d7f9f53a933ef22e1098c95d2bc681828feaee73a7aea8bfc2830f",
+      "translation": "現在の注目"
+    },
+    "ja:content.about.profile.md.body[4]": {
+      "fingerprint": "5f64db465b5a73e5e6f6660993da31eb29ef7bbfceed6093ae89dd95a86d9414",
+      "translation": "一貫したビジュアル言語と再利用可能な製品基盤を構築する。"
+    },
+    "ja:content.about.profile.md.body[7]": {
+      "fingerprint": "8b9ad50a9c85b0aec4fda51e06b27895a1e397ea6c44148e3ec2398376041a37",
+      "translation": "経験"
+    },
+    "ja:content.about.profile.md.body[6]": {
+      "fingerprint": "1dcf2fd7906c609011890de24b281de35c76ce75afd493e27d3531577b1a97c3",
+      "translation": "自然言語インタラクションを探索し、人と知能ツールの協働の新しい方法を探る。"
+    },
+    "ja:content.about.profile.md.body[8]": {
+      "fingerprint": "1f9eb3244bff1378f4f82c5de1a6727422533064160cab4065042da4d2fe9ab6",
+      "translation": "プロダクトデザイナー"
+    },
+    "ja:content.about.profile.md.body[5]": {
+      "fingerprint": "3bbc853934bc21fab596d43e467f3f72179a5246d29658ee75a3649fac2879a0",
+      "translation": "AI インターフェース"
+    },
+    "ja:content.about.profile.md.body[11]": {
+      "fingerprint": "d029d656f5eb23a9e28157e9a110928f499d4082fd6a814271e5089d5ad4d2dc",
+      "translation": "GitHub"
+    },
+    "ja:content.about.profile.md.body[10]": {
+      "fingerprint": "dbba58f50f4ebc4f73617d59072e339ae31b5e12c39ff6153f69c2c660000231",
+      "translation": "私に連絡してください"
+    },
+    "ja:content.about.profile.md.body[9]": {
+      "fingerprint": "fefb38d9b3e3a81da2edb94c2db5d7ea1d9a8df6a25688c5840a7252421bb409",
+      "translation": "現在、独立創作。デジタルプロダクト、インターフェース、個人実験をデザインし記録する。"
+    },
+    "ja:content.about.profile.md.body[13]": {
+      "fingerprint": "b64094a579f0641a63351088886e3ecc2f64fa76016deb5ca2bdb10c6ec5cb7e",
+      "translation": "i@muelsyse.us"
+    },
+    "ja:content.about.profile.md.body[14]": {
+      "fingerprint": "b8aa60c27934ab757d90279c4d79d1afa63b111a5e91617d8c41477a48e1685e",
+      "translation": "謝辞"
+    },
+    "ja:content.about.profile.md.body[12]": {
+      "fingerprint": "67a00167d0dc80b09e7816d5ffe97d6b0eec45ca61d0a8648bcdac8ee91aa6fb",
+      "translation": "ビリビリ"
+    },
+    "ja:content.about.profile.md.body[15]": {
+      "fingerprint": "cc8b0411d6449b76f2556f94c27e901148316357c49d03df6e0bd8d03ec0e3a5",
+      "translation": "この製品はTMDB APIを使用していますが、TMDBによって推奨または認定されていません。"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.major": {
+      "fingerprint": "842f83b9ef70f82cac09ecd6221c9c2b9e3ae33780766b1915ef1a6ca4162e15",
+      "translation": "產品設計"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.city": {
+      "fingerprint": "689727cf08aebe1105f0d96500bffd365526649bb52a83feb2a1de690e487c5f",
+      "translation": "中國重慶"
+    },
+    "zh-TW:content.about.profile.md.frontmatter.motto": {
+      "fingerprint": "6774a97d6528f904d4769a746ade1c7634a829e09cd9e58d021c9ee5d375dbc9",
+      "translation": "我注重讓複雜的工具變得平和易讀。"
+    },
+    "zh-TW:content.about.profile.md.body[2]": {
+      "fingerprint": "5dc1d22341d7f9f53a933ef22e1098c95d2bc681828feaee73a7aea8bfc2830f",
+      "translation": "當前關注"
+    },
+    "zh-TW:content.about.profile.md.body[3]": {
+      "fingerprint": "92688c1d16d3b3306f4eb2ca46b55b8535e97293b2c1ec9bc3fbc5273a8f2403",
+      "translation": "設計系統"
+    },
+    "zh-TW:content.about.profile.md.body[4]": {
+      "fingerprint": "5f64db465b5a73e5e6f6660993da31eb29ef7bbfceed6093ae89dd95a86d9414",
+      "translation": "構建一致的視覺語言和可複用的產品基礎。"
+    },
+    "zh-TW:content.about.profile.md.body[7]": {
+      "fingerprint": "8b9ad50a9c85b0aec4fda51e06b27895a1e397ea6c44148e3ec2398376041a37",
+      "translation": "經歷"
+    },
+    "zh-TW:content.about.profile.md.body[5]": {
+      "fingerprint": "3bbc853934bc21fab596d43e467f3f72179a5246d29658ee75a3649fac2879a0",
+      "translation": "AI 介面"
+    },
+    "zh-TW:content.about.profile.md.body[8]": {
+      "fingerprint": "1f9eb3244bff1378f4f82c5de1a6727422533064160cab4065042da4d2fe9ab6",
+      "translation": "產品設計師"
+    },
+    "zh-TW:content.about.profile.md.body[10]": {
+      "fingerprint": "dbba58f50f4ebc4f73617d59072e339ae31b5e12c39ff6153f69c2c660000231",
+      "translation": "聯繫我"
+    },
+    "zh-TW:content.about.profile.md.body[6]": {
+      "fingerprint": "1dcf2fd7906c609011890de24b281de35c76ce75afd493e27d3531577b1a97c3",
+      "translation": "探索自然語言交互，以及人與智能工具協作的新方式。"
+    },
+    "zh-TW:content.about.profile.md.body[9]": {
+      "fingerprint": "fefb38d9b3e3a81da2edb94c2db5d7ea1d9a8df6a25688c5840a7252421bb409",
+      "translation": "現在，獨立創作。設計並記錄數位產品、介面和個人實驗。"
+    },
+    "zh-TW:content.about.profile.md.body[11]": {
+      "fingerprint": "d029d656f5eb23a9e28157e9a110928f499d4082fd6a814271e5089d5ad4d2dc",
+      "translation": "GitHub"
+    },
+    "zh-TW:content.about.profile.md.body[13]": {
+      "fingerprint": "b64094a579f0641a63351088886e3ecc2f64fa76016deb5ca2bdb10c6ec5cb7e",
+      "translation": "i@muelsyse.us"
+    },
+    "zh-TW:content.about.profile.md.body[14]": {
+      "fingerprint": "b8aa60c27934ab757d90279c4d79d1afa63b111a5e91617d8c41477a48e1685e",
+      "translation": "致謝"
+    },
+    "zh-TW:content.about.profile.md.body[12]": {
+      "fingerprint": "67a00167d0dc80b09e7816d5ffe97d6b0eec45ca61d0a8648bcdac8ee91aa6fb",
+      "translation": "嗶哩嗶哩"
+    },
+    "zh-TW:content.about.profile.md.body[15]": {
+      "fingerprint": "cc8b0411d6449b76f2556f94c27e901148316357c49d03df6e0bd8d03ec0e3a5",
+      "translation": "本產品使用 TMDB API，但並未獲得 TMDB 的認可或認證。"
     }
   }
 }

@@ -34,7 +34,7 @@ try {
       db,
       request,
       {
-        slug: "future-of-interface",
+        contentId: "blog/designing-for-clarity-in-chaos",
         name: `Smoke ${index + 1}`,
         content: index === 20 ? "<script>alert(1)</script>\nplain text" : `comment ${index + 1}`,
       },
@@ -64,8 +64,8 @@ try {
   const rateRequest = new Request("https://blog.muelsyse.us/api/comments", {
     headers: { "cf-connecting-ip": "203.0.113.200" },
   });
-  const first = await createComment(db, rateRequest, { slug: "future-of-interface", name: "Smoke Rate", content: "first" }, "local-smoke-secret", new Date("2026-07-23T06:00:00.000Z"));
-  const second = await createComment(db, rateRequest, { slug: "future-of-interface", name: "Smoke Rate", content: "second" }, "local-smoke-secret", new Date("2026-07-23T06:00:30.000Z"));
+  const first = await createComment(db, rateRequest, { contentId: "blog/designing-for-clarity-in-chaos", name: "Smoke Rate", content: "first" }, "local-smoke-secret", new Date("2026-07-23T06:00:00.000Z"));
+  const second = await createComment(db, rateRequest, { contentId: "blog/designing-for-clarity-in-chaos", name: "Smoke Rate", content: "second" }, "local-smoke-secret", new Date("2026-07-23T06:00:30.000Z"));
   assert(first.ok, "first rate-limit write failed");
   assert(!second.ok && second.retryAfter === 30, "60-second rate limit failed");
 

@@ -17,7 +17,7 @@ const ROOT = process.cwd();
 const LOCALES = [
   ["en", "EN"], ["ja", "JA"], ["zh-TW", "ZH-TW"],
 ];
-const CONTENT_GROUPS = ["blog", "about"];
+const CONTENT_GROUPS = ["blog", "note", "project", "about"];
 const GENERATED_ROOT = path.join(ROOT, "src/content/translations");
 const MESSAGE_SOURCE = path.join(ROOT, "src/i18n/source.json");
 const MESSAGE_OUTPUT = path.join(ROOT, "src/i18n/generated");
@@ -72,7 +72,8 @@ const checkpointTranslation = async (manifestKey, entry) => {
 
 const isPlainObject = (value) => value && typeof value === "object" && !Array.isArray(value) && !(value instanceof Date);
 const shouldTranslateKey = (key) => !new Set([
-  "slug", "categorySlug", "cover", "portrait", "href", "icon", "id", "type", "side",
+  "slug", "categorySlug", "cover", "portrait", "name", "href", "icon", "id", "type", "side",
+  "routeSlug", "projectUrl", "docUrl", "image", "createdAt", "updatedAt", "published",
   "publishedAt", "year", "order", "archiveYear", "showOnHome", "showInArchive", "showInTimeline", "draft",
 ]).has(key);
 
@@ -167,10 +168,10 @@ const translateContentFiles = async ({ locale, targetLang, manifest, seed }) => 
     const outputDir = path.join(GENERATED_ROOT, locale, group);
     await rm(outputDir, { recursive: true, force: true });
     await mkdir(outputDir, { recursive: true });
-    const fileNames = (await readdir(sourceDir)).filter((name) => name.endsWith(".md"));
+    const fileNames = await walkContentFiles(sourceDir);
     await Promise.all(fileNames.map(async (fileName) => {
       const source = matter(await readFile(path.join(sourceDir, fileName), "utf8"));
-      const keyPrefix = `content.${group}.${fileName}`;
+      const keyPrefix = `content.${group}.${fileName.replaceAll(path.sep, ".")}`;
       const data = await translateValue({
         value: source.data,
         keyPath: `${keyPrefix}.frontmatter`,
@@ -184,6 +185,16 @@ const translateContentFiles = async ({ locale, targetLang, manifest, seed }) => 
       await writeMarkdown(path.join(outputDir, fileName), data, body);
     }));
   }
+};
+
+const walkContentFiles = async (directory, prefix = "") => {
+  const files = [];
+  for (const entry of await readdir(directory, { withFileTypes: true })) {
+    const relative = path.join(prefix, entry.name);
+    if (entry.isDirectory()) files.push(...await walkContentFiles(path.join(directory, entry.name), relative));
+    else if (/\.(md|mdx)$/.test(entry.name) && entry.name !== "_empty.md" && entry.name !== "_empty.mdx") files.push(relative);
+  }
+  return files.sort();
 };
 
 const main = async () => {

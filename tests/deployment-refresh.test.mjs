@@ -29,7 +29,23 @@ test("Cloudflare revalidates HTML while keeping the version marker uncached", ()
   const headers = read("public/_headers");
 
   assert.match(headers, /\/version\.json\s+Cache-Control: no-store/);
-  for (const route of ["/", "/blog/*", "/art/*", "/en/*", "/ja/*", "/zh-TW/*"]) {
+  for (const route of ["/", "/blog/*", "/en/*", "/ja/*", "/zh-TW/*"]) {
     assert.match(headers, new RegExp(`${route.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s+Cache-Control: no-cache`));
   }
+  assert.match(headers, /\/art\/\*\s+Cache-Control: public, max-age=0, s-maxage=60, stale-while-revalidate=300/);
+});
+
+test("deployment checks only run after thirty minutes away", () => {
+  const layout = read("src/layouts/BaseLayout.astro");
+  assert.doesNotMatch(layout, /setInterval\(check/);
+  assert.doesNotMatch(layout, /void check\(\);\s*window/);
+  assert.match(layout, /Date\.now\(\) - hiddenAt < 30 \* 60_000/);
+});
+
+test("public assets are immutable and public pages have security headers", () => {
+  const headers = read("public/_headers");
+  for (const route of ["/_astro/*", "/fonts/*", "/images/content/*"]) assert.match(headers, new RegExp(`${route.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s+Cache-Control: public, max-age=31536000, immutable`));
+  assert.match(headers, /Content-Security-Policy:/);
+  assert.match(headers, /Strict-Transport-Security:/);
+  assert.match(headers, /X-Frame-Options: DENY/);
 });

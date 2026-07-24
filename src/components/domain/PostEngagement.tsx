@@ -5,13 +5,13 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 interface PostEngagementProps {
-  slug: string;
+  contentId: string;
   locale?: string;
   labels?: Record<string, string>;
 }
 
 interface PostStats {
-  slug: string;
+  contentId: string;
   views: number;
   likes: number;
 }
@@ -23,8 +23,8 @@ const formatCount = (value: number | undefined, locale: string): string => {
   return new Intl.NumberFormat(locale).format(value);
 };
 
-export default function PostEngagement({ slug, locale = "zh-CN", labels = {} }: PostEngagementProps) {
-  const copy = { engagementLabel: "文章互动", views: "浏览", likes: "喜欢", like: "点赞", liking: "点赞中", statsUnavailable: "文章统计暂时不可用。", ...labels };
+export default function PostEngagement({ contentId, locale = "zh-CN", labels = {} }: PostEngagementProps) {
+  const copy = { engagementLabel: "内容互动", views: "浏览", likes: "喜欢", like: "点赞", liking: "点赞中", statsUnavailable: "内容统计暂时不可用。", ...labels };
   const [stats, setStats] = useState<PostStats>();
   const [loadState, setLoadState] = useState<LoadState>("idle");
   const [isLiking, setIsLiking] = useState(false);
@@ -34,7 +34,7 @@ export default function PostEngagement({ slug, locale = "zh-CN", labels = {} }: 
 
     async function loadStats() {
       try {
-        const current = await fetchJson<PostStats>(`/api/stats?slug=${encodeURIComponent(slug)}`);
+        const current = await fetchJson<PostStats>(`/api/stats?contentId=${encodeURIComponent(contentId)}`);
         if (!isActive) return;
         setStats(current);
         setLoadState("ready");
@@ -44,7 +44,7 @@ export default function PostEngagement({ slug, locale = "zh-CN", labels = {} }: 
           headers: {
             "content-type": "application/json",
           },
-          body: JSON.stringify({ slug }),
+          body: JSON.stringify({ contentId }),
         });
         if (!isActive) return;
         setStats(viewed);
@@ -59,7 +59,7 @@ export default function PostEngagement({ slug, locale = "zh-CN", labels = {} }: 
     return () => {
       isActive = false;
     };
-  }, [slug]);
+  }, [contentId]);
 
   async function handleLike() {
     if (isLiking) return;
@@ -72,7 +72,7 @@ export default function PostEngagement({ slug, locale = "zh-CN", labels = {} }: 
         headers: {
           "content-type": "application/json",
         },
-        body: JSON.stringify({ slug }),
+        body: JSON.stringify({ contentId }),
       });
       setStats(liked);
       setLoadState("ready");
@@ -117,7 +117,7 @@ export default function PostEngagement({ slug, locale = "zh-CN", labels = {} }: 
 
 function StatItem({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--bg-subtle)] px-3 py-2">
+    <span className="inline-flex min-h-11 items-center gap-1.5 border-r border-[var(--border-soft)] pr-3 last:border-r-0">
       <span className="[&_svg]:size-4">{icon}</span>
       <span className="font-medium text-[var(--text-main)]">{value}</span>
       <span>{label}</span>

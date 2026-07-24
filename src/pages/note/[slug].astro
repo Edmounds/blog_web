@@ -1,0 +1,9 @@
+---
+import ContentDetail from "../../components/domain/ContentDetail.astro";
+import { getContentStaticPaths, getNextContent } from "../../lib/content";
+export const prerender = true;
+export function getStaticPaths() { return getContentStaticPaths("note"); }
+const { item } = Astro.props;
+const next = await getNextContent("note", item.slug);
+---
+<ContentDetail item={item} next={next} />

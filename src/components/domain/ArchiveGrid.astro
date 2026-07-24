@@ -13,7 +13,7 @@ const { sections, countLabel = "posts", hideYearHeader = false } = Astro.props;
 
 <div data-archive-grid class={hideYearHeader ? "flex flex-col gap-10" : "flex flex-col gap-12"}>
   {hideYearHeader ? (
-    <div class="grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-2">
+    <div class="grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
       {sections.flatMap(section => section.cards.map((card, index) => {
         const post = section.posts[index];
         const keywords = [post.title, post.category, post.readingTime].join(" ").toLowerCase();
@@ -29,11 +29,11 @@ const { sections, countLabel = "posts", hideYearHeader = false } = Astro.props;
     sections.map((section) => (
       <section class="flex flex-col gap-5" data-archive-group>
         <header class="flex items-end justify-between border-b border-[var(--border-soft)] pb-3">
-          <h2 class="text-3xl font-semibold text-[var(--text-main)]">{section.year}</h2>
+          <h2 class="ui-outline-title !text-[var(--type-lg)] !font-semibold">{section.year}</h2>
           <p class="text-xs text-[var(--text-faint)]">{section.cards.length} {countLabel}</p>
         </header>
 
-        <div class="grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-2">
+        <div class="grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
           {section.cards.map((card, index) => {
             const post = section.posts[index];
             const keywords = [post.title, post.category, post.readingTime].join(" ").toLowerCase();

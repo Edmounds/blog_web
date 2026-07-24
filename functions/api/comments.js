@@ -5,19 +5,21 @@ import {
   listPublicComments,
   validateCommentInput,
 } from "../_shared/comments.js";
-import { error, json, normalizeSlug, requireDb, requireSameOriginJson } from "../_shared/engagement.js";
+import { error, json, normalizeContentId, requireDb, requireSameOriginJson } from "../_shared/engagement.js";
+import { createEdgeCacheKey, noStore, readEdgeJson } from "../_shared/edge-cache.js";
 
-export async function onRequestGet({ env, request }) {
+export async function onRequestGet({ env, request, waitUntil }) {
   try {
     const url = new URL(request.url);
-    const slug = normalizeSlug(url.searchParams.get("slug"));
-    if (!slug) return error(400, "INVALID_SLUG", "请选择一篇已发布的文章。");
+    const contentId = normalizeContentId(url.searchParams.get("contentId"));
+    if (!contentId) return error(400, "INVALID_CONTENT_ID", "请选择一篇已发布的内容。");
 
     const rawCursor = url.searchParams.get("cursor");
     const cursor = getCommentCursor(rawCursor);
     if (rawCursor && !cursor) return error(400, "INVALID_CURSOR", "评论游标无效。");
 
-    return json(await listPublicComments(requireDb(env), slug, cursor));
+    const key = createEdgeCacheKey(request, "comments", { contentId, cursor: rawCursor ?? "" });
+    return readEdgeJson(caches.default, key, async () => json(await listPublicComments(requireDb(env), contentId, cursor)), undefined, waitUntil);
   } catch (err) {
     if (err instanceof Response) return err;
     return error(500, "COMMENT_LIST_FAILED", "暂时无法加载评论，请稍后重试。");
@@ -55,7 +57,7 @@ export async function onRequestPost({ env, request }) {
       );
     }
 
-    return json({ item: result.comment }, { status: 201 });
+    return noStore(json({ item: result.comment }, { status: 201 }));
   } catch (err) {
     if (err instanceof Response) return err;
     return error(500, "COMMENT_WRITE_FAILED", "评论发布失败，请稍后重试。");

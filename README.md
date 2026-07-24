@@ -1,90 +1,99 @@
-﻿# Astro 内容博客模板
+﻿# chasen
 
-## 功能
-- 站点路由：`/`、`/blogs/`、`/blog/[slug]/`、`/series/`、`/series/[slug]/`、`/art/*`、`/about/`
-- 内容管理：`Astro Content Collections`
-- 样式系统：Tailwind + 全局设计 Token
-- 明暗主题切换：跟随系统 + 本地持久化
-- 博客文章匿名评论：名称、纯文本内容、北京时间、设备系统和大致地区
-- Cloudflare Access 保护的评论管理后台：`/admin/comments/`
+基于 Astro-star 0.16.25 视觉与页面结构重建的 Astro 内容站。默认语言为简体中文无前缀路径，英文、日文和繁体中文分别使用 `/en/`、`/ja/`、`/zh-TW/`。
 
-## 快速开始
+## 站点结构
+
+- 五页横向主界面：`/`、`/about/`、`/blog/`、`/note/`、`/project/`
+- 内容详情：`/blog/[slug]/`、`/note/[slug]/`、`/project/[slug]/`
+- Blog / Note 分类：`/[section]-archive/` 与 `.../[archiveSlug]/`
+- Life 收藏：`/art/book/`、`/art/music/`、`/art/screen/`
+- 管理后台：评论 `/admin/comments/`、收藏 `/admin/art/`
+- RSS：`/rss.xml` 及三个语言前缀下的 `/rss.xml`
+
+`Astro-star/` 是只读模板参考，不参与站点构建，也不发布模板示例内容。移植部分的 Apache-2.0 许可证和来源说明见根目录 `LICENSE-ASTRO-STAR` 与 `NOTICE`。
+
+## 本地开发
+
+需要 Node 22：
+
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
-## 评论与环境变量
-评论数据使用现有 Cloudflare D1。部署评论 API 前必须先执行迁移：
+完整检查：
+
+```bash
+npm test
+npm run check:encoding
+npm run check:content-ids
+npm run check
+npm run build
+```
+
+## 内容
+
+- Blog：`src/content/blog/**/*.{md,mdx}`
+- Note：`src/content/note/**/*.{md,mdx}`
+- Project：`src/content/project/**/*.{md,mdx}`
+- About：`src/content/about/profile.md`
+- 翻译输出：`src/content/translations/<locale>/`
+
+Blog、Note、Project 公共 frontmatter 为 `routeSlug`、`title`、`description`、`image`、`createdAt`、`updatedAt`、`published`、`type`；Project 可额外使用 `projectUrl` 和 `docUrl`。内容互动使用稳定 ID `contentId = "<section>/<slug>"`。
+
+含中文的 Markdown 使用 UTF-8 BOM。`npm run translate` 会递归处理 `.md` 与 `.mdx`，保留目录和不可翻译字段。
+
+## D1、R2 与迁移
+
+互动数据和收藏元数据使用 Cloudflare D1，收藏封面使用 `ART_COVERS` R2 binding。部署前执行：
 
 ```bash
 npm run db:migrate:local
 npm run db:migrate:remote
 ```
 
-必须配置以下运行时变量：
+`schema/content_ids.sql` 会幂等地把旧 Blog 裸 slug 迁移为 `blog/<slug>`。URL 收藏封面由独立的 `blog-art-cover-fetcher` Worker 获取，并同时检查 IPv4/IPv6 DNS 结果；先执行 `wrangler deploy --config wrangler.art-cover-fetcher.jsonc`。
 
-- `COMMENT_HASH_SALT`：用于为提交限频生成 IP HMAC。请使用足够长的随机密钥；缺少时 API 会拒绝写入评论。
-- `CF_ACCESS_TEAM_DOMAIN`：Cloudflare Zero Trust 团队域名，例如 `https://example.cloudflareaccess.com`。
-- `CF_ACCESS_AUD`：保护评论后台的 Access Application Audience 标签。
+首次切换收藏数据时，使用归档的旧封面目录执行一次迁移：
 
-评论表不保存完整 IP 或原始 User-Agent。短期限频表只保存带密钥的 IP HMAC 和最后提交时间，评论记录只保存粗粒度设备、地区标签和 UTC 时间。
+```bash
+LEGACY_ART_COVERS_DIR=/absolute/path/to/legacy-art-covers node --env-file-if-exists=.env scripts/migrate-art-to-d1.mjs --remote
+```
 
-本地完整 API 调试前，在 `.env` 中配置变量，然后运行：
+博客、笔记和项目正文图片由 `npm run images:sync` 同步至 `blog-images` R2，历史 Blog 对象仍使用 `blog/<sha256>.<ext>`。Life 收藏封面与数据只通过 D1/R2 和 `/admin/art/` 管理。
+
+## 环境变量
+
+运行时密钥只放在未跟踪的 `.env` 或 Cloudflare Secret 中：
+
+- `COMMENT_HASH_SALT`
+- `CF_ACCESS_TEAM_DOMAIN`、`CF_ACCESS_AUD`
+- `GOOGLE_BOOKS_API_KEY`、`TMDB_API_KEY`
+- `WAKA_TIME_API_KEY`（推荐名称；`WAKATIME_API_KEY` 仅保留兼容）
+- 翻译服务所需的 `SERVICE_TYPE`、`DEEPLX_*` 或 `OPENAI_BASE_URL`、`API_KEY`、`MODEL`
+
+第一次创建 `new-blog-ssr` Worker 后，运行 `npm run cf:secrets:sync` 将本地 `.env` 中的变量批量上传为 Worker Secrets。脚本只把变量值通过标准输入交给 Wrangler，不会输出变量值或创建包含密钥的临时文件；也不会删除仅存在于 Cloudflare 的 Secret。`wrangler.astro.jsonc` 启用了 `keep_vars`，后续代码部署不会清除控制台中已配置的 secrets/vars。
+
+WakaTime 密钥只由服务端 SVG 代理读取。曾在对话或日志中暴露的旧密钥必须先在 WakaTime 轮换，再将新值配置为 Cloudflare Secret：
+
+```bash
+npx wrangler secret put WAKA_TIME_API_KEY --name new-blog-ssr
+```
+
+不要把密钥写入组件、客户端脚本、仓库或构建产物。
+
+## Cloudflare
+
+本地完整 API 调试：
 
 ```bash
 npm run build
 npm run cf:dev
 ```
 
-本地 API 启动命令会把 Pages Functions 的 `DB` 绑定指向与迁移脚本相同的 D1 数据库 ID。可用 `npm run test:comments:smoke` 对真实本地 D1 执行分页、隐藏/恢复和限频冒烟测试。
+`cf:dev` 使用构建产物中的 Astro Worker 配置和本地 D1/R2 状态；先运行 `npm run db:migrate:local`。
 
-## Cloudflare Access
+Cloudflare Access 必须同时保护 `blog.muelsyse.us/admin/*` 和 `blog.muelsyse.us/api/admin/*`。本地部署运行 `npm run deploy`；GitHub Actions 使用 Node 22，并需要 `CLOUDFLARE_API_TOKEN` 与 `CLOUDFLARE_ACCOUNT_ID`。`npm run deploy` 只更新 `new-blog-ssr`；生产域名路由继续由 `blog-preferred-proxy` 持有，它通过 `ORIGIN` service binding 调用该 Astro SSR Worker，因此代理 Worker 只需在其配置或代码变化时单独执行 `npx wrangler deploy --config wrangler.preferred-proxy.jsonc`。不要让两个 Worker 同时声明 `blog.muelsyse.us/*`。
 
-在 Zero Trust 中创建 Self-hosted Access Application，同时保护以下路径，只允许站长邮箱访问：
-
-- `blog.muelsyse.us/admin/comments/*`
-- `blog.muelsyse.us/api/admin/comments/*`
-
-Access 应用的 Audience 必须与 `CF_ACCESS_AUD` 一致。应用内部还会验证 `Cf-Access-Jwt-Assertion` 的签名、Issuer、过期时间和 Audience，因此公开的 `pages.dev` 源站不能绕过后台鉴权。先执行远程 D1 迁移，再发布包含评论 API 的版本。
-
-## 部署
-本地发布到 Cloudflare Pages：
-```bash
-npm run deploy
-```
-
-平时更新使用 GitHub Actions：把改动提交并推送到 `master`，即会自动构建并发布。GitHub 仓库需要配置 `CLOUDFLARE_API_TOKEN` 和 `CLOUDFLARE_ACCOUNT_ID` Secrets，自定义域名需将 `blog.muelsyse.us` 的 CNAME 指向 `new-blog-c0s.pages.dev`。
-
-## Blog images
-
-Typora 中复制过来的 Markdown 可以继续保留 macOS 绝对图片路径，例如：
-
-```markdown
-![示例](</Users/me/Documents/article/image.png>)
-```
-
-在本机运行 `npm run dev`、`npm run build` 或以下命令时，脚本会把这些图片上传到 R2，并把文章中的路径改写为 `https://img.muelsyse.us/blog/<sha256>.<ext>`：
-
-```bash
-npm run images:sync
-```
-
-Cloudflare 需要一次性完成以下设置：
-
-1. 启用 R2，并创建 Standard bucket `blog-images`。
-2. 在 bucket 的 **Settings > Custom Domains** 中连接 `img.muelsyse.us`。
-3. 给本机 Wrangler 和 GitHub Actions 使用的 API Token 增加 R2 Object Read & Write 权限。
-
-图片必须先在本机同步，再提交被改写的 Markdown。GitHub Actions 无法读取 `/Users/...` 下的本地文件；如果推送的文章仍含本机绝对图片路径，远程构建会明确失败。支持的格式为 PNG、JPEG、WebP、GIF、AVIF 和 SVG。
-
-## 编码规范
-- 全项目使用 UTF-8。
-- 含中文的 Markdown 文档使用 UTF-8 BOM，避免 Windows PowerShell 中出现 mojibake。
-- 构建前自动执行 `npm run check:encoding`。
-
-## 内容目录
-- 博客：`src/content/blog/*.md`
-- 专题：通过博客 frontmatter 的 `series` 字段组织
-- 关于：`src/content/about/profile.md`
-- 站点配置：`src/content/site/settings.md`
+仓库保留的 `functions/` 目录只用于旧 Pages 兼容测试，不参与当前 SSR Worker 部署；实际运行路由在 `src/pages/`。

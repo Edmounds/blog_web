@@ -4,34 +4,37 @@ import test from "node:test";
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("simplified Chinese navigation uses localized labels and collection order", () => {
-  const source = JSON.parse(read("src/i18n/source.json"));
-  const localizedContent = read("src/lib/localized-content.ts");
-
-  assert.deepEqual(source.site.nav, {
-    home: "首页",
-    blog: "博客",
-    art: "收藏",
-    music: "专辑",
-    book: "书籍",
-    screen: "影视",
-    film: "电影",
-    series: "剧集",
-    anime: "番剧",
-    about: "关于",
-  });
-  assert.ok(localizedContent.indexOf("messages.nav.about") < localizedContent.indexOf("messages.nav.art"));
-  assert.match(localizedContent, /messages\.nav\.book[\s\S]*messages\.nav\.music[\s\S]*messages\.nav\.screen/);
+test("primary navigation uses fixed English labels and Life collection order", () => {
+  const header = read("src/components/site/Header.astro");
+  assert.match(header, /About/);
+  assert.match(header, /Blog/);
+  assert.match(header, /Note/);
+  assert.match(header, /Project/);
+  assert.match(header, /Life/);
+  assert.match(header, /Books[\s\S]*Music[\s\S]*Screen/);
 });
 
-test("SPA canvas contains only home, blogs, and about", () => {
+test("SPA canvas contains home, about, blog, note, and project", () => {
   const layout = read("src/layouts/SpaLayout.astro");
-
-  assert.match(layout, /width: 300vw/);
+  assert.match(layout, /width: 500vw/);
   assert.match(layout, /data-path="\/"/);
-  assert.match(layout, /data-path="\/blogs\/"/);
   assert.match(layout, /data-path="\/about\/"/);
+  assert.match(layout, /data-path="\/blog\/"/);
+  assert.match(layout, /data-path="\/note\/"/);
+  assert.match(layout, /data-path="\/project\/"/);
   assert.doesNotMatch(layout, /ArtSection|data-path="\/art\//);
+});
+
+test("Life pages prefetch primary canvas routes and canvas entries are prerendered", () => {
+  const header = read("src/components/site/Header.astro");
+  assert.match(header, /data-primary-route data-astro-prefetch="viewport"/);
+
+  for (const route of ["blog", "note", "project"]) {
+    assert.match(read(`src/pages/${route}/index.astro`), /export const prerender = true/);
+    const localized = read(`src/pages/[locale]/${route}/index.astro`);
+    assert.match(localized, /export const prerender = true/);
+    assert.match(localized, /getStaticPaths/);
+  }
 });
 
 test("collection routes are standalone and old movie route is gone", () => {
@@ -41,8 +44,7 @@ test("collection routes are standalone and old movie route is gone", () => {
     assert.match(page, /ArtSection/);
     assert.doesNotMatch(page, /SpaLayout/);
   }
-
   const localizedRoute = read("src/pages/[locale]/art/[type]/index.astro");
   assert.match(localizedRoute, /\["music", "book", "screen"\]/);
-  assert.doesNotMatch(localizedRoute, /"movie"/);
+  assert.doesNotMatch(localizedRoute, /Astro\.params\.type as "movie"/);
 });

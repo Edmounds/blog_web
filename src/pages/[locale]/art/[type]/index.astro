@@ -1,22 +1,24 @@
 ---
 import ArtSection from "../../../../components/sections/ArtSection.astro";
 import BaseLayout from "../../../../layouts/BaseLayout.astro";
-import { defaultLocale, localeDefinitions, type Locale } from "../../../../lib/i18n";
+import { getPublicArtItems, type ArtType } from "../../../../lib/art";
+import { type Locale } from "../../../../lib/i18n";
 import { getLocalizedSite } from "../../../../lib/localized-content";
+import { getRuntimeEnv } from "../../../../lib/runtime";
 
-export const prerender = true;
-export function getStaticPaths() {
-  const types = ["music", "book", "screen"];
-  return localeDefinitions.filter((item) => item.code !== defaultLocale).flatMap((item) =>
-    types.map((type) => ({ params: { locale: item.path, type } })),
-  );
-}
+export const prerender = false;
 const locale = Astro.params.locale as Locale;
 const type = Astro.params.type as "music" | "book" | "screen";
+if (!["zh-TW", "en", "ja"].includes(locale) || !["music", "book", "screen"].includes(type)) {
+  return Astro.redirect("/", 302);
+}
 const site = await getLocalizedSite(locale);
 const title = site.labels[type];
 const description = site.page[`${type}Description`];
+const types: ArtType[] = type === "screen" ? ["movie", "series", "anime"] : [type];
+const items = await getPublicArtItems(getRuntimeEnv().DB, locale, types);
+Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=300");
 ---
 <BaseLayout title={title} description={description} currentPath={`/${Astro.params.locale}/art/${type}/`} locale={locale}>
-  <ArtSection type={type} locale={locale} />
+  <ArtSection type={type} items={items} locale={locale} />
 </BaseLayout>

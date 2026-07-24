@@ -5,6 +5,12 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import tailwindcss from "@tailwindcss/vite";
 import cloudflare from "@astrojs/cloudflare";
+import mdx from "@astrojs/mdx";
+import { unified } from "@astrojs/markdown-remark";
+import sitemap from "@astrojs/sitemap";
+import rehypeKatex from "rehype-katex";
+import remarkDirective from "remark-directive";
+import remarkMath from "remark-math";
 
 const buildId = process.env.PUBLIC_BUILD_ID ?? `local-${Date.now()}`;
 
@@ -24,13 +30,23 @@ const deploymentVersion = {
 
 // https://astro.build/config
 export default defineConfig({
+  site: "https://blog.muelsyse.us",
   output: 'server',
   adapter: cloudflare({
-    platformProxy: {
-      enabled: true,
-    },
+    imageService: "compile",
+    configPath: "./wrangler.astro.jsonc",
   }),
-  integrations: [deploymentVersion, react()],
+  integrations: [deploymentVersion, react(), mdx(), sitemap()],
+  markdown: {
+    shikiConfig: {
+      themes: { light: "github-light", dark: "github-dark" },
+      defaultColor: false,
+    },
+    processor: unified({
+      remarkPlugins: [remarkMath, remarkDirective],
+      rehypePlugins: [rehypeKatex],
+    }),
+  },
   vite: {
     plugins: [tailwindcss()],
     define: {

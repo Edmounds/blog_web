@@ -1,0 +1,101 @@
+---
+import { getLocalizedContentSections, getLocalizedSite } from "../../lib/localized-content";
+import type { ContentSection as Section } from "../../lib/content";
+import type { Locale } from "../../lib/i18n";
+import { toArchivePostSections } from "../../lib/view-models";
+
+interface Props {
+  section: Section;
+  locale?: Locale;
+}
+
+const { section, locale = "zh-CN" } = Astro.props;
+const site = await getLocalizedSite(locale);
+const sourceSections = await getLocalizedContentSections(locale, section);
+const sections = toArchivePostSections(sourceSections, {
+  publishedLabel: site.copy.blogMetaPublished,
+  readLabel: site.copy.blogMetaRead,
+  readArticleLabel: site.copy.blogReadArticle,
+}, locale, section);
+const title = section[0].toUpperCase() + section.slice(1);
+const empty = `No ${section}s published yet.`;
+---
+
+<div class="content-listing app-container">
+  <header class="content-listing__header">
+    <h1>{title}</h1>
+  </header>
+
+  {sections.length === 0 ? (
+    <p class="content-listing__empty" role="status">{empty}</p>
+  ) : (
+    <div class="content-timeline">
+      {sections.map((group) => (
+        <section class="content-timeline__group" aria-labelledby={`${section}-${group.year}`}>
+          <h2 id={`${section}-${group.year}`}>{group.year}</h2>
+          <ol>
+            {group.posts.map((post) => (
+              <li>
+                <time>{post.dateLabel}</time>
+                <a href={post.href}>
+                  <span>{post.title}</span>
+                  <span aria-hidden="true">-&gt;</span>
+                </a>
+                <p>{post.summary}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))}
+    </div>
+  )}
+</div>
+
+<style>
+  .content-listing {
+    min-height: calc(100vh - 5rem);
+    padding-block: clamp(5rem, 10vh, 8rem) 5rem;
+  }
+  .content-listing__header {
+    max-width: 58rem;
+    margin-bottom: clamp(3rem, 7vw, 6rem);
+  }
+  .content-listing__header h1 {
+    margin: 0;
+    color: transparent;
+    font-size: clamp(3.2rem, 8vw, 8rem);
+    line-height: 0.94;
+    -webkit-text-stroke: 1.3px var(--foreground);
+  }
+  .content-listing__empty { color: var(--text-muted); }
+  .content-timeline { max-width: 72rem; }
+  .content-timeline__group {
+    display: grid;
+    grid-template-columns: minmax(4.5rem, 8rem) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 4rem);
+    padding-block: 1.5rem;
+    border-top: 1px solid var(--border-soft);
+  }
+  .content-timeline__group h2 {
+    margin: 0;
+    color: transparent;
+    font-size: var(--type-xl);
+    -webkit-text-stroke: 1px var(--foreground);
+  }
+  .content-timeline ol { margin: 0; padding: 0; list-style: none; }
+  .content-timeline li {
+    display: grid;
+    grid-template-columns: 6rem minmax(0, 1fr);
+    gap: 0.35rem 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .content-timeline time { color: var(--text-faint); font-family: var(--font-mono); font-size: var(--type-xs); }
+  .content-timeline a { display: flex; justify-content: space-between; gap: 1rem; color: var(--foreground); font-weight: 600; text-decoration: none; }
+  .content-timeline p { grid-column: 2; margin: 0; color: var(--text-muted); font-size: var(--type-sm); }
+  @media (max-width: 40rem) {
+    .content-timeline__group { grid-template-columns: 1fr; }
+    .content-timeline li { grid-template-columns: 1fr; }
+    .content-timeline p { grid-column: auto; }
+  }
+</style>

@@ -1,5 +1,5 @@
 ---
-import type { ArtItem } from "../../lib/artData";
+import type { ArtItem } from "../../lib/art";
 
 export interface Props {
   item: ArtItem;
@@ -8,19 +8,18 @@ export interface Props {
 const { item } = Astro.props;
 ---
 
-<div class="relative w-full aspect-[2/3] overflow-hidden rounded-[var(--radius-lg)] bg-[var(--surface-tile-dark)] group border border-[var(--border-soft)]">
-  <img 
-    src={item.cover} 
-    alt={item.title} 
-    class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
-    loading="lazy"
-  />
-  <div class="absolute inset-0 bg-gradient-to-t from-[rgba(0,0,0,0.8)] via-[rgba(0,0,0,0.2)] to-transparent opacity-90 transition-opacity duration-300 pointer-events-none"></div>
-  <div class="absolute bottom-0 left-0 w-full p-4 flex flex-col justify-end">
-    <h3 class="text-white font-semibold text-[17px] leading-tight mb-1">{item.title}</h3>
-    <div class="flex flex-col text-white/80 text-[14px]">
-      <span>{item.creator}</span>
-      {item.extra && <span class="text-white/60 text-[12px] mt-0.5">{item.extra}</span>}
-    </div>
+<article class="group flex flex-col gap-3">
+  <div class="aspect-[2/3] w-full overflow-hidden rounded-[var(--radius-control)] border border-[var(--border-soft)] bg-[var(--surface-soft)]">
+    <img
+      src={item.cover}
+      alt={item.title}
+      class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.025]"
+      loading="lazy"
+    />
   </div>
-</div>
+  <div class="flex flex-col gap-1">
+    <h3 class="text-[var(--type-base)] font-semibold leading-tight text-[var(--foreground)]">{item.title}</h3>
+    <p class="text-sm text-[var(--text-muted)]">{item.creator}</p>
+    {item.extra && <p class="text-xs text-[var(--text-faint)]">{item.extra}</p>}
+  </div>
+</article>

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import type { AdminComment } from "@/lib/comments";
 
 interface PostOption {
-  slug: string;
+  contentId: string;
   title: string;
 }
 
@@ -16,7 +16,7 @@ interface CommentsAdminProps {
 type Status = "all" | "visible" | "hidden";
 
 export default function CommentsAdmin({ posts }: CommentsAdminProps) {
-  const [slug, setSlug] = useState(posts[0]?.slug ?? "");
+  const [contentId, setContentId] = useState(posts[0]?.contentId ?? "");
   const [status, setStatus] = useState<Status>("all");
   const [items, setItems] = useState<AdminComment[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
@@ -25,14 +25,14 @@ export default function CommentsAdmin({ posts }: CommentsAdminProps) {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (slug) void load(true);
-  }, [slug, status]);
+    if (contentId) void load(true);
+  }, [contentId, status]);
 
   async function load(reset: boolean) {
     setIsLoading(true);
     setMessage("");
     try {
-      const query = new URLSearchParams({ slug, status });
+      const query = new URLSearchParams({ contentId, status });
       if (!reset && nextCursor) query.set("cursor", nextCursor);
       const page = await fetchJson<{ items: AdminComment[]; nextCursor: string | null }>(`/api/admin/comments?${query}`);
       setItems((current) => reset ? page.items : [...current, ...page.items]);
@@ -70,14 +70,14 @@ export default function CommentsAdmin({ posts }: CommentsAdminProps) {
     <div>
       <div className="grid gap-5 border-b border-[var(--border-soft)] pb-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
         <div className="space-y-2">
-          <label htmlFor="admin-post" className="text-sm font-medium text-[var(--text-main)]">文章</label>
+          <label htmlFor="admin-post" className="text-sm font-medium text-[var(--text-main)]">内容</label>
           <select
             id="admin-post"
-            value={slug}
-            onChange={(event) => setSlug(event.target.value)}
+            value={contentId}
+            onChange={(event) => setContentId(event.target.value)}
             className="h-11 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-base)] px-3 text-sm text-[var(--text-main)] outline-none focus:border-[var(--color-action)]"
           >
-            {posts.map((post) => <option key={post.slug} value={post.slug}>{post.title}</option>)}
+            {posts.map((post) => <option key={post.contentId} value={post.contentId}>{post.title}</option>)}
           </select>
         </div>
 
