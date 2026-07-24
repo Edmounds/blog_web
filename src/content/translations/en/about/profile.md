@@ -3,7 +3,7 @@ name: Lust4ev3r
 city: Chongqing, China
 major: Robotics Engineering
 motto: Keep it Simple,Stupid
-portrait: /images/content/about/profile.png
+portrait: /images/content/about/profile-8646bdb863b8.png
 ---
 
 ## About Me

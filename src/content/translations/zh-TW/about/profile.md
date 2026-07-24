@@ -3,7 +3,7 @@ name: Lust4ev3r
 city: 中國重慶
 major: 機器人工程
 motto: Keep it Simple,Stupid
-portrait: /images/content/about/profile.png
+portrait: /images/content/about/profile-8646bdb863b8.png
 ---
 
 ## 關於我

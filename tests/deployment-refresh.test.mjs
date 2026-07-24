@@ -49,3 +49,11 @@ test("public assets are immutable and public pages have security headers", () =>
   assert.match(headers, /Strict-Transport-Security:/);
   assert.match(headers, /X-Frame-Options: DENY/);
 });
+
+test("the replaceable profile portrait uses a content-versioned URL", () => {
+  const sourceProfile = read("src/content/about/profile.md");
+  const layout = read("src/layouts/BaseLayout.astro");
+
+  assert.match(sourceProfile, /portrait: \/images\/content\/about\/profile-[a-f0-9]{12}\.png/);
+  assert.match(layout, /imageUrl = "\/images\/content\/about\/profile-[a-f0-9]{12}\.png"/);
+});
