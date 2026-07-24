@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { searchArtCandidates, searchAppleMusic, searchBooks, searchDoubanBooks, searchTmdb } from "../functions/_shared/art-search.js";
+import { searchArtCandidates, searchAppleMusic, searchBooks, searchDeezerMusic, searchDoubanBooks, searchMusic, searchTmdb } from "../functions/_shared/art-search.js";
 
 test("book ISBN search prefers an exact Douban result", async () => {
   const calls = [];
@@ -61,6 +61,45 @@ test("provider mappings retain metadata-only candidates without covers", async (
 test("Apple Music maps albums and upgrades artwork", async () => {
   const items = await searchAppleMusic({ query: "Abbey Road", fetchImpl: async () => response({ results: [{ collectionId: 3, collectionName: "Abbey Road", artistName: "The Beatles", releaseDate: "1969-09-26T00:00:00Z", trackCount: 17, artworkUrl100: "https://apple.test/100x100bb.jpg" }] }) });
   assert.deepEqual(items[0], { source: "apple_music", sourceId: "3", title: "Abbey Road", creator: "The Beatles", originalTitle: "Abbey Road", releaseDate: "1969-09-26", description: "17 tracks", coverUrl: "https://apple.test/1000x1000bb.jpg" });
+});
+
+test("Deezer maps albums with selectable covers", async () => {
+  const items = await searchDeezerMusic({
+    query: "Abbey Road",
+    creator: "The Beatles",
+    fetchImpl: async () => response({ data: [{ id: 12, title: "Abbey Road (Remastered)", artist: { name: "The Beatles" }, release_date: "1969-09-26", nb_tracks: 17, cover_xl: "https://deezer.test/cover.jpg" }] }),
+  });
+  assert.deepEqual(items[0], { source: "deezer_music", sourceId: "12", title: "Abbey Road (Remastered)", creator: "The Beatles", originalTitle: "Abbey Road (Remastered)", releaseDate: "1969-09-26", description: "17 tracks", coverUrl: "https://deezer.test/cover.jpg" });
+});
+
+test("music search falls back to Deezer when Apple Music fails", async () => {
+  const calls = [];
+  const items = await searchMusic({
+    query: "Abbey Road",
+    creator: "The Beatles",
+    fetchImpl: async (url) => {
+      const value = String(url); calls.push(value);
+      if (value.startsWith("https://itunes.apple.com")) return new Response("upstream failed", { status: 502 });
+      return response({ data: [{ id: 12, title: "Abbey Road", artist: { name: "The Beatles" }, nb_tracks: 17, cover_xl: "https://deezer.test/cover.jpg" }] });
+    },
+  });
+  assert.deepEqual(items.map((item) => item.source), ["deezer_music"]);
+  assert.match(calls[1], /^https:\/\/api\.deezer\.com\/search\/album\?/);
+  assert.match(calls[1], /q=Abbey\+Road\+The\+Beatles/);
+});
+
+test("music search does not call the backup when Apple Music succeeds", async () => {
+  const calls = [];
+  const items = await searchMusic({
+    query: "Abbey Road",
+    creator: "The Beatles",
+    fetchImpl: async (url) => {
+      calls.push(String(url));
+      return response({ results: [{ collectionId: 3, collectionName: "Abbey Road", artistName: "The Beatles", artworkUrl100: "https://apple.test/100x100bb.jpg" }] });
+    },
+  });
+  assert.deepEqual(items.map((item) => item.source), ["apple_music"]);
+  assert.equal(calls.length, 1);
 });
 
 test("TMDB maps movie and TV search without inferring series versus anime", async () => {

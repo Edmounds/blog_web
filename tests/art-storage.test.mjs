@@ -16,6 +16,15 @@ test("art input validates types, dates, translations, and required covers", () =
   assert.equal(validateArtItemInput({ ...result.value, type: "game" }).ok, false);
 });
 
+test("art input accepts Deezer album candidates", () => {
+  const result = validateArtItemInput({
+    type: "music", source: "deezer_music", sourceId: "12", isbn: "", originalTitle: "Abbey Road", releaseDate: "1969-09-26",
+    collectedOn: "2026-07-24", isVisible: true, cover: { kind: "url", url: "https://deezer.test/cover.jpg" },
+    translations: { "zh-CN": { title: "Abbey Road", creator: "The Beatles", extra: "" } },
+  });
+  assert.equal(result.ok, true);
+});
+
 test("public localization falls back to simplified Chinese", () => {
   const item = { id: "1", type: "book", coverUrl: "/media/art/1/a.jpg", translations: { "zh-CN": { title: "标题", creator: "作者", extra: "备注" } } };
   assert.deepEqual(localizeArtItems([item], "ja"), [{ id: "1", type: "book", title: "标题", creator: "作者", extra: "备注", cover: "/media/art/1/a.jpg" }]);

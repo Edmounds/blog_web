@@ -1,11 +1,12 @@
 const APPLE_SEARCH_URL = "https://itunes.apple.com/search";
+const DEEZER_SEARCH_URL = "https://api.deezer.com/search/album";
 const DOUBAN_BOOK_SEARCH_URL = "https://search.douban.com/book/subject_search";
 const TMDB_URL = "https://api.themoviedb.org/3";
 const TMDB_IMAGE_URL = "https://image.tmdb.org/t/p/w780";
 
 export async function searchArtCandidates({ type, query, creator = "", isbn = "", env = {}, fetchImpl = fetch }) {
   if (type === "book") return searchBooks({ query, creator, isbn, fetchImpl });
-  if (type === "music") return searchAppleMusic({ query, creator, fetchImpl });
+  if (type === "music") return searchMusic({ query, creator, fetchImpl });
   if (["movie", "series", "anime"].includes(type)) return searchTmdb({ type, query, env, fetchImpl });
   return [];
 }
@@ -39,6 +40,27 @@ export async function searchAppleMusic({ query, creator = "", fetchImpl = fetch 
     originalTitle: entry.collectionName ?? "", releaseDate: normalizeDate(entry.releaseDate),
     description: entry.trackCount ? `${entry.trackCount} tracks` : "", coverUrl: upgradeAppleArtwork(entry.artworkUrl100 ?? ""),
   })).filter((candidate) => candidate.title && candidate.sourceId);
+}
+
+export async function searchDeezerMusic({ query, creator = "", fetchImpl = fetch }) {
+  const url = new URL(DEEZER_SEARCH_URL);
+  url.search = new URLSearchParams({ q: [query, creator].filter(Boolean).join(" "), limit: "30" }).toString();
+  const payload = await fetchJson(url, fetchImpl);
+  return (payload.data ?? []).map((entry) => ({
+    source: "deezer_music", sourceId: String(entry.id ?? ""), title: entry.title ?? "", creator: entry.artist?.name ?? "",
+    originalTitle: entry.title ?? "", releaseDate: normalizeDate(entry.release_date),
+    description: entry.nb_tracks ? `${entry.nb_tracks} tracks` : "", coverUrl: entry.cover_xl ?? entry.cover_big ?? "",
+  })).filter((candidate) => candidate.title && candidate.sourceId);
+}
+
+export async function searchMusic({ query, creator = "", fetchImpl = fetch }) {
+  try {
+    const apple = await searchAppleMusic({ query, creator, fetchImpl });
+    if (apple.length) return apple;
+  } catch {
+    // Fall through to the backup provider.
+  }
+  return searchDeezerMusic({ query, creator, fetchImpl });
 }
 
 export async function searchTmdb({ type, query, env = {}, fetchImpl = fetch }) {
@@ -76,6 +98,7 @@ function validCandidate(candidate) {
 function providerForUrl(url) {
   const hostname = new URL(url).hostname;
   if (hostname === "itunes.apple.com") return "apple";
+  if (hostname === "api.deezer.com") return "deezer";
   if (hostname === "search.douban.com") return "douban_books";
   if (hostname === "api.themoviedb.org") return "tmdb";
   return "unknown";
