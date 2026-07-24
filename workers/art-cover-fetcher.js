@@ -3,13 +3,14 @@ const MAX_BYTES = 10 * 1024 * 1024;
 
 export default {
   async fetch(request) {
-    const url = new URL(request.url);
+    const url = targetUrl(request);
     if (url.protocol !== "https:") return new Response("HTTPS required", { status: 400 });
     const addresses = await resolveAddresses(url.hostname);
     if (!addresses.length || addresses.some(isPrivateAddress)) return new Response("Private address rejected", { status: 403 });
     const headers = new Headers(request.headers);
+    headers.delete("x-art-cover-url");
     if (url.hostname.endsWith(".doubanio.com")) headers.set("referer", "https://book.douban.com/");
-    const response = await fetch(new Request(request, { headers }), { redirect: "manual" });
+    const response = await fetch(new Request(url, { headers }), { redirect: "manual" });
     if ([301, 302, 303, 307, 308].includes(response.status)) {
       const headers = new Headers();
       const location = response.headers.get("location");
@@ -18,11 +19,15 @@ export default {
     }
     const mime = response.headers.get("content-type")?.split(";", 1)[0]?.trim().toLowerCase();
     const length = Number(response.headers.get("content-length") ?? 0);
-    console.log(JSON.stringify({ upstreamHost: url.hostname, upstreamStatus: response.status, upstreamType: mime ?? "", upstreamLength: length }));
     if (!response.ok || !mime || !ALLOWED_TYPES.has(mime) || length > MAX_BYTES) return new Response("Invalid image response", { status: 400 });
     return new Response(limitBody(response.body, MAX_BYTES), { status: response.status, headers: { "content-type": mime, ...(length ? { "content-length": String(length) } : {}) } });
   },
 };
+
+function targetUrl(request) {
+  const boundTarget = request.headers.get("x-art-cover-url");
+  return new URL(boundTarget || request.url);
+}
 
 function limitBody(body, limit) {
   if (!body) return null;

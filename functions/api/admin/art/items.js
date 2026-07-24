@@ -37,5 +37,9 @@ export async function onRequestPost({ env, request }) {
 
 function coverFetch(env) {
   if (typeof env?.ART_COVER_FETCHER?.fetch !== "function") return fetch;
-  return async (url, init) => env.ART_COVER_FETCHER.fetch(new Request(url, init));
+  return async (url, init) => {
+    const request = new Request("https://cover-fetcher.internal/", init);
+    request.headers.set("x-art-cover-url", String(url));
+    return env.ART_COVER_FETCHER.fetch(request);
+  };
 }

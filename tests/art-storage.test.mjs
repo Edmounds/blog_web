@@ -69,5 +69,27 @@ test("admin cover preview serves remote images through the same-origin API", asy
   assert.equal(response.status, 200);
   assert.equal(response.headers.get("content-type"), "image/png");
   assert.equal(response.headers.get("cache-control"), "private, no-store");
-  assert.equal(new URL(forwardedRequest.url).hostname, "image.tmdb.org");
+  assert.equal(new URL(forwardedRequest.url).hostname, "cover-fetcher.internal");
+  assert.equal(forwardedRequest.headers.get("x-art-cover-url"), "https://image.tmdb.org/t/p/w780/poster.jpg");
+});
+
+test("admin cover preview passes the target URL explicitly through the service binding", async () => {
+  let forwardedRequest;
+  const response = await previewCover({
+    env: {
+      ART_COVER_FETCHER: {
+        async fetch(request) {
+          forwardedRequest = request;
+          return new Response(new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0, 0, 0, 0]), {
+            headers: { "content-type": "image/png" },
+          });
+        },
+      },
+    },
+    request: new Request("https://blog.muelsyse.us/api/admin/art/cover-preview?url=https%3A%2F%2Fimg9.doubanio.com%2Fview%2Fsubject%2Fl%2Fpublic%2Fs30014644.jpg"),
+  });
+
+  assert.equal(response.status, 200);
+  assert.equal(new URL(forwardedRequest.url).hostname, "cover-fetcher.internal");
+  assert.equal(forwardedRequest.headers.get("x-art-cover-url"), "https://img9.doubanio.com/view/subject/l/public/s30014644.jpg");
 });

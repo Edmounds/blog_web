@@ -67,6 +67,8 @@ test("cover-fetcher validates both IPv4 and IPv6 DNS answers", () => {
 
 test("cover-fetcher supplies Douban's required image referer", () => {
   const source = read("workers/art-cover-fetcher.js");
+  assert.match(source, /request\.headers\.get\("x-art-cover-url"\)/);
+  assert.match(source, /fetch\(new Request\(url, \{ headers \}\)/);
   assert.match(source, /hostname\.endsWith\("\.doubanio\.com"\)/);
   assert.match(source, /headers\.set\("referer", "https:\/\/book\.douban\.com\/"\)/);
 });
