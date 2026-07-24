@@ -8,7 +8,7 @@ import { getRuntimeEnv } from "../../../lib/runtime";
 export const prerender = false;
 const site = await getLocalizedSite("zh-CN");
 const items = await getPublicArtItems(getRuntimeEnv().DB, "zh-CN", ["book"]);
-Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=300");
+Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=0, must-revalidate");
 ---
 <BaseLayout title={site.labels.book} description={site.page.bookDescription} currentPath="/art/book/">
   <ArtSection type="book" items={items} />

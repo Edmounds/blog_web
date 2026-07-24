@@ -20,7 +20,7 @@ const description = site.page[`${type}Description`];
 const types: ArtType[] = type === "screen" ? ["movie", "series", "anime"] : type === "game" ? [] : [type];
 const gameItems = type === "game" ? await getPublicGameItems(getRuntimeEnv().DB) : [];
 const artItems = type === "game" ? [] : await getPublicArtItems(getRuntimeEnv().DB, locale, types);
-Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=300");
+Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=0, must-revalidate");
 ---
 <BaseLayout title={title} description={description} currentPath={`/${Astro.params.locale}/art/${type}/`} locale={locale}>
   {type === "game" ? <GameSection items={gameItems} locale={locale} /> : <ArtSection type={type} items={artItems} locale={locale} />}

@@ -6,15 +6,16 @@ import preferredProxy from "../workers/blog-preferred-proxy.js";
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("public art routes are dynamic and use minute CDN caching", () => {
+test("public art routes are dynamic and revalidate on every request", () => {
   for (const file of ["src/pages/art/book/index.astro", "src/pages/art/music/index.astro", "src/pages/art/screen/index.astro", "src/pages/[locale]/art/[type]/index.astro"]) {
     const source = read(file);
     assert.match(source, /prerender = false/);
     assert.match(source, /getPublicArtItems/);
-    assert.match(source, /s-maxage=60/);
+    assert.match(source, /s-maxage=0, must-revalidate/);
+    assert.doesNotMatch(source, /stale-while-revalidate/);
   }
   assert.match(read("src/layouts/BaseLayout.astro"), /if \(!Astro\.response\.headers\.has\("Cache-Control"\)\)/);
-  assert.match(read("public/_headers"), /\/art\/\*[\s\S]*s-maxage=60/);
+  assert.match(read("public/_headers"), /\/art\/\*[\s\S]*s-maxage=0, must-revalidate/);
 });
 
 test("admin art and API paths are covered by the generic Access boundary", () => {
