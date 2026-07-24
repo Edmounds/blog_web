@@ -1,11 +1,14 @@
-import { error, json, readJson, requireSameOriginJson } from "../../../_shared/art.js";
+import { ART_TRANSLATED_TYPES, error, json, normalizeArtType, readJson, requireSameOriginJson } from "../../../_shared/art.js";
 
 const TARGETS = { "zh-TW": "ZH-TW", en: "EN", ja: "JA" };
+const TRANSLATED_TYPES = new Set(ART_TRANSLATED_TYPES);
 
 export async function onRequestPost({ env, request }) {
   try {
     requireSameOriginJson(request);
     const body = await readJson(request);
+    const type = normalizeArtType(body?.type);
+    if (!type || !TRANSLATED_TYPES.has(type)) return error(400, "INVALID_TRANSLATION_TYPE", "仅书籍和电影支持自动翻译。");
     const title = text(body?.title, 200);
     const creator = text(body?.creator, 200);
     const extra = text(body?.extra, 500, true);

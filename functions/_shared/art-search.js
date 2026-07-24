@@ -1,33 +1,62 @@
 const DEEZER_URL = "https://api.deezer.com";
-const DOUBAN_BOOK_SEARCH_URL = "https://search.douban.com/book/subject_search";
+const DOUBAN_BOOK_SEARCH_URL = "https://www.douban.com/search";
+const DOUBAN_BOOK_URL = "https://book.douban.com";
+const GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1/volumes";
 const TMDB_URL = "https://api.themoviedb.org/3";
 const TMDB_IMAGE_URL = "https://image.tmdb.org/t/p/w780";
+const BOOK_CACHE_SECONDS = 7 * 24 * 60 * 60;
 
-export async function searchArtCandidates({ type, query, creator = "", isbn = "", env = {}, fetchImpl = fetch }) {
-  if (type === "book") return searchBooks({ query, creator, isbn, fetchImpl });
+export async function searchArtCandidates({ type, query, creator = "", isbn = "", env = {}, fetchImpl = fetch, cache }) {
+  if (type === "book") return searchBooks({ query, creator, isbn, env, fetchImpl, cache });
   if (type === "music") return searchMusic({ query, fetchImpl });
   if (["movie", "series", "anime"].includes(type)) return searchTmdb({ type, query, env, fetchImpl });
   return [];
 }
 
-export async function searchBooks({ query, creator = "", isbn = "", fetchImpl = fetch }) {
-  return rankBookCandidates(await searchDoubanBooks({ query, creator, isbn, fetchImpl }), { query, creator, isbn });
+export async function searchBooks({ query, creator = "", isbn = "", env = {}, fetchImpl = fetch, cache }) {
+  const key = bookCacheKey({ query, creator, isbn });
+  const cached = await readBookCache(cache, key);
+  if (cached) return cached;
+
+  let candidates;
+  try {
+    candidates = isbn
+      ? await searchDoubanBookByIsbn({ isbn, fetchImpl })
+      : await searchDoubanBooks({ query, creator, fetchImpl });
+  } catch (error) {
+    if (!isRecoverableBookProviderError(error)) throw error;
+    candidates = await searchGoogleBooks({ query, creator, isbn, env, fetchImpl });
+  }
+  let items = rankBookCandidates(candidates, { query, creator, isbn });
+  if (!items.length && !candidates.some((candidate) => candidate.source === "google_books")) {
+    items = rankBookCandidates(await searchGoogleBooks({ query, creator, isbn, env, fetchImpl }), { query, creator, isbn });
+  }
+  await writeBookCache(cache, key, items);
+  return items;
 }
 
 export async function searchDoubanBooks({ query, creator = "", isbn = "", fetchImpl = fetch }) {
+  if (isbn) return searchDoubanBookByIsbn({ isbn, fetchImpl });
   const url = new URL(DOUBAN_BOOK_SEARCH_URL);
-  url.search = new URLSearchParams({ search_text: isbn || [query, creator].filter(Boolean).join(" ") }).toString();
-  const response = await fetchImpl(url, {
-    headers: { accept: "text/html", "user-agent": "Mozilla/5.0 (compatible; blog-art-search/1.0)" },
-    signal: AbortSignal.timeout(8_000),
-  });
-  if (!response.ok) throw providerError(response, "douban_books");
-  const payload = parseDoubanSearch(await response.text());
-  return (payload.items ?? []).map((entry) => ({
-    source: "douban_books", sourceId: String(entry.id ?? ""), title: entry.title ?? "", creator: doubanCreator(entry.abstract ?? ""),
-    originalTitle: entry.title ?? "", releaseDate: doubanDate(entry.abstract ?? ""), isbn, description: entry.abstract ?? "",
-    coverUrl: upgradeDoubanArtwork(entry.cover_url ?? ""),
-  })).filter(validCandidate);
+  url.search = new URLSearchParams({ cat: "1001", q: [query, creator].filter(Boolean).join(" ") }).toString();
+  const response = await fetchHtml(url, fetchImpl, "douban_books");
+  const html = await response.text();
+  assertDoubanSearchAvailable(html);
+  return parseDoubanGeneralSearch(html);
+}
+
+export async function searchDoubanBookByIsbn({ isbn, fetchImpl = fetch }) {
+  const response = await fetchHtml(`${DOUBAN_BOOK_URL}/isbn/${encodeURIComponent(isbn)}/`, fetchImpl, "douban_books");
+  const candidate = parseDoubanBookDetail(await response.text(), response.url, isbn);
+  return candidate ? [candidate] : [];
+}
+
+export async function searchGoogleBooks({ query, creator = "", isbn = "", env = {}, fetchImpl = fetch }) {
+  const url = new URL(GOOGLE_BOOKS_URL);
+  const wanted = isbn ? `isbn:${isbn}` : [`intitle:${query}`, creator ? `inauthor:${creator}` : ""].filter(Boolean).join(" ");
+  url.search = new URLSearchParams({ q: wanted, maxResults: "20", printType: "books", ...(env.GOOGLE_BOOKS_API_KEY ? { key: env.GOOGLE_BOOKS_API_KEY } : {}) }).toString();
+  const payload = await fetchJson(url, fetchImpl);
+  return (payload.items ?? []).map(mapGoogleBook).filter(validCandidate);
 }
 
 export async function searchDeezerMusic({ query, fetchImpl = fetch }) {
@@ -80,6 +109,16 @@ async function fetchJson(url, fetchImpl) {
   return response.json();
 }
 
+async function fetchHtml(url, fetchImpl, provider) {
+  const response = await fetchImpl(url, {
+    headers: { accept: "text/html", "user-agent": "Mozilla/5.0 (compatible; blog-art-search/1.0)" },
+    redirect: "follow",
+    signal: AbortSignal.timeout(8_000),
+  });
+  if (!response.ok) throw providerError(response, provider);
+  return response;
+}
+
 function providerError(response, provider) {
   const error = new Error(`Provider returned HTTP ${response.status}.`);
   error.status = response.status;
@@ -95,9 +134,14 @@ function validCandidate(candidate) {
 function providerForUrl(url) {
   const hostname = new URL(url).hostname;
   if (hostname === "api.deezer.com") return "deezer";
-  if (hostname === "search.douban.com") return "douban_books";
+  if (["www.douban.com", "search.douban.com", "book.douban.com"].includes(hostname)) return "douban_books";
+  if (hostname === "www.googleapis.com") return "google_books";
   if (hostname === "api.themoviedb.org") return "tmdb";
   return "unknown";
+}
+
+function isRecoverableBookProviderError(error) {
+  return error?.provider === "douban_books" || error?.name === "TimeoutError";
 }
 
 function rankBookCandidates(candidates, { query, creator, isbn }) {
@@ -125,10 +169,69 @@ function bookCandidateScore(candidate, { query, creator, normalizedIsbn }) {
   return score;
 }
 
-function parseDoubanSearch(html) {
+function assertDoubanSearchAvailable(html) {
+  if (String(html).includes("你没有权限访问这个页面")) throw doubanRateLimitError();
   const match = String(html).match(/window\.__DATA__\s*=\s*({[\s\S]*?});\s*(?:\n|\r\n?)?\s*window\.__USER__/);
-  if (!match) return { items: [] };
-  try { return JSON.parse(match[1]); } catch { return { items: [] }; }
+  if (!match) return;
+  try {
+    if (JSON.parse(match[1]).error_info) throw doubanRateLimitError();
+  } catch (error) {
+    if (error?.provider === "douban_books") throw error;
+  }
+}
+
+function doubanRateLimitError() {
+  const error = new Error("Douban search is rate limited.");
+  error.status = 429;
+  error.provider = "douban_books";
+  error.retryAfter = "";
+  return error;
+}
+
+function parseDoubanGeneralSearch(html) {
+  const candidates = [];
+  for (const match of String(html).matchAll(/<div class="result">([\s\S]*?)(?=<div class="result">|<div class="result-list-ft">)/g)) {
+    const block = match[1];
+    const sourceId = doubanSubjectId(decodeHtml(block.match(/class="nbg"[^>]+href="([^"]+)"/)?.[1] ?? ""), block);
+    const title = decodeHtml(block.match(/class="nbg"[^>]*title="([^"]*)"/)?.[1] ?? "").trim();
+    const abstract = stripHtml(block.match(/class="subject-cast">([\s\S]*?)<\/span>/)?.[1] ?? "");
+    candidates.push({
+      source: "douban_books", sourceId, title, creator: doubanCreator(abstract), originalTitle: title,
+      releaseDate: doubanDate(abstract), isbn: "", description: stripHtml(block.match(/<div class="content">[\s\S]*?<p>([\s\S]*?)<\/p>/)?.[1] ?? ""),
+      coverUrl: upgradeDoubanArtwork(decodeHtml(block.match(/class="nbg"[\s\S]*?<img[^>]+src="([^"]+)"/)?.[1] ?? "")),
+    });
+  }
+  return candidates.filter(validCandidate);
+}
+
+function parseDoubanBookDetail(html, finalUrl, requestedIsbn) {
+  const sourceId = String(finalUrl || "").match(/\/subject\/(\d+)/)?.[1]
+    ?? String(html).match(/book\.douban\.com\/subject\/(\d+)\//)?.[1]
+    ?? "";
+  const title = stripHtml(String(html).match(/<span property="v:itemreviewed">([\s\S]*?)<\/span>/i)?.[1] ?? "");
+  const info = stripHtml(String(html).match(/<div id="info"[^>]*>([\s\S]*?)<\/div>/i)?.[1] ?? "");
+  const creator = infoField(info, "作者", ["译者", "出版社", "出品方", "出版年", "ISBN", "页数", "定价", "装帧", "原作名", "丛书"])
+    .replace(/^\s*\[[^\]]+\]\s*/, "").trim();
+  const isbn = info.match(/(?:^|\s)ISBN\s*:\s*([0-9Xx-]+)/)?.[1]?.replace(/-/g, "") ?? requestedIsbn;
+  const originalTitle = infoField(info, "原作名", ["丛书"]) || title;
+  const cover = decodeHtml(String(html).match(/<meta property="og:image" content="([^"]+)"/i)?.[1]
+    ?? String(html).match(/id="mainpic"[\s\S]*?<img[^>]+src="([^"]+)"/i)?.[1] ?? "");
+  const description = decodeHtml(String(html).match(/<meta name="description" content="([^"]*)"/i)?.[1] ?? "").trim();
+  const candidate = {
+    source: "douban_books", sourceId, title, creator, originalTitle,
+    releaseDate: infoField(info, "出版年", ["ISBN", "页数", "定价", "装帧", "原作名", "丛书"]),
+    isbn, description, coverUrl: upgradeDoubanArtwork(cover),
+  };
+  return validCandidate(candidate) ? candidate : undefined;
+}
+
+function doubanSubjectId(href, block) {
+  try {
+    const decoded = new URL(href, "https://www.douban.com").searchParams.get("url") ?? href;
+    return decoded.match(/\/subject\/(\d+)/)?.[1] ?? block.match(/(?:sid|subject_id)\s*:\s*['"]?(\d+)/)?.[1] ?? "";
+  } catch {
+    return block.match(/(?:sid|subject_id)\s*:\s*['"]?(\d+)/)?.[1] ?? "";
+  }
 }
 
 function doubanCreator(value) {
@@ -137,6 +240,36 @@ function doubanCreator(value) {
 
 function doubanDate(value) {
   return String(value).match(/(?:^|\/)\s*(\d{4}(?:-\d{1,2})?(?:-\d{1,2})?)\s*(?:\/|$)/)?.[1] ?? "";
+}
+
+function infoField(info, name, nextNames) {
+  const next = nextNames.map(escapeRegExp).join("|");
+  return info.match(new RegExp(`(?:^|\\s)${escapeRegExp(name)}\\s*:\\s*(.*?)(?=\\s+(?:${next})\\s*:|$)`))?.[1]?.trim() ?? "";
+}
+
+function mapGoogleBook(entry) {
+  const info = entry?.volumeInfo ?? {};
+  const identifiers = Array.isArray(info.industryIdentifiers) ? info.industryIdentifiers : [];
+  const isbn = identifiers.find((item) => item?.type === "ISBN_13")?.identifier
+    ?? identifiers.find((item) => item?.type === "ISBN_10")?.identifier
+    ?? "";
+  return {
+    source: "google_books", sourceId: String(entry?.id ?? ""), title: info.title ?? "", creator: Array.isArray(info.authors) ? info.authors.join(" / ") : "",
+    originalTitle: info.title ?? "", releaseDate: info.publishedDate ?? "", isbn, description: info.description ?? "",
+    coverUrl: upgradeGoogleArtwork(info.imageLinks?.extraLarge ?? info.imageLinks?.large ?? info.imageLinks?.thumbnail ?? info.imageLinks?.smallThumbnail ?? ""),
+  };
+}
+
+function stripHtml(value) {
+  return decodeHtml(String(value)).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function decodeHtml(value) {
+  return String(value).replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;|&#x27;/gi, "'").replace(/&nbsp;|&#160;/g, " ");
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function normalizeSearchText(value) {
@@ -152,7 +285,40 @@ function normalizeIsbn(value) {
 }
 
 function upgradeDoubanArtwork(value) {
-  return value.replace("/view/subject/m/", "/view/subject/l/").replace(/^http:/, "https:");
+  return value.replace(/\/view\/subject\/[sm]\//, "/view/subject/l/").replace(/^http:/, "https:");
+}
+
+function upgradeGoogleArtwork(value) {
+  return String(value).replace(/^http:/, "https:").replace(/&zoom=\d+/, "&zoom=2");
+}
+
+function bookCacheKey({ query, creator, isbn }) {
+  const url = new URL("https://book-search-cache.internal/results");
+  if (isbn) url.searchParams.set("isbn", normalizeIsbn(isbn));
+  else {
+    url.searchParams.set("q", normalizeSearchText(query));
+    if (creator) url.searchParams.set("creator", normalizeSearchText(creator));
+  }
+  return new Request(url);
+}
+
+async function readBookCache(cache, key) {
+  if (!cache) return undefined;
+  try {
+    const response = await cache.match(key);
+    return response?.ok ? response.json() : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+async function writeBookCache(cache, key, items) {
+  if (!cache || !items.length) return;
+  try {
+    await cache.put(key, new Response(JSON.stringify(items), {
+      headers: { "content-type": "application/json", "cache-control": `public, max-age=${BOOK_CACHE_SECONDS}` },
+    }));
+  } catch {}
 }
 
 async function searchDeezerAlbums(query, fetchImpl) {

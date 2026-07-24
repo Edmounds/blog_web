@@ -25,9 +25,45 @@ test("art input accepts Deezer album candidates", () => {
   const result = validateArtItemInput({
     type: "music", source: "deezer_music", sourceId: "12", isbn: "", originalTitle: "Abbey Road", releaseDate: "1969-09-26",
     collectedOn: "2026-07-24", isVisible: true, cover: { kind: "url", url: "https://deezer.test/cover.jpg" },
-    translations: { "zh-CN": { title: "Abbey Road", creator: "The Beatles", extra: "" } },
+    translations: {
+      "zh-CN": { title: "Abbey Road", creator: "The Beatles", extra: "" },
+      en: { title: "Abbey Road", creator: "The Beatles", extra: "Classic rock" },
+      ja: { title: "アビイ・ロード", creator: "ビートルズ", extra: "" },
+    },
   });
   assert.equal(result.ok, true);
+  assert.deepEqual(Object.keys(result.value.translations), ["zh-CN"]);
+});
+
+test("books and movies retain all supported translation locales", () => {
+  for (const type of ["book", "movie"]) {
+    const result = validateArtItemInput({
+      type, source: type === "book" ? "apple_books" : "tmdb", sourceId: "12", isbn: "", originalTitle: "标题", releaseDate: "2026",
+      collectedOn: "2026-07-24", isVisible: true, cover: { kind: "url", url: "https://example.com/cover.jpg" },
+      translations: {
+        "zh-CN": { title: "标题", creator: "作者", extra: "备注" },
+        "zh-TW": { title: "標題", creator: "作者", extra: "備註" },
+        en: { title: "Title", creator: "Creator", extra: "Note" },
+        ja: { title: "タイトル", creator: "作者", extra: "メモ" },
+      },
+    });
+    assert.equal(result.ok, true);
+    assert.deepEqual(Object.keys(result.value.translations), ["zh-CN", "zh-TW", "en", "ja"]);
+  }
+});
+
+test("partial art input filters translations using the current or replacement type", () => {
+  const translations = {
+    "zh-CN": { title: "标题", creator: "作者", extra: "备注" },
+    en: { title: "Title", creator: "Creator", extra: "Note" },
+  };
+  const currentMusic = validateArtItemInput({ translations }, { partial: true, currentType: "music" });
+  const switchedToAnime = validateArtItemInput({ type: "anime", translations }, { partial: true, currentType: "book" });
+  const currentBook = validateArtItemInput({ translations }, { partial: true, currentType: "book" });
+
+  assert.deepEqual(Object.keys(currentMusic.value.translations), ["zh-CN"]);
+  assert.deepEqual(Object.keys(switchedToAnime.value.translations), ["zh-CN"]);
+  assert.deepEqual(Object.keys(currentBook.value.translations), ["zh-CN", "en"]);
 });
 
 test("admin art lists are never served from browser or shared caches", async () => {

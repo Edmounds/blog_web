@@ -15,6 +15,7 @@ const BUCKET = process.env.ART_COVERS_BUCKET ?? "blog-art-covers";
 const DATABASE = process.env.ART_DATABASE ?? "blog_web";
 const TARGETS = [["zh-TW", "ZH-TW"], ["en", "EN"], ["ja", "JA"]];
 const TYPE_GROUPS = ["book", "music", "movie", "series", "anime"];
+const TRANSLATED_TYPES = new Set(["book", "movie"]);
 const primary = createTranslationProvider();
 const google = createGoogleTranslateClient({ retries: 1 });
 const TRANSLATION_TIMEOUT_MS = Number.parseInt(process.env.ART_MIGRATION_TRANSLATION_TIMEOUT_MS ?? "20000", 10);
@@ -55,7 +56,9 @@ try {
       const collectedOn = subtractDays(new Date(), index);
       const createdAt = new Date(Date.now() - globalIndex * 1000).toISOString();
       const translations = { "zh-CN": { title: item.title, creator: item.creator, extra: item.extra ?? "" } };
-      for (const [locale, targetLang] of TARGETS) translations[locale] = await translateFields(translations["zh-CN"], targetLang);
+      if (TRANSLATED_TYPES.has(item.type)) {
+        for (const [locale, targetLang] of TARGETS) translations[locale] = await translateFields(translations["zh-CN"], targetLang);
+      }
 
       sql.push(`INSERT OR IGNORE INTO art_items (id, type, source, source_id, isbn, original_title, release_date, cover_key, cover_source_url, collected_on, is_visible, created_at, updated_at) VALUES (${values(
         item.id, item.type, "legacy", null, item.isbn ?? null, item.title, null, key, null, collectedOn, 1, createdAt, createdAt,

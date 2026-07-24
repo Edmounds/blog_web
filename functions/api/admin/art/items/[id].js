@@ -12,7 +12,7 @@ export async function onRequestPatch({ env, params, request }) {
     const db = requireDb(env);
     const current = await getArtItem(db, id);
     if (!current) return error(404, "ART_NOT_FOUND", "未找到该收藏。");
-    const validation = validateArtItemInput(await readJson(request), { partial: true });
+    const validation = validateArtItemInput(await readJson(request), { partial: true, currentType: current.type });
     if (!validation.ok) return error(400, validation.error.code, validation.error.message);
     const bucket = requireBucket(env);
     if (validation.value.cover) stored = await storeCover(bucket, id, validation.value.cover, coverFetch(env), { db, currentItemId: id });

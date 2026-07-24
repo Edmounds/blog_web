@@ -33,7 +33,7 @@ test("Cloudflare revalidates HTML while keeping the version marker uncached", ()
   for (const route of ["/", "/blog/*", "/en/*", "/ja/*", "/zh-TW/*"]) {
     assert.match(headers, new RegExp(`${route.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s+Cache-Control: no-cache`));
   }
-  assert.match(headers, /\/art\/\*\s+Cache-Control: public, max-age=0, s-maxage=60, stale-while-revalidate=300/);
+  assert.match(headers, /\/art\/\*\s+Cache-Control: public, max-age=0, s-maxage=0, must-revalidate/);
 });
 
 test("deployment checks only run after thirty minutes away", () => {

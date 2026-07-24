@@ -1,46 +1,175 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { searchArtCandidates, searchBooks, searchDeezerMusic, searchDoubanBooks, searchMusic, searchTmdb } from "../functions/_shared/art-search.js";
+import {
+  searchArtCandidates, searchBooks, searchDeezerMusic, searchDoubanBookByIsbn, searchDoubanBooks, searchGoogleBooks,
+  searchMusic, searchTmdb,
+} from "../functions/_shared/art-search.js";
+import { onRequestGet as searchArt } from "../functions/api/admin/art/search.js";
 
 test("book ISBN search prefers an exact Douban result", async () => {
   const calls = [];
   const fetchImpl = async (url) => {
     const value = String(url); calls.push(value);
-    if (value.startsWith("https://search.douban.com")) return new Response(doubanPage([{ id: 27115970, title: "秘密", abstract: "[日] 东野圭吾 / 连子心 / 南海出版公司 / 2017-11", cover_url: "https://img9.doubanio.com/view/subject/m/public/s30014644.jpg" }]));
+    if (value.startsWith("https://book.douban.com/isbn/9787544258210/")) return new Response(doubanDetailPage());
     throw new Error(`Unexpected book provider request: ${value}`);
   };
   const items = await searchArtCandidates({ type: "book", query: "秘密", isbn: "9787544258210", fetchImpl });
   assert.deepEqual(items.map((item) => item.source), ["douban_books"]);
   assert.equal(items[0].coverUrl, "https://img9.doubanio.com/view/subject/l/public/s30014644.jpg");
   assert.equal(items[0].creator, "东野圭吾");
+  assert.equal(items[0].isbn, "9787544258210");
   assert.equal(calls.length, 1);
-  assert.match(calls[0], /search_text=9787544258210/);
+  assert.equal(calls[0], "https://book.douban.com/isbn/9787544258210/");
 });
 
-test("book title search only calls Douban", async () => {
+test("book title search uses Douban community search and maps current result markup", async () => {
   const calls = [];
   const fetchImpl = async (url) => {
     const value = String(url); calls.push(value);
-    if (value.startsWith("https://search.douban.com")) return new Response(doubanPage([]));
+    if (value.startsWith("https://www.douban.com/search")) return new Response(doubanGeneralSearchPage());
     throw new Error(`Unexpected book provider request: ${value}`);
   };
   const items = await searchArtCandidates({ type: "book", query: "秘密", creator: "东野圭吾", fetchImpl });
-  assert.deepEqual(items, []);
+  assert.equal(items[0].sourceId, "27115970");
+  assert.equal(items[0].title, "秘密");
+  assert.equal(items[0].creator, "东野圭吾");
+  assert.equal(items[0].releaseDate, "2017");
+  assert.equal(items[0].coverUrl, "https://img9.doubanio.com/view/subject/l/public/s30014644.jpg");
   assert.equal(calls.length, 1);
-  assert.match(calls[0], /search_text=%E7%A7%98%E5%AF%86\+%E4%B8%9C%E9%87%8E%E5%9C%AD%E5%90%BE/);
+  assert.match(calls[0], /^https:\/\/www\.douban\.com\/search\?/);
+  assert.match(calls[0], /cat=1001/);
+  assert.match(calls[0], /q=%E7%A7%98%E5%AF%86\+%E4%B8%9C%E9%87%8E%E5%9C%AD%E5%90%BE/);
 });
 
-test("Douban book search maps its embedded result data", async () => {
-  const items = await searchDoubanBooks({
-    query: "秘密", creator: "东野圭吾", isbn: "9787544258210",
-    fetchImpl: async () => new Response(doubanPage([{ id: 27115970, title: "秘密", abstract: "[日] 东野圭吾 / 连子心 / 南海出版公司 / 2017-11 / 45.00元", cover_url: "https://img9.doubanio.com/view/subject/m/public/s30014644.jpg" }])),
-  });
+test("Douban ISBN lookup maps the current detail page", async () => {
+  const items = await searchDoubanBookByIsbn({ isbn: "9787544258210", fetchImpl: async () => new Response(doubanDetailPage()) });
   assert.deepEqual(items[0], {
     source: "douban_books", sourceId: "27115970", title: "秘密", creator: "东野圭吾", originalTitle: "秘密",
-    releaseDate: "2017-11", isbn: "9787544258210", description: "[日] 东野圭吾 / 连子心 / 南海出版公司 / 2017-11 / 45.00元",
+    releaseDate: "2017-11", isbn: "9787544258210", description: "平介的幸福生活在39岁那年被摧毁了。",
     coverUrl: "https://img9.doubanio.com/view/subject/l/public/s30014644.jpg",
   });
+});
+
+test("book search falls back to Google Books when Douban is rate limited", async () => {
+  const calls = [];
+  const items = await searchBooks({
+    query: "秘密", creator: "东野圭吾", env: { GOOGLE_BOOKS_API_KEY: "google-key" },
+    fetchImpl: async (url) => {
+      const value = String(url); calls.push(value);
+      if (value.startsWith("https://www.douban.com/search")) return new Response("你没有权限访问这个页面。", { status: 403 });
+      if (value.startsWith("https://www.googleapis.com/books/v1/volumes")) return googleBooksResponse();
+      throw new Error(`Unexpected provider request: ${value}`);
+    },
+  });
+  assert.deepEqual(items.map((item) => item.source), ["google_books"]);
+  assert.equal(items[0].isbn, "9787544258210");
+  assert.equal(calls.length, 2);
+  assert.match(calls[1], /key=google-key/);
+});
+
+test("book search falls back to Google Books when Douban has no usable result", async () => {
+  const calls = [];
+  const items = await searchBooks({
+    query: "秘密", creator: "东野圭吾",
+    fetchImpl: async (url) => {
+      const value = String(url); calls.push(value);
+      if (value.startsWith("https://www.douban.com/search")) return new Response('<div class="result-list"><div class="result-list-ft"></div></div>');
+      if (value.startsWith("https://www.googleapis.com/books/v1/volumes")) return googleBooksResponse();
+      throw new Error(`Unexpected provider request: ${value}`);
+    },
+  });
+  assert.deepEqual(items.map((item) => item.source), ["google_books"]);
+  assert.equal(calls.length, 2);
+});
+
+test("book search falls back when Douban results do not match the requested creator", async () => {
+  const calls = [];
+  const items = await searchBooks({
+    query: "秘密", creator: "东野圭吾",
+    fetchImpl: async (url) => {
+      const value = String(url); calls.push(value);
+      if (value.startsWith("https://www.douban.com/search")) return new Response(doubanGeneralSearchPage().replace("[日] 东野圭吾", "朗达·拜恩"));
+      if (value.startsWith("https://www.googleapis.com/books/v1/volumes")) return googleBooksResponse();
+      throw new Error(`Unexpected provider request: ${value}`);
+    },
+  });
+  assert.deepEqual(items.map((item) => item.source), ["google_books"]);
+  assert.equal(calls.length, 2);
+});
+
+test("ISBN search falls back to Google Books when Douban detail markup is unusable", async () => {
+  const calls = [];
+  const items = await searchBooks({
+    query: "秘密", isbn: "9787544258210",
+    fetchImpl: async (url) => {
+      const value = String(url); calls.push(value);
+      if (value.startsWith("https://book.douban.com/isbn/9787544258210/")) return new Response("<html></html>");
+      if (value.startsWith("https://www.googleapis.com/books/v1/volumes")) return googleBooksResponse();
+      throw new Error(`Unexpected provider request: ${value}`);
+    },
+  });
+  assert.deepEqual(items.map((item) => item.source), ["google_books"]);
+  assert.match(calls[1], /q=isbn%3A9787544258210/);
+});
+
+test("Google Books maps metadata-only Chinese book results", async () => {
+  const items = await searchGoogleBooks({
+    query: "秘密", creator: "东野圭吾", env: {}, fetchImpl: async () => googleBooksResponse(),
+  });
+  assert.deepEqual(items[0], {
+    source: "google_books", sourceId: "bP1fswEACAAJ", title: "秘密", creator: "东野圭吾", originalTitle: "秘密",
+    releaseDate: "2017", isbn: "9787544258210", description: "Google Books metadata", coverUrl: "",
+  });
+});
+
+test("book searches reuse successful Cache API results", async () => {
+  const cache = new MemoryCache();
+  let fetches = 0;
+  const options = {
+    query: "秘密", creator: "东野圭吾", cache,
+    fetchImpl: async () => { fetches += 1; return new Response(doubanGeneralSearchPage()); },
+  };
+  const first = await searchBooks(options);
+  const second = await searchBooks(options);
+  assert.equal(first[0].sourceId, "27115970");
+  assert.deepEqual(second, first);
+  assert.equal(fetches, 1);
+});
+
+test("admin book search passes through Cache API results and disables response caching", async () => {
+  const cache = new MemoryCache();
+  let fetches = 0;
+  const options = {
+    env: {}, cache,
+    request: new Request("https://blog.muelsyse.us/api/admin/art/search?type=book&q=%E7%A7%98%E5%AF%86&creator=%E4%B8%9C%E9%87%8E%E5%9C%AD%E5%90%BE"),
+    fetchImpl: async () => { fetches += 1; return new Response(doubanGeneralSearchPage()); },
+  };
+  const first = await searchArt(options);
+  const second = await searchArt(options);
+
+  assert.equal(first.status, 200);
+  assert.equal(first.headers.get("cache-control"), "private, no-store");
+  assert.equal((await second.json()).items[0].sourceId, "27115970");
+  assert.equal(fetches, 1);
+});
+
+test("admin book search maps an exhausted Douban and failed fallback to a provider error", async () => {
+  const originalConsoleError = console.error;
+  console.error = () => {};
+  let response;
+  try {
+    response = await searchArt({
+      env: {}, request: new Request("https://blog.muelsyse.us/api/admin/art/search?type=book&q=%E7%A7%98%E5%AF%86"),
+      fetchImpl: async (url) => String(url).startsWith("https://www.douban.com/search")
+        ? new Response("你没有权限访问这个页面。", { status: 403 })
+        : new Response("unavailable", { status: 503 }),
+    });
+  } finally {
+    console.error = originalConsoleError;
+  }
+  assert.equal(response.status, 502);
+  assert.deepEqual(await response.json(), { error: { code: "SEARCH_FAILED", message: "搜索服务暂时不可用。" } });
 });
 
 test("provider mappings retain metadata-only candidates without covers", async () => {
@@ -168,10 +297,33 @@ test("provider errors are surfaced", async () => {
 
 test("book search surfaces a Douban rate limit", async () => {
   await assert.rejects(
-    () => searchBooks({ query: "白夜行", fetchImpl: async () => new Response("rate limit", { status: 429 }) }),
-    /HTTP 429/,
+    () => searchDoubanBooks({ query: "白夜行", fetchImpl: async () => new Response(doubanSoftRateLimitPage()) }),
+    (error) => error.status === 429 && error.provider === "douban_books",
   );
 });
 
 function response(value) { return new Response(JSON.stringify(value), { status: 200, headers: { "content-type": "application/json" } }); }
-function doubanPage(items) { return `<script>window.__DATA__ = ${JSON.stringify({ count: items.length, items })};\nwindow.__USER__ = {}</script>`; }
+function googleBooksResponse() {
+  return response({ items: [{ id: "bP1fswEACAAJ", volumeInfo: {
+    title: "秘密", authors: ["东野圭吾"], publishedDate: "2017", description: "Google Books metadata",
+    industryIdentifiers: [{ type: "ISBN_10", identifier: "7544258211" }, { type: "ISBN_13", identifier: "9787544258210" }],
+  } }] });
+}
+function doubanGeneralSearchPage() {
+  return `<div class="result-list">
+    <div class="result"><div class="pic"><a class="nbg" href="https://www.douban.com/link2/?url=https%3A%2F%2Fbook.douban.com%2Fsubject%2F27115970%2F&amp;cat_id=1001" onclick="moreurl(this,{sid: 27115970})" title="秘密"><img src="https://img9.doubanio.com/view/subject/s/public/s30014644.jpg"></a></div><div class="content"><div class="title"><h3><a>秘密</a></h3><div class="rating-info"><span class="rating_nums">8.0</span><span class="subject-cast">[日] 东野圭吾 / 连子心 / 南海出版公司 / 2017</span></div></div><p>平介的幸福生活在39岁那年被摧毁了。</p></div></div>
+    <div class="result"><div class="pic"><a class="nbg" href="https://www.douban.com/link2/?url=https%3A%2F%2Fbook.douban.com%2Fsubject%2F3266968%2F&amp;cat_id=1001" title="秘密"><img src="https://img9.doubanio.com/view/subject/s/public/s3331205.jpg"></a></div><div class="content"><div class="title"><span class="subject-cast">[澳] 朗达·拜恩 / 中国城市出版社 / 2008</span></div><p>另一本同名书。</p></div></div>
+    <div class="result-list-ft"></div>
+  </div>`;
+}
+function doubanDetailPage() {
+  return `<html><head><link rel="canonical" href="https://book.douban.com/subject/27115970/"><meta property="og:image" content="https://img9.doubanio.com/view/subject/s/public/s30014644.jpg"><meta name="description" content="平介的幸福生活在39岁那年被摧毁了。"></head><body><span property="v:itemreviewed">秘密</span><div id="info">作者: <a>[日] 东野圭吾</a><br>译者: 连子心<br>出版社: 南海出版公司<br>出版年: 2017-11<br>ISBN: 9787544258210<br>原作名: 秘密</div></body></html>`;
+}
+function doubanSoftRateLimitPage() {
+  return `<script>window.__DATA__ = ${JSON.stringify({ total: 0, items: [], error_info: "搜索访问太频繁。" })}; window.__USER__ = {}</script>`;
+}
+class MemoryCache {
+  entries = new Map();
+  async match(request) { return this.entries.get(request.url)?.clone(); }
+  async put(request, response) { this.entries.set(request.url, response.clone()); }
+}

@@ -57,6 +57,7 @@ const TYPES = [
 const LOCALES: { id: Locale; label: string }[] = [
   { id: "zh-CN", label: "简中" }, { id: "zh-TW", label: "繁中" }, { id: "en", label: "English" }, { id: "ja", label: "日本語" },
 ];
+const TRANSLATED_TYPES = new Set<ArtType>(["book", "movie"]);
 const emptyTranslation = (): Translation => ({ title: "", creator: "", extra: "" });
 const today = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Shanghai" }).format(new Date());
 const MUSIC_PAGE_SIZE = 10;
@@ -104,7 +105,7 @@ export default function ArtAdmin() {
     if (type !== "music" && creator.trim()) params.set("creator", creator.trim());
     if (isbn.trim()) params.set("isbn", isbn.trim());
     try {
-      const data = await fetchJson<{ items: Candidate[] }>(`/api/admin/art/search?${params}`);
+      const data = await fetchJson<{ items: Candidate[] }>(`/api/admin/art/search?${params}`, { cache: "no-store" });
       setCandidates(data.items); setCandidatePage(1); if (!data.items.length) setMessage("没有找到候选结果。");
     } catch (error) { setMessage(errorMessage(error)); } finally { setIsSearching(false); }
   }
@@ -117,7 +118,7 @@ export default function ArtAdmin() {
     next.coverUrl = candidate.coverUrl; next.cover = { kind: "url", url: candidate.coverUrl };
     next.translations["zh-CN"] = { title: candidate.title, creator: candidate.creator || "待填写", extra: candidate.description?.slice(0, 120) ?? "" };
     setForm(next); setLocale("zh-CN"); setMessage(""); setSaveMessage("");
-    await translate(next.translations["zh-CN"]);
+    if (TRANSLATED_TYPES.has(type)) await translate(next.translations["zh-CN"]);
   }
 
   async function translate(source = form.translations["zh-CN"]) {
@@ -125,7 +126,7 @@ export default function ArtAdmin() {
     setIsTranslating(true); setMessage(""); setSaveMessage("");
     try {
       const data = await fetchJson<{ translations: Partial<Record<Locale, Translation>>; warnings: Locale[] }>("/api/admin/art/translate", {
-        method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(source),
+        method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ type, ...source }),
       });
       setForm((current) => ({ ...current, translations: { ...current.translations, ...data.translations } as Record<Locale, Translation> }));
       if (data.warnings.length) setMessage(`部分语言翻译失败：${data.warnings.join(", ")}，可以手动填写。`);
@@ -138,7 +139,7 @@ export default function ArtAdmin() {
     setIsSaving(true); setMessage(""); setSaveMessage("");
     const body: Record<string, unknown> = {
       type: form.type, source: form.source, sourceId: form.sourceId, isbn: form.isbn, originalTitle: form.originalTitle,
-      releaseDate: form.releaseDate, collectedOn: form.collectedOn, isVisible: form.isVisible, translations: form.translations,
+      releaseDate: form.releaseDate, collectedOn: form.collectedOn, isVisible: form.isVisible, translations: translationsForType(form.type, form.translations),
     };
     if (form.cover) body.cover = form.cover;
     try {
@@ -261,15 +262,15 @@ export default function ArtAdmin() {
                 <label className="space-y-1.5 text-sm"><span>原名</span><input className={inputClass} value={form.originalTitle} onChange={(e) => setForm({ ...form, originalTitle: e.target.value })} maxLength={300} /></label>
                 <label className="space-y-1.5 text-sm"><span>发行日期</span><input className={inputClass} value={form.releaseDate} onChange={(e) => setForm({ ...form, releaseDate: e.target.value })} maxLength={40} /></label>
               </div>
-              <div className="flex max-w-full gap-1 overflow-x-auto border-b border-[var(--border-soft)]" role="tablist" aria-label="翻译语言">
+              {TRANSLATED_TYPES.has(type) && <div className="flex max-w-full gap-1 overflow-x-auto border-b border-[var(--border-soft)]" role="tablist" aria-label="翻译语言">
                 {LOCALES.map((item) => <button type="button" key={item.id} onClick={() => setLocale(item.id)} className={`border-b-2 px-3 py-2 text-sm ${locale === item.id ? "border-[var(--foreground)] text-[var(--foreground)]" : "border-transparent text-[var(--text-muted)]"}`}>{item.label}</button>)}
-              </div>
+              </div>}
               <div className="grid gap-4">
                 <label className="space-y-1.5 text-sm"><span>标题</span><input className={inputClass} value={activeTranslation.title} onChange={(e) => updateTranslation(setForm, form, locale, "title", e.target.value)} maxLength={200} /></label>
                 <label className="space-y-1.5 text-sm"><span>作者 / 导演 / 艺人</span><input className={inputClass} value={activeTranslation.creator} onChange={(e) => updateTranslation(setForm, form, locale, "creator", e.target.value)} maxLength={200} /></label>
                 <label className="space-y-1.5 text-sm"><span>一句备注</span><textarea className={`${inputClass} min-h-24 resize-y`} value={activeTranslation.extra} onChange={(e) => updateTranslation(setForm, form, locale, "extra", e.target.value)} maxLength={500} /></label>
               </div>
-              <div className="flex flex-wrap gap-3"><button type="button" className={quietButton} onClick={() => void translate()} disabled={isTranslating || isSaving}><Languages className="size-4" />{isTranslating ? "翻译中" : "生成翻译草稿"}</button><button type="button" className={primaryButton} onClick={() => void save()} disabled={!canSave || isSaving || isTranslating || isUploading}>{isSaving && <LoaderCircle className="size-4 animate-spin" />}{isSaving ? (form.id ? "保存中" : "添加中") : form.id ? "保存修改" : "添加收藏"}</button></div>
+              <div className="flex flex-wrap gap-3">{TRANSLATED_TYPES.has(type) && <button type="button" className={quietButton} onClick={() => void translate()} disabled={isTranslating || isSaving}><Languages className="size-4" />{isTranslating ? "翻译中" : "生成翻译草稿"}</button>}<button type="button" className={primaryButton} onClick={() => void save()} disabled={!canSave || isSaving || isTranslating || isUploading}>{isSaving && <LoaderCircle className="size-4 animate-spin" />}{isSaving ? (form.id ? "保存中" : "添加中") : form.id ? "保存修改" : "添加收藏"}</button></div>
               <p aria-live="polite" role="status" className={`min-h-5 text-sm ${saveMessage ? "text-[var(--text-muted)]" : "sr-only"}`}>{saveMessage || "等待保存结果"}</p>
             </div>
           </div>
@@ -313,6 +314,7 @@ function blankForm(type: ArtType): FormState {
 function candidateKey(item: Pick<Candidate, "source" | "sourceId">) { return `${item.source}:${item.sourceId}`; }
 function previewUrl(url: string) { return url.startsWith("/") || url.startsWith("https://img.muelsyse.us/") ? url : `/api/admin/art/cover-preview?url=${encodeURIComponent(url)}`; }
 function display(item: ArtItem) { return item.translations["zh-CN"] ?? emptyTranslation(); }
+function translationsForType(type: ArtType, translations: Record<Locale, Translation>) { return TRANSLATED_TYPES.has(type) ? translations : { "zh-CN": translations["zh-CN"] }; }
 function updateTranslation(setForm: React.Dispatch<React.SetStateAction<FormState>>, form: FormState, locale: Locale, field: keyof Translation, value: string) { setForm({ ...form, translations: { ...form.translations, [locale]: { ...form.translations[locale], [field]: value } } }); }
 async function fetchJson<T = unknown>(url: string, init?: RequestInit): Promise<T> { const response = await fetch(url, init); const data = await response.json().catch(() => ({})) as { error?: { message?: string } } & T; if (!response.ok) throw new Error(data.error?.message ?? "请求失败。"); return data; }
 function errorMessage(error: unknown) { return error instanceof Error ? error.message : "请求失败。"; }

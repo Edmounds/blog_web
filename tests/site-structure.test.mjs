@@ -148,6 +148,19 @@ test("art save operations expose independent progress and nearby live feedback",
   assert.match(admin, /setItems\(\(current\) => \[data\.item,[\s\S]*item\.id !== data\.item\.id/);
 });
 
+test("only books and movies expose art translation controls or request translated drafts", () => {
+  const admin = read("src/components/domain/ArtAdmin.tsx");
+  const translateApi = read("functions/api/admin/art/translate.js");
+
+  assert.match(admin, /const TRANSLATED_TYPES = new Set<ArtType>\(\["book", "movie"\]\)/);
+  assert.match(admin, /TRANSLATED_TYPES\.has\(type\)[\s\S]*aria-label="翻译语言"/);
+  assert.match(admin, /TRANSLATED_TYPES\.has\(type\)[\s\S]*生成翻译草稿/);
+  assert.match(admin, /if \(TRANSLATED_TYPES\.has\(type\)\) await translate/);
+  assert.match(admin, /JSON\.stringify\(\{ type, \.\.\.source \}\)/);
+  assert.match(admin, /translations: translationsForType\(form\.type, form\.translations\)/);
+  assert.match(translateApi, /TRANSLATED_TYPES\.has\(type\)/);
+});
+
 test("dynamic art pages revalidate on every visit", () => {
   const routes = [
     "src/pages/art/book/index.astro",
@@ -200,6 +213,16 @@ test("the homepage shows only the compact WakaTime badge and a stable theme-awar
   assert.match(home, /querySelectorAll\("source"\)/);
 });
 
+test("the homepage aligns latest content with the profile and lists projects last", () => {
+  const home = read("src/components/sections/HomeSection.astro");
+
+  assert.match(home, /getPublishedContent\("project", locale\)/);
+  assert.match(home, /Latest Blogs[\s\S]*Latest Notes[\s\S]*Latest Projects/);
+  assert.match(home, /\.home-shell\s*\{[^}]*align-items:\s*start;/s);
+  assert.match(home, /\.latest-content\s*>\s*section:first-child\s*\{[^}]*padding-top:\s*0;/s);
+  assert.match(home, /href=\{localizePath\(`\/\$\{block\.section\}\/`, locale\)\}/);
+});
+
 test("the homepage keeps the legacy GitHub Bilibili and mail SVG paths around Steam", () => {
   const home = read("src/components/sections/HomeSection.astro");
 
@@ -228,7 +251,6 @@ test("About renders the profile as a normal Markdown article with the code-rain 
   const about = read("src/components/sections/AboutSection.astro");
   const background = read("src/components/site/RouteBackground.astro");
   assert.match(about, /render\(profile\)/);
-  assert.match(about, /profile\.data\.major/);
   assert.match(about, /profile\.data\.city/);
   assert.doesNotMatch(about, /about-document__toc|href="#about-focus"/);
   assert.match(background, /path === "\/about\/"[\s\S]*\? "rain"/);

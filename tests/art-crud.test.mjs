@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-import { createArtItem, deleteArtItem, getArtItem, listArtItems, updateArtItem } from "../functions/_shared/art.js";
+import { createArtItem, deleteArtItem, getArtItem, listArtItems, updateArtItem, validateArtItemInput } from "../functions/_shared/art.js";
 import { onRequestDelete } from "../functions/api/admin/art/items/[id].js";
 
 test("D1 art CRUD preserves stable collection sorting, visibility, translations, and deletion", async () => {
@@ -23,6 +23,44 @@ test("D1 art CRUD preserves stable collection sorting, visibility, translations,
 
   assert.equal(await deleteArtItem(db, "two"), true);
   assert.equal(await getArtItem(db, "two"), undefined);
+});
+
+test("non-translated art types persist only simplified Chinese through create, edit, type changes, and visibility updates", async () => {
+  const db = new FakeD1();
+  const translations = {
+    "zh-CN": { title: "简中标题", creator: "简中作者", extra: "简中备注" },
+    "zh-TW": { title: "繁中標題", creator: "繁中作者", extra: "繁中備註" },
+    en: { title: "English title", creator: "English creator", extra: "English note" },
+    ja: { title: "日本語タイトル", creator: "日本語作者", extra: "日本語メモ" },
+  };
+
+  const music = await createArtItem(db, {
+    type: "music", source: "legacy", sourceId: "", isbn: "", originalTitle: "", releaseDate: "",
+    collectedOn: "2026-07-24", isVisible: true, translations,
+  }, { key: "art/music/a.jpg", sourceUrl: "" }, { id: "music", now: new Date("2026-07-24T00:00:00Z") });
+  assert.deepEqual(Object.keys(music.translations), ["zh-CN"]);
+
+  db.translations.set("music:en", { item_id: "music", locale: "en", title: "Old English", creator: "Old creator", extra: "" });
+  const toggled = await updateArtItem(db, "music", await getArtItem(db, "music"), { isVisible: false }, undefined, new Date("2026-07-25T00:00:00Z"));
+  assert.equal(toggled.isVisible, false);
+  assert.deepEqual(toggled.translations, { "zh-CN": translations["zh-CN"] });
+
+  const bookTranslations = {
+    ...translations,
+    en: { title: "Book title", creator: "Book creator", extra: "Book note" },
+  };
+  const book = await createArtItem(db, {
+    type: "book", source: "legacy", sourceId: "", isbn: "", originalTitle: "", releaseDate: "",
+    collectedOn: "2026-07-24", isVisible: true, translations: bookTranslations,
+  }, { key: "art/book/a.jpg", sourceUrl: "" }, { id: "book", now: new Date("2026-07-24T00:00:00Z") });
+  assert.deepEqual(Object.keys(book.translations), ["zh-CN", "zh-TW", "en", "ja"]);
+
+  const changedType = await updateArtItem(db, "book", book, { type: "series" }, undefined, new Date("2026-07-25T00:00:00Z"));
+  assert.deepEqual(changedType.translations, { "zh-CN": translations["zh-CN"] });
+
+  const animeInput = validateArtItemInput({ type: "anime", translations: bookTranslations }, { partial: true, currentType: "book" });
+  const edited = await updateArtItem(db, "book", book, animeInput.value, undefined, new Date("2026-07-26T00:00:00Z"));
+  assert.deepEqual(edited.translations, { "zh-CN": translations["zh-CN"] });
 });
 
 test("admin deletion keeps D1 metadata when R2 cover deletion fails", async () => {

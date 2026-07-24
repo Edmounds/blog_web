@@ -7,12 +7,24 @@ interface Props { locale?: Locale }
 const { locale = "zh-CN" } = Astro.props;
 const about = locale === "zh-CN" ? await getAboutProfile() : await getLocalizedAbout(locale);
 const profile = about.data;
-const [blogs, notes] = await Promise.all([getPublishedContent("blog", locale), getPublishedContent("note", locale)]);
-const groups = (items: typeof blogs) => {
+const [blogs, notes, projects] = await Promise.all([
+  getPublishedContent("blog", locale),
+  getPublishedContent("note", locale),
+  getPublishedContent("project", locale),
+]);
+const groupLatestByYear = (items: typeof blogs) => {
   const byYear = new Map<number, typeof items>();
-  items.slice(0, 6).forEach((item) => byYear.set(item.createdAt.getFullYear(), [...(byYear.get(item.createdAt.getFullYear()) ?? []), item]));
+  for (const item of items.slice(0, 6)) {
+    const year = item.createdAt.getFullYear();
+    byYear.set(year, [...(byYear.get(year) ?? []), item]);
+  }
   return [...byYear.entries()].sort((a, b) => b[0] - a[0]);
 };
+const latestBlocks = [
+  { title: "Latest Blogs", section: "blog", items: groupLatestByYear(blogs) },
+  { title: "Latest Notes", section: "note", items: groupLatestByYear(notes) },
+  { title: "Latest Projects", section: "project", items: groupLatestByYear(projects) },
+];
 ---
 
 <section class="home-shell app-container">
@@ -72,12 +84,9 @@ const groups = (items: typeof blogs) => {
   </div>
 
   <div class="latest-content">
-    {[
-      { title: "Latest Blogs", section: "blog", items: groups(blogs) },
-      { title: "Latest Notes", section: "note", items: groups(notes) },
-    ].map((block) => (
+    {latestBlocks.map((block) => (
       <section>
-        <h2><a href={`/${block.section}/`} data-primary-route>{block.title}</a></h2>
+        <h2><a href={localizePath(`/${block.section}/`, locale)} data-primary-route>{block.title}</a></h2>
         {block.items.length === 0 ? <p class="latest-empty">No {block.section}s published yet.</p> : block.items.map(([year, items]) => (
           <div class="latest-year">
             <h3>{year}</h3>
@@ -150,7 +159,7 @@ const groups = (items: typeof blogs) => {
 </script>
 
 <style>
-  .home-shell { display: grid; grid-template-columns: minmax(18rem, 0.8fr) minmax(28rem, 1.2fr); gap: clamp(3rem, 8vw, 9rem); align-items: center; min-height: calc(100vh - 4.5rem); padding-block: clamp(3rem, 7vh, 6rem); }
+  .home-shell { display: grid; grid-template-columns: minmax(18rem, 0.8fr) minmax(28rem, 1.2fr); gap: clamp(3rem, 8vw, 9rem); align-items: start; min-height: calc(100vh - 4.5rem); padding-block: clamp(3rem, 7vh, 6rem); }
   .profile-card { display: flex; max-width: 32rem; flex-direction: column; align-items: center; justify-self: center; text-align: center; }
   .profile-avatar-wrap { position: relative; width: clamp(6.5rem, 10vw, 9rem); aspect-ratio: 1; }
   .profile-avatar { display: block; width: 100%; height: 100%; object-fit: cover; border: 1px solid var(--border-soft); border-radius: 50%; }
@@ -169,6 +178,7 @@ const groups = (items: typeof blogs) => {
   .github-snake__fallback { padding: 1rem 0; text-decoration: underline; text-underline-offset: 0.2em; }
   .latest-content { display: grid; gap: 1rem; }
   .latest-content > section { padding: 0.75rem; }
+  .latest-content > section:first-child { padding-top: 0; }
   .latest-content h2 { margin: 0 0 0.6rem; font-size: clamp(2rem, 4vw, 4rem); line-height: 1; }
   .latest-content h2 a { color: transparent; text-decoration: none; -webkit-text-stroke: 1px var(--foreground); }
   .latest-year { display: grid; grid-template-columns: 5rem minmax(0, 1fr); gap: 1.4rem; }

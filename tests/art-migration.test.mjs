@@ -17,3 +17,8 @@ test("migration assigns the first item in each category today and decrements dat
   assert.match(migration, /subtractDays\(new Date\(\), index\)/);
   assert.match(migration, /const TYPE_GROUPS = \["book", "music", "movie", "series", "anime"\]/);
 });
+
+test("legacy migration translates only books and movies", () => {
+  assert.match(migration, /const TRANSLATED_TYPES = new Set\(\["book", "movie"\]\)/);
+  assert.match(migration, /if \(TRANSLATED_TYPES\.has\(item\.type\)\)/);
+});

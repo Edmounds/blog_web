@@ -1,5 +1,6 @@
 export const ART_TYPES = ["book", "music", "movie", "series", "anime"];
 export const ART_LOCALES = ["zh-CN", "zh-TW", "en", "ja"];
+export const ART_TRANSLATED_TYPES = ["book", "movie"];
 export const ART_SOURCES = ["douban_books", "apple_books", "google_books", "apple_music", "deezer_music", "tmdb", "legacy"];
 export const ART_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"];
 export const ART_STORED_IMAGE_TYPES = [...ART_IMAGE_TYPES, "image/svg+xml"];
@@ -10,6 +11,7 @@ export const ART_COVER_BASE_URL = "https://img.muelsyse.us";
 
 const TYPE_SET = new Set(ART_TYPES);
 const LOCALE_SET = new Set(ART_LOCALES);
+const TRANSLATED_TYPE_SET = new Set(ART_TRANSLATED_TYPES);
 const SOURCE_SET = new Set(ART_SOURCES);
 const IMAGE_TYPE_SET = new Set(ART_IMAGE_TYPES);
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
@@ -90,12 +92,20 @@ export function getShanghaiDate(now = new Date()) {
   }).format(now);
 }
 
-export function validateTranslations(value) {
+export function artLocalesForType(type) {
+  return TRANSLATED_TYPE_SET.has(type) ? ART_LOCALES : ["zh-CN"];
+}
+
+export function filterArtTranslations(type, translations) {
+  return Object.fromEntries(artLocalesForType(type).flatMap((locale) => translations?.[locale] ? [[locale, translations[locale]]] : []));
+}
+
+export function validateTranslations(value, type) {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     return invalid("INVALID_TRANSLATIONS", "请填写多语言内容。");
   }
   const translations = {};
-  for (const locale of ART_LOCALES) {
+  for (const locale of artLocalesForType(type)) {
     const raw = value[locale];
     if (!raw || typeof raw !== "object" || Array.isArray(raw)) continue;
     const title = cleanText(raw.title, 200);
@@ -110,7 +120,7 @@ export function validateTranslations(value) {
   return { ok: true, value: translations };
 }
 
-export function validateArtItemInput(value, { partial = false } = {}) {
+export function validateArtItemInput(value, { partial = false, currentType } = {}) {
   if (!value || typeof value !== "object" || Array.isArray(value)) return invalid("INVALID_ITEM", "收藏数据无效。");
   const result = {};
 
@@ -145,7 +155,9 @@ export function validateArtItemInput(value, { partial = false } = {}) {
     result.isVisible = value.isVisible;
   }
   if (!partial || Object.hasOwn(value, "translations")) {
-    const translations = validateTranslations(value.translations);
+    const translationType = result.type ?? currentType;
+    if (!translationType) return invalid("INVALID_TYPE", "收藏类型无效。");
+    const translations = validateTranslations(value.translations, translationType);
     if (!translations.ok) return translations;
     result.translations = translations.value;
   }
@@ -391,6 +403,7 @@ export function isArtSourceIdConflict(err) {
 
 export async function createArtItem(db, input, storedCover, { id = crypto.randomUUID(), now = new Date() } = {}) {
   const createdAt = now.toISOString();
+  const translations = filterArtTranslations(input.type, input.translations);
   const statements = [
     db.prepare(
       `INSERT INTO art_items
@@ -398,7 +411,7 @@ export async function createArtItem(db, input, storedCover, { id = crypto.random
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     ).bind(id, input.type, input.source, input.sourceId || null, input.isbn || null, input.originalTitle || null,
       input.releaseDate || null, storedCover.key, storedCover.sourceUrl || null, input.collectedOn, input.isVisible ? 1 : 0, createdAt, createdAt),
-    ...translationStatements(db, id, input.translations),
+    ...translationStatements(db, id, translations),
   ];
   await db.batch(statements);
   return getArtItem(db, id);
@@ -416,6 +429,7 @@ export async function updateArtItem(db, id, current, input, storedCover, now = n
     isVisible: input.isVisible ?? current.isVisible,
     translations: input.translations ?? current.translations,
   };
+  merged.translations = filterArtTranslations(merged.type, merged.translations);
   const coverKey = storedCover?.key ?? current.coverKey;
   const coverSourceUrl = storedCover ? storedCover.sourceUrl : current.coverSourceUrl;
   const statements = [

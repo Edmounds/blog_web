@@ -3,4 +3,8 @@ import type { APIRoute } from "astro";
 import { onRequestGet } from "../../../../../functions/api/admin/art/search.js";
 import { getRuntimeEnv } from "../../../../lib/runtime";
 
-export const GET: APIRoute = ({ request }) => onRequestGet({ env: getRuntimeEnv(), request });
+export const GET: APIRoute = ({ request }) => onRequestGet({
+  env: getRuntimeEnv(),
+  request,
+  cache: (caches as CacheStorage & { default?: Cache }).default,
+});
