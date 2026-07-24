@@ -38,7 +38,7 @@ export default function GamesAdmin() {
   async function loadItems() {
     setBusy("list");
     try {
-      const data = await fetchJson<{ items: GameItem[]; syncState: SyncState }>("/api/admin/games");
+      const data = await fetchJson<{ items: GameItem[]; syncState: SyncState }>("/api/admin/games", { cache: "no-store" });
       setItems(data.items); setSyncState(data.syncState);
     } catch (error) { setMessage(errorMessage(error)); }
     finally { setBusy(null); }
@@ -47,10 +47,11 @@ export default function GamesAdmin() {
   async function sync() {
     setBusy("sync"); setMessage("");
     try {
-      const result = await fetchJson<{ added: number; updated: number; unchanged: number; total: number }>("/api/admin/games/sync", { method: "POST" });
+      const result = await fetchJson<{ added: number; updated: number; unchanged: number; total: number; items: GameItem[]; syncState: SyncState }>("/api/admin/games/sync", { method: "POST" });
+      setItems(result.items); setSyncState(result.syncState);
       setMessage(`同步完成：新增 ${result.added}，更新 ${result.updated}，未变化 ${result.unchanged}，共 ${result.total}。`);
-      await loadItems();
-    } catch (error) { setMessage(errorMessage(error)); setBusy(null); }
+    } catch (error) { setMessage(errorMessage(error)); }
+    finally { setBusy(null); }
   }
 
   async function uploadCover(file: File) {

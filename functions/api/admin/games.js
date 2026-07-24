@@ -15,7 +15,10 @@ export async function onRequestGet({ env, request }) {
       listGames(db, { query: params.get("query")?.trim() ?? "", source, visibility }),
       getSyncState(db),
     ]);
-    return json({ items, syncState });
+    return json(
+      { items, syncState },
+      { headers: { "cache-control": "private, no-store" } },
+    );
   } catch (err) {
     if (err instanceof Response) return err;
     console.error("Game list failed", err);

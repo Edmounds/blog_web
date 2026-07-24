@@ -1,6 +1,6 @@
 import {
-  deleteCoverIfUnreferenced, error, getArtItem, json, normalizeArtId, readJson, requireBucket, requireDb, requireSameOrigin,
-  requireSameOriginJson, storeCover, updateArtItem, validateArtItemInput,
+  deleteCoverIfUnreferenced, error, getArtItem, isArtSourceIdConflict, json, normalizeArtId, readJson, requireBucket,
+  requireDb, requireSameOrigin, requireSameOriginJson, storeCover, updateArtItem, validateArtItemInput,
 } from "../../../../_shared/art.js";
 
 export async function onRequestPatch({ env, params, request }) {
@@ -24,6 +24,7 @@ export async function onRequestPatch({ env, params, request }) {
   } catch (err) {
     if (stored?.key) await deleteCoverIfUnreferenced(env.ART_COVERS, env.DB, stored.key).catch((cleanupError) => console.error("Replacement cover cleanup failed", cleanupError));
     if (err instanceof Response) return err;
+    if (isArtSourceIdConflict(err)) return error(409, "ART_ALREADY_EXISTS", "该专辑已经收藏。");
     console.error("Art item update failed", err);
     return error(500, "ART_UPDATE_FAILED", "更新收藏失败。");
   }

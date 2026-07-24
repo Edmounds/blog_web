@@ -1,6 +1,6 @@
 import {
-  createArtItem, deleteCoverIfUnreferenced, error, json, listArtItems, normalizeArtType, readJson, requireBucket, requireDb,
-  requireSameOriginJson, storeCover, validateArtItemInput,
+  createArtItem, deleteCoverIfUnreferenced, error, findArtItemBySourceId, isArtSourceIdConflict, json, listArtItems,
+  normalizeArtType, readJson, requireBucket, requireDb, requireSameOriginJson, storeCover, validateArtItemInput,
 } from "../../../_shared/art.js";
 
 export async function onRequestGet({ env, request }) {
@@ -28,15 +28,21 @@ export async function onRequestPost({ env, request }) {
     const id = crypto.randomUUID();
     const bucket = requireBucket(env);
     const db = requireDb(env);
+    if (await findArtItemBySourceId(db, validation.value.source, validation.value.sourceId)) return alreadyExists();
     stored = await storeCover(bucket, id, validation.value.cover, coverFetch(env), { db });
     const item = await createArtItem(db, validation.value, stored, { id });
     return json({ item }, { status: 201 });
   } catch (err) {
     if (stored?.key) await deleteCoverIfUnreferenced(env.ART_COVERS, env.DB, stored.key).catch((cleanupError) => console.error("New cover cleanup failed", cleanupError));
     if (err instanceof Response) return err;
+    if (isArtSourceIdConflict(err)) return alreadyExists();
     console.error("Art item create failed", err);
     return error(500, "ART_CREATE_FAILED", "新增收藏失败。");
   }
+}
+
+function alreadyExists() {
+  return error(409, "ART_ALREADY_EXISTS", "该专辑已经收藏。");
 }
 
 function coverFetch(env) {

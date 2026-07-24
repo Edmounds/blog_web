@@ -34,3 +34,15 @@ test("CSP adds only the exact Steam image host and cron uses the shared sync fun
   assert.match(read("wrangler.astro.jsonc"), /"crons": \["0 20 \* \* \*"\]/);
   assert.match(read("src/worker.ts"), /handle\(request, env, ctx\)[\s\S]*syncSteamGames/);
 });
+
+test("game administration refreshes from the completed sync response without cached list data", () => {
+  const admin = read("src/components/domain/GamesAdmin.tsx");
+  const listApi = read("functions/api/admin/games.js");
+  const syncApi = read("functions/api/admin/games/sync.js");
+
+  assert.match(admin, /fetchJson<\{ items: GameItem\[\]; syncState: SyncState \}>\("\/api\/admin\/games", \{ cache: "no-store" \}\)/);
+  assert.match(admin, /\/api\/admin\/games\/sync[\s\S]*setItems\(result\.items\); setSyncState\(result\.syncState\)/);
+  assert.doesNotMatch(admin, /同步完成[\s\S]*await loadItems\(\)/);
+  assert.match(listApi, /cache-control": "private, no-store"/);
+  assert.match(syncApi, /listGames\(db\)[\s\S]*getSyncState\(db\)[\s\S]*items, syncState/);
+});

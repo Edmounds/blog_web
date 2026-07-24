@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   fetchSteamOwnedGames, parsePlaytimeMinutes, parseSteamOwnedGames, syncSteamGames, validateGameCreate, validateGameUpdate,
 } from "../functions/_shared/games.js";
+import { onRequestGet as listAdminGames } from "../functions/api/admin/games.js";
 
 test("Steam request includes app info and played free games and parses minutes", async () => {
   let requested;
@@ -77,6 +78,28 @@ test("empty Steam inventories still record a successful sync", async () => {
   });
   assert.deepEqual(result, { added: 0, updated: 0, unchanged: 0, total: 0, syncedAt: "2026-07-25T20:00:00.000Z" });
   assert.equal(db.sync.last_success_at, "2026-07-25T20:00:00.000Z");
+});
+
+test("admin game lists are never served from browser or shared caches", async () => {
+  const response = await listAdminGames({
+    env: {
+      DB: {
+        prepare(sql) {
+          if (sql.includes("FROM game_items")) return { bind: () => ({ all: async () => ({ results: [] }) }) };
+          if (sql.includes("FROM game_sync_state")) return { first: async () => null };
+          throw new Error(`Unexpected query: ${sql}`);
+        },
+      },
+    },
+    request: new Request("https://blog.muelsyse.us/api/admin/games"),
+  });
+
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("cache-control"), "private, no-store");
+  assert.deepEqual(await response.json(), {
+    items: [],
+    syncState: { lastAttemptAt: null, lastSuccessAt: null, lastSyncedCount: 0, lastError: null },
+  });
 });
 
 function row(overrides) {

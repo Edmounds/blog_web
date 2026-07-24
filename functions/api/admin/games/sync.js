@@ -1,9 +1,15 @@
-import { error, json, requireSameOrigin, syncSteamGames } from "../../../_shared/games.js";
+import { error, getSyncState, json, listGames, requireDb, requireSameOrigin, syncSteamGames } from "../../../_shared/games.js";
 
 export async function onRequestPost({ env, request }) {
   try {
     requireSameOrigin(request);
-    return json(await syncSteamGames(env));
+    const result = await syncSteamGames(env);
+    const db = requireDb(env);
+    const [items, syncState] = await Promise.all([listGames(db), getSyncState(db)]);
+    return json(
+      { ...result, items, syncState },
+      { headers: { "cache-control": "private, no-store" } },
+    );
   } catch (err) {
     if (err instanceof Response) return err;
     const code = typeof err?.code === "string" ? err.code : "STEAM_SYNC_FAILED";

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import { createArtItem, deleteArtItem, getArtItem, listArtItems, updateArtItem } from "../functions/_shared/art.js";
@@ -54,6 +55,13 @@ test("admin deletion keeps D1 metadata when R2 cover deletion fails", async () =
 
   assert.equal(response.status, 500);
   assert.ok(await getArtItem(db, "keep"));
+});
+
+test("art schema allows manual items without source IDs and rejects duplicate sourced items", () => {
+  const schema = readFileSync(new URL("../schema/art.sql", import.meta.url), "utf8");
+  assert.match(schema, /CREATE UNIQUE INDEX IF NOT EXISTS idx_art_items_unique_source_id/);
+  assert.match(schema, /ON art_items\(source, source_id\)/);
+  assert.match(schema, /WHERE source_id IS NOT NULL/);
 });
 
 class FakeD1 {

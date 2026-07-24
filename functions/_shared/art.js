@@ -374,6 +374,21 @@ export async function getArtItem(db, id) {
   return groupArtRows(rows)[0];
 }
 
+export async function findArtItemBySourceId(db, source, sourceId) {
+  if (!sourceId) return undefined;
+  return db.prepare("SELECT id FROM art_items WHERE source = ? AND source_id = ? LIMIT 1").bind(source, sourceId).first();
+}
+
+export function isArtSourceIdConflict(err) {
+  const messages = [];
+  for (let current = err; current && messages.length < 4; current = current.cause) {
+    if (typeof current?.message === "string") messages.push(current.message);
+  }
+  const message = messages.join(" ");
+  return /UNIQUE constraint failed:\s*art_items\.source,\s*art_items\.source_id/i.test(message)
+    || /idx_art_items_unique_source_id/i.test(message);
+}
+
 export async function createArtItem(db, input, storedCover, { id = crypto.randomUUID(), now = new Date() } = {}) {
   const createdAt = now.toISOString();
   const statements = [

@@ -27,5 +27,9 @@ CREATE TABLE IF NOT EXISTS art_item_translations (
 CREATE INDEX IF NOT EXISTS idx_art_items_public_sort
   ON art_items(is_visible, type, collected_on DESC, created_at DESC, id DESC);
 
+CREATE UNIQUE INDEX IF NOT EXISTS idx_art_items_unique_source_id
+  ON art_items(source, source_id)
+  WHERE source_id IS NOT NULL;
+
 CREATE INDEX IF NOT EXISTS idx_art_translations_item
   ON art_item_translations(item_id);

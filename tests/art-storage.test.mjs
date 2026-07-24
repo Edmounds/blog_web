@@ -202,6 +202,59 @@ test("failed item creation cleans up a stored upload that was never referenced",
   assert.equal(bucket.objects.has(key), false);
 });
 
+test("creating the same sourced album twice returns 409 before downloading another cover", async () => {
+  const db = duplicateLookupDb({ id: "existing" });
+  const bucket = new FakeBucket();
+  let coverFetches = 0;
+  const response = await createItem({
+    env: {
+      ART_COVERS: bucket,
+      DB: db,
+      ART_COVER_FETCHER: {
+        async fetch() {
+          coverFetches += 1;
+          return new Response(new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0, 0, 0, 0]), { headers: { "content-type": "image/png" } });
+        },
+      },
+    },
+    request: jsonRequest("POST", albumInput()),
+  });
+
+  assert.equal(response.status, 409);
+  assert.deepEqual(await response.json(), { error: { code: "ART_ALREADY_EXISTS", message: "该专辑已经收藏。" } });
+  assert.equal(coverFetches, 0);
+  assert.equal(bucket.objects.size, 0);
+  assert.equal(db.batchCalls, 0);
+});
+
+test("a concurrent duplicate insert returns 409 and removes its unreferenced cover", async () => {
+  const bucket = new FakeBucket();
+  const db = duplicateRaceDb();
+  const originalConsoleError = console.error;
+  console.error = () => {};
+  let response;
+  try {
+    response = await createItem({
+      env: {
+        ART_COVERS: bucket,
+        DB: db,
+        ART_COVER_FETCHER: {
+          async fetch() {
+            return new Response(new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0, 0, 0, 0]), { headers: { "content-type": "image/png" } });
+          },
+        },
+      },
+      request: jsonRequest("POST", albumInput()),
+    });
+  } finally {
+    console.error = originalConsoleError;
+  }
+
+  assert.equal(response.status, 409);
+  assert.deepEqual(await response.json(), { error: { code: "ART_ALREADY_EXISTS", message: "该专辑已经收藏。" } });
+  assert.equal(bucket.objects.size, 0);
+});
+
 function jsonRequest(method, body) {
   return new Request("https://blog.muelsyse.us/api/admin/art/covers", {
     method, headers: { origin: "https://blog.muelsyse.us", "content-type": "application/json" }, body: JSON.stringify(body),
@@ -219,6 +272,41 @@ function failingCreateDb() {
       return { bind: () => ({}) };
     },
     async batch() { throw new Error("D1 unavailable"); },
+  };
+}
+
+function duplicateLookupDb(existing) {
+  return {
+    batchCalls: 0,
+    prepare(sql) {
+      if (sql.includes("WHERE source = ? AND source_id = ?")) return { bind: () => ({ first: async () => existing }) };
+      if (sql.startsWith("SELECT id FROM art_items WHERE cover_key")) return { bind: () => ({ first: async () => null }) };
+      throw new Error(`Unexpected query: ${sql}`);
+    },
+    async batch() { this.batchCalls += 1; },
+  };
+}
+
+function duplicateRaceDb() {
+  return {
+    prepare(sql) {
+      if (sql.includes("WHERE source = ? AND source_id = ?")) return { bind: () => ({ first: async () => null }) };
+      if (sql.startsWith("SELECT id FROM art_items WHERE cover_key")) return { bind: () => ({ first: async () => null }) };
+      return { bind: () => ({}) };
+    },
+    async batch() {
+      const error = new Error("D1_ERROR: UNIQUE constraint failed: art_items.source, art_items.source_id");
+      error.cause = new Error("UNIQUE constraint failed: art_items.source, art_items.source_id");
+      throw error;
+    },
+  };
+}
+
+function albumInput() {
+  return {
+    type: "music", source: "deezer_music", sourceId: "9007781", isbn: "", originalTitle: "1989 (Deluxe)", releaseDate: "2014-10-27",
+    collectedOn: "2026-07-25", isVisible: true, cover: { kind: "url", url: "https://deezer.test/1989.png" },
+    translations: { "zh-CN": { title: "1989 (Deluxe)", creator: "Taylor Swift", extra: "" } },
   };
 }
 

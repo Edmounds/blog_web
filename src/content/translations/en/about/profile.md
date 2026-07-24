@@ -21,4 +21,5 @@ Third-year student at the National Excellence Engineer College of Chongqing Univ
 
 ## Acknowledgments
 
-![The Movie Database](/images/tmdb-logo.svg)  This website uses the TMDB API
+![The Movie Database](/images/tmdb-logo.svg)
+This website uses the TMDB API

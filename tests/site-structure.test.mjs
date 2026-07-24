@@ -104,6 +104,64 @@ test("music administration uses one Deezer search field and preserves selectable
   assert.doesNotMatch(read("src/lib/cover-api.ts"), /itunes\.apple\.com|ItunesSearchResponse/);
 });
 
+test("music administration paginates ten candidates without clearing search context", () => {
+  const admin = read("src/components/domain/ArtAdmin.tsx");
+
+  assert.match(admin, /const MUSIC_PAGE_SIZE = 10/);
+  assert.match(admin, /const \[candidatePage, setCandidatePage\] = useState\(1\)/);
+  assert.match(admin, /candidates\.slice\(candidatePageStart, candidatePageStart \+ MUSIC_PAGE_SIZE\)/);
+  assert.match(admin, /setCandidates\(data\.items\); setCandidatePage\(1\)/);
+  assert.match(admin, /changeType[\s\S]*setCandidatePage\(1\)/);
+  assert.match(admin, /第 \{candidatePage\} \/ \{candidatePageCount\} 页/);
+  assert.match(admin, /aria-label="上一页"/);
+  assert.match(admin, /aria-label="下一页"/);
+  assert.doesNotMatch(admin, /setCandidates\(\[\]\)[\s\S]{0,200}收藏已新增/);
+});
+
+test("album covers use square contain layers while non-music covers remain posters", () => {
+  const admin = read("src/components/domain/ArtAdmin.tsx");
+  const card = read("src/components/cards/ArtCard.astro");
+
+  assert.match(admin, /function AlbumCover/);
+  assert.match(admin, /aspect-square/);
+  assert.match(admin, /aria-hidden="true"[\s\S]*object-cover[\s\S]*blur/);
+  assert.match(admin, /object-contain/);
+  assert.match(admin, /type === "music" \? <AlbumCover/);
+  assert.match(admin, /type === "music" \? <AlbumCover[\s\S]*aspect-\[2\/3\]/);
+  assert.match(card, /item\.type === "music"/);
+  assert.match(card, /aspect-square/);
+  assert.match(card, /aria-hidden="true"/);
+  assert.match(card, /object-contain/);
+  assert.match(card, /aspect-\[2\/3\][\s\S]*object-cover/);
+});
+
+test("art save operations expose independent progress and nearby live feedback", () => {
+  const admin = read("src/components/domain/ArtAdmin.tsx");
+
+  for (const state of ["isSearching", "isSaving", "isTranslating", "isLoadingItems", "isUploading"]) {
+    assert.match(admin, new RegExp(`const \\[${state}, set`));
+  }
+  assert.match(admin, /const \[saveMessage, setSaveMessage\] = useState\(""\)/);
+  assert.match(admin, /aria-live="polite"/);
+  assert.match(admin, /已添加“\$\{savedTitle\}”/);
+  assert.match(admin, /disabled=\{!canSave \|\| isSaving \|\| isTranslating \|\| isUploading\}/);
+  assert.match(admin, /setItems\(\(current\) => \[data\.item,[\s\S]*item\.id !== data\.item\.id/);
+});
+
+test("dynamic art pages revalidate on every visit", () => {
+  const routes = [
+    "src/pages/art/book/index.astro",
+    "src/pages/art/music/index.astro",
+    "src/pages/art/screen/index.astro",
+    "src/pages/art/game/index.astro",
+    "src/pages/[locale]/art/[type]/index.astro",
+  ];
+  for (const route of routes) {
+    assert.match(read(route), /Cache-Control", "public, max-age=0, s-maxage=0, must-revalidate"/);
+    assert.doesNotMatch(read(route), /stale-while-revalidate/);
+  }
+});
+
 test("localized RSS routes and the WakaTime proxy support both server-side key names", () => {
   assert.match(read("src/pages/rss.xml.ts"), /createRssResponse/);
   assert.match(read("src/pages/[locale]/rss.xml.ts"), /createRssResponse/);

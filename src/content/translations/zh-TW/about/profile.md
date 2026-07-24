@@ -16,9 +16,10 @@ portrait: /images/content/about/profile-8646bdb863b8.png
 重慶大學國家卓越工程師學院大三
 
 
-## 聯絡我
+## 聯繫我
 - [i@muelsyse.us](mailto:i@muelsyse.us)
 
 ## 致謝
 
-![The Movie Database](/images/tmdb-logo.svg)  This website uses the TMDB API
+![The Movie Database](/images/tmdb-logo.svg)
+This website uses the TMDB API
