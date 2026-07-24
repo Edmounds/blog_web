@@ -8,8 +8,6 @@ import { createGoogleTranslateClient } from "./lib/google-translate.mjs";
 import { createTranslationProvider } from "./lib/translation-provider.mjs";
 import {
   TRANSLATION_ALGORITHM_VERSION,
-  collectMarkdownSegments,
-  replaceMarkdownSegments,
   translationFingerprint,
 } from "./lib/translate-content.mjs";
 
@@ -27,6 +25,7 @@ const JOURNAL_PATH = path.join(ROOT, "src/i18n/translation-journal.jsonl");
 const provider = createTranslationProvider();
 const googleTranslate = createGoogleTranslateClient();
 const pendingByFingerprint = new Map();
+const activeManifestKeys = new Set();
 const waiters = [];
 let activeRequests = 0;
 const configuredConcurrency = Number.parseInt(process.env.TRANSLATION_CONCURRENCY ?? "3", 10);
@@ -77,23 +76,26 @@ const shouldTranslateKey = (key) => !new Set([
   "publishedAt", "year", "order", "archiveYear", "showOnHome", "showInArchive", "showInTimeline", "draft",
 ]).has(key);
 
-const translateText = async ({ locale, targetLang, key, source, manifest, seed }) => {
+const translateText = async ({ locale, targetLang, key, source, manifest, seed, format = "text", preserveFrontmatterKeys = [] }) => {
   if (!source.trim()) return source;
-  const fingerprint = translationFingerprint(source);
+  const fingerprintSource = format === "markdown-document" ? `markdown-document-v1\0${source}` : source;
+  const fingerprint = translationFingerprint(fingerprintSource);
   const manifestKey = `${locale}:${key}`;
+  activeManifestKeys.add(manifestKey);
   const cached = manifest.entries[manifestKey];
   if (cached?.fingerprint === fingerprint && typeof cached.translation === "string") return cached.translation;
 
   const seeded = seed?.[manifestKey];
-  const sharedKey = `${locale}:${fingerprint}`;
+  const sharedKey = `${locale}:${format}:${fingerprint}`;
   const existing = pendingByFingerprint.get(sharedKey);
   const translation = typeof seeded === "string"
     ? seeded
     : await (existing ?? (() => {
         const promise = runLimited(async () => {
           try {
-            return await provider.translate({ text: source, sourceLang: "ZH", targetLang });
+            return await provider.translate({ text: source, sourceLang: "ZH", targetLang, format, preserveFrontmatterKeys });
           } catch (error) {
+            if (format === "markdown-document") throw error;
             console.warn(`${provider.name} unavailable for ${locale}; using Google Translate fallback (${error.message})`);
             return googleTranslate({ text: source, sourceLang: "ZH", targetLang });
           }
@@ -143,26 +145,65 @@ const translateValue = async ({ value, keyPath, fieldName, locale, targetLang, m
   return value;
 };
 
-const translateMarkdown = async ({ markdown, keyPrefix, locale, targetLang, manifest, seed }) => {
-  const segments = collectMarkdownSegments(markdown);
-  const translated = await Promise.all(segments.map((source, index) => translateText({
-      locale,
-      targetLang,
-      key: `${keyPrefix}.body[${index}]`,
-      source,
-      manifest,
-      seed,
-    })));
-  return replaceMarkdownSegments(markdown, translated);
+const mergeTranslatedData = (source, translated, fieldName = "frontmatter") => {
+  if (typeof source === "string") {
+    if (!shouldTranslateKey(fieldName)) return source;
+    if (typeof translated !== "string") throw new Error(`Translated frontmatter field "${fieldName}" is missing or invalid.`);
+    return translated;
+  }
+  if (Array.isArray(source)) {
+    if (!Array.isArray(translated) || translated.length !== source.length) {
+      throw new Error(`Translated frontmatter field "${fieldName}" changed its structure.`);
+    }
+    return source.map((value, index) => mergeTranslatedData(value, translated[index], fieldName));
+  }
+  if (isPlainObject(source)) {
+    if (!isPlainObject(translated)) throw new Error(`Translated frontmatter field "${fieldName}" changed its structure.`);
+    return Object.fromEntries(Object.entries(source).map(([key, value]) => [
+      key,
+      mergeTranslatedData(value, translated[key], key),
+    ]));
+  }
+  return source;
+};
+
+const unwrapMarkdownFence = (value) => {
+  const trimmed = value.trim();
+  const match = trimmed.match(/^```(?:markdown|md)?\s*\n([\s\S]*?)\n```$/i);
+  return match?.[1] ?? trimmed;
+};
+
+const translateDocument = async ({ raw, keyPrefix, locale, targetLang, manifest }) => {
+  const sourceDocument = raw.replace(/^\uFEFF/, "");
+  const source = matter(sourceDocument);
+  const preserveFrontmatterKeys = Object.keys(source.data).filter((key) => !shouldTranslateKey(key));
+  const translation = await translateText({
+    locale,
+    targetLang,
+    key: `${keyPrefix}.document`,
+    source: sourceDocument,
+    manifest,
+    format: "markdown-document",
+    preserveFrontmatterKeys,
+  });
+  const translated = matter(unwrapMarkdownFence(translation));
+  if (source.content.trim() && !translated.content.trim()) {
+    throw new Error(`Translated document "${keyPrefix}" is missing its Markdown body.`);
+  }
+  return {
+    data: mergeTranslatedData(source.data, translated.data),
+    body: translated.content,
+  };
 };
 
 const writeMarkdown = async (filePath, data, body) => {
   await mkdir(path.dirname(filePath), { recursive: true });
   const yaml = stringifyYaml(data, { lineWidth: 0 }).trimEnd();
-  await writeFile(filePath, `\uFEFF---\n${yaml}\n---\n\n${body.trimStart()}`, "utf8");
+  const normalizedBody = body.trimStart().replace(/[ \t]+$/gm, "");
+  await writeFile(filePath, `\uFEFF---\n${yaml}\n---\n\n${normalizedBody}`, "utf8");
 };
 
-const translateContentFiles = async ({ locale, targetLang, manifest, seed }) => {
+const translateContentFiles = async ({ locale, targetLang, manifest }) => {
   for (const group of CONTENT_GROUPS) {
     const sourceDir = path.join(ROOT, "src/content", group);
     const outputDir = path.join(GENERATED_ROOT, locale, group);
@@ -170,18 +211,9 @@ const translateContentFiles = async ({ locale, targetLang, manifest, seed }) => 
     await mkdir(outputDir, { recursive: true });
     const fileNames = await walkContentFiles(sourceDir);
     await Promise.all(fileNames.map(async (fileName) => {
-      const source = matter(await readFile(path.join(sourceDir, fileName), "utf8"));
+      const raw = await readFile(path.join(sourceDir, fileName), "utf8");
       const keyPrefix = `content.${group}.${fileName.replaceAll(path.sep, ".")}`;
-      const data = await translateValue({
-        value: source.data,
-        keyPath: `${keyPrefix}.frontmatter`,
-        fieldName: "frontmatter",
-        locale,
-        targetLang,
-        manifest,
-        seed,
-      });
-      const body = await translateMarkdown({ markdown: source.content, keyPrefix, locale, targetLang, manifest, seed });
+      const { data, body } = await translateDocument({ raw, keyPrefix, locale, targetLang, manifest });
       await writeMarkdown(path.join(outputDir, fileName), data, body);
     }));
   }
@@ -221,11 +253,12 @@ const main = async () => {
       seed,
     });
     await writeFile(path.join(MESSAGE_OUTPUT, `${locale}.json`), `${JSON.stringify(translatedMessages, null, 2)}\n`, "utf8");
-    await translateContentFiles({ locale, targetLang, manifest, seed });
+    await translateContentFiles({ locale, targetLang, manifest });
   }
 
   const validPrefixes = new Set(LOCALES.map(([locale]) => `${locale}:`));
-  manifest.entries = Object.fromEntries(Object.entries(manifest.entries).filter(([key]) => [...validPrefixes].some((prefix) => key.startsWith(prefix))));
+  manifest.entries = Object.fromEntries(Object.entries(manifest.entries).filter(([key]) =>
+    activeManifestKeys.has(key) && [...validPrefixes].some((prefix) => key.startsWith(prefix))));
   const temporaryManifestPath = `${MANIFEST_PATH}.tmp`;
   await writeFile(temporaryManifestPath, `${JSON.stringify({ version: manifest.version, entries: manifest.entries }, null, 2)}\n`, "utf8");
   await rename(temporaryManifestPath, MANIFEST_PATH);

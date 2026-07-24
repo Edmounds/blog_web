@@ -1,13 +1,13 @@
 ﻿---
+title: 你好
 routeSlug: designing-for-clarity-in-chaos
+description: 我的第一篇部落格文章。
 createdAt: 2026-01-28T00:00:00.000Z
 image: /images/content/blog/designing-for-clarity-in-chaos.png
 published: true
 type: article
-order: 1
-title: 你好
-description: 我的第一篇部落格文章。
 category: 隨筆
+order: 1
 tags:
   - 隨筆
 ---

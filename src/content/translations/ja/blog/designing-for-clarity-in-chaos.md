@@ -1,17 +1,17 @@
 ﻿---
+title: こんにちは
 routeSlug: designing-for-clarity-in-chaos
+description: 私の最初のブログ記事です。
 createdAt: 2026-01-28T00:00:00.000Z
 image: /images/content/blog/designing-for-clarity-in-chaos.png
 published: true
 type: article
+category: 随筆
 order: 1
-title: こんにちは
-description: 私の最初のブログ記事。
-category: エッセイ
 tags:
-  - エッセイ
+  - 随筆
 ---
 
-こんにちは。私のブログへようこそ。
+こんにちは、私のブログへようこそ。
 
-これはここに残す最初の記事であり、ささやかな始まりでもあります。
+これは私がここに残す最初の記事であり、シンプルな始まりでもあります。

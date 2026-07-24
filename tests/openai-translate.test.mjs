@@ -24,6 +24,33 @@ test("OpenAI-compatible client sends a Chat Completions request", async () => {
   assert.match(body.messages[1].content, /你好/);
 });
 
+test("OpenAI-compatible client requests one complete Markdown document translation", async () => {
+  let request;
+  const source = "---\ntitle: 你好\nrouteSlug: hello\n---\n\n第一段。\n\n第二段。";
+  const translate = createOpenAITranslateClient({
+    baseUrl: "https://openai.example/v1",
+    apiKey: "secret",
+    model: "translation-model",
+    fetchImpl: async (_url, init) => {
+      request = JSON.parse(init.body);
+      return new Response(JSON.stringify({ choices: [{ message: { content: source } }] }), { status: 200 });
+    },
+  });
+
+  await translate({
+    text: source,
+    sourceLang: "ZH",
+    targetLang: "EN",
+    format: "markdown-document",
+    preserveFrontmatterKeys: ["routeSlug"],
+  });
+
+  assert.match(request.messages[0].content, /complete Markdown document/);
+  assert.match(request.messages[0].content, /routeSlug/);
+  assert.equal(request.messages[1].content.match(/第一段。/g)?.length, 1);
+  assert.match(request.messages[1].content, /第一段。[\s\S]*第二段。/);
+});
+
 test("OpenAI-compatible client requires all configuration", async () => {
   const translate = createOpenAITranslateClient({ baseUrl: "", apiKey: "", model: "", retries: 1 });
   await assert.rejects(() => translate({ text: "你好", sourceLang: "ZH", targetLang: "EN" }), /OPENAI_BASE_URL, API_KEY, and MODEL/);

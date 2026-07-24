@@ -61,18 +61,6 @@
       "fingerprint": "16f50fd571b21544a86e78a109fd744cc858758149d94b5f3750405c228d270e",
       "translation": "View all posts"
     },
-    "en:messages.site.copy.seriesTitle": {
-      "fingerprint": "505e3c853635cd1d18e95e4037e10160d941ba669a5a17ffe442a2795f9cd0ad",
-      "translation": "Series"
-    },
-    "en:messages.site.copy.seriesDescription": {
-      "fingerprint": "7afb274e489b11e75896f2fe27ad55ea97bac955588763c8adbb25e09b29cc8c",
-      "translation": "Related essays and notes organized around a shared theme."
-    },
-    "en:messages.site.copy.seriesAllPostsCta": {
-      "fingerprint": "478bf8f8d180ed2acd8300d5f159fced1d55045de75620922fdff1504ed2c372",
-      "translation": "View series"
-    },
     "en:messages.site.copy.blogTitle": {
       "fingerprint": "c04ae4903070a1c86185784a5024785c3fe2d7d0c74841daca676c61cd88c5ce",
       "translation": "Blog"
@@ -265,42 +253,6 @@
       "fingerprint": "ec88abbacca586661fdcdd84fdda8533f3c52029ff42485a4a4f33c211145219",
       "translation": "Book collection"
     },
-    "en:content.blog.designing-for-clarity-in-chaos.md.frontmatter.title": {
-      "fingerprint": "111b4642e95b07cfdf398740056d29cf2e9661854bcd2cf96276d51b1bf7d964",
-      "translation": "Hello"
-    },
-    "en:content.blog.designing-for-clarity-in-chaos.md.frontmatter.summary": {
-      "fingerprint": "30ab039606aad612f9f2d6ca10baec2b0f10895e486c55074503c2fd31ad4f0e",
-      "translation": "My first blog post."
-    },
-    "en:content.blog.designing-for-clarity-in-chaos.md.frontmatter.readingTime": {
-      "fingerprint": "f540a0231c84048149616831a68656751c2f82b479db0f09f30aabfedf4d94f0",
-      "translation": "1 min"
-    },
-    "en:content.blog.designing-for-clarity-in-chaos.md.frontmatter.category": {
-      "fingerprint": "c1399bdb4690fa815a358abdd3e3a2e412e87591e6d2f89741c78bc13f9c4348",
-      "translation": "Notes"
-    },
-    "en:content.blog.designing-for-clarity-in-chaos.md.frontmatter.tags[0]": {
-      "fingerprint": "c1399bdb4690fa815a358abdd3e3a2e412e87591e6d2f89741c78bc13f9c4348",
-      "translation": "Notes"
-    },
-    "en:content.blog.designing-for-clarity-in-chaos.md.body[0]": {
-      "fingerprint": "350d1f0f4886a9c66c4abcc5efb5a975b2ebc89768e2ae43929d927ca516ada4",
-      "translation": "Hello, and welcome to my blog."
-    },
-    "en:content.blog.designing-for-clarity-in-chaos.md.body[1]": {
-      "fingerprint": "0f42d7129012f5c959a8431b00d20ab93034687b593ea36f3ca7cba71d811c14",
-      "translation": "This is the first post I am leaving here, and a simple beginning."
-    },
-    "en:content.about.profile.md.body[0]": {
-      "fingerprint": "0c598a16f5e63457c0d3c9c2ccbc10e9a5547d58ada98a7b8dd81bbdf63b5bf0",
-      "translation": "About Me"
-    },
-    "en:content.about.profile.md.body[1]": {
-      "fingerprint": "7b424ff606c16ac322e28eed64d4786185611dddb9d02dc95552f6ebea665af9",
-      "translation": "I care about making complex tools feel calm, clear, and easy to understand. This page records the principles I return to, while the rest of the site holds work, writing, and experiments in progress."
-    },
     "ja:messages.site.brand": {
       "fingerprint": "ce57299bcf666b5743d3d5881081aed689e368822dfa758f831cd43a391cc5ab",
       "translation": "chasen"
@@ -360,18 +312,6 @@
     "ja:messages.site.copy.homeRecentBlogsCta": {
       "fingerprint": "16f50fd571b21544a86e78a109fd744cc858758149d94b5f3750405c228d270e",
       "translation": "すべての記事を見る"
-    },
-    "ja:messages.site.copy.seriesTitle": {
-      "fingerprint": "505e3c853635cd1d18e95e4037e10160d941ba669a5a17ffe442a2795f9cd0ad",
-      "translation": "シリーズ"
-    },
-    "ja:messages.site.copy.seriesDescription": {
-      "fingerprint": "7afb274e489b11e75896f2fe27ad55ea97bac955588763c8adbb25e09b29cc8c",
-      "translation": "共通のテーマでまとめたエッセイとメモ。"
-    },
-    "ja:messages.site.copy.seriesAllPostsCta": {
-      "fingerprint": "478bf8f8d180ed2acd8300d5f159fced1d55045de75620922fdff1504ed2c372",
-      "translation": "シリーズを見る"
     },
     "ja:messages.site.copy.blogTitle": {
       "fingerprint": "c04ae4903070a1c86185784a5024785c3fe2d7d0c74841daca676c61cd88c5ce",
@@ -565,42 +505,6 @@
       "fingerprint": "ec88abbacca586661fdcdd84fdda8533f3c52029ff42485a4a4f33c211145219",
       "translation": "本のコレクション"
     },
-    "ja:content.blog.designing-for-clarity-in-chaos.md.frontmatter.title": {
-      "fingerprint": "111b4642e95b07cfdf398740056d29cf2e9661854bcd2cf96276d51b1bf7d964",
-      "translation": "こんにちは"
-    },
-    "ja:content.blog.designing-for-clarity-in-chaos.md.frontmatter.summary": {
-      "fingerprint": "30ab039606aad612f9f2d6ca10baec2b0f10895e486c55074503c2fd31ad4f0e",
-      "translation": "私の最初のブログ記事です。"
-    },
-    "ja:content.blog.designing-for-clarity-in-chaos.md.frontmatter.readingTime": {
-      "fingerprint": "f540a0231c84048149616831a68656751c2f82b479db0f09f30aabfedf4d94f0",
-      "translation": "1分"
-    },
-    "ja:content.blog.designing-for-clarity-in-chaos.md.frontmatter.category": {
-      "fingerprint": "c1399bdb4690fa815a358abdd3e3a2e412e87591e6d2f89741c78bc13f9c4348",
-      "translation": "エッセイ"
-    },
-    "ja:content.blog.designing-for-clarity-in-chaos.md.frontmatter.tags[0]": {
-      "fingerprint": "c1399bdb4690fa815a358abdd3e3a2e412e87591e6d2f89741c78bc13f9c4348",
-      "translation": "エッセイ"
-    },
-    "ja:content.blog.designing-for-clarity-in-chaos.md.body[0]": {
-      "fingerprint": "350d1f0f4886a9c66c4abcc5efb5a975b2ebc89768e2ae43929d927ca516ada4",
-      "translation": "こんにちは。私のブログへようこそ。"
-    },
-    "ja:content.blog.designing-for-clarity-in-chaos.md.body[1]": {
-      "fingerprint": "0f42d7129012f5c959a8431b00d20ab93034687b593ea36f3ca7cba71d811c14",
-      "translation": "これはここに残す最初の記事であり、ささやかな始まりでもあります。"
-    },
-    "ja:content.about.profile.md.body[0]": {
-      "fingerprint": "0c598a16f5e63457c0d3c9c2ccbc10e9a5547d58ada98a7b8dd81bbdf63b5bf0",
-      "translation": "私について"
-    },
-    "ja:content.about.profile.md.body[1]": {
-      "fingerprint": "7b424ff606c16ac322e28eed64d4786185611dddb9d02dc95552f6ebea665af9",
-      "translation": "私は、複雑なツールを穏やかで、明確で、理解しやすいものにする方法に関心を持っています。このページは私が繰り返し立ち返る原則を記録し、ウェブサイトの他の部分は進行中の作業、記事、実験を保存しています。"
-    },
     "zh-TW:messages.site.nav.home": {
       "fingerprint": "b01c3ab180d63fb733ba9bb6359cb462c79b549e4b09475588db9f09e34356f5",
       "translation": "首頁"
@@ -664,18 +568,6 @@
     "zh-TW:messages.site.copy.homeRecentBlogsCta": {
       "fingerprint": "16f50fd571b21544a86e78a109fd744cc858758149d94b5f3750405c228d270e",
       "translation": "查看全部文章"
-    },
-    "zh-TW:messages.site.copy.seriesTitle": {
-      "fingerprint": "505e3c853635cd1d18e95e4037e10160d941ba669a5a17ffe442a2795f9cd0ad",
-      "translation": "系列"
-    },
-    "zh-TW:messages.site.copy.seriesDescription": {
-      "fingerprint": "7afb274e489b11e75896f2fe27ad55ea97bac955588763c8adbb25e09b29cc8c",
-      "translation": "圍繞同一主題整理的文章與筆記。"
-    },
-    "zh-TW:messages.site.copy.seriesAllPostsCta": {
-      "fingerprint": "478bf8f8d180ed2acd8300d5f159fced1d55045de75620922fdff1504ed2c372",
-      "translation": "查看系列"
     },
     "zh-TW:messages.site.copy.searchPosts": {
       "fingerprint": "81bcc65916c7a1c2834fe3be32eb9b521dab10a85fb16f08f2f45b421ab47abc",
@@ -865,42 +757,6 @@
       "fingerprint": "e4e6a2c76f000b877592b956e749b4bcf6081401d19d3bc2006effa4593f17df",
       "translation": "專輯收藏"
     },
-    "zh-TW:content.blog.designing-for-clarity-in-chaos.md.frontmatter.title": {
-      "fingerprint": "111b4642e95b07cfdf398740056d29cf2e9661854bcd2cf96276d51b1bf7d964",
-      "translation": "你好"
-    },
-    "zh-TW:content.blog.designing-for-clarity-in-chaos.md.frontmatter.readingTime": {
-      "fingerprint": "f540a0231c84048149616831a68656751c2f82b479db0f09f30aabfedf4d94f0",
-      "translation": "1 分鐘"
-    },
-    "zh-TW:content.blog.designing-for-clarity-in-chaos.md.frontmatter.summary": {
-      "fingerprint": "30ab039606aad612f9f2d6ca10baec2b0f10895e486c55074503c2fd31ad4f0e",
-      "translation": "我的第一篇部落格文章。"
-    },
-    "zh-TW:content.blog.designing-for-clarity-in-chaos.md.frontmatter.category": {
-      "fingerprint": "c1399bdb4690fa815a358abdd3e3a2e412e87591e6d2f89741c78bc13f9c4348",
-      "translation": "隨筆"
-    },
-    "zh-TW:content.blog.designing-for-clarity-in-chaos.md.frontmatter.tags[0]": {
-      "fingerprint": "c1399bdb4690fa815a358abdd3e3a2e412e87591e6d2f89741c78bc13f9c4348",
-      "translation": "隨筆"
-    },
-    "zh-TW:content.blog.designing-for-clarity-in-chaos.md.body[1]": {
-      "fingerprint": "0f42d7129012f5c959a8431b00d20ab93034687b593ea36f3ca7cba71d811c14",
-      "translation": "這是我在這裡留下的第一篇文章，也是一個簡單的開始。"
-    },
-    "zh-TW:content.blog.designing-for-clarity-in-chaos.md.body[0]": {
-      "fingerprint": "350d1f0f4886a9c66c4abcc5efb5a975b2ebc89768e2ae43929d927ca516ada4",
-      "translation": "你好，歡迎來到我的部落格。"
-    },
-    "zh-TW:content.about.profile.md.body[1]": {
-      "fingerprint": "847ae136f04b56c8083099cf99b5734eff8d707c96dbe2429d0eba35102bfe2a",
-      "translation": "這裡是我安靜的個人空間——寫文章、記筆記、記錄看過的書和電影、分享旅行。不是社交媒體，沒有通知和點讚焦慮，只有文字、照片和一些記錄。 不喜歡社交軟體那種高強度對個人生活的影響和侵入"
-    },
-    "zh-TW:content.about.profile.md.body[0]": {
-      "fingerprint": "0c598a16f5e63457c0d3c9c2ccbc10e9a5547d58ada98a7b8dd81bbdf63b5bf0",
-      "translation": "關於我"
-    },
     "en:messages.site.nav.screen": {
       "fingerprint": "67c4c3f68bed715f9862ab1d80778a8a41d3189e2bed4737e158e0990fbf3dcd",
       "translation": "Screen"
@@ -989,10 +845,6 @@
       "fingerprint": "c4cd7de18e023c267bb3e4ca79ac8a48009ce89324708ac6a6daca93be904759",
       "translation": "Short notes and phased ideas."
     },
-    "en:content.blog.designing-for-clarity-in-chaos.md.frontmatter.description": {
-      "fingerprint": "30ab039606aad612f9f2d6ca10baec2b0f10895e486c55074503c2fd31ad4f0e",
-      "translation": "My first blog post."
-    },
     "ja:messages.site.nav.project": {
       "fingerprint": "cb891134c80f667c79dd8c76e4d850a3442640178df3849775dea39058627655",
       "translation": "プロジェクト"
@@ -1008,10 +860,6 @@
     "ja:messages.site.page.projectsDescription": {
       "fingerprint": "ce8e6e4d214ac64d311082e6561d5ea00655bc89e16c54b4293379dd730299e4",
       "translation": "プロジェクト、作品と実験。"
-    },
-    "ja:content.blog.designing-for-clarity-in-chaos.md.frontmatter.description": {
-      "fingerprint": "30ab039606aad612f9f2d6ca10baec2b0f10895e486c55074503c2fd31ad4f0e",
-      "translation": "私の最初のブログ記事。"
     },
     "zh-TW:messages.site.nav.note": {
       "fingerprint": "4bdb9d51affa6422e7d3925f2233d13ae3808c76b635b3dabe958aee5ecbd0e3",
@@ -1029,309 +877,29 @@
       "fingerprint": "ce8e6e4d214ac64d311082e6561d5ea00655bc89e16c54b4293379dd730299e4",
       "translation": "項目、作品與實驗。"
     },
-    "zh-TW:content.blog.designing-for-clarity-in-chaos.md.frontmatter.description": {
-      "fingerprint": "30ab039606aad612f9f2d6ca10baec2b0f10895e486c55074503c2fd31ad4f0e",
-      "translation": "我的第一篇部落格文章。"
-    },
-    "en:content.note..empty.md.frontmatter.title": {
-      "fingerprint": "effa77d402d9c784f1f6e94e87dc0ce72a582cbfebce01a3bc33b9f8c60eaf6d",
-      "translation": "Empty Note Placeholder"
-    },
-    "en:content.note..empty.md.frontmatter.description": {
-      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
-      "translation": "Not published."
-    },
-    "en:content.project..empty.md.frontmatter.description": {
-      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
-      "translation": "Not published."
-    },
-    "en:content.project..empty.md.frontmatter.title": {
-      "fingerprint": "d0226270f1e2d2069e1e34c79e8312d741e8c19a82bd26a2f45f91c578857b2a",
-      "translation": "Empty Project Placeholder"
-    },
-    "ja:content.note..empty.md.frontmatter.description": {
-      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
-      "translation": "未公開。"
-    },
-    "ja:content.note..empty.md.frontmatter.title": {
-      "fingerprint": "effa77d402d9c784f1f6e94e87dc0ce72a582cbfebce01a3bc33b9f8c60eaf6d",
-      "translation": "空のノートのプレースホルダー"
-    },
-    "ja:content.project..empty.md.frontmatter.description": {
-      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
-      "translation": "未公開。"
-    },
-    "ja:content.project..empty.md.frontmatter.title": {
-      "fingerprint": "d0226270f1e2d2069e1e34c79e8312d741e8c19a82bd26a2f45f91c578857b2a",
-      "translation": "空のプロジェクトプレースホルダー"
-    },
-    "zh-TW:content.note..empty.md.frontmatter.description": {
-      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
-      "translation": "未出版。"
-    },
-    "zh-TW:content.note..empty.md.frontmatter.title": {
-      "fingerprint": "effa77d402d9c784f1f6e94e87dc0ce72a582cbfebce01a3bc33b9f8c60eaf6d",
-      "translation": "空白筆記佔位符"
-    },
-    "zh-TW:content.project..empty.md.frontmatter.description": {
-      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
-      "translation": "未出版。"
-    },
-    "zh-TW:content.project..empty.md.frontmatter.title": {
-      "fingerprint": "d0226270f1e2d2069e1e34c79e8312d741e8c19a82bd26a2f45f91c578857b2a",
-      "translation": "空白專案佔位符"
-    },
-    "en:content.note._empty.md.frontmatter.title": {
-      "fingerprint": "effa77d402d9c784f1f6e94e87dc0ce72a582cbfebce01a3bc33b9f8c60eaf6d",
-      "translation": "Empty Note Placeholder"
-    },
-    "en:content.note._empty.md.frontmatter.description": {
-      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
-      "translation": "Not published."
-    },
-    "en:content.project._empty.md.frontmatter.description": {
-      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
-      "translation": "Not published."
-    },
-    "en:content.project._empty.md.frontmatter.title": {
-      "fingerprint": "d0226270f1e2d2069e1e34c79e8312d741e8c19a82bd26a2f45f91c578857b2a",
-      "translation": "Empty Project Placeholder"
-    },
-    "ja:content.note._empty.md.frontmatter.description": {
-      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
-      "translation": "未公開。"
-    },
-    "ja:content.note._empty.md.frontmatter.title": {
-      "fingerprint": "effa77d402d9c784f1f6e94e87dc0ce72a582cbfebce01a3bc33b9f8c60eaf6d",
-      "translation": "空のノートのプレースホルダー"
-    },
-    "ja:content.project._empty.md.frontmatter.description": {
-      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
-      "translation": "未公開。"
-    },
-    "ja:content.project._empty.md.frontmatter.title": {
-      "fingerprint": "d0226270f1e2d2069e1e34c79e8312d741e8c19a82bd26a2f45f91c578857b2a",
-      "translation": "空のプロジェクトプレースホルダー"
-    },
-    "zh-TW:content.note._empty.md.frontmatter.title": {
-      "fingerprint": "effa77d402d9c784f1f6e94e87dc0ce72a582cbfebce01a3bc33b9f8c60eaf6d",
-      "translation": "空白筆記佔位符"
-    },
-    "zh-TW:content.note._empty.md.frontmatter.description": {
-      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
-      "translation": "未發表。"
-    },
-    "zh-TW:content.project._empty.md.frontmatter.description": {
-      "fingerprint": "f70d755a1761bf700fb608bc514ef833112e159eaf239e6c4fb640073d07339d",
-      "translation": "未發表。"
-    },
-    "zh-TW:content.project._empty.md.frontmatter.title": {
-      "fingerprint": "d0226270f1e2d2069e1e34c79e8312d741e8c19a82bd26a2f45f91c578857b2a",
-      "translation": "空白專案佔位符"
-    },
-    "en:content.about.profile.md.frontmatter.city": {
-      "fingerprint": "689727cf08aebe1105f0d96500bffd365526649bb52a83feb2a1de690e487c5f",
-      "translation": "Chongqing, China"
-    },
-    "en:content.about.profile.md.frontmatter.major": {
-      "fingerprint": "0afaefc3059445522ac80ef634f42f571cde463a1327391dbe45bc6ff92209c9",
-      "translation": "Product Design"
-    },
-    "en:content.about.profile.md.frontmatter.motto": {
-      "fingerprint": "19d94f4cf6b0a73d29284c93c34823f1eff30d705a8de9a8a9129138050bffcc",
-      "translation": "I focus on making complex tools feel calm and readable."
-    },
-    "en:content.about.profile.md.body[2]": {
-      "fingerprint": "8b9ad50a9c85b0aec4fda51e06b27895a1e397ea6c44148e3ec2398376041a37",
-      "translation": "Current Focus"
-    },
-    "en:content.about.profile.md.body[3]": {
-      "fingerprint": "1f9eb3244bff1378f4f82c5de1a6727422533064160cab4065042da4d2fe9ab6",
-      "translation": "Design Systems"
-    },
-    "en:content.about.profile.md.body[4]": {
-      "fingerprint": "fefb38d9b3e3a81da2edb94c2db5d7ea1d9a8df6a25688c5840a7252421bb409",
-      "translation": "Building consistent visual languages and reusable product foundations."
-    },
-    "en:content.about.profile.md.body[5]": {
-      "fingerprint": "dbba58f50f4ebc4f73617d59072e339ae31b5e12c39ff6153f69c2c660000231",
-      "translation": "AI Interfaces"
-    },
-    "en:content.about.profile.md.body[6]": {
-      "fingerprint": "d029d656f5eb23a9e28157e9a110928f499d4082fd6a814271e5089d5ad4d2dc",
-      "translation": "Exploring natural-language interaction and new ways for people to work with intelligent tools."
-    },
-    "en:content.about.profile.md.body[7]": {
-      "fingerprint": "67a00167d0dc80b09e7816d5ffe97d6b0eec45ca61d0a8648bcdac8ee91aa6fb",
-      "translation": "Experience"
-    },
-    "en:content.about.profile.md.body[8]": {
-      "fingerprint": "b64094a579f0641a63351088886e3ecc2f64fa76016deb5ca2bdb10c6ec5cb7e",
-      "translation": "Product Designer"
-    },
-    "en:content.about.profile.md.body[9]": {
-      "fingerprint": "b8aa60c27934ab757d90279c4d79d1afa63b111a5e91617d8c41477a48e1685e",
-      "translation": "Present, independent. Designing and documenting digital products, interfaces, and personal experiments."
-    },
-    "en:content.about.profile.md.body[10]": {
-      "fingerprint": "cc8b0411d6449b76f2556f94c27e901148316357c49d03df6e0bd8d03ec0e3a5",
-      "translation": "Contact"
-    },
-    "en:content.about.profile.md.body[11]": {
-      "fingerprint": "d029d656f5eb23a9e28157e9a110928f499d4082fd6a814271e5089d5ad4d2dc",
-      "translation": "GitHub"
-    },
-    "en:content.about.profile.md.body[12]": {
-      "fingerprint": "67a00167d0dc80b09e7816d5ffe97d6b0eec45ca61d0a8648bcdac8ee91aa6fb",
-      "translation": "Bilibili"
-    },
-    "en:content.about.profile.md.body[13]": {
-      "fingerprint": "b64094a579f0641a63351088886e3ecc2f64fa76016deb5ca2bdb10c6ec5cb7e",
-      "translation": "i@muelsyse.us"
-    },
-    "en:content.about.profile.md.body[14]": {
-      "fingerprint": "b8aa60c27934ab757d90279c4d79d1afa63b111a5e91617d8c41477a48e1685e",
-      "translation": "Credits"
-    },
-    "en:content.about.profile.md.body[15]": {
-      "fingerprint": "cc8b0411d6449b76f2556f94c27e901148316357c49d03df6e0bd8d03ec0e3a5",
-      "translation": "This product uses the TMDB API but is not endorsed or certified by TMDB."
-    },
-    "ja:content.about.profile.md.frontmatter.city": {
-      "fingerprint": "689727cf08aebe1105f0d96500bffd365526649bb52a83feb2a1de690e487c5f",
-      "translation": "中国重慶"
-    },
-    "ja:content.about.profile.md.frontmatter.major": {
-      "fingerprint": "0afaefc3059445522ac80ef634f42f571cde463a1327391dbe45bc6ff92209c9",
-      "translation": "ロボット工学"
-    },
-    "ja:content.about.profile.md.frontmatter.motto": {
-      "fingerprint": "19d94f4cf6b0a73d29284c93c34823f1eff30d705a8de9a8a9129138050bffcc",
-      "translation": "シンプルに保て、愚か者"
-    },
-    "ja:content.about.profile.md.body[3]": {
-      "fingerprint": "1f9eb3244bff1378f4f82c5de1a6727422533064160cab4065042da4d2fe9ab6",
-      "translation": "プロダクトデザイナー"
-    },
-    "ja:content.about.profile.md.body[2]": {
-      "fingerprint": "8b9ad50a9c85b0aec4fda51e06b27895a1e397ea6c44148e3ec2398376041a37",
-      "translation": "経験"
-    },
-    "ja:content.about.profile.md.body[4]": {
-      "fingerprint": "fefb38d9b3e3a81da2edb94c2db5d7ea1d9a8df6a25688c5840a7252421bb409",
-      "translation": "現在、独立して創作。デジタルプロダクト、インターフェース、個人実験をデザインし記録する。"
-    },
-    "ja:content.about.profile.md.body[7]": {
-      "fingerprint": "67a00167d0dc80b09e7816d5ffe97d6b0eec45ca61d0a8648bcdac8ee91aa6fb",
-      "translation": "ビリビリ"
-    },
-    "ja:content.about.profile.md.body[6]": {
-      "fingerprint": "d029d656f5eb23a9e28157e9a110928f499d4082fd6a814271e5089d5ad4d2dc",
-      "translation": "GitHub"
-    },
-    "ja:content.about.profile.md.body[8]": {
-      "fingerprint": "b64094a579f0641a63351088886e3ecc2f64fa76016deb5ca2bdb10c6ec5cb7e",
-      "translation": "i@muelsyse.us"
-    },
-    "ja:content.about.profile.md.body[5]": {
-      "fingerprint": "dbba58f50f4ebc4f73617d59072e339ae31b5e12c39ff6153f69c2c660000231",
-      "translation": "私に連絡してください"
-    },
-    "ja:content.about.profile.md.body[11]": {
-      "fingerprint": "d029d656f5eb23a9e28157e9a110928f499d4082fd6a814271e5089d5ad4d2dc",
-      "translation": "GitHub"
-    },
-    "ja:content.about.profile.md.body[10]": {
-      "fingerprint": "cc8b0411d6449b76f2556f94c27e901148316357c49d03df6e0bd8d03ec0e3a5",
-      "translation": "この製品はTMDB APIを使用していますが、TMDBによって承認または認定されていません。"
-    },
-    "ja:content.about.profile.md.body[9]": {
-      "fingerprint": "b8aa60c27934ab757d90279c4d79d1afa63b111a5e91617d8c41477a48e1685e",
-      "translation": "謝辞"
-    },
-    "ja:content.about.profile.md.body[13]": {
-      "fingerprint": "b64094a579f0641a63351088886e3ecc2f64fa76016deb5ca2bdb10c6ec5cb7e",
-      "translation": "i@muelsyse.us"
-    },
-    "ja:content.about.profile.md.body[14]": {
-      "fingerprint": "b8aa60c27934ab757d90279c4d79d1afa63b111a5e91617d8c41477a48e1685e",
-      "translation": "謝辞"
-    },
-    "ja:content.about.profile.md.body[12]": {
-      "fingerprint": "67a00167d0dc80b09e7816d5ffe97d6b0eec45ca61d0a8648bcdac8ee91aa6fb",
-      "translation": "ビリビリ"
-    },
-    "ja:content.about.profile.md.body[15]": {
-      "fingerprint": "cc8b0411d6449b76f2556f94c27e901148316357c49d03df6e0bd8d03ec0e3a5",
-      "translation": "この製品はTMDB APIを使用していますが、TMDBによって推奨または認定されていません。"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.major": {
-      "fingerprint": "0afaefc3059445522ac80ef634f42f571cde463a1327391dbe45bc6ff92209c9",
-      "translation": "機器人工程"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.city": {
-      "fingerprint": "689727cf08aebe1105f0d96500bffd365526649bb52a83feb2a1de690e487c5f",
-      "translation": "中國重慶"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.motto": {
-      "fingerprint": "19d94f4cf6b0a73d29284c93c34823f1eff30d705a8de9a8a9129138050bffcc",
-      "translation": "保持簡單，笨蛋"
-    },
-    "zh-TW:content.about.profile.md.body[2]": {
-      "fingerprint": "8b9ad50a9c85b0aec4fda51e06b27895a1e397ea6c44148e3ec2398376041a37",
-      "translation": "經歷"
-    },
-    "zh-TW:content.about.profile.md.body[3]": {
-      "fingerprint": "dbba58f50f4ebc4f73617d59072e339ae31b5e12c39ff6153f69c2c660000231",
-      "translation": "聯繫我"
-    },
-    "zh-TW:content.about.profile.md.body[4]": {
-      "fingerprint": "d029d656f5eb23a9e28157e9a110928f499d4082fd6a814271e5089d5ad4d2dc",
-      "translation": "GitHub"
-    },
-    "zh-TW:content.about.profile.md.body[7]": {
-      "fingerprint": "b8aa60c27934ab757d90279c4d79d1afa63b111a5e91617d8c41477a48e1685e",
-      "translation": "致謝"
-    },
-    "zh-TW:content.about.profile.md.body[5]": {
-      "fingerprint": "67a00167d0dc80b09e7816d5ffe97d6b0eec45ca61d0a8648bcdac8ee91aa6fb",
-      "translation": "嗶哩嗶哩"
-    },
-    "zh-TW:content.about.profile.md.body[8]": {
-      "fingerprint": "cc8b0411d6449b76f2556f94c27e901148316357c49d03df6e0bd8d03ec0e3a5",
-      "translation": "本產品使用 TMDB API，但並未獲得 TMDB 的認可或認證。"
-    },
-    "zh-TW:content.about.profile.md.body[10]": {
-      "fingerprint": "dbba58f50f4ebc4f73617d59072e339ae31b5e12c39ff6153f69c2c660000231",
-      "translation": "聯繫我"
-    },
-    "zh-TW:content.about.profile.md.body[6]": {
-      "fingerprint": "b64094a579f0641a63351088886e3ecc2f64fa76016deb5ca2bdb10c6ec5cb7e",
-      "translation": "i@muelsyse.us"
-    },
-    "zh-TW:content.about.profile.md.body[9]": {
-      "fingerprint": "fefb38d9b3e3a81da2edb94c2db5d7ea1d9a8df6a25688c5840a7252421bb409",
-      "translation": "現在，獨立創作。設計並記錄數位產品、介面和個人實驗。"
-    },
-    "zh-TW:content.about.profile.md.body[11]": {
-      "fingerprint": "d029d656f5eb23a9e28157e9a110928f499d4082fd6a814271e5089d5ad4d2dc",
-      "translation": "GitHub"
-    },
-    "zh-TW:content.about.profile.md.body[13]": {
-      "fingerprint": "b64094a579f0641a63351088886e3ecc2f64fa76016deb5ca2bdb10c6ec5cb7e",
-      "translation": "i@muelsyse.us"
-    },
-    "zh-TW:content.about.profile.md.body[14]": {
-      "fingerprint": "b8aa60c27934ab757d90279c4d79d1afa63b111a5e91617d8c41477a48e1685e",
-      "translation": "致謝"
-    },
-    "zh-TW:content.about.profile.md.body[12]": {
-      "fingerprint": "67a00167d0dc80b09e7816d5ffe97d6b0eec45ca61d0a8648bcdac8ee91aa6fb",
-      "translation": "嗶哩嗶哩"
-    },
-    "zh-TW:content.about.profile.md.body[15]": {
-      "fingerprint": "cc8b0411d6449b76f2556f94c27e901148316357c49d03df6e0bd8d03ec0e3a5",
-      "translation": "本產品使用 TMDB API，但並未獲得 TMDB 的認可或認證。"
+    "en:content.blog.designing-for-clarity-in-chaos.md.document": {
+      "fingerprint": "110043051f81e6aa0a55f375166b16cd77866ae5a4597705848e24e81c28bd1f",
+      "translation": "---\ntitle: Hello\nrouteSlug: designing-for-clarity-in-chaos\ndescription: My first blog post.\ncreatedAt: 2026-01-28\nimage: /images/content/blog/designing-for-clarity-in-chaos.png\npublished: true\ntype: article\ncategory: Essay\norder: 1\ntags:\n  - Essay\n---\n\nHello, welcome to my blog.\n\nThis is the first article I've left here, and also a simple beginning."
+    },
+    "en:content.about.profile.md.document": {
+      "fingerprint": "9ec8ea8a42b2c86891b014ca9f31f4d2d0bedac779f78503c7d0c01912ea4874",
+      "translation": "---\nname: 你今天睡够八小时了吗\ncity: Chongqing, China\nmajor: Robotics Engineering\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile.png\n---\n\n## About Me\n\nThis is my quiet personal space—writing articles, taking notes, recording books and movies I've watched, and sharing travels. It's not social media; there's no notification or like anxiety, only text, photos, and some records. I don't like the high-intensity impact and intrusion of social apps on personal life.\n\n## Experience\n\n## Contact Me\n\n- [GitHub](https://github.com/Edmounds)\n- [Bilibili](https://space.bilibili.com/397591871)\n- [i@muelsyse.us](mailto:i@muelsyse.us)\n\n## Acknowledgments\n\n![The Movie Database](/images/tmdb-logo.svg)\n\nThis product uses the TMDB API but is not endorsed or certified by TMDB."
+    },
+    "ja:content.blog.designing-for-clarity-in-chaos.md.document": {
+      "fingerprint": "110043051f81e6aa0a55f375166b16cd77866ae5a4597705848e24e81c28bd1f",
+      "translation": "---\ntitle: こんにちは\nrouteSlug: designing-for-clarity-in-chaos\ndescription: 私の最初のブログ記事です。\ncreatedAt: 2026-01-28\nimage: /images/content/blog/designing-for-clarity-in-chaos.png\npublished: true\ntype: article\ncategory: 随筆\norder: 1\ntags:\n  - 随筆\n---\n\nこんにちは、私のブログへようこそ。\n\nこれは私がここに残す最初の記事であり、シンプルな始まりでもあります。"
+    },
+    "ja:content.about.profile.md.document": {
+      "fingerprint": "9ec8ea8a42b2c86891b014ca9f31f4d2d0bedac779f78503c7d0c01912ea4874",
+      "translation": "---\nname: 你今天睡够八小时了吗\ncity: 中国重慶\nmajor: ロボット工学\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile.png\n---\n\n## 私について\n\nここは私の静かな個人空間です——記事を書き、ノートを取り、読んだ本や映画を記録し、旅行を共有します。ソーシャルメディアではなく、通知や「いいね」の不安もなく、文字、写真、そしていくつかの記録だけがあります。ソーシャルソフトウェアのような個人生活への高強度の影響と侵入は好きではありません。\n\n## 経歴\n\n## お問い合わせ\n\n- [GitHub](https://github.com/Edmounds)\n- [Bilibili](https://space.bilibili.com/397591871)\n- [i@muelsyse.us](mailto:i@muelsyse.us)\n\n## 謝辞\n\n![The Movie Database](/images/tmdb-logo.svg)\n\nこの製品はTMDB APIを使用していますが、TMDBによって推奨または認定されたものではありません。"
+    },
+    "zh-TW:content.blog.designing-for-clarity-in-chaos.md.document": {
+      "fingerprint": "110043051f81e6aa0a55f375166b16cd77866ae5a4597705848e24e81c28bd1f",
+      "translation": "---\ntitle: 你好\nrouteSlug: designing-for-clarity-in-chaos\ndescription: 我的第一篇部落格文章。\ncreatedAt: 2026-01-28\nimage: /images/content/blog/designing-for-clarity-in-chaos.png\npublished: true\ntype: article\ncategory: 隨筆\norder: 1\ntags:\n  - 隨筆\n---\n\n你好，歡迎來到我的部落格。\n\n這是我在這裡留下的第一篇文章，也是一個簡單的開始。"
+    },
+    "zh-TW:content.about.profile.md.document": {
+      "fingerprint": "9ec8ea8a42b2c86891b014ca9f31f4d2d0bedac779f78503c7d0c01912ea4874",
+      "translation": "---\nname: 你今天睡够八小时了吗\ncity: 中國重慶\nmajor: 機器人工程\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile.png\n---\n\n## 關於我\n\n這裡是我安靜的個人空間——寫文章、記筆記、記錄看過的書和電影、分享旅行。不是社交媒體，沒有通知和按讚焦慮，只有文字、照片和一些記錄。 不喜歡社交軟體那種高強度對個人生活的影響和侵入 \n\n## 經歷\n\n## 聯絡我\n\n- [GitHub](https://github.com/Edmounds)\n- [Bilibili](https://space.bilibili.com/397591871)\n- [i@muelsyse.us](mailto:i@muelsyse.us)\n\n## 致謝\n\n![The Movie Database](/images/tmdb-logo.svg)\n\nThis product uses the TMDB API but is not endorsed or certified by TMDB."
     }
   }
 }

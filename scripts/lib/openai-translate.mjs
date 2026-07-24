@@ -17,12 +17,23 @@ export const createOpenAITranslateClient = ({
   const normalizedBaseUrl = baseUrl?.trim().replace(/\/+$/, "");
   const endpoint = normalizedBaseUrl ? `${normalizedBaseUrl}/chat/completions` : undefined;
 
-  return async ({ text, sourceLang, targetLang }) => {
+  return async ({ text, sourceLang, targetLang, format = "text", preserveFrontmatterKeys = [] }) => {
     if (!normalizedBaseUrl || !apiKey?.trim() || !model?.trim()) {
       throw new Error("OPENAI_BASE_URL, API_KEY, and MODEL are required when SERVICE_TYPE=openai and translations are missing or stale.");
     }
 
     const targetLanguage = TARGET_LANGUAGE_NAMES[targetLang] ?? targetLang;
+    const systemPrompt = format === "markdown-document"
+      ? [
+          "Translate the complete Markdown document accurately so terminology and tone remain consistent across the whole document.",
+          "Preserve the YAML frontmatter delimiters and field names, Markdown structure, links, image paths, HTML, inline code, and code blocks.",
+          "Do not change URLs, paths, slugs, identifiers, dates, booleans, or numbers.",
+          preserveFrontmatterKeys.length
+            ? `Keep the values of these YAML frontmatter fields unchanged: ${preserveFrontmatterKeys.join(", ")}.`
+            : "",
+          "Return only the complete translated document without explanations or code fences.",
+        ].filter(Boolean).join(" ")
+      : "Translate the user's text accurately. Preserve Markdown and formatting. Return only the translated text without explanations or quotation marks.";
     let lastError;
     for (let attempt = 1; attempt <= retries; attempt += 1) {
       try {
@@ -37,7 +48,7 @@ export const createOpenAITranslateClient = ({
             messages: [
               {
                 role: "system",
-                content: "Translate the user's text accurately. Preserve Markdown and formatting. Return only the translated text without explanations or quotation marks.",
+                content: systemPrompt,
               },
               {
                 role: "user",

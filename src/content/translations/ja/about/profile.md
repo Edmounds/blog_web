@@ -1,31 +1,25 @@
 ﻿---
 name: 你今天睡够八小时了吗
-portrait: /images/content/about/profile.png
 city: 中国重慶
 major: ロボット工学
-motto: シンプルに保て、愚か者
+motto: Keep it Simple,Stupid
+portrait: /images/content/about/profile.png
 ---
 
 ## 私について
 
-私は、複雑なツールを穏やかで、明確で、理解しやすいものにする方法に関心を持っています。このページは私が繰り返し立ち返る原則を記録し、ウェブサイトの他の部分は進行中の作業、記事、実験を保存しています。
+ここは私の静かな個人空間です——記事を書き、ノートを取り、読んだ本や映画を記録し、旅行を共有します。ソーシャルメディアではなく、通知や「いいね」の不安もなく、文字、写真、そしていくつかの記録だけがあります。ソーシャルソフトウェアのような個人生活への高強度の影響と侵入は好きではありません。
 
+## 経歴
 
-
-## 経験
-
-### プロダクトデザイナー
-
-現在、独立して創作。デジタルプロダクト、インターフェース、個人実験をデザインし記録する。
-
-## 私に連絡してください
+## お問い合わせ
 
 - [GitHub](https://github.com/Edmounds)
-- [ビリビリ](https://space.bilibili.com/397591871)
+- [Bilibili](https://space.bilibili.com/397591871)
 - [i@muelsyse.us](mailto:i@muelsyse.us)
 
 ## 謝辞
 
 ![The Movie Database](/images/tmdb-logo.svg)
 
-この製品はTMDB APIを使用していますが、TMDBによって承認または認定されていません。
+この製品はTMDB APIを使用していますが、TMDBによって推奨または認定されたものではありません。
