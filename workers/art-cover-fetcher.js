@@ -18,6 +18,7 @@ export default {
     }
     const mime = response.headers.get("content-type")?.split(";", 1)[0]?.trim().toLowerCase();
     const length = Number(response.headers.get("content-length") ?? 0);
+    console.log(JSON.stringify({ upstreamHost: url.hostname, upstreamStatus: response.status, upstreamType: mime ?? "", upstreamLength: length }));
     if (!response.ok || !mime || !ALLOWED_TYPES.has(mime) || length > MAX_BYTES) return new Response("Invalid image response", { status: 400 });
     return new Response(limitBody(response.body, MAX_BYTES), { status: response.status, headers: { "content-type": mime, ...(length ? { "content-length": String(length) } : {}) } });
   },
