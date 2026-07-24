@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
@@ -53,7 +54,10 @@ test("public assets are immutable and public pages have security headers", () =>
 test("the replaceable profile portrait uses a content-versioned URL", () => {
   const sourceProfile = read("src/content/about/profile.md");
   const layout = read("src/layouts/BaseLayout.astro");
+  const portrait = sourceProfile.match(/portrait: (\/images\/content\/about\/profile-([a-f0-9]{12})\.png)/);
 
-  assert.match(sourceProfile, /portrait: \/images\/content\/about\/profile-[a-f0-9]{12}\.png/);
-  assert.match(layout, /imageUrl = "\/images\/content\/about\/profile-[a-f0-9]{12}\.png"/);
+  assert.ok(portrait);
+  assert.match(layout, new RegExp(`imageUrl = "${portrait[1]}"`));
+  const bytes = readFileSync(new URL(`../public${portrait[1]}`, import.meta.url));
+  assert.equal(createHash("sha256").update(bytes).digest("hex").slice(0, 12), portrait[2]);
 });
