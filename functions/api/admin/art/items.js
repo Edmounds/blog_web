@@ -8,7 +8,10 @@ export async function onRequestGet({ env, request }) {
     const rawType = new URL(request.url).searchParams.get("type");
     const type = rawType ? normalizeArtType(rawType) : undefined;
     if (rawType && !type) return error(400, "INVALID_TYPE", "收藏类型无效。");
-    return json({ items: await listArtItems(requireDb(env), { type }) });
+    return json(
+      { items: await listArtItems(requireDb(env), { type }) },
+      { headers: { "cache-control": "private, no-store" } },
+    );
   } catch (err) {
     if (err instanceof Response) return err;
     console.error("Art item list failed", err);

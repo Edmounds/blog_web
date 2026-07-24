@@ -76,11 +76,11 @@ export default function ArtAdmin() {
   useEffect(() => { void loadItems(type); }, [type]);
   useEffect(() => () => { if (pendingCoverKey.current) void deleteUploadedCover(pendingCoverKey.current); }, []);
 
-  async function loadItems(selectedType: ArtType) {
+  async function loadItems(selectedType: ArtType, ensuredItem?: ArtItem) {
     setBusy("list");
     try {
-      const data = await fetchJson<{ items: ArtItem[] }>(`/api/admin/art/items?type=${selectedType}`);
-      setItems(data.items);
+      const data = await fetchJson<{ items: ArtItem[] }>(`/api/admin/art/items?type=${selectedType}`, { cache: "no-store" });
+      setItems(ensuredItem ? [ensuredItem, ...data.items.filter((item) => item.id !== ensuredItem.id)] : data.items);
     } catch (error) { setMessage(errorMessage(error)); } finally { setBusy(null); }
   }
 
@@ -134,11 +134,11 @@ export default function ArtAdmin() {
     };
     if (form.cover) body.cover = form.cover;
     try {
-      await fetchJson(form.id ? `/api/admin/art/items/${form.id}` : "/api/admin/art/items", {
+      const data = await fetchJson<{ item: ArtItem }>(form.id ? `/api/admin/art/items/${form.id}` : "/api/admin/art/items", {
         method: form.id ? "PATCH" : "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body),
       });
       pendingCoverKey.current = null;
-      setMessage(form.id ? "收藏已更新。" : "收藏已新增。"); setForm(blankForm(type)); setLocale("zh-CN"); await loadItems(type);
+      setMessage(form.id ? "收藏已更新。" : "收藏已新增。"); setForm(blankForm(type)); setLocale("zh-CN"); await loadItems(type, data.item);
     } catch (error) { setMessage(errorMessage(error)); } finally { setBusy(null); }
   }
 

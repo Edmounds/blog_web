@@ -21,6 +21,7 @@ portrait: /images/content/about/profile-8646bdb863b8.png
 
 ## 致谢
 
-![The Movie Database](/images/tmdb-logo.svg)  This website uses the TMDB API
+![The Movie Database](/images/tmdb-logo.svg)  
+This website uses the TMDB API
 
 

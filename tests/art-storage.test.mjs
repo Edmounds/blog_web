@@ -7,7 +7,7 @@ import {
 } from "../functions/_shared/art.js";
 import { onRequestGet as previewCover } from "../functions/api/admin/art/cover-preview.js";
 import { onRequestDelete as deleteCover, onRequestPost as uploadCover } from "../functions/api/admin/art/covers.js";
-import { onRequestPost as createItem } from "../functions/api/admin/art/items.js";
+import { onRequestGet as listItems, onRequestPost as createItem } from "../functions/api/admin/art/items.js";
 
 test("art input validates types, dates, translations, and required covers", () => {
   const result = validateArtItemInput({
@@ -28,6 +28,23 @@ test("art input accepts Deezer album candidates", () => {
     translations: { "zh-CN": { title: "Abbey Road", creator: "The Beatles", extra: "" } },
   });
   assert.equal(result.ok, true);
+});
+
+test("admin art lists are never served from browser or shared caches", async () => {
+  const response = await listItems({
+    env: {
+      DB: {
+        prepare() {
+          return { bind: () => ({ all: async () => ({ results: [] }) }) };
+        },
+      },
+    },
+    request: new Request("https://blog.muelsyse.us/api/admin/art/items?type=book"),
+  });
+
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("cache-control"), "private, no-store");
+  assert.deepEqual(await response.json(), { items: [] });
 });
 
 test("public localization falls back to simplified Chinese", () => {

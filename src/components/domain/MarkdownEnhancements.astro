@@ -1,0 +1,209 @@
+---
+import { Check, Copy } from "lucide-static";
+
+import type { Locale } from "../../lib/i18n";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copyLabels = {
+  "zh-CN": { copy: "复制代码", copied: "已复制" },
+  "zh-TW": { copy: "複製程式碼", copied: "已複製" },
+  en: { copy: "Copy code", copied: "Copied" },
+  ja: { copy: "コードをコピー", copied: "コピーしました" },
+} satisfies Record<Locale, { copy: string; copied: string }>;
+const labels = copyLabels[locale];
+---
+
+<div
+  data-markdown-enhancements
+  data-copy-label={labels.copy}
+  data-copied-label={labels.copied}
+  data-copy-icon={Copy}
+  data-check-icon={Check}
+  hidden
+></div>
+
+<script>
+  type MermaidApi = typeof import("mermaid").default;
+
+  const LANGUAGE_LABELS: Record<string, string> = {
+    bash: "Bash",
+    javascript: "JavaScript",
+    js: "JavaScript",
+    jsx: "JSX",
+    plaintext: "Plain text",
+    python: "Python",
+    shell: "Shell",
+    shellscript: "Shell",
+    text: "Plain text",
+    ts: "TypeScript",
+    tsx: "TSX",
+    typescript: "TypeScript",
+  };
+
+  let mermaidApi: MermaidApi | undefined;
+  let mermaidLoad: Promise<MermaidApi> | undefined;
+  let renderSequence = 0;
+
+  const getConfig = () => document.querySelector<HTMLElement>("[data-markdown-enhancements]");
+  const getArticle = () => getConfig()?.closest("article")?.querySelector<HTMLElement>(".article-prose");
+  const normalizeLanguage = (value: string) => LANGUAGE_LABELS[value.toLowerCase()] ?? value;
+
+  const copyText = async (value: string) => {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(value);
+      return;
+    }
+
+    const textarea = document.createElement("textarea");
+    textarea.value = value;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    // Clipboard fallback for older browsers and restricted contexts.
+    const copied = Reflect.apply(document.execCommand, document, ["copy"]);
+    textarea.remove();
+    if (!copied) throw new Error("Copy is unavailable");
+  };
+
+  const enhanceCodeBlocks = () => {
+    const config = getConfig();
+    const article = getArticle();
+    if (!config || !article) return;
+
+    article.querySelectorAll<HTMLPreElement>("pre").forEach((pre) => {
+      if (pre.closest(".markdown-code-block") || pre.querySelector("code.language-mermaid")) return;
+
+      const code = pre.querySelector("code");
+      if (!code) return;
+      const rawLanguage = pre.dataset.language
+        ?? [...code.classList].find((name) => name.startsWith("language-"))?.slice("language-".length)
+        ?? "plaintext";
+      const frame = document.createElement("div");
+      const toolbar = document.createElement("div");
+      const label = document.createElement("span");
+      const button = document.createElement("button");
+      const buttonText = document.createElement("span");
+
+      frame.className = "markdown-code-block";
+      toolbar.className = "markdown-code-block__toolbar";
+      label.className = "markdown-code-block__language";
+      label.textContent = normalizeLanguage(rawLanguage);
+      button.className = "markdown-code-block__copy";
+      button.type = "button";
+      button.ariaLabel = config.dataset.copyLabel ?? "Copy code";
+      button.title = button.ariaLabel;
+      button.innerHTML = config.dataset.copyIcon ?? "";
+      buttonText.textContent = config.dataset.copyLabel ?? "Copy code";
+      button.appendChild(buttonText);
+      toolbar.appendChild(label);
+      toolbar.appendChild(button);
+      pre.parentNode?.insertBefore(frame, pre);
+      frame.appendChild(toolbar);
+      frame.appendChild(pre);
+
+      button.addEventListener("click", async () => {
+        try {
+          await copyText(code.textContent ?? "");
+          button.dataset.state = "copied";
+          button.ariaLabel = config.dataset.copiedLabel ?? "Copied";
+          button.title = button.ariaLabel;
+          button.innerHTML = config.dataset.checkIcon ?? "";
+          buttonText.textContent = config.dataset.copiedLabel ?? "Copied";
+          button.appendChild(buttonText);
+          window.setTimeout(() => {
+            if (!button.isConnected) return;
+            button.dataset.state = "";
+            button.ariaLabel = config.dataset.copyLabel ?? "Copy code";
+            button.title = button.ariaLabel;
+            button.innerHTML = config.dataset.copyIcon ?? "";
+            buttonText.textContent = config.dataset.copyLabel ?? "Copy code";
+            button.appendChild(buttonText);
+          }, 1800);
+        } catch {
+          button.dataset.state = "unavailable";
+        }
+      });
+    });
+  };
+
+  const prepareMermaidBlocks = () => {
+    const article = getArticle();
+    if (!article) return [];
+
+    article.querySelectorAll<HTMLElement>("code.language-mermaid").forEach((code) => {
+      const pre = code.parentElement;
+      if (pre?.tagName !== "PRE" || pre.closest(".markdown-mermaid")) return;
+
+      const figure = document.createElement("figure");
+      const diagram = document.createElement("div");
+      const source = document.createElement("pre");
+      const sourceCode = document.createElement("code");
+      const value = code.textContent ?? "";
+      figure.className = "markdown-mermaid";
+      diagram.className = "markdown-mermaid__diagram";
+      diagram.dataset.mermaidSource = value;
+      source.className = "markdown-mermaid__source";
+      sourceCode.className = "language-mermaid";
+      sourceCode.textContent = value;
+      source.appendChild(sourceCode);
+      pre.parentNode?.replaceChild(figure, pre);
+      figure.appendChild(diagram);
+      figure.appendChild(source);
+    });
+
+    return [...article.querySelectorAll<HTMLElement>(".markdown-mermaid__diagram")];
+  };
+
+  const loadMermaid = () => {
+    mermaidLoad ??= import("mermaid").then(({ default: mermaid }) => {
+      mermaidApi = mermaid;
+      return mermaid;
+    });
+    return mermaidLoad;
+  };
+
+  const renderMermaid = async () => {
+    const diagrams = prepareMermaidBlocks();
+    if (diagrams.length === 0) return;
+
+    let mermaid: MermaidApi;
+    try {
+      mermaid = await loadMermaid();
+    } catch (error) {
+      console.error("Failed to load Mermaid", error);
+      return;
+    }
+
+    const theme = document.documentElement.classList.contains("dark") ? "dark" : "default";
+    mermaid.initialize({ startOnLoad: false, securityLevel: "strict", theme });
+
+    for (const diagram of diagrams) {
+      const source = diagram.dataset.mermaidSource ?? "";
+      diagram.replaceChildren();
+      diagram.closest(".markdown-mermaid")?.removeAttribute("data-rendered");
+      try {
+        const { svg, bindFunctions } = await mermaid.render(`markdown-mermaid-${renderSequence++}`, source);
+        diagram.innerHTML = svg;
+        bindFunctions?.(diagram);
+        diagram.closest(".markdown-mermaid")?.setAttribute("data-rendered", "true");
+      } catch (error) {
+        console.error("Failed to render Mermaid diagram", error);
+      }
+    }
+  };
+
+  const initializeMarkdown = () => {
+    enhanceCodeBlocks();
+    void renderMermaid();
+  };
+
+  document.addEventListener("astro:page-load", initializeMarkdown);
+  window.addEventListener("blog:theme-change", () => { if (mermaidApi) void renderMermaid(); });
+  initializeMarkdown();
+</script>

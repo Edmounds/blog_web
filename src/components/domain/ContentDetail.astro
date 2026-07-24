@@ -6,6 +6,7 @@ import { getLocaleDefinition, localizePath, type Locale } from "../../lib/i18n";
 import { getLocalizedSite } from "../../lib/localized-content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import CommentsSection from "./CommentsSection.astro";
+import MarkdownEnhancements from "./MarkdownEnhancements.astro";
 import PostEngagement from "./PostEngagement.astro";
 import TableOfContents from "./TableOfContents.astro";
 import Icon from "../ui/Icon.astro";
@@ -62,8 +63,10 @@ const articleJsonLd = JSON.stringify({
 
     <div class="article-page__body">
       <aside><TableOfContents headings={headings} labels={{ title: labels.tableOfContents, introduction: labels.introduction, collapse: labels.collapseSection, expand: labels.expandSection }} /></aside>
-      <div class="article-prose"><Content /></div>
+      <div class="article-prose ui-prose"><Content /></div>
     </div>
+
+    <MarkdownEnhancements locale={locale} />
 
     <div class="article-page__interaction">
       <PostEngagement contentId={item.contentId} locale={locale} labels={labels} />
@@ -88,9 +91,6 @@ const articleJsonLd = JSON.stringify({
   .article-page__body { display: grid; width: min(100%, calc(16rem + var(--article-content-width) + clamp(2rem, 5vw, 5rem))); grid-template-columns: minmax(12rem, 16rem) minmax(0, var(--article-content-width)); justify-content: center; gap: clamp(2rem, 5vw, 5rem); margin: 4rem auto 0; }
   .article-page__body aside { position: sticky; top: 6rem; align-self: start; }
   .article-prose { min-width: 0; font-size: var(--type-content-body); line-height: 1.85; }
-  .article-prose :global(h2), .article-prose :global(h3) { scroll-margin-top: 6rem; line-height: 1.25; }
-  .article-prose :global(img) { max-width: 100%; border-radius: var(--radius-control); }
-  .article-prose :global(pre) { max-width: 100%; overflow: auto; padding: 1rem; border: 1px solid var(--border-soft); border-radius: var(--radius-control); }
   .article-page__interaction, .article-page__next { display: block; max-width: var(--article-content-width); margin: 4rem auto 0; }
   .article-page__next { padding-top: 1.5rem; color: var(--foreground); text-decoration: none; border-top: 1px solid var(--border-soft); }
   .article-page__next span { display: block; color: var(--text-faint); font-size: var(--type-xs); }

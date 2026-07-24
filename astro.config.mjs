@@ -8,9 +8,7 @@ import cloudflare from "@astrojs/cloudflare";
 import mdx from "@astrojs/mdx";
 import { unified } from "@astrojs/markdown-remark";
 import sitemap from "@astrojs/sitemap";
-import rehypeKatex from "rehype-katex";
-import remarkDirective from "remark-directive";
-import remarkMath from "remark-math";
+import { markdownOptions, markdownPlugins } from "./src/lib/markdown.mjs";
 
 const buildId = process.env.PUBLIC_BUILD_ID ?? `local-${Date.now()}`;
 
@@ -38,17 +36,18 @@ export default defineConfig({
   }),
   integrations: [deploymentVersion, react(), mdx(), sitemap()],
   markdown: {
-    shikiConfig: {
-      themes: { light: "github-light", dark: "github-dark" },
-      defaultColor: false,
-    },
+    syntaxHighlight: markdownOptions.syntaxHighlight,
+    shikiConfig: markdownOptions.shikiConfig,
     processor: unified({
-      remarkPlugins: [remarkMath, remarkDirective],
-      rehypePlugins: [rehypeKatex],
+      remarkPlugins: markdownPlugins.remarkPlugins,
+      rehypePlugins: markdownPlugins.rehypePlugins,
     }),
   },
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      exclude: ["mermaid"],
+    },
     define: {
       "import.meta.env.PUBLIC_BUILD_ID": JSON.stringify(buildId),
     },

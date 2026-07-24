@@ -370,6 +370,32 @@ html.dark .ui-prose {
   margin-block: 0.55rem;
 }
 
+.ui-prose li > p {
+  margin-block: 0.45rem;
+}
+
+.ui-prose li::marker {
+  color: var(--text-muted);
+}
+
+.ui-prose .contains-task-list {
+  padding-left: 0.25rem;
+  list-style: none;
+}
+
+.ui-prose .task-list-item {
+  display: flex;
+  gap: 0.65rem;
+  align-items: baseline;
+}
+
+.ui-prose .task-list-item input {
+  width: 0.95rem;
+  height: 0.95rem;
+  margin: 0;
+  accent-color: var(--foreground);
+}
+
 .ui-prose blockquote {
   margin-block: 2.2rem;
   padding: 0.25rem 0 0.25rem 1.2rem;
@@ -405,6 +431,11 @@ html.dark .ui-prose {
   border-radius: 0.25rem;
 }
 
+.ui-prose del {
+  color: var(--text-muted);
+  text-decoration-thickness: 1px;
+}
+
 .ui-prose pre {
   overflow-x: auto;
   padding: clamp(10px, 9.5px + 0.2vw, 12px) clamp(12px, 11px + 0.45vw, 16px);
@@ -415,6 +446,24 @@ html.dark .ui-prose {
   border: 1px solid var(--border-soft);
   border-radius: clamp(12px, 11px + 0.35vw, 16px);
   -webkit-overflow-scrolling: touch;
+}
+
+.ui-prose pre.astro-code {
+  color: var(--shiki-light);
+  background-color: var(--surface-soft) !important;
+}
+
+.ui-prose pre.astro-code span {
+  color: var(--shiki-light);
+  background-color: transparent !important;
+}
+
+html.dark .ui-prose pre.astro-code {
+  color: var(--shiki-dark);
+}
+
+html.dark .ui-prose pre.astro-code span {
+  color: var(--shiki-dark);
 }
 
 .ui-prose pre code {
@@ -449,6 +498,146 @@ html.dark .ui-prose {
   color: var(--foreground);
   font-weight: 600;
   background: var(--surface-soft);
+}
+
+.ui-prose .katex-display {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block: 0.35rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ui-prose .markdown-code-block {
+  overflow: hidden;
+  background: var(--surface-soft);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-control);
+}
+
+.ui-prose .markdown-code-block__toolbar {
+  display: flex;
+  min-height: 2.65rem;
+  padding: 0.4rem 0.55rem 0.4rem 0.8rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.ui-prose .markdown-code-block__language {
+  overflow: hidden;
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--type-xs);
+  font-weight: 600;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ui-prose .markdown-code-block__copy {
+  display: inline-flex;
+  min-width: 2rem;
+  min-height: 2rem;
+  padding: 0.35rem;
+  color: var(--text-muted);
+  font: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 0.25rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  cursor: pointer;
+}
+
+.ui-prose .markdown-code-block__copy:hover,
+.ui-prose .markdown-code-block__copy:focus-visible,
+.ui-prose .markdown-code-block__copy[data-state="copied"] {
+  color: var(--foreground);
+  background: var(--accent-soft);
+}
+
+.ui-prose .markdown-code-block__copy:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
+.ui-prose .markdown-code-block__copy[data-state="unavailable"] {
+  color: var(--text-faint);
+  cursor: not-allowed;
+}
+
+.ui-prose .markdown-code-block__copy svg {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+}
+
+.ui-prose .markdown-code-block__copy span {
+  font-family: var(--font-ui);
+  font-size: var(--type-xs);
+  line-height: 1;
+}
+
+.ui-prose .markdown-code-block pre {
+  margin: 0;
+  background: transparent !important;
+  border: 0;
+  border-radius: 0;
+}
+
+.ui-prose .markdown-mermaid {
+  width: 100%;
+  max-width: 100%;
+  margin-inline: 0;
+  overflow: hidden;
+  background: var(--surface-soft);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-control);
+}
+
+.ui-prose .markdown-mermaid__diagram {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: clamp(0.75rem, 2vw, 1.25rem);
+  -webkit-overflow-scrolling: touch;
+}
+
+.ui-prose .markdown-mermaid__diagram:empty {
+  display: none;
+}
+
+.ui-prose .markdown-mermaid__diagram svg {
+  display: block;
+  width: 100%;
+  min-width: min(32rem, 100%);
+  max-width: 100%;
+  height: auto;
+  margin-inline: auto;
+}
+
+.ui-prose .markdown-mermaid__source {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.ui-prose .markdown-mermaid[data-rendered="true"] .markdown-mermaid__source {
+  display: none;
+}
+
+@media (max-width: 32rem) {
+  .ui-prose .markdown-code-block__copy span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+  }
 }
 
 .cover-image-wrapper {

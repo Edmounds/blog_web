@@ -17,7 +17,7 @@ const { Content } = await render(profile);
     <div>
       <h1>{profile.data.name}</h1>
       <p>{profile.data.motto}</p>
-      <p class="about-article__meta">{profile.data.major} · {profile.data.city}</p>
+      <p class="about-article__meta">{profile.data.city}</p>
     </div>
     <img src={profile.data.portrait} alt={profile.data.name} />
   </header>

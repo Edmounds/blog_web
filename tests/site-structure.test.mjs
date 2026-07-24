@@ -96,6 +96,9 @@ test("music administration uses one Deezer search field and preserves selectable
   assert.match(admin, /type === "music" \? "deezer_music"/);
   assert.match(admin, /已收藏/);
   assert.match(admin, /const collectedCandidates = useMemo/);
+  assert.match(admin, /\/api\/admin\/art\/items\?type=\$\{selectedType\}`,[\s\S]*cache: "no-store"/);
+  assert.match(admin, /setItems\(ensuredItem \? \[ensuredItem,[\s\S]*item\.id !== ensuredItem\.id/);
+  assert.match(admin, /await loadItems\(type, data\.item\)/);
   assert.doesNotMatch(admin, /setForm\(blankForm\(type\)\); setCandidates\(\[\]\); await loadItems/);
   assert.doesNotMatch(search, /itunes\.apple\.com|searchAppleMusic|upgradeAppleArtwork/);
   assert.doesNotMatch(read("src/lib/cover-api.ts"), /itunes\.apple\.com|ItunesSearchResponse/);
