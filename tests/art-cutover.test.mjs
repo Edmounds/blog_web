@@ -30,7 +30,8 @@ test("cutover configuration includes D1 schema, R2 binding, and no sync hooks", 
   const wrangler = read("wrangler.jsonc");
   assert.match(packageJson, /schema\/art\.sql/);
   assert.doesNotMatch(packageJson, /sync-art\.mjs/);
-  assert.match(packageJson, /wrangler deploy --config dist\/server\/wrangler\.json/);
+  assert.match(packageJson, /"deploy:cover-fetcher": "wrangler deploy --config wrangler\.art-cover-fetcher\.jsonc"/);
+  assert.match(packageJson, /"deploy": "npm run build && npm run deploy:cover-fetcher && wrangler deploy --config dist\/server\/wrangler\.json"/);
   assert.match(packageJson, /wrangler dev --config dist\/server\/wrangler\.json --persist-to \$INIT_CWD\/\.wrangler\/state/);
   assert.match(wrangler, /ART_COVERS/);
   assert.match(wrangler, /blog-art-covers/);
