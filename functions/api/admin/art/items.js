@@ -1,5 +1,5 @@
 import {
-  createArtItem, error, json, listArtItems, normalizeArtType, readJson, requireBucket, requireDb,
+  createArtItem, deleteCoverIfUnreferenced, error, json, listArtItems, normalizeArtType, readJson, requireBucket, requireDb,
   requireSameOriginJson, storeCover, validateArtItemInput,
 } from "../../../_shared/art.js";
 
@@ -24,11 +24,12 @@ export async function onRequestPost({ env, request }) {
     if (!validation.ok) return error(400, validation.error.code, validation.error.message);
     const id = crypto.randomUUID();
     const bucket = requireBucket(env);
-    stored = await storeCover(bucket, id, validation.value.cover, coverFetch(env));
-    const item = await createArtItem(requireDb(env), validation.value, stored, { id });
+    const db = requireDb(env);
+    stored = await storeCover(bucket, id, validation.value.cover, coverFetch(env), { db });
+    const item = await createArtItem(db, validation.value, stored, { id });
     return json({ item }, { status: 201 });
   } catch (err) {
-    if (stored?.key) await env.ART_COVERS?.delete(stored.key).catch((cleanupError) => console.error("New cover cleanup failed", cleanupError));
+    if (stored?.key) await deleteCoverIfUnreferenced(env.ART_COVERS, env.DB, stored.key).catch((cleanupError) => console.error("New cover cleanup failed", cleanupError));
     if (err instanceof Response) return err;
     console.error("Art item create failed", err);
     return error(500, "ART_CREATE_FAILED", "新增收藏失败。");

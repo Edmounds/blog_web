@@ -16,7 +16,7 @@ import { createEdgeCacheKey, noStore, readEdgeJson } from "../functions/_shared/
 import { readFileSync } from "node:fs";
 
 test("normalizeContentId accepts a published content ID", () => {
-  assert.equal(normalizeContentId("blog/designing-for-clarity-in-chaos"), "blog/designing-for-clarity-in-chaos");
+  assert.equal(normalizeContentId("blog/first-note"), "blog/first-note");
 });
 
 test("the content ID migration prefixes every legacy Blog table idempotently", () => {
@@ -28,6 +28,7 @@ test("the content ID migration prefixes every legacy Blog table idempotently", (
   assert.match(sql, /UPDATE comments[\s\S]*SET slug = 'blog\/' \|\| slug/);
   assert.match(sql, /DELETE FROM post_stats[\s\S]*WHERE slug NOT LIKE '%\/%'/);
   assert.match(sql, /DELETE FROM post_view_events[\s\S]*WHERE slug NOT LIKE '%\/%'/);
+  assert.match(sql, /blog\/designing-for-clarity-in-chaos[\s\S]*blog\/first-note/);
 });
 
 test("statistics isolate identical slugs across content sections", async () => {
@@ -43,7 +44,7 @@ test("statistics isolate identical slugs across content sections", async () => {
 
 test("normalizeContentId rejects unknown or malformed content IDs", () => {
   assert.equal(normalizeContentId("missing-post"), undefined);
-  assert.equal(normalizeContentId("../blog/designing-for-clarity-in-chaos"), undefined);
+  assert.equal(normalizeContentId("../blog/first-note"), undefined);
   assert.equal(normalizeContentId("future of interface"), undefined);
   assert.equal(normalizeContentId(undefined), undefined);
 });
@@ -56,7 +57,7 @@ test("getViewWindowStart groups timestamps into six hour windows", () => {
 
 test("visitor hashes are stable in the Workers runtime", async () => {
   const request = new Request("https://blog.example/api/view", { headers: { "cf-connecting-ip": "203.0.113.10", "user-agent": "test" } });
-  const hash = await getVisitorHash(request, "blog/designing-for-clarity-in-chaos");
+  const hash = await getVisitorHash(request, "blog/first-note");
   assert.match(hash, /^[a-f0-9]{64}$/);
 });
 

@@ -26,7 +26,7 @@ test("OpenAI-compatible client sends a Chat Completions request", async () => {
 
 test("OpenAI-compatible client requests one complete Markdown document translation", async () => {
   let request;
-  const source = "---\ntitle: 你好\nrouteSlug: hello\n---\n\n第一段。\n\n第二段。";
+  const source = "---\ntitle: 你好\ncreatedAt: 2026-07-24\n---\n\n第一段。\n\n第二段。";
   const translate = createOpenAITranslateClient({
     baseUrl: "https://openai.example/v1",
     apiKey: "secret",
@@ -42,11 +42,11 @@ test("OpenAI-compatible client requests one complete Markdown document translati
     sourceLang: "ZH",
     targetLang: "EN",
     format: "markdown-document",
-    preserveFrontmatterKeys: ["routeSlug"],
+    preserveFrontmatterKeys: ["createdAt"],
   });
 
   assert.match(request.messages[0].content, /complete Markdown document/);
-  assert.match(request.messages[0].content, /routeSlug/);
+  assert.match(request.messages[0].content, /createdAt/);
   assert.equal(request.messages[1].content.match(/第一段。/g)?.length, 1);
   assert.match(request.messages[1].content, /第一段。[\s\S]*第二段。/);
 });

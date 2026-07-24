@@ -72,7 +72,7 @@ const checkpointTranslation = async (manifestKey, entry) => {
 const isPlainObject = (value) => value && typeof value === "object" && !Array.isArray(value) && !(value instanceof Date);
 const shouldTranslateKey = (key) => !new Set([
   "slug", "categorySlug", "cover", "portrait", "name", "href", "icon", "id", "type", "side",
-  "routeSlug", "projectUrl", "docUrl", "image", "createdAt", "updatedAt", "published",
+  "projectUrl", "docUrl", "image", "createdAt", "updatedAt", "published",
   "publishedAt", "year", "order", "archiveYear", "showOnHome", "showInArchive", "showInTimeline", "draft",
 ]).has(key);
 

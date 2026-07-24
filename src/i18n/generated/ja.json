@@ -11,6 +11,7 @@
       "music": "アルバム",
       "book": "本",
       "screen": "映像",
+      "game": "ゲーム",
       "film": "映画",
       "series": "ドラマ",
       "anime": "アニメ",
@@ -31,7 +32,6 @@
       "grid": "グリッド",
       "list": "リスト",
       "title": "タイトル",
-      "category": "カテゴリー",
       "reading": "読了時間",
       "date": "日付",
       "tableOfContents": "目次",
@@ -65,7 +65,10 @@
       "themeDark": "ダークテーマに切り替える",
       "languageSelect": "言語を選択",
       "copyright": "無断転載を禁じます。",
-      "artEmpty": "まだコレクションはありません。"
+      "artEmpty": "まだコレクションはありません。",
+      "gameEmpty": "ここにはまだゲームがありません。",
+      "gameHours": "時間",
+      "gameMinutes": "分"
     },
     "page": {
       "homeTitle": "ホーム",
@@ -76,7 +79,8 @@
       "aboutDescription": "chasenの経歴、関心、個人的な記録。",
       "musicDescription": "アルバムコレクション",
       "bookDescription": "本のコレクション",
-      "screenDescription": "映画、ドラマ、アニメのコレクション"
+      "screenDescription": "映画、ドラマ、アニメのコレクション",
+      "gameDescription": "プレイ時間順のゲームコレクション"
     }
   }
 }

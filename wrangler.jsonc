@@ -14,7 +14,7 @@
   "r2_buckets": [
     {
       "binding": "ART_COVERS",
-      "bucket_name": "blog-art-covers"
+      "bucket_name": "blog-images"
     }
   ],
   "services": [

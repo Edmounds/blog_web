@@ -3,10 +3,26 @@
   "name": "new-blog-ssr",
   "compatibility_date": "2026-05-17",
   "compatibility_flags": ["nodejs_compat"],
+  "main": "src/worker.ts",
+  "triggers": { "crons": ["0 20 * * *"] },
   "keep_vars": true,
   "observability": {
-    "enabled": true,
-    "head_sampling_rate": 0.05
+    "enabled": false,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 0.05,
+      "persist": true,
+      "invocation_logs": true
+    },
+    "traces": {
+      "enabled": true,
+      "persist": true,
+      "head_sampling_rate": 0.05
+    }
+  },
+  "cache": {
+    "enabled": true
   },
   "assets": {
     "binding": "ASSETS",
@@ -16,6 +32,9 @@
       "/api/*",
       "/admin/*",
       "/art/*",
+      "/en/art/*",
+      "/ja/art/*",
+      "/zh-TW/art/*",
       "/media/*"
     ]
   },
@@ -29,7 +48,7 @@
   "r2_buckets": [
     {
       "binding": "ART_COVERS",
-      "bucket_name": "blog-art-covers"
+      "bucket_name": "blog-images"
     }
   ],
   "services": [

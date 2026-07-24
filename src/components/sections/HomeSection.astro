@@ -33,6 +33,11 @@ const groups = (items: typeof blogs) => {
           <path d="M17.813 4.653a.85.85 0 0 1 .15.15l1.637 1.865c.1.116.195.234.287.355l.129.176.082.133V17.5a2.5 2.5 0 0 1-2.5 2.5H6.5A2.5 2.5 0 0 1 4 17.5V7.332l.081-.133.129-.176a3.01 3.01 0 0 1 .287-.355l1.637-1.865a.91.91 0 0 1 .15-.15l.215-.164.21-.133.228-.105.235-.078.24-.047.245-.02.25-.003.245.02.24.047.235.078.228.105.21.133.215.164.673.473.674-.473.215-.164.21-.133.228-.105.235-.078.24-.047.245-.02.25-.003.245.02.24.047.235.078.228.105.21.133.215.164.673.473.674-.473zM7.5 9.332a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1zm9 0a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1z" />
         </svg>
       </a>
+      <a href="https://steamcommunity.com/profiles/76561198437201442" target="_blank" rel="noreferrer" aria-label="Steam">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658a3.4 3.4 0 0 1 1.912-.59q.094.001.188.006l2.861-4.142V8.91a4.53 4.53 0 0 1 4.524-4.524c2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911.004.159a3.39 3.39 0 0 1-3.39 3.396 3.41 3.41 0 0 1-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0M7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25a2.551 2.551 0 0 0 3.337-3.324a2.547 2.547 0 0 0-3.255-1.413l1.523.63a1.878 1.878 0 0 1-1.445 3.467zm11.415-9.303a3.02 3.02 0 0 0-3.015-3.015a3.015 3.015 0 1 0 3.015 3.015m-5.273-.005a2.264 2.264 0 1 1 4.531 0a2.267 2.267 0 0 1-2.266 2.265a2.264 2.264 0 0 1-2.265-2.265" />
+        </svg>
+      </a>
       <a href="mailto:i@muelsyse.us" aria-label="Email">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <rect width="20" height="16" x="2" y="4" rx="2" />
@@ -42,7 +47,10 @@ const groups = (items: typeof blogs) => {
     </nav>
     <img class="codetime-badge" src="/api/wakatime-badge.svg" alt="Total coding time" width="160" height="24" data-wakatime-image hidden />
     <p class="profile-card__intro">{profile.motto}</p>
-    <p class="profile-card__location">{profile.major} · {profile.city}</p>
+    <p class="profile-card__location">
+      <span>{profile.major}</span>
+      <span>{profile.city}</span>
+    </p>
     <div class="profile-metrics">
       <a
         class="github-snake"
@@ -153,7 +161,7 @@ const groups = (items: typeof blogs) => {
   .codetime-badge { display: block; width: auto; height: 1.5rem; max-width: 100%; margin-top: 0.2rem; }
   :global(html.dark) .codetime-badge { filter: invert(1); }
   .profile-card__intro { margin: 0.8rem 0 0; color: var(--text-muted); line-height: 1.7; }
-  .profile-card__location { margin: 0.5rem 0 0; color: var(--text-faint); font-size: var(--type-sm); }
+  .profile-card__location { display: grid; gap: 0.2rem; margin: 0.5rem 0 0; color: var(--text-faint); font-size: var(--type-sm); }
   .profile-metrics { display: grid; width: 100%; gap: 0.75rem; margin-top: 1.5rem; }
   .github-snake { display: block; width: 100%; aspect-ratio: 880 / 192; color: var(--text-faint); font-size: var(--type-xs); }
   .github-snake picture, .github-snake img { display: block; width: 100%; height: 100%; }

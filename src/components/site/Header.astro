@@ -24,13 +24,15 @@ const life = [
   { label: "Books", href: "/art/book/" },
   { label: "Music", href: "/art/music/" },
   { label: "Screen", href: "/art/screen/" },
+  { label: "Game", href: "/art/game/" },
 ];
-const isActive = (href: string) => routePath === href || routePath.startsWith(href) || (href === "/art/screen/" && routePath.startsWith("/art/"));
+const isActive = (href: string) => routePath === href || routePath.startsWith(href)
+  || (href === "/art/screen/" && ["/art/movie/", "/art/series/", "/art/anime/"].some((path) => routePath.startsWith(path)));
 ---
 
 <header class="site-header" data-site-header>
   <div class="site-header__inner app-container">
-    <a class="site-signature" href={localizePath("/", locale)} data-primary-route data-astro-prefetch="viewport" aria-label="chasen home">chasen</a>
+    <a class="site-signature" href={localizePath("/", locale)} data-primary-route data-astro-prefetch="viewport" aria-label="Lust4ev3r home">Lust4ev3r</a>
 
     <nav class="desktop-nav" aria-label="Primary navigation">
       {primary.map((item) => (

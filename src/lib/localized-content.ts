@@ -39,8 +39,6 @@ export const getLocalizedContentSections = async (locale: Locale, section: Conte
       slug: item.slug,
       title: item.title,
       summary: item.description,
-      cover: item.image ?? "/images/placeholders/default-cover.webp",
-      category: item.category,
       readingTime: item.readingTime,
       dateLabel: formatter.format(item.createdAt),
       archiveTags: item.tags,

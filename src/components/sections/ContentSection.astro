@@ -1,5 +1,5 @@
 ---
-import { getLocalizedContentSections, getLocalizedSite } from "../../lib/localized-content";
+import { getLocalizedContentSections } from "../../lib/localized-content";
 import type { ContentSection as Section } from "../../lib/content";
 import type { Locale } from "../../lib/i18n";
 import { toArchivePostSections } from "../../lib/view-models";
@@ -10,13 +10,8 @@ interface Props {
 }
 
 const { section, locale = "zh-CN" } = Astro.props;
-const site = await getLocalizedSite(locale);
 const sourceSections = await getLocalizedContentSections(locale, section);
-const sections = toArchivePostSections(sourceSections, {
-  publishedLabel: site.copy.blogMetaPublished,
-  readLabel: site.copy.blogMetaRead,
-  readArticleLabel: site.copy.blogReadArticle,
-}, locale, section);
+const sections = toArchivePostSections(sourceSections, locale, section);
 const title = section[0].toUpperCase() + section.slice(1);
 const empty = `No ${section}s published yet.`;
 ---
@@ -42,6 +37,11 @@ const empty = `No ${section}s published yet.`;
                   <span aria-hidden="true">-&gt;</span>
                 </a>
                 <p>{post.summary}</p>
+                {post.tags.length > 0 && (
+                  <div class="content-timeline__tags" aria-label="Tags">
+                    {post.tags.map((tag) => <span>#{tag}</span>)}
+                  </div>
+                )}
               </li>
             ))}
           </ol>
@@ -93,9 +93,10 @@ const empty = `No ${section}s published yet.`;
   .content-timeline time { color: var(--text-faint); font-family: var(--font-mono); font-size: var(--type-xs); }
   .content-timeline a { display: flex; justify-content: space-between; gap: 1rem; color: var(--foreground); font-weight: 600; text-decoration: none; }
   .content-timeline p { grid-column: 2; margin: 0; color: var(--text-muted); font-size: var(--type-sm); }
+  .content-timeline__tags { grid-column: 2; display: flex; flex-wrap: wrap; gap: 0.4rem 0.8rem; color: var(--text-faint); font-size: var(--type-xs); }
   @media (max-width: 40rem) {
     .content-timeline__group { grid-template-columns: 1fr; }
     .content-timeline li { grid-template-columns: 1fr; }
-    .content-timeline p { grid-column: auto; }
+    .content-timeline p, .content-timeline__tags { grid-column: auto; }
   }
 </style>

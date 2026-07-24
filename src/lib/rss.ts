@@ -14,7 +14,7 @@ export async function createRssResponse(locale: Locale) {
       description: item.description,
       pubDate: item.createdAt,
       link: localizePath(`/${item.section}/${item.slug}/`, locale),
-      categories: [item.section, item.category, ...item.tags],
+      categories: [item.section, ...item.tags],
     })),
     customData: `<language>${locale}</language>`,
   });

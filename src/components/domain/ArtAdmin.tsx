@@ -2,7 +2,7 @@ import {
   BookOpen, CalendarDays, Eye, EyeOff, Film, ImagePlus, Languages, LoaderCircle, Music2, Search,
   Trash2, Tv2, Upload, X,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type ArtType = "book" | "music" | "movie" | "series" | "anime";
 type Locale = "zh-CN" | "zh-TW" | "en" | "ja";
@@ -43,7 +43,7 @@ interface FormState {
   collectedOn: string;
   isVisible: boolean;
   coverUrl: string;
-  cover: { kind: "url"; url: string } | { kind: "upload"; data: string; mime: string } | null;
+  cover: { kind: "url"; url: string } | { kind: "stored"; key: string } | null;
   translations: Record<Locale, Translation>;
 }
 
@@ -69,10 +69,12 @@ export default function ArtAdmin() {
   const [items, setItems] = useState<ArtItem[]>([]);
   const [form, setForm] = useState<FormState>(() => blankForm("book"));
   const [locale, setLocale] = useState<Locale>("zh-CN");
-  const [busy, setBusy] = useState<"search" | "save" | "translate" | "list" | null>(null);
+  const [busy, setBusy] = useState<"search" | "save" | "translate" | "list" | "upload" | null>(null);
   const [message, setMessage] = useState("");
+  const pendingCoverKey = useRef<string | null>(null);
 
   useEffect(() => { void loadItems(type); }, [type]);
+  useEffect(() => () => { if (pendingCoverKey.current) void deleteUploadedCover(pendingCoverKey.current); }, []);
 
   async function loadItems(selectedType: ArtType) {
     setBusy("list");
@@ -83,6 +85,7 @@ export default function ArtAdmin() {
   }
 
   function changeType(next: ArtType) {
+    discardPendingCover();
     setType(next); setQuery(""); setCreator(""); setIsbn(""); setCandidates([]); setForm(blankForm(next)); setLocale("zh-CN"); setMessage("");
   }
 
@@ -91,7 +94,7 @@ export default function ArtAdmin() {
     if (!query.trim()) return;
     setBusy("search"); setMessage("");
     const params = new URLSearchParams({ type, q: query.trim() });
-    if (creator.trim()) params.set("creator", creator.trim());
+    if (type !== "music" && creator.trim()) params.set("creator", creator.trim());
     if (isbn.trim()) params.set("isbn", isbn.trim());
     try {
       const data = await fetchJson<{ items: Candidate[] }>(`/api/admin/art/search?${params}`);
@@ -100,6 +103,7 @@ export default function ArtAdmin() {
   }
 
   async function selectCandidate(candidate: Candidate) {
+    discardPendingCover();
     const next = blankForm(type);
     next.source = candidate.source; next.sourceId = candidate.sourceId; next.isbn = candidate.isbn ?? isbn;
     next.originalTitle = candidate.originalTitle ?? candidate.title; next.releaseDate = candidate.releaseDate ?? "";
@@ -133,11 +137,13 @@ export default function ArtAdmin() {
       await fetchJson(form.id ? `/api/admin/art/items/${form.id}` : "/api/admin/art/items", {
         method: form.id ? "PATCH" : "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body),
       });
-      setMessage(form.id ? "收藏已更新。" : "收藏已新增。"); setForm(blankForm(type)); setCandidates([]); await loadItems(type);
+      pendingCoverKey.current = null;
+      setMessage(form.id ? "收藏已更新。" : "收藏已新增。"); setForm(blankForm(type)); setLocale("zh-CN"); await loadItems(type);
     } catch (error) { setMessage(errorMessage(error)); } finally { setBusy(null); }
   }
 
   function edit(item: ArtItem) {
+    discardPendingCover();
     setForm({
       id: item.id, type: item.type, source: item.source, sourceId: item.sourceId, isbn: item.isbn, originalTitle: item.originalTitle,
       releaseDate: item.releaseDate, collectedOn: item.collectedOn, isVisible: item.isVisible, coverUrl: item.coverUrl, cover: null,
@@ -166,13 +172,33 @@ export default function ArtAdmin() {
     if (!["image/jpeg", "image/png", "image/webp", "image/avif"].includes(file.type) || file.size > 10 * 1024 * 1024) {
       return setMessage("仅支持 10 MB 内的 JPEG、PNG、WebP 或 AVIF。");
     }
-    const data = await fileToBase64(file);
-    setForm((current) => ({ ...current, coverUrl: URL.createObjectURL(file), cover: { kind: "upload", data, mime: file.type } }));
+    setBusy("upload"); setMessage("");
+    try {
+      const body = new FormData();
+      body.set("file", file);
+      const data = await fetchJson<{ cover: { kind: "stored"; key: string; url: string } }>("/api/admin/art/covers", { method: "POST", body });
+      const previousKey = pendingCoverKey.current;
+      pendingCoverKey.current = data.cover.key;
+      setForm((current) => ({ ...current, coverUrl: data.cover.url, cover: { kind: "stored", key: data.cover.key } }));
+      if (previousKey) void deleteUploadedCover(previousKey);
+    } catch (error) { setMessage(errorMessage(error)); } finally { setBusy(null); }
+  }
+
+  function discardPendingCover() {
+    const key = pendingCoverKey.current;
+    pendingCoverKey.current = null;
+    if (key) void deleteUploadedCover(key);
+  }
+
+  function changeCoverUrl(url: string) {
+    discardPendingCover();
+    setForm({ ...form, coverUrl: url, cover: url ? { kind: "url", url } : null });
   }
 
   const activeTranslation = form.translations[locale];
-  const canSave = Boolean(form.translations["zh-CN"].title.trim() && form.translations["zh-CN"].creator.trim() && (form.cover || form.id));
+  const canSave = Boolean(form.translations["zh-CN"].title.trim() && form.translations["zh-CN"].creator.trim() && (form.cover || form.id) && busy !== "upload");
   const sourceLabel = useMemo(() => form.source || "尚未选择来源", [form.source]);
+  const collectedCandidates = useMemo(() => new Set(items.map((item) => candidateKey(item))), [items]);
 
   return <div className="space-y-8">
     <div className="flex max-w-full gap-1 overflow-x-auto border-b border-[var(--border-soft)] pb-2" role="tablist" aria-label="收藏类型">
@@ -188,27 +214,27 @@ export default function ArtAdmin() {
         <section className="space-y-5" aria-labelledby="art-search-heading">
           <div><h2 id="art-search-heading" className="text-lg font-semibold text-[var(--foreground)]">搜索候选</h2><p className="mt-1 text-sm text-[var(--text-muted)]">搜索只提供候选，最终分类、文字和封面由你确认。</p></div>
           <form onSubmit={search} className="grid gap-3 md:grid-cols-2">
-            <label className="space-y-1.5 text-sm"><span>标题或关键词</span><input className={inputClass} value={query} onChange={(e) => setQuery(e.target.value)} maxLength={200} required /></label>
-            <label className="space-y-1.5 text-sm"><span>{type === "music" ? "艺人" : type === "book" ? "作者" : "补充关键词"}</span><input className={inputClass} value={creator} onChange={(e) => setCreator(e.target.value)} maxLength={200} /></label>
+            <label className="space-y-1.5 text-sm"><span>{type === "music" ? "专辑名或歌手" : "标题或关键词"}</span><input className={inputClass} value={query} onChange={(e) => setQuery(e.target.value)} maxLength={200} required /></label>
+            {type !== "music" && <label className="space-y-1.5 text-sm"><span>{type === "book" ? "作者" : "补充关键词"}</span><input className={inputClass} value={creator} onChange={(e) => setCreator(e.target.value)} maxLength={200} /></label>}
             {type === "book" && <label className="space-y-1.5 text-sm"><span>ISBN（可选，精确查询）</span><input className={inputClass} value={isbn} onChange={(e) => setIsbn(e.target.value)} inputMode="numeric" maxLength={20} /></label>}
             <div className="flex items-end"><button className={primaryButton} disabled={busy === "search"}><Search className="size-4" />{busy === "search" ? "搜索中" : "搜索"}</button></div>
           </form>
           {candidates.length > 0 && <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {candidates.map((candidate) => <button key={`${candidate.source}-${candidate.sourceId}`} type="button" onClick={() => candidate.coverUrl && void selectCandidate(candidate)} disabled={!candidate.coverUrl} className="group text-left disabled:cursor-not-allowed disabled:opacity-45">
+            {candidates.map((candidate) => { const isCollected = collectedCandidates.has(candidateKey(candidate)); return <button key={candidateKey(candidate)} type="button" onClick={() => candidate.coverUrl && !isCollected && void selectCandidate(candidate)} disabled={!candidate.coverUrl || isCollected} className="group text-left disabled:cursor-not-allowed disabled:opacity-45">
               <div className="aspect-[2/3] overflow-hidden rounded-[var(--radius-control)] border border-[var(--border-soft)] bg-[var(--surface-soft)]">{candidate.coverUrl ? <img src={previewUrl(candidate.coverUrl)} alt="" className="h-full w-full object-cover transition group-hover:scale-[1.02]" /> : <div className="flex h-full items-center justify-center text-xs text-[var(--text-faint)]">无可用封面</div>}</div>
               <p className="mt-3 font-medium leading-tight text-[var(--foreground)]">{candidate.title}</p><p className="mt-1 text-sm text-[var(--text-muted)]">{candidate.creator || "创作者待补充"}</p>
-              <p className="mt-1 text-xs text-[var(--text-faint)]">{candidate.releaseDate || "日期未知"} · {candidate.source}</p>
-            </button>)}
+              <p className="mt-1 text-xs text-[var(--text-faint)]">{isCollected ? "已收藏" : `${candidate.releaseDate || "日期未知"} · ${candidate.source}`}</p>
+            </button>; })}
           </div>}
         </section>
 
         <section className="space-y-6 border-t border-[var(--border-soft)] pt-8" aria-labelledby="art-editor-heading">
-          <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 id="art-editor-heading" className="text-lg font-semibold text-[var(--foreground)]">{form.id ? "编辑收藏" : "新增收藏"}</h2><p className="mt-1 text-sm text-[var(--text-muted)]">{sourceLabel}</p></div>{form.id && <button className={quietButton} onClick={() => setForm(blankForm(type))}><X className="size-4" />取消编辑</button>}</div>
+          <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 id="art-editor-heading" className="text-lg font-semibold text-[var(--foreground)]">{form.id ? "编辑收藏" : "新增收藏"}</h2><p className="mt-1 text-sm text-[var(--text-muted)]">{sourceLabel}</p></div>{form.id && <button className={quietButton} onClick={() => { discardPendingCover(); setForm(blankForm(type)); }}><X className="size-4" />取消编辑</button>}</div>
           <div className="grid gap-6 md:grid-cols-[12rem_minmax(0,1fr)]">
             <div className="space-y-3">
               <div className="aspect-[2/3] overflow-hidden rounded-[var(--radius-control)] border border-[var(--border-soft)] bg-[var(--surface-soft)]">{form.coverUrl ? <img src={previewUrl(form.coverUrl)} alt="封面预览" className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-[var(--text-faint)]"><ImagePlus className="size-8" /></div>}</div>
-              <label className={`${quietButton} cursor-pointer justify-center`}><Upload className="size-4" />上传封面<input type="file" accept="image/jpeg,image/png,image/webp,image/avif" className="sr-only" onChange={(e) => void upload(e.target.files?.[0])} /></label>
-              <label className="space-y-1.5 text-xs"><span>或粘贴 HTTPS 图片 URL</span><input className={inputClass} value={form.cover?.kind === "url" ? form.cover.url : ""} onChange={(e) => setForm({ ...form, coverUrl: e.target.value, cover: e.target.value ? { kind: "url", url: e.target.value } : null })} /></label>
+              <label className={`${quietButton} cursor-pointer justify-center ${busy === "upload" ? "pointer-events-none opacity-45" : ""}`}><Upload className="size-4" />{busy === "upload" ? "上传中" : "上传封面"}<input type="file" accept="image/jpeg,image/png,image/webp,image/avif" className="sr-only" disabled={busy === "upload"} onChange={(e) => { void upload(e.target.files?.[0]); e.target.value = ""; }} /></label>
+              <label className="space-y-1.5 text-xs"><span>或粘贴 HTTPS 图片 URL</span><input className={inputClass} value={form.coverUrl} onChange={(e) => changeCoverUrl(e.target.value)} /></label>
             </div>
             <div className="min-w-0 space-y-5">
               <div className="grid gap-4 sm:grid-cols-2">
@@ -248,14 +274,17 @@ export default function ArtAdmin() {
 }
 
 function blankForm(type: ArtType): FormState {
-  return { type, source: type === "music" ? "apple_music" : ["movie", "series", "anime"].includes(type) ? "tmdb" : "apple_books", sourceId: "", isbn: "", originalTitle: "", releaseDate: "", collectedOn: today(), isVisible: true, coverUrl: "", cover: null, translations: Object.fromEntries(LOCALES.map(({ id }) => [id, emptyTranslation()])) as Record<Locale, Translation> };
+  return { type, source: type === "music" ? "deezer_music" : ["movie", "series", "anime"].includes(type) ? "tmdb" : "apple_books", sourceId: "", isbn: "", originalTitle: "", releaseDate: "", collectedOn: today(), isVisible: true, coverUrl: "", cover: null, translations: Object.fromEntries(LOCALES.map(({ id }) => [id, emptyTranslation()])) as Record<Locale, Translation> };
 }
-function previewUrl(url: string) { return url.startsWith("blob:") || url.startsWith("/") ? url : `/api/admin/art/cover-preview?url=${encodeURIComponent(url)}`; }
+function candidateKey(item: Pick<Candidate, "source" | "sourceId">) { return `${item.source}:${item.sourceId}`; }
+function previewUrl(url: string) { return url.startsWith("/") || url.startsWith("https://img.muelsyse.us/") ? url : `/api/admin/art/cover-preview?url=${encodeURIComponent(url)}`; }
 function display(item: ArtItem) { return item.translations["zh-CN"] ?? emptyTranslation(); }
 function updateTranslation(setForm: React.Dispatch<React.SetStateAction<FormState>>, form: FormState, locale: Locale, field: keyof Translation, value: string) { setForm({ ...form, translations: { ...form.translations, [locale]: { ...form.translations[locale], [field]: value } } }); }
 async function fetchJson<T = unknown>(url: string, init?: RequestInit): Promise<T> { const response = await fetch(url, init); const data = await response.json().catch(() => ({})) as { error?: { message?: string } } & T; if (!response.ok) throw new Error(data.error?.message ?? "请求失败。"); return data; }
 function errorMessage(error: unknown) { return error instanceof Error ? error.message : "请求失败。"; }
-function fileToBase64(file: File) { return new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result).split(",", 2)[1] ?? ""); reader.onerror = () => reject(reader.error); reader.readAsDataURL(file); }); }
+async function deleteUploadedCover(key: string) {
+  try { await fetch("/api/admin/art/covers", { method: "DELETE", headers: { "content-type": "application/json" }, body: JSON.stringify({ key }), keepalive: true }); } catch {}
+}
 const inputClass = "w-full rounded-[var(--radius-control)] border border-[var(--border-strong)] bg-[var(--canvas)] px-3 py-2.5 text-[var(--foreground)] outline-none focus:border-[var(--foreground)]";
 const primaryButton = "inline-flex min-h-10 items-center justify-center gap-2 rounded-[var(--radius-control)] bg-[var(--foreground)] px-4 py-2 text-sm font-medium text-[var(--canvas)] disabled:cursor-not-allowed disabled:opacity-45";
 const quietButton = "inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-control)] border border-[var(--border-strong)] px-3 py-2 text-sm text-[var(--foreground)] disabled:opacity-45";

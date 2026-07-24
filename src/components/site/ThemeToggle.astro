@@ -53,7 +53,24 @@
     });
   };
 
+  const themeDocument = document as Document & {
+    themeToggleClickHandler?: (event: MouseEvent) => void;
+    themeToggleRunning?: boolean;
+  };
+
+  const getTransitionOrigin = (button: HTMLElement) => {
+    const icon = button.querySelector<SVGElement>("[data-theme-icon]");
+    const rect = (icon ?? button).getBoundingClientRect();
+
+    return {
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2,
+    };
+  };
+
   const handleThemeToggle = async (button: HTMLElement) => {
+    if (themeDocument.themeToggleRunning) return;
+
     const isAppearanceTransition =
       // @ts-ignore
       document.startViewTransition &&
@@ -65,23 +82,31 @@
       return;
     }
 
-    const rect = button.getBoundingClientRect();
-    const x = rect.left + rect.width / 2;
-    const y = rect.top + rect.height / 2;
+    const { x, y } = getTransitionOrigin(button);
 
     const endRadius = Math.hypot(
       Math.max(x, window.innerWidth - x),
       Math.max(y, window.innerHeight - y)
     );
 
-    // Set attribute to disable other element transitions and avoid duplicate name errors
+    themeDocument.themeToggleRunning = true;
     document.documentElement.setAttribute("data-theme-transitioning", "true");
 
-    // @ts-ignore
-    const transition = document.startViewTransition(() => {
+    let transition: ViewTransition;
+
+    try {
+      // @ts-ignore
+      transition = document.startViewTransition(() => {
+        toggleTheme();
+        syncToggleUI();
+      });
+    } catch {
       toggleTheme();
       syncToggleUI();
-    });
+      themeDocument.themeToggleRunning = false;
+      document.documentElement.removeAttribute("data-theme-transitioning");
+      return;
+    }
 
     try {
       await transition.ready;
@@ -101,14 +126,17 @@
           pseudoElement: "::view-transition-new(root)",
         }
       );
-    } catch (e) {
-      console.warn("View transition ready failed:", e);
-    }
-
-    // Always clean up after transition is finished or aborted
-    transition.finished.finally(() => {
+    } catch {
+      // A superseding page transition can skip the reveal; the theme is already applied.
+    } finally {
+      try {
+        await transition.finished;
+      } catch {
+        // An aborted transition still needs the shared state cleaned up.
+      }
+      themeDocument.themeToggleRunning = false;
       document.documentElement.removeAttribute("data-theme-transitioning");
-    });
+    }
   };
 
   const bindButtons = () => {
@@ -120,10 +148,6 @@
     if (!button) return;
     event.preventDefault();
     handleThemeToggle(button);
-  };
-
-  const themeDocument = document as Document & {
-    themeToggleClickHandler?: (event: MouseEvent) => void;
   };
 
   if (themeDocument.themeToggleClickHandler) {

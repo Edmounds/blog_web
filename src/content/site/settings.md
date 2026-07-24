@@ -31,6 +31,9 @@ nav:
       - label: Screen
         href: /art/screen/
         match: prefix
+      - label: Game
+        href: /art/game/
+        match: prefix
 footerLinks:
   - label: Blog
     href: /blog/

@@ -6,20 +6,19 @@ motto: Keep it Simple,Stupid
 portrait: /images/content/about/profile-8646bdb863b8.png
 ---
 
+## ウェブサイトについて
+ここは私の静かな個人空間です——記事を書き、ノートを取り、プロジェクトを共有し、読んだ本や観た映画を記録しています。
+ここはソーシャルメディアではありません。通知や「いいね」の不安はなく、文字と写真、そしていくつかの記録だけがあります。
+ソーシャルメディアのような、個人生活への強い影響や侵入は好みません
+
+
 ## 私について
+重慶大学国家卓越工程師学院の3年生
 
-ここは私の静かな個人空間です——記事を書き、ノートを取り、読んだ本や映画を記録し、旅行を共有します。ソーシャルメディアではなく、通知やいいねの不安もなく、文字、写真、そしていくつかの記録だけがあります。ソーシャルソフトウェアのような個人生活への高強度の影響と侵入は好きではありません。
 
-## 経歴
-
-## お問い合わせ
-
-- [GitHub](https://github.com/Edmounds)
-- [Bilibili](https://space.bilibili.com/397591871)
+## 連絡先
 - [i@muelsyse.us](mailto:i@muelsyse.us)
 
 ## 謝辞
 
-![The Movie Database](/images/tmdb-logo.svg)
-
-この製品はTMDB APIを使用していますが、TMDBによって承認または認定されたものではありません。
+![The Movie Database](/images/tmdb-logo.svg)  このウェブサイトは TMDB API を使用しています

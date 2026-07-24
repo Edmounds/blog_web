@@ -22,42 +22,42 @@ test("D1-style comment storage lists newest first, paginates, hides, restores, a
     const result = await createComment(
       db,
       requestWithIp(request, `203.0.113.${index + 1}`),
-      { contentId: "blog/designing-for-clarity-in-chaos", name: `访客${index}`, content: `<script>alert(${index})</script>\n第二行` },
+      { contentId: "blog/first-note", name: `访客${index}`, content: `<script>alert(${index})</script>\n第二行` },
       "test-only-secret",
       new Date(base.getTime() + index * 61_000),
     );
     assert.equal(result.ok, true);
   }
 
-  const first = await listPublicComments(db, "blog/designing-for-clarity-in-chaos");
+  const first = await listPublicComments(db, "blog/first-note");
   assert.equal(first.items.length, 20);
   assert.equal(first.items[0].id, 21);
   assert.equal(first.items[0].content, "<script>alert(20)</script>\n第二行");
   assert.equal(first.nextCursor, "2");
 
-  const second = await listPublicComments(db, "blog/designing-for-clarity-in-chaos", Number(first.nextCursor));
+  const second = await listPublicComments(db, "blog/first-note", Number(first.nextCursor));
   assert.deepEqual(second.items.map((item) => item.id), [1]);
 
   const hidden = await setCommentHidden(db, 21, true, new Date("2026-07-23T02:00:00.000Z"));
   assert.equal(hidden.hidden, true);
-  assert.equal((await listPublicComments(db, "blog/designing-for-clarity-in-chaos")).items.some((item) => item.id === 21), false);
-  assert.equal((await listAdminComments(db, "blog/designing-for-clarity-in-chaos", "hidden")).items[0].id, 21);
+  assert.equal((await listPublicComments(db, "blog/first-note")).items.some((item) => item.id === 21), false);
+  assert.equal((await listAdminComments(db, "blog/first-note", "hidden")).items[0].id, 21);
 
   const restored = await setCommentHidden(db, 21, false);
   assert.equal(restored.hidden, false);
-  assert.equal((await listPublicComments(db, "blog/designing-for-clarity-in-chaos")).items[0].id, 21);
+  assert.equal((await listPublicComments(db, "blog/first-note")).items[0].id, 21);
 
   const firstAttempt = await createComment(
     db,
     requestWithIp(request, "198.51.100.9"),
-    { contentId: "blog/designing-for-clarity-in-chaos", name: "限频", content: "第一次" },
+    { contentId: "blog/first-note", name: "限频", content: "第一次" },
     "test-only-secret",
     new Date("2026-07-23T03:00:00.000Z"),
   );
   const secondAttempt = await createComment(
     db,
     requestWithIp(request, "198.51.100.9"),
-    { contentId: "blog/designing-for-clarity-in-chaos", name: "限频", content: "第二次" },
+    { contentId: "blog/first-note", name: "限频", content: "第二次" },
     "test-only-secret",
     new Date("2026-07-23T03:00:30.000Z"),
   );

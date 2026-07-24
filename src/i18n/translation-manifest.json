@@ -89,10 +89,6 @@
       "fingerprint": "3cf6043355fc795abb762694895add592b1f6fabe7e2ebb4daf50006f399b296",
       "translation": "Title"
     },
-    "en:messages.site.copy.category": {
-      "fingerprint": "4c16e40b6ceb1ffcf924fc90cd78207aaaec14acf83395de6f9620561d94c8f4",
-      "translation": "Category"
-    },
     "en:messages.site.copy.reading": {
       "fingerprint": "ab7ab12a99eb74fa7b89695357d6f69acb7543223372398231e7f5e759c9e640",
       "translation": "Reading"
@@ -336,10 +332,6 @@
     "ja:messages.site.copy.title": {
       "fingerprint": "3cf6043355fc795abb762694895add592b1f6fabe7e2ebb4daf50006f399b296",
       "translation": "タイトル"
-    },
-    "ja:messages.site.copy.category": {
-      "fingerprint": "4c16e40b6ceb1ffcf924fc90cd78207aaaec14acf83395de6f9620561d94c8f4",
-      "translation": "カテゴリー"
     },
     "ja:messages.site.copy.reading": {
       "fingerprint": "ab7ab12a99eb74fa7b89695357d6f69acb7543223372398231e7f5e759c9e640",
@@ -588,10 +580,6 @@
     "zh-TW:messages.site.copy.title": {
       "fingerprint": "3cf6043355fc795abb762694895add592b1f6fabe7e2ebb4daf50006f399b296",
       "translation": "標題"
-    },
-    "zh-TW:messages.site.copy.category": {
-      "fingerprint": "4c16e40b6ceb1ffcf924fc90cd78207aaaec14acf83395de6f9620561d94c8f4",
-      "translation": "分類"
     },
     "zh-TW:messages.site.copy.reading": {
       "fingerprint": "ab7ab12a99eb74fa7b89695357d6f69acb7543223372398231e7f5e759c9e640",
@@ -865,29 +853,89 @@
       "fingerprint": "ce8e6e4d214ac64d311082e6561d5ea00655bc89e16c54b4293379dd730299e4",
       "translation": "項目、作品與實驗。"
     },
-    "en:content.blog.designing-for-clarity-in-chaos.md.document": {
-      "fingerprint": "110043051f81e6aa0a55f375166b16cd77866ae5a4597705848e24e81c28bd1f",
-      "translation": "---\ntitle: Hello\nrouteSlug: designing-for-clarity-in-chaos\ndescription: My first blog post.\ncreatedAt: 2026-01-28\nimage: /images/content/blog/designing-for-clarity-in-chaos.png\npublished: true\ntype: article\ncategory: Essay\norder: 1\ntags:\n  - Essay\n---\n\nHello, welcome to my blog.\n\nThis is the first article I've left here, and also a simple beginning."
-    },
     "en:content.about.profile.md.document": {
-      "fingerprint": "523c58a9e8ef3d6b1ba18d7d91767f7a609274493ac21ac54efd23d70c69dd4f",
-      "translation": "---\nname: Lust4ev3r\ncity: Chongqing, China\nmajor: Robotics Engineering\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile-8646bdb863b8.png\n---\n\n## About Me\n\nThis is my quiet personal space—writing articles, taking notes, recording the books and movies I've watched, and sharing travels. It's not social media; there are no notifications or like anxiety, only words, photos, and some records. I don't like the high-intensity impact and intrusion of social apps on personal life.\n\n## Experience\n\n## Contact Me\n\n- [GitHub](https://github.com/Edmounds)\n- [Bilibili](https://space.bilibili.com/397591871)\n- [i@muelsyse.us](mailto:i@muelsyse.us)\n\n## Acknowledgments\n\n![The Movie Database](/images/tmdb-logo.svg)\n\nThis product uses the TMDB API but is not endorsed or certified by TMDB."
-    },
-    "ja:content.blog.designing-for-clarity-in-chaos.md.document": {
-      "fingerprint": "110043051f81e6aa0a55f375166b16cd77866ae5a4597705848e24e81c28bd1f",
-      "translation": "---\ntitle: こんにちは\nrouteSlug: designing-for-clarity-in-chaos\ndescription: 私の最初のブログ記事です。\ncreatedAt: 2026-01-28\nimage: /images/content/blog/designing-for-clarity-in-chaos.png\npublished: true\ntype: article\ncategory: 随筆\norder: 1\ntags:\n  - 随筆\n---\n\nこんにちは、私のブログへようこそ。\n\nこれは私がここに残す最初の記事であり、シンプルな始まりでもあります。"
+      "fingerprint": "9e642f248c311fda30963e509e773de79fb684975b75f86aa88c7272649f39cf",
+      "translation": "---\nname: Lust4ev3r\ncity: Chongqing, China\nmajor: Robotics Engineering\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile-8646bdb863b8.png\n---\n\n## About the Website\nThis is my quiet personal space—writing articles, taking notes, sharing projects, and recording the books and movies I've watched.\nThis is not social media; there are no notifications or like anxiety, only text, photos, and some records. \nI don't like the high-intensity impact and intrusion that social apps have on personal life \n\n\n## About Me\nThird-year student at the National Excellence Engineer College of Chongqing University\n\n\n## Contact Me\n- [i@muelsyse.us](mailto:i@muelsyse.us)\n\n## Acknowledgments\n\n![The Movie Database](/images/tmdb-logo.svg)  This website uses the TMDB API"
     },
     "ja:content.about.profile.md.document": {
-      "fingerprint": "523c58a9e8ef3d6b1ba18d7d91767f7a609274493ac21ac54efd23d70c69dd4f",
-      "translation": "---\nname: Lust4ev3r\ncity: 中国重慶\nmajor: ロボット工学\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile-8646bdb863b8.png\n---\n\n## 私について\n\nここは私の静かな個人空間です——記事を書き、ノートを取り、読んだ本や映画を記録し、旅行を共有します。ソーシャルメディアではなく、通知やいいねの不安もなく、文字、写真、そしていくつかの記録だけがあります。ソーシャルソフトウェアのような個人生活への高強度の影響と侵入は好きではありません。\n\n## 経歴\n\n## お問い合わせ\n\n- [GitHub](https://github.com/Edmounds)\n- [Bilibili](https://space.bilibili.com/397591871)\n- [i@muelsyse.us](mailto:i@muelsyse.us)\n\n## 謝辞\n\n![The Movie Database](/images/tmdb-logo.svg)\n\nこの製品はTMDB APIを使用していますが、TMDBによって承認または認定されたものではありません。"
-    },
-    "zh-TW:content.blog.designing-for-clarity-in-chaos.md.document": {
-      "fingerprint": "110043051f81e6aa0a55f375166b16cd77866ae5a4597705848e24e81c28bd1f",
-      "translation": "---\ntitle: 你好\nrouteSlug: designing-for-clarity-in-chaos\ndescription: 我的第一篇部落格文章。\ncreatedAt: 2026-01-28\nimage: /images/content/blog/designing-for-clarity-in-chaos.png\npublished: true\ntype: article\ncategory: 隨筆\norder: 1\ntags:\n  - 隨筆\n---\n\n你好，歡迎來到我的部落格。\n\n這是我在這裡留下的第一篇文章，也是一個簡單的開始。"
+      "fingerprint": "9e642f248c311fda30963e509e773de79fb684975b75f86aa88c7272649f39cf",
+      "translation": "---\nname: Lust4ev3r\ncity: 中国重慶\nmajor: ロボット工学\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile-8646bdb863b8.png\n---\n\n## ウェブサイトについて\nここは私の静かな個人空間です——記事を書き、ノートを取り、プロジェクトを共有し、読んだ本や観た映画を記録しています。\nここはソーシャルメディアではありません。通知や「いいね」の不安はなく、文字と写真、そしていくつかの記録だけがあります。 \nソーシャルメディアのような、個人生活への強い影響や侵入は好みません \n\n\n## 私について\n重慶大学国家卓越工程師学院の3年生\n\n\n## 連絡先\n- [i@muelsyse.us](mailto:i@muelsyse.us)\n\n## 謝辞\n\n![The Movie Database](/images/tmdb-logo.svg)  このウェブサイトは TMDB API を使用しています"
     },
     "zh-TW:content.about.profile.md.document": {
-      "fingerprint": "523c58a9e8ef3d6b1ba18d7d91767f7a609274493ac21ac54efd23d70c69dd4f",
-      "translation": "---\nname: Lust4ev3r\ncity: 中國重慶\nmajor: 機器人工程\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile-8646bdb863b8.png\n---\n\n## 關於我\n\n這裡是我安靜的個人空間——寫文章、記筆記、記錄看過的書和電影、分享旅行。不是社交媒體，沒有通知和按讚焦慮，只有文字、照片和一些記錄。 不喜歡社交軟體那種高強度對個人生活的影響和侵入 \n\n## 經歷\n\n## 聯繫我\n\n- [GitHub](https://github.com/Edmounds)\n- [Bilibili](https://space.bilibili.com/397591871)\n- [i@muelsyse.us](mailto:i@muelsyse.us)\n\n## 致謝\n\n![The Movie Database](/images/tmdb-logo.svg)\n\nThis product uses the TMDB API but is not endorsed or certified by TMDB."
+      "fingerprint": "9e642f248c311fda30963e509e773de79fb684975b75f86aa88c7272649f39cf",
+      "translation": "---\nname: Lust4ev3r\ncity: 中國重慶\nmajor: 機器人工程\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile-8646bdb863b8.png\n---\n\n## 關於網站\n這裡是我安靜的個人空間——寫文章、記筆記、分享專案、記錄看過的書和電影。\n這裡不是社交媒體，沒有通知和按讚焦慮，只有文字、照片和一些記錄。 \n不喜歡社交軟體那種高強度對個人生活的影響和侵入 \n\n\n## 關於我\n重慶大學國家卓越工程師學院大三\n\n\n## 聯絡我\n- [i@muelsyse.us](mailto:i@muelsyse.us)\n\n## 致謝\n\n![The Movie Database](/images/tmdb-logo.svg)  This website uses the TMDB API"
+    },
+    "en:content.blog.first-note.md.document": {
+      "fingerprint": "eae6f12c7b66ee4585b5d3543742f48f7bdc33ead459e1490c367b139e76f62d",
+      "translation": "---\ntitle: Hello\ndescription: My first blog post.\ncreatedAt: 2026-01-28\npublished: true\norder: 1\ntags:\n  - Essay\n---\n\n# Hello World\nHello, welcome to my blog.\n\n## Writing Something Simple\nThis is the first article I've left here, and also a simple beginning."
+    },
+    "ja:content.blog.first-note.md.document": {
+      "fingerprint": "eae6f12c7b66ee4585b5d3543742f48f7bdc33ead459e1490c367b139e76f62d",
+      "translation": "---\ntitle: こんにちは\ndescription: 私の最初のブログ記事。\ncreatedAt: 2026-01-28\npublished: true\norder: 1\ntags:\n  - 随筆\n---\n\n# Hello World\nこんにちは、私のブログへようこそ。\n\n## 簡単に何か書いてみる\nこれは私がここに残す最初の記事であり、シンプルな始まりでもあります。"
+    },
+    "zh-TW:content.blog.first-note.md.document": {
+      "fingerprint": "eae6f12c7b66ee4585b5d3543742f48f7bdc33ead459e1490c367b139e76f62d",
+      "translation": "---\ntitle: 你好\ndescription: 我的第一篇部落格文章。\ncreatedAt: 2026-01-28\npublished: true\norder: 1\ntags:\n  - 隨筆\n---\n\n# Hello World\n你好，歡迎來到我的部落格。\n\n## 簡單寫點東西\n這是我在這裡留下的第一篇文章，也是一個簡單的開始。"
+    },
+    "en:messages.site.copy.gameHours": {
+      "fingerprint": "240e0f6a3ed8958d3d99f8175f4b9ff671ff3eea659afc45c4953c866b9859d4",
+      "translation": "hour"
+    },
+    "en:messages.site.copy.gameEmpty": {
+      "fingerprint": "f777babca486b1892c57a02b09ee9d184d1af45cba1d2084ccac94a4acb0d336",
+      "translation": "There are no games here yet."
+    },
+    "en:messages.site.nav.game": {
+      "fingerprint": "0f8268e6eeb425bc76ebfedb45b08140fa0e729c89751a7452f3312768d90f1b",
+      "translation": "Game"
+    },
+    "en:messages.site.copy.gameMinutes": {
+      "fingerprint": "11e48cf3a336d93a0a92b3340160c48711f67d245e6174e7630098a0e71e1230",
+      "translation": "minute"
+    },
+    "en:messages.site.page.gameDescription": {
+      "fingerprint": "57d7e3e8d8bffb0215b8e950c2733fa35b0ae4e4638441ce824afdcfd23c560f",
+      "translation": "Game Collection Sorted by Playtime"
+    },
+    "ja:messages.site.nav.game": {
+      "fingerprint": "0f8268e6eeb425bc76ebfedb45b08140fa0e729c89751a7452f3312768d90f1b",
+      "translation": "ゲーム"
+    },
+    "ja:messages.site.copy.gameEmpty": {
+      "fingerprint": "f777babca486b1892c57a02b09ee9d184d1af45cba1d2084ccac94a4acb0d336",
+      "translation": "ここにはまだゲームがありません。"
+    },
+    "ja:messages.site.copy.gameHours": {
+      "fingerprint": "240e0f6a3ed8958d3d99f8175f4b9ff671ff3eea659afc45c4953c866b9859d4",
+      "translation": "時間"
+    },
+    "ja:messages.site.copy.gameMinutes": {
+      "fingerprint": "11e48cf3a336d93a0a92b3340160c48711f67d245e6174e7630098a0e71e1230",
+      "translation": "分"
+    },
+    "ja:messages.site.page.gameDescription": {
+      "fingerprint": "57d7e3e8d8bffb0215b8e950c2733fa35b0ae4e4638441ce824afdcfd23c560f",
+      "translation": "プレイ時間順のゲームコレクション"
+    },
+    "zh-TW:messages.site.nav.game": {
+      "fingerprint": "0f8268e6eeb425bc76ebfedb45b08140fa0e729c89751a7452f3312768d90f1b",
+      "translation": "遊戲"
+    },
+    "zh-TW:messages.site.copy.gameHours": {
+      "fingerprint": "240e0f6a3ed8958d3d99f8175f4b9ff671ff3eea659afc45c4953c866b9859d4",
+      "translation": "小時"
+    },
+    "zh-TW:messages.site.copy.gameEmpty": {
+      "fingerprint": "f777babca486b1892c57a02b09ee9d184d1af45cba1d2084ccac94a4acb0d336",
+      "translation": "這裡還沒有遊戲。"
+    },
+    "zh-TW:messages.site.copy.gameMinutes": {
+      "fingerprint": "11e48cf3a336d93a0a92b3340160c48711f67d245e6174e7630098a0e71e1230",
+      "translation": "分鐘"
+    },
+    "zh-TW:messages.site.page.gameDescription": {
+      "fingerprint": "57d7e3e8d8bffb0215b8e950c2733fa35b0ae4e4638441ce824afdcfd23c560f",
+      "translation": "按遊玩時長排列的遊戲收藏"
     }
   }
 }

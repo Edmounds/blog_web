@@ -108,37 +108,12 @@ const collectBodyReferences = (source, offset, references) => {
   }
 };
 
-const collectCoverReference = (source, frontmatterEnd, references) => {
-  if (frontmatterEnd === -1) return;
-  const frontmatter = source.slice(0, frontmatterEnd);
-  const coverPattern = /^((?:cover|image):[ \t]*)([^\r\n]+)$/m;
-  const match = coverPattern.exec(frontmatter);
-  if (!match) return;
-
-  const rawValue = match[2];
-  const trimmed = rawValue.trim();
-  const quote = (trimmed.startsWith('"') && trimmed.endsWith('"')) || (trimmed.startsWith("'") && trimmed.endsWith("'"))
-    ? trimmed[0]
-    : "";
-  const value = quote ? trimmed.slice(1, -1) : trimmed;
-  if (!isLocalAbsolutePath(value)) return;
-
-  const valueStart = match.index + match[1].length + rawValue.indexOf(trimmed);
-  references.push({
-    start: valueStart,
-    end: valueStart + trimmed.length,
-    localPath: toLocalPath(value),
-    render: (url) => quote ? `${quote}${url}${quote}` : url,
-  });
-};
-
 const collectReferences = (source) => {
   const references = [];
   const bomOffset = source.startsWith("\uFEFF") ? 1 : 0;
   const hasFrontmatter = source.slice(bomOffset).startsWith("---");
   const frontmatterEnd = hasFrontmatter ? source.indexOf("\n---", bomOffset + 3) : -1;
 
-  collectCoverReference(source, frontmatterEnd, references);
   const bodyStart = frontmatterEnd === -1 ? 0 : frontmatterEnd + 4;
   collectBodyReferences(source.slice(bodyStart), bodyStart, references);
   return references;

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { searchArtCandidates, searchAppleMusic, searchBooks, searchDeezerMusic, searchDoubanBooks, searchMusic, searchTmdb } from "../functions/_shared/art-search.js";
+import { searchArtCandidates, searchBooks, searchDeezerMusic, searchDoubanBooks, searchMusic, searchTmdb } from "../functions/_shared/art-search.js";
 
 test("book ISBN search prefers an exact Douban result", async () => {
   const calls = [];
@@ -44,62 +44,108 @@ test("Douban book search maps its embedded result data", async () => {
 });
 
 test("provider mappings retain metadata-only candidates without covers", async () => {
-  const music = await searchAppleMusic({
-    query: "album",
-    fetchImpl: async () => response({ results: [{ collectionId: 9, collectionName: "No Cover", artistName: "Artist" }] }),
-  });
   const movie = await searchTmdb({
     type: "movie",
     query: "film",
     env: { TMDB_API_KEY: "secret" },
     fetchImpl: async () => response({ results: [{ id: 10, title: "No Poster", poster_path: null }] }),
   });
-  assert.equal(music[0].coverUrl, "");
   assert.equal(movie[0].coverUrl, "");
 });
 
-test("Apple Music maps albums and upgrades artwork", async () => {
-  const items = await searchAppleMusic({ query: "Abbey Road", fetchImpl: async () => response({ results: [{ collectionId: 3, collectionName: "Abbey Road", artistName: "The Beatles", releaseDate: "1969-09-26T00:00:00Z", trackCount: 17, artworkUrl100: "https://apple.test/100x100bb.jpg" }] }) });
-  assert.deepEqual(items[0], { source: "apple_music", sourceId: "3", title: "Abbey Road", creator: "The Beatles", originalTitle: "Abbey Road", releaseDate: "1969-09-26", description: "17 tracks", coverUrl: "https://apple.test/1000x1000bb.jpg" });
-});
-
-test("Deezer maps albums with selectable covers", async () => {
+test("Deezer album search maps official albums with selectable covers", async () => {
   const items = await searchDeezerMusic({
     query: "Abbey Road",
-    creator: "The Beatles",
-    fetchImpl: async () => response({ data: [{ id: 12, title: "Abbey Road (Remastered)", artist: { name: "The Beatles" }, release_date: "1969-09-26", nb_tracks: 17, cover_xl: "https://deezer.test/cover.jpg" }] }),
+    fetchImpl: async (url) => {
+      if (String(url).includes("/search/album")) return response({ data: [{ id: 12, title: "Abbey Road (Remastered)", record_type: "album", artist: { name: "The Beatles" }, release_date: "1969-09-26", nb_tracks: 17, cover_xl: "https://deezer.test/cover.jpg" }, { id: 13, title: "Abbey Road EP", record_type: "ep" }] });
+      if (String(url).includes("/search/artist")) return response({ data: [] });
+      throw new Error(`Unexpected Deezer request: ${url}`);
+    },
   });
   assert.deepEqual(items[0], { source: "deezer_music", sourceId: "12", title: "Abbey Road (Remastered)", creator: "The Beatles", originalTitle: "Abbey Road (Remastered)", releaseDate: "1969-09-26", description: "17 tracks", coverUrl: "https://deezer.test/cover.jpg" });
+  assert.equal(items.length, 1);
 });
 
-test("music search falls back to Deezer when Apple Music fails", async () => {
+test("music search uses only the query for both Deezer searches and picks the most popular released artist", async () => {
   const calls = [];
   const items = await searchMusic({
-    query: "Abbey Road",
-    creator: "The Beatles",
+    query: "Queen",
+    creator: "ignored legacy field",
     fetchImpl: async (url) => {
       const value = String(url); calls.push(value);
-      if (value.startsWith("https://itunes.apple.com")) return new Response("upstream failed", { status: 502 });
-      return response({ data: [{ id: 12, title: "Abbey Road", artist: { name: "The Beatles" }, nb_tracks: 17, cover_xl: "https://deezer.test/cover.jpg" }] });
+      if (value.includes("/search/album")) return response({ data: [] });
+      if (value.includes("/search/artist")) return response({ data: [
+        { id: 1, name: "Queen tribute", nb_fan: 999999, nb_album: 0 },
+        { id: 2, name: "Queen", nb_fan: 500000, nb_album: 20 },
+        { id: 3, name: "Queen cover band", nb_fan: 100, nb_album: 2 },
+      ] });
+      if (value.includes("/artist/2/albums")) return response({ data: [{ id: 20, title: "A Night at the Opera", record_type: "album", artist: { name: "Queen" }, fans: 10 }] });
+      throw new Error(`Unexpected Deezer request: ${value}`);
     },
   });
   assert.deepEqual(items.map((item) => item.source), ["deezer_music"]);
-  assert.match(calls[1], /^https:\/\/api\.deezer\.com\/search\/album\?/);
-  assert.match(calls[1], /q=Abbey\+Road\+The\+Beatles/);
+  assert.equal(calls.length, 3);
+  assert.ok(calls.every((url) => url.startsWith("https://api.deezer.com/")));
+  assert.match(calls[0], /\/search\/album\?q=Queen/);
+  assert.match(calls[1], /\/search\/artist\?q=Queen/);
+  assert.ok(calls.every((url) => !url.includes("ignored")));
 });
 
-test("music search does not call the backup when Apple Music succeeds", async () => {
-  const calls = [];
+test("artist albums follow pagination, exclude non-albums, sort by popularity, and precede deduplicated title matches", async () => {
   const items = await searchMusic({
-    query: "Abbey Road",
-    creator: "The Beatles",
+    query: "Artist",
     fetchImpl: async (url) => {
-      calls.push(String(url));
-      return response({ results: [{ collectionId: 3, collectionName: "Abbey Road", artistName: "The Beatles", artworkUrl100: "https://apple.test/100x100bb.jpg" }] });
+      const value = String(url);
+      if (value.includes("/search/album")) return response({ data: [
+        { id: 3, title: "Duplicate title result", record_type: "album", artist: { name: "Artist" }, fans: 1 },
+        { id: 9, title: "Title-only match", record_type: "album", artist: { name: "Someone else" } },
+      ] });
+      if (value.includes("/search/artist")) return response({ data: [{ id: 7, name: "Artist", nb_fan: 42, nb_album: 5 }] });
+      if (value.includes("index=2")) return response({ data: [
+        { id: 3, title: "Alpha", record_type: "album", release_date: "2024-01-01", fans: 100, artist: { name: "Artist" } },
+        { id: 4, title: "Newest tie", record_type: "album", release_date: "2025-01-01", fans: 100, artist: { name: "Artist" } },
+      ] });
+      if (value.includes("/artist/7/albums")) return response({
+        data: [
+          { id: 1, title: "Less popular", record_type: "album", release_date: "2025-01-01", fans: 10 },
+          { id: 2, title: "Not an album", record_type: "ep", fans: 1000 },
+        ],
+        next: "https://api.deezer.com/artist/7/albums?index=2",
+      });
+      throw new Error(`Unexpected Deezer request: ${value}`);
     },
   });
-  assert.deepEqual(items.map((item) => item.source), ["apple_music"]);
-  assert.equal(calls.length, 1);
+  assert.deepEqual(items.map((item) => item.sourceId), ["4", "3", "1", "9"]);
+  assert.equal(items.find((item) => item.sourceId === "3")?.title, "Alpha");
+  assert.equal(items.find((item) => item.sourceId === "1")?.creator, "Artist");
+});
+
+test("music search still returns title matches when no valid artist exists", async () => {
+  const items = await searchMusic({
+    query: "Unknown",
+    fetchImpl: async (url) => String(url).includes("/search/album")
+      ? response({ data: [{ id: 5, title: "Unknown Album", record_type: "album", artist: { name: "Known Artist" } }] })
+      : response({ data: [{ id: 6, name: "Unknown", nb_fan: 100, nb_album: 0 }] }),
+  });
+  assert.deepEqual(items.map((item) => item.sourceId), ["5"]);
+});
+
+test("music search still returns artist albums when the title search is empty", async () => {
+  const items = await searchMusic({
+    query: "Exact Artist",
+    fetchImpl: async (url) => {
+      const value = String(url);
+      if (value.includes("/search/album")) return response({ data: [] });
+      if (value.includes("/search/artist")) return response({ data: [{ id: 8, name: "Exact Artist", nb_fan: 10, nb_album: 1 }] });
+      return response({ data: [{ id: 81, title: "Only Album", record_type: "album", artist: { name: "Exact Artist" } }] });
+    },
+  });
+  assert.deepEqual(items.map((item) => item.sourceId), ["81"]);
+});
+
+test("music search rejects invalid Deezer payloads", async () => {
+  const items = await searchMusic({ query: "album", fetchImpl: async () => response({ data: "invalid" }) });
+  assert.deepEqual(items, []);
 });
 
 test("TMDB maps movie and TV search without inferring series versus anime", async () => {
@@ -115,8 +161,8 @@ test("TMDB maps movie and TV search without inferring series versus anime", asyn
 
 test("provider errors are surfaced", async () => {
   await assert.rejects(
-    () => searchAppleMusic({ query: "album", fetchImpl: async () => new Response("rate limit", { status: 429, headers: { "retry-after": "30" } }) }),
-    (error) => error.status === 429 && error.provider === "apple" && error.retryAfter === "30",
+    () => searchMusic({ query: "album", fetchImpl: async () => new Response("rate limit", { status: 429, headers: { "retry-after": "30" } }) }),
+    (error) => error.status === 429 && error.provider === "deezer" && error.retryAfter === "30",
   );
 });
 

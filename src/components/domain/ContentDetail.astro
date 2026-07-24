@@ -31,17 +31,16 @@ const articleJsonLd = JSON.stringify({
   datePublished: item.createdAt.toISOString(),
   dateModified: (item.updatedAt ?? item.createdAt).toISOString(),
   url: new URL(canonicalPath, "https://blog.muelsyse.us").toString(),
-  image: item.image ? new URL(item.image, "https://blog.muelsyse.us").toString() : undefined,
+  keywords: item.tags,
   author: { "@type": "Person", name: "Chasen Chen" },
 }).replace(/</g, "\\u003c");
 ---
 
 <BaseLayout
-  title={`${item.title} | chasen`}
+  title={item.title}
   description={item.description}
   currentPath={canonicalPath}
   locale={locale}
-  imageUrl={item.image}
   ogType="article"
   hasMath={hasMath}
 >
@@ -49,10 +48,10 @@ const articleJsonLd = JSON.stringify({
   <article class="article-page app-container">
     <header class="article-page__header">
       <a href={localizePath(`/${item.section}/`, locale)}>Back to {item.section}</a>
-      <p>{item.category}</p>
       <h1>{item.title}</h1>
       <p class="article-page__description">{item.description}</p>
       <div class="article-page__meta"><time datetime={item.createdAt.toISOString()}>{dateLabel}</time><span>{item.readingTime}</span></div>
+      {item.tags.length > 0 && <div class="article-page__tags" aria-label="Tags">{item.tags.map((tag) => <span>#{tag}</span>)}</div>}
       {item.section === "project" && (item.projectUrl || item.docUrl) && (
         <nav class="article-page__links" aria-label="Project links">
           {item.projectUrl && <a href={item.projectUrl} target="_blank" rel="noreferrer"><Icon svg={ExternalLink} />Project</a>}
@@ -60,8 +59,6 @@ const articleJsonLd = JSON.stringify({
         </nav>
       )}
     </header>
-
-    {item.image && <img class="article-page__cover" src={item.image} alt="" width="512" height="512" fetchpriority="high" decoding="async" />}
 
     <div class="article-page__body">
       <aside><TableOfContents headings={headings} labels={{ title: labels.tableOfContents, introduction: labels.introduction, collapse: labels.collapseSection, expand: labels.expandSection }} /></aside>
@@ -80,14 +77,14 @@ const articleJsonLd = JSON.stringify({
 <style>
   .article-page { --article-content-width: 46rem; padding-block: clamp(4rem, 9vw, 8rem) 6rem; }
   .article-page__header { max-width: 60rem; margin-inline: auto; }
-  .article-page__header > a, .article-page__header > p:first-of-type { color: var(--text-faint); font-size: var(--type-sm); text-decoration: none; }
+  .article-page__header > a { color: var(--text-faint); font-size: var(--type-sm); text-decoration: none; }
   .article-page__header h1 { margin: 1rem 0; font-size: clamp(2.6rem, 7vw, 6.5rem); line-height: 0.98; overflow-wrap: anywhere; }
   .article-page__description { max-width: 46rem; color: var(--text-muted); font-size: var(--type-md); }
   .article-page__meta { display: flex; gap: 1rem; margin-top: 1.25rem; color: var(--text-faint); font-size: var(--type-sm); }
+  .article-page__tags { display: flex; flex-wrap: wrap; gap: 0.4rem 0.8rem; margin-top: 0.75rem; color: var(--text-faint); font-size: var(--type-sm); }
   .article-page__links { display: flex; flex-wrap: wrap; gap: 1.25rem; margin-top: 1.5rem; }
   .article-page__links a { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--foreground); font-size: var(--type-sm); text-decoration: none; }
   .article-page__links :global(svg) { width: 1rem; height: 1rem; }
-  .article-page__cover { display: block; width: min(100%, 40rem); height: auto; margin: 3rem auto; border-radius: var(--radius-control); }
   .article-page__body { display: grid; width: min(100%, calc(16rem + var(--article-content-width) + clamp(2rem, 5vw, 5rem))); grid-template-columns: minmax(12rem, 16rem) minmax(0, var(--article-content-width)); justify-content: center; gap: clamp(2rem, 5vw, 5rem); margin: 4rem auto 0; }
   .article-page__body aside { position: sticky; top: 6rem; align-self: start; }
   .article-prose { min-width: 0; font-size: var(--type-content-body); line-height: 1.85; }

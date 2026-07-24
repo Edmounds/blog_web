@@ -14,6 +14,7 @@ declare namespace Cloudflare {
     ART_COVER_FETCHER?: Fetcher;
     GOOGLE_BOOKS_API_KEY?: string;
     TMDB_API_KEY?: string;
+    STEAM_API_KEY?: string;
     SERVICE_TYPE?: string;
     DEEPLX_BASE_URL?: string;
     DEEPLX_API_KEY?: string;

@@ -45,6 +45,6 @@ test("collection routes are standalone and old movie route is gone", () => {
     assert.doesNotMatch(page, /SpaLayout/);
   }
   const localizedRoute = read("src/pages/[locale]/art/[type]/index.astro");
-  assert.match(localizedRoute, /\["music", "book", "screen"\]/);
+  assert.match(localizedRoute, /\["music", "book", "screen", "game"\]/);
   assert.doesNotMatch(localizedRoute, /Astro\.params\.type as "movie"/);
 });

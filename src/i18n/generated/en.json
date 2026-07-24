@@ -11,6 +11,7 @@
       "music": "Albums",
       "book": "Books",
       "screen": "Screen",
+      "game": "Game",
       "film": "Films",
       "series": "Series",
       "anime": "Anime",
@@ -31,7 +32,6 @@
       "grid": "Grid",
       "list": "List",
       "title": "Title",
-      "category": "Category",
       "reading": "Reading",
       "date": "Date",
       "tableOfContents": "On this page",
@@ -65,7 +65,10 @@
       "themeDark": "Switch to dark theme",
       "languageSelect": "Select language",
       "copyright": "All rights reserved.",
-      "artEmpty": "Nothing has been added here yet."
+      "artEmpty": "Nothing has been added here yet.",
+      "gameEmpty": "There are no games here yet.",
+      "gameHours": "hour",
+      "gameMinutes": "minute"
     },
     "page": {
       "homeTitle": "Home",
@@ -76,7 +79,8 @@
       "aboutDescription": "Background, interests, and personal notes from chasen.",
       "musicDescription": "Album collection",
       "bookDescription": "Book collection",
-      "screenDescription": "Films, series, and anime"
+      "screenDescription": "Films, series, and anime",
+      "gameDescription": "Game Collection Sorted by Playtime"
     }
   }
 }

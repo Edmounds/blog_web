@@ -88,7 +88,7 @@ const initialIndex = Math.max(0, routes.indexOf(routePath));
     };
     const indexForPath = (pathname) => PRIMARY_ROUTES.indexOf(stripLocale(pathname));
     const syncDocument = (index) => {
-      const label = index === 0 ? "chasen" : `${PRIMARY_ROUTES[index].split('/')[1][0].toUpperCase()}${PRIMARY_ROUTES[index].split('/')[1].slice(1)} | chasen`;
+      const label = index === 0 ? "小の网站" : `${PRIMARY_ROUTES[index].split('/')[1][0].toUpperCase()}${PRIMARY_ROUTES[index].split('/')[1].slice(1)}`;
       document.title = label;
       document.querySelectorAll('a[data-primary-route]').forEach((link) => {
         if (!(link instanceof HTMLAnchorElement)) return;

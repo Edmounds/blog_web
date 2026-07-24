@@ -1,0 +1,13 @@
+---
+import AdminNav from "../../../components/domain/AdminNav.astro";
+import GamesAdmin from "../../../components/domain/GamesAdmin";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+export const prerender = false;
+---
+<BaseLayout title="游戏管理" description="管理 Steam 与手动游戏收藏" currentPath="/admin/games/" showFooter={false}>
+  <div class="app-container py-8 md:py-12">
+    <AdminNav current="games" />
+    <GamesAdmin client:load />
+  </div>
+</BaseLayout>

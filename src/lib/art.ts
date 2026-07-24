@@ -55,6 +55,7 @@ interface ArtRow {
 }
 
 const LOCALES = new Set<ArtLocale>(["zh-CN", "zh-TW", "en", "ja"]);
+const ART_COVER_BASE_URL = "https://img.muelsyse.us";
 
 export async function getPublicArtItems(db: D1Database, locale: ArtLocale, types: ArtType[]): Promise<ArtItem[]> {
   if (!types.length) return [];
@@ -84,7 +85,7 @@ function groupRows(rows: ArtRow[]): ArtRecord[] {
         releaseDate: row.release_date ?? "",
         coverKey: row.cover_key,
         coverSourceUrl: row.cover_source_url ?? "",
-        coverUrl: `/media/${row.cover_key}`,
+        coverUrl: `${ART_COVER_BASE_URL}/${row.cover_key}`,
         collectedOn: row.collected_on,
         isVisible: Number(row.is_visible) === 1,
         createdAt: row.created_at,

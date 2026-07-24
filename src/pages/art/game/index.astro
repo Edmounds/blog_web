@@ -1,0 +1,15 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import GameSection from "../../../components/sections/GameSection.astro";
+import { getPublicGameItems } from "../../../lib/games";
+import { getLocalizedSite } from "../../../lib/localized-content";
+import { getRuntimeEnv } from "../../../lib/runtime";
+
+export const prerender = false;
+const site = await getLocalizedSite("zh-CN");
+const items = await getPublicGameItems(getRuntimeEnv().DB);
+Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=300");
+---
+<BaseLayout title={site.labels.game} description={site.page.gameDescription} currentPath="/art/game/">
+  <GameSection items={items} />
+</BaseLayout>

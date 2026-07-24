@@ -1,12 +1,11 @@
-const APPLE_SEARCH_URL = "https://itunes.apple.com/search";
-const DEEZER_SEARCH_URL = "https://api.deezer.com/search/album";
+const DEEZER_URL = "https://api.deezer.com";
 const DOUBAN_BOOK_SEARCH_URL = "https://search.douban.com/book/subject_search";
 const TMDB_URL = "https://api.themoviedb.org/3";
 const TMDB_IMAGE_URL = "https://image.tmdb.org/t/p/w780";
 
 export async function searchArtCandidates({ type, query, creator = "", isbn = "", env = {}, fetchImpl = fetch }) {
   if (type === "book") return searchBooks({ query, creator, isbn, fetchImpl });
-  if (type === "music") return searchMusic({ query, creator, fetchImpl });
+  if (type === "music") return searchMusic({ query, fetchImpl });
   if (["movie", "series", "anime"].includes(type)) return searchTmdb({ type, query, env, fetchImpl });
   return [];
 }
@@ -31,36 +30,34 @@ export async function searchDoubanBooks({ query, creator = "", isbn = "", fetchI
   })).filter(validCandidate);
 }
 
-export async function searchAppleMusic({ query, creator = "", fetchImpl = fetch }) {
-  const url = new URL(APPLE_SEARCH_URL);
-  url.search = new URLSearchParams({ term: [query, creator].filter(Boolean).join(" "), country: "cn", media: "music", entity: "album", limit: "30" }).toString();
-  const payload = await fetchJson(url, fetchImpl);
-  return (payload.results ?? []).map((entry) => ({
-    source: "apple_music", sourceId: String(entry.collectionId ?? ""), title: entry.collectionName ?? "", creator: entry.artistName ?? "",
-    originalTitle: entry.collectionName ?? "", releaseDate: normalizeDate(entry.releaseDate),
-    description: entry.trackCount ? `${entry.trackCount} tracks` : "", coverUrl: upgradeAppleArtwork(entry.artworkUrl100 ?? ""),
-  })).filter((candidate) => candidate.title && candidate.sourceId);
+export async function searchDeezerMusic({ query, fetchImpl = fetch }) {
+  const [titleMatches, artists] = await Promise.all([
+    searchDeezerAlbums(query, fetchImpl),
+    searchDeezerArtists(query, fetchImpl),
+  ]);
+  const artist = artists
+    .filter((entry) => positiveNumber(entry.nb_album) > 0)
+    .sort((left, right) => positiveNumber(right.nb_fan) - positiveNumber(left.nb_fan))[0];
+  const artistAlbums = artist?.id
+    ? (await fetchDeezerArtistAlbums(artist.id, fetchImpl)).map((entry) => ({ ...entry, artist: entry.artist ?? { name: artist.name ?? "" } }))
+    : [];
+  const orderedArtistAlbums = artistAlbums
+    .filter(isOfficialAlbum)
+    .sort(compareDeezerAlbums);
+  const seen = new Set();
+  return [...orderedArtistAlbums, ...titleMatches.filter(isOfficialAlbum)]
+    .filter((entry) => {
+      const id = String(entry?.id ?? "");
+      if (!id || seen.has(id)) return false;
+      seen.add(id);
+      return true;
+    })
+    .map(mapDeezerAlbum)
+    .filter(validCandidate);
 }
 
-export async function searchDeezerMusic({ query, creator = "", fetchImpl = fetch }) {
-  const url = new URL(DEEZER_SEARCH_URL);
-  url.search = new URLSearchParams({ q: [query, creator].filter(Boolean).join(" "), limit: "30" }).toString();
-  const payload = await fetchJson(url, fetchImpl);
-  return (payload.data ?? []).map((entry) => ({
-    source: "deezer_music", sourceId: String(entry.id ?? ""), title: entry.title ?? "", creator: entry.artist?.name ?? "",
-    originalTitle: entry.title ?? "", releaseDate: normalizeDate(entry.release_date),
-    description: entry.nb_tracks ? `${entry.nb_tracks} tracks` : "", coverUrl: entry.cover_xl ?? entry.cover_big ?? "",
-  })).filter((candidate) => candidate.title && candidate.sourceId);
-}
-
-export async function searchMusic({ query, creator = "", fetchImpl = fetch }) {
-  try {
-    const apple = await searchAppleMusic({ query, creator, fetchImpl });
-    if (apple.length) return apple;
-  } catch {
-    // Fall through to the backup provider.
-  }
-  return searchDeezerMusic({ query, creator, fetchImpl });
+export async function searchMusic({ query, fetchImpl = fetch }) {
+  return searchDeezerMusic({ query, fetchImpl });
 }
 
 export async function searchTmdb({ type, query, env = {}, fetchImpl = fetch }) {
@@ -97,7 +94,6 @@ function validCandidate(candidate) {
 
 function providerForUrl(url) {
   const hostname = new URL(url).hostname;
-  if (hostname === "itunes.apple.com") return "apple";
   if (hostname === "api.deezer.com") return "deezer";
   if (hostname === "search.douban.com") return "douban_books";
   if (hostname === "api.themoviedb.org") return "tmdb";
@@ -155,10 +151,66 @@ function normalizeIsbn(value) {
   return String(value ?? "").replace(/[\s-]/g, "");
 }
 
-function upgradeAppleArtwork(value) {
-  return value.replace(/\d+x\d+bb(?=\.)/, "1000x1000bb");
-}
-
 function upgradeDoubanArtwork(value) {
   return value.replace("/view/subject/m/", "/view/subject/l/").replace(/^http:/, "https:");
+}
+
+async function searchDeezerAlbums(query, fetchImpl) {
+  const url = new URL(`${DEEZER_URL}/search/album`);
+  url.search = new URLSearchParams({ q: query }).toString();
+  return deezerData(await fetchJson(url, fetchImpl));
+}
+
+async function searchDeezerArtists(query, fetchImpl) {
+  const url = new URL(`${DEEZER_URL}/search/artist`);
+  url.search = new URLSearchParams({ q: query }).toString();
+  return deezerData(await fetchJson(url, fetchImpl));
+}
+
+async function fetchDeezerArtistAlbums(artistId, fetchImpl) {
+  const albums = [];
+  let next = new URL(`${DEEZER_URL}/artist/${encodeURIComponent(String(artistId))}/albums`);
+  do {
+    const payload = await fetchJson(next, fetchImpl);
+    albums.push(...deezerData(payload));
+    next = deezerNext(payload.next);
+  } while (next);
+  return albums;
+}
+
+function deezerData(payload) {
+  return Array.isArray(payload?.data) ? payload.data : [];
+}
+
+function deezerNext(value) {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    return url.origin === DEEZER_URL ? url : null;
+  } catch {
+    return null;
+  }
+}
+
+function isOfficialAlbum(entry) {
+  return entry?.record_type === "album";
+}
+
+function compareDeezerAlbums(left, right) {
+  return positiveNumber(right.fans) - positiveNumber(left.fans)
+    || normalizeDate(right.release_date).localeCompare(normalizeDate(left.release_date))
+    || String(left.title ?? "").localeCompare(String(right.title ?? ""));
+}
+
+function positiveNumber(value) {
+  const number = Number(value);
+  return Number.isFinite(number) && number > 0 ? number : 0;
+}
+
+function mapDeezerAlbum(entry) {
+  return {
+    source: "deezer_music", sourceId: String(entry.id ?? ""), title: entry.title ?? "", creator: entry.artist?.name ?? "",
+    originalTitle: entry.title ?? "", releaseDate: normalizeDate(entry.release_date),
+    description: entry.nb_tracks ? `${entry.nb_tracks} tracks` : "", coverUrl: entry.cover_xl ?? entry.cover_big ?? entry.cover_medium ?? entry.cover ?? "",
+  };
 }

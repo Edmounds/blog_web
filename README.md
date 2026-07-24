@@ -40,13 +40,13 @@ npm run build
 - About：`src/content/about/profile.md`
 - 翻译输出：`src/content/translations/<locale>/`
 
-Blog、Note、Project 公共 frontmatter 为 `routeSlug`、`title`、`description`、`image`、`createdAt`、`updatedAt`、`published`、`type`；Project 可额外使用 `projectUrl` 和 `docUrl`。内容互动使用稳定 ID `contentId = "<section>/<slug>"`。
+Blog、Note、Project 公共 frontmatter 为 `title`、`description`、`createdAt`、`updatedAt`、`published`、`order`、`tags`；Project 可额外使用 `projectUrl` 和 `docUrl`。文章 URL 和内容互动 ID 均直接使用文件名，例如 `first-note.md` 对应 `/blog/first-note/` 和 `blog/first-note`。
 
 含中文的 Markdown 使用 UTF-8 BOM。`npm run translate` 会递归处理 `.md` 与 `.mdx`，保留目录和不可翻译字段。
 
 ## D1、R2 与迁移
 
-互动数据和收藏元数据使用 Cloudflare D1，收藏封面使用 `ART_COVERS` R2 binding。部署前执行：
+互动数据和收藏元数据使用 Cloudflare D1，收藏封面通过 `ART_COVERS` binding 写入 `blog-images/art/`，并由 `https://img.muelsyse.us` 公开访问。部署前执行：
 
 ```bash
 npm run db:migrate:local
@@ -62,6 +62,18 @@ LEGACY_ART_COVERS_DIR=/absolute/path/to/legacy-art-covers node --env-file-if-exi
 ```
 
 博客、笔记和项目正文图片由 `npm run images:sync` 同步至 `blog-images` R2，历史 Blog 对象仍使用 `blog/<sha256>.<ext>`。Life 收藏封面与数据只通过 D1/R2 和 `/admin/art/` 管理。
+
+从旧 `blog-art-covers` 桶迁移已有封面时，先复制并逐个校验哈希：
+
+```bash
+npm run art:covers:migrate -- --remote
+```
+
+确认站点已部署并且所有图床 URL 正常后，再删除旧对象副本：
+
+```bash
+npm run art:covers:migrate -- --remote --delete-source
+```
 
 ## 环境变量
 

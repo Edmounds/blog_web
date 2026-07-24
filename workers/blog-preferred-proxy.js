@@ -6,7 +6,7 @@ const SECURITY_HEADERS = {
     "font-src 'self' https://assets-proxy.anthropic.com",
     "form-action 'self'",
     "frame-ancestors 'none'",
-    "img-src 'self' data: https://raw.githubusercontent.com",
+    "img-src 'self' data: https://img.muelsyse.us https://raw.githubusercontent.com https://shared.akamai.steamstatic.com",
     "object-src 'none'",
     "script-src 'self' 'unsafe-inline'",
     "style-src 'self' 'unsafe-inline'",

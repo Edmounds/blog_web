@@ -14,8 +14,6 @@ export interface ContentSummary {
   slug: string;
   title: string;
   description: string;
-  image?: string;
-  category: string;
   tags: string[];
   createdAt: Date;
   updatedAt?: Date;
@@ -25,8 +23,8 @@ export interface ContentSummary {
   entry: ContentEntry;
 }
 
-const slugFromEntry = (entry: { id: string; slug?: string; data: { routeSlug?: string } }) =>
-  entry.data.routeSlug?.trim() || entry.slug || entry.id.replace(/\.(md|mdx)$/, "");
+const slugFromEntry = (entry: { id: string; slug?: string }) =>
+  entry.slug || entry.id.split("/").pop()?.replace(/\.(md|mdx)$/, "") || "";
 
 export const getContentId = (section: ContentSection, slug: string) => `${section}/${slug}`;
 
@@ -53,8 +51,6 @@ const summarize = (entry: ContentEntry, section: ContentSection, locale: Locale)
     slug,
     title: entry.data.title,
     description: entry.data.description,
-    image: entry.data.image,
-    category: entry.data.category,
     tags: entry.data.tags,
     createdAt: entry.data.createdAt,
     updatedAt: entry.data.updatedAt,

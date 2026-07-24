@@ -1,5 +1,5 @@
 import {
-  error, getArtItem, json, normalizeArtId, readJson, requireBucket, requireDb, requireSameOrigin,
+  deleteCoverIfUnreferenced, error, getArtItem, json, normalizeArtId, readJson, requireBucket, requireDb, requireSameOrigin,
   requireSameOriginJson, storeCover, updateArtItem, validateArtItemInput,
 } from "../../../../_shared/art.js";
 
@@ -15,14 +15,14 @@ export async function onRequestPatch({ env, params, request }) {
     const validation = validateArtItemInput(await readJson(request), { partial: true });
     if (!validation.ok) return error(400, validation.error.code, validation.error.message);
     const bucket = requireBucket(env);
-    if (validation.value.cover) stored = await storeCover(bucket, id, validation.value.cover, coverFetch(env));
+    if (validation.value.cover) stored = await storeCover(bucket, id, validation.value.cover, coverFetch(env), { db, currentItemId: id });
     const item = await updateArtItem(db, id, current, validation.value, stored);
     if (stored && current.coverKey !== stored.key) {
       await bucket.delete(current.coverKey).catch((cleanupError) => console.error("Old art cover deletion failed", cleanupError));
     }
     return json({ item });
   } catch (err) {
-    if (stored?.key) await env.ART_COVERS?.delete(stored.key).catch((cleanupError) => console.error("Replacement cover cleanup failed", cleanupError));
+    if (stored?.key) await deleteCoverIfUnreferenced(env.ART_COVERS, env.DB, stored.key).catch((cleanupError) => console.error("Replacement cover cleanup failed", cleanupError));
     if (err instanceof Response) return err;
     console.error("Art item update failed", err);
     return error(500, "ART_UPDATE_FAILED", "更新收藏失败。");

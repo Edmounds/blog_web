@@ -12,15 +12,16 @@ test("the primary canvas contains the five requested pages in order", () => {
   assert.deepEqual(paths, ["/", "/about/", "/blog/", "/note/", "/project/"]);
 });
 
-test("navigation labels stay English and Life exposes the three collection routes", () => {
+test("navigation labels stay English and Life exposes the four collection routes", () => {
   const header = read("src/components/site/Header.astro");
-  for (const label of ["About", "Blog", "Note", "Project", "Life", "Books", "Music", "Screen"]) {
+  for (const label of ["About", "Blog", "Note", "Project", "Life", "Books", "Music", "Screen", "Game"]) {
     assert.match(header, new RegExp(`(?:>|label: ")${label}`));
   }
   assert.doesNotMatch(header, />Home</);
   assert.match(header, /\/art\/book\//);
   assert.match(header, /\/art\/music\//);
   assert.match(header, /\/art\/screen\//);
+  assert.match(header, /\/art\/game\//);
 });
 
 test("the sticky header uses an opaque theme canvas and larger desktop navigation type", () => {
@@ -74,6 +75,32 @@ test("Blog Note and Project content collections and image sync roots are configu
   assert.match(images, /CONTENT_GROUPS\s*=\s*\["blog",\s*"note",\s*"project"\]/);
 });
 
+test("art covers render from the public image CDN and local uploads avoid blob previews", () => {
+  const admin = read("src/components/domain/ArtAdmin.tsx");
+  const shared = read("functions/_shared/art.js");
+  const publicArt = read("src/lib/art.ts");
+
+  assert.match(admin, /\/api\/admin\/art\/covers/);
+  assert.doesNotMatch(admin, /URL\.createObjectURL/);
+  assert.match(admin, /kind: "stored"/);
+  assert.match(shared, /https:\/\/img\.muelsyse\.us/);
+  assert.match(publicArt, /https:\/\/img\.muelsyse\.us/);
+});
+
+test("music administration uses one Deezer search field and preserves selectable results after saving", () => {
+  const admin = read("src/components/domain/ArtAdmin.tsx");
+  const search = read("functions/_shared/art-search.js");
+
+  assert.match(admin, /专辑名或歌手/);
+  assert.match(admin, /type !== "music"[\s\S]*type === "book" \? "作者" : "补充关键词"/);
+  assert.match(admin, /type === "music" \? "deezer_music"/);
+  assert.match(admin, /已收藏/);
+  assert.match(admin, /const collectedCandidates = useMemo/);
+  assert.doesNotMatch(admin, /setForm\(blankForm\(type\)\); setCandidates\(\[\]\); await loadItems/);
+  assert.doesNotMatch(search, /itunes\.apple\.com|searchAppleMusic|upgradeAppleArtwork/);
+  assert.doesNotMatch(read("src/lib/cover-api.ts"), /itunes\.apple\.com|ItunesSearchResponse/);
+});
+
 test("localized RSS routes and the WakaTime proxy support both server-side key names", () => {
   assert.match(read("src/pages/rss.xml.ts"), /createRssResponse/);
   assert.match(read("src/pages/[locale]/rss.xml.ts"), /createRssResponse/);
@@ -112,7 +139,7 @@ test("the homepage shows only the compact WakaTime badge and a stable theme-awar
   assert.match(home, /querySelectorAll\("source"\)/);
 });
 
-test("the homepage uses the legacy GitHub Bilibili and mail SVG paths", () => {
+test("the homepage keeps the legacy GitHub Bilibili and mail SVG paths around Steam", () => {
   const home = read("src/components/sections/HomeSection.astro");
 
   assert.match(home, /M15 22v-4a4\.8 4\.8 0 0 0-1-3\.5c3 0 6-2 6-5\.5/);
@@ -121,17 +148,19 @@ test("the homepage uses the legacy GitHub Bilibili and mail SVG paths", () => {
   assert.doesNotMatch(home, />GH<|>B</);
   assert.match(home, /href="https:\/\/github\.com\/Edmounds"/);
   assert.match(home, /href="https:\/\/space\.bilibili\.com\/397591871"/);
+  assert.match(home, /href="https:\/\/steamcommunity\.com\/profiles\/76561198437201442"/);
   assert.match(home, /href="mailto:i@muelsyse\.us"/);
   assert.doesNotMatch(home, /music\.163\.com|NetEase/);
 });
 
-test("localized Blog and Note category archive routes are generated", () => {
-  const categories = read("src/pages/[locale]/[section]-archive.astro");
-  const archive = read("src/pages/[locale]/[section]-archive/[archiveSlug].astro");
-  assert.match(categories, /\["blog", "note"\]/);
-  assert.match(archive, /\["blog", "note"\]/);
-  assert.match(categories, /localizePath/);
-  assert.match(archive, /localizePath/);
+test("category archive routes are removed in favor of tags", () => {
+  assert.throws(() => read("src/pages/[section]-archive.astro"));
+  assert.throws(() => read("src/pages/[section]-archive/[archiveSlug].astro"));
+  assert.throws(() => read("src/pages/[locale]/[section]-archive.astro"));
+  assert.throws(() => read("src/pages/[locale]/[section]-archive/[archiveSlug].astro"));
+
+  const content = read("src/components/sections/ContentSection.astro");
+  assert.match(content, /post\.tags\.map/);
 });
 
 test("About renders the profile as a normal Markdown article with the code-rain background", () => {

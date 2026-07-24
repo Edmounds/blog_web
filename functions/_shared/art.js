@@ -6,6 +6,7 @@ export const ART_STORED_IMAGE_TYPES = [...ART_IMAGE_TYPES, "image/svg+xml"];
 
 export const MAX_ART_BODY_BYTES = 14 * 1024 * 1024;
 export const MAX_ART_IMAGE_BYTES = 10 * 1024 * 1024;
+export const ART_COVER_BASE_URL = "https://img.muelsyse.us";
 
 const TYPE_SET = new Set(ART_TYPES);
 const LOCALE_SET = new Set(ART_LOCALES);
@@ -14,6 +15,7 @@ const IMAGE_TYPE_SET = new Set(ART_IMAGE_TYPES);
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const ISBN_PATTERN = /^(?:\d{10}|\d{13})$/;
+const STORED_COVER_KEY_PATTERN = /^art\/[a-f0-9-]+\.(?:jpg|png|webp|avif)$/i;
 
 export function json(data, init = {}) {
   const headers = new Headers(init.headers);
@@ -171,7 +173,22 @@ export function validateCover(value, { required = true } = {}) {
     if (data.length > Math.ceil(MAX_ART_IMAGE_BYTES * 4 / 3) + 128) return invalid("COVER_TOO_LARGE", "封面不能超过 10 MB。");
     return { ok: true, value: { kind: "upload", data, mime } };
   }
+  if (value.kind === "stored") {
+    const key = normalizeStoredCoverKey(value.key);
+    if (!key) return invalid("INVALID_STORED_COVER", "已上传封面无效。");
+    return { ok: true, value: { kind: "stored", key } };
+  }
   return invalid("INVALID_COVER", "请选择封面。");
+}
+
+export function normalizeStoredCoverKey(value) {
+  if (typeof value !== "string") return undefined;
+  const key = value.trim();
+  return STORED_COVER_KEY_PATTERN.test(key) ? key : undefined;
+}
+
+export function getArtCoverUrl(key) {
+  return `${ART_COVER_BASE_URL}/${String(key).replace(/^\/+/, "")}`;
 }
 
 export function normalizeImageType(value) {
@@ -195,7 +212,12 @@ export function decodeBase64(value) {
   }
 }
 
-export async function storeCover(bucket, itemId, cover, fetchImpl = fetch) {
+export async function storeCover(bucket, itemId, cover, fetchImpl = fetch, { db, currentItemId } = {}) {
+  if (cover.kind === "stored") {
+    if (db) await assertStoredCoverAvailable(bucket, db, cover.key, currentItemId);
+    else if (!await bucket.head(cover.key)) throw error(400, "STORED_COVER_NOT_FOUND", "已上传封面不存在，请重新上传。");
+    return { key: cover.key, sourceUrl: "", mime: imageMimeForKey(cover.key) };
+  }
   const image = cover.kind === "upload" ? imageFromUpload(cover) : await fetchRemoteImage(cover.url, fetchImpl);
   const extension = imageExtension(image.mime);
   const key = `art/${itemId}/${crypto.randomUUID()}.${extension}`;
@@ -203,6 +225,56 @@ export async function storeCover(bucket, itemId, cover, fetchImpl = fetch) {
     httpMetadata: { contentType: image.mime, cacheControl: "public, max-age=31536000, immutable" },
   });
   return { key, sourceUrl: cover.kind === "url" ? cover.url : "", mime: image.mime };
+}
+
+export async function storeUploadedCover(bucket, file, now = new Date()) {
+  const mime = normalizeImageType(file?.type);
+  if (!mime || typeof file?.arrayBuffer !== "function") throw error(400, "INVALID_COVER_UPLOAD", "上传封面无效。");
+  if (Number(file.size ?? 0) > MAX_ART_IMAGE_BYTES) throw error(413, "COVER_TOO_LARGE", "封面不能超过 10 MB。");
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  if (bytes.byteLength === 0 || bytes.byteLength > MAX_ART_IMAGE_BYTES) throw error(413, "COVER_TOO_LARGE", "封面不能超过 10 MB。");
+  if (!matchesImageSignature(bytes, mime)) throw error(400, "INVALID_COVER_CONTENT", "封面内容与图片格式不符。");
+  const key = `art/${crypto.randomUUID()}.${imageExtension(mime)}`;
+  await bucket.put(key, bytes, {
+    httpMetadata: { contentType: mime, cacheControl: "public, max-age=31536000, immutable" },
+    customMetadata: { uploadedAt: now.toISOString() },
+  });
+  return { key, url: getArtCoverUrl(key), mime };
+}
+
+export async function isCoverKeyReferenced(db, key, excludedItemId) {
+  const query = excludedItemId
+    ? db.prepare("SELECT id FROM art_items WHERE cover_key = ? AND id != ? LIMIT 1").bind(key, excludedItemId)
+    : db.prepare("SELECT id FROM art_items WHERE cover_key = ? LIMIT 1").bind(key);
+  return Boolean(await query.first());
+}
+
+export async function assertStoredCoverAvailable(bucket, db, key, excludedItemId) {
+  if (!await bucket.head(key)) throw error(400, "STORED_COVER_NOT_FOUND", "已上传封面不存在，请重新上传。");
+  if (await isCoverKeyReferenced(db, key, excludedItemId)) {
+    throw error(409, "STORED_COVER_IN_USE", "该封面已被其他收藏使用。");
+  }
+}
+
+export async function deleteCoverIfUnreferenced(bucket, db, key) {
+  if (!key || await isCoverKeyReferenced(db, key)) return false;
+  await bucket.delete(key);
+  return true;
+}
+
+export async function cleanupOrphanUploadedCovers(bucket, db, { now = new Date(), maxAgeMs = 24 * 60 * 60 * 1000 } = {}) {
+  const referenced = new Set(((await db.prepare("SELECT cover_key FROM art_items").all()).results ?? []).map((row) => row.cover_key));
+  let cursor;
+  do {
+    const page = await bucket.list({ prefix: "art/", cursor, include: ["customMetadata"] });
+    for (const object of page.objects ?? []) {
+      if (!STORED_COVER_KEY_PATTERN.test(object.key) || referenced.has(object.key)) continue;
+      const uploadedAt = object.customMetadata?.uploadedAt ?? object.uploaded;
+      const uploadedTime = new Date(uploadedAt ?? 0).getTime();
+      if (Number.isFinite(uploadedTime) && now.getTime() - uploadedTime >= maxAgeMs) await bucket.delete(object.key);
+    }
+    cursor = page.truncated ? page.cursor : undefined;
+  } while (cursor);
 }
 
 export async function fetchRemoteImage(rawUrl, fetchImpl = fetch, maxRedirects = 4) {
@@ -363,6 +435,10 @@ function imageFromUpload(cover) {
   return { bytes, mime: cover.mime };
 }
 
+function imageMimeForKey(key) {
+  return { jpg: "image/jpeg", png: "image/png", webp: "image/webp", avif: "image/avif" }[key.split(".").pop()?.toLowerCase()] ?? "application/octet-stream";
+}
+
 function matchesImageSignature(bytes, mime) {
   if (mime === "image/jpeg") return bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
   if (mime === "image/png") return bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47;
@@ -430,7 +506,7 @@ function groupArtRows(rows) {
       item = {
         id: row.id, type: row.type, source: row.source, sourceId: row.source_id ?? "", isbn: row.isbn ?? "",
         originalTitle: row.original_title ?? "", releaseDate: row.release_date ?? "", coverKey: row.cover_key,
-        coverSourceUrl: row.cover_source_url ?? "", coverUrl: `/media/${row.cover_key}`, collectedOn: row.collected_on,
+        coverSourceUrl: row.cover_source_url ?? "", coverUrl: getArtCoverUrl(row.cover_key), collectedOn: row.collected_on,
         isVisible: Number(row.is_visible) === 1, createdAt: row.created_at, updatedAt: row.updated_at, translations: {},
       };
       items.set(row.id, item);

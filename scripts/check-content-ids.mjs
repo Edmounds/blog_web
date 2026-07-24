@@ -13,7 +13,7 @@ for (const group of groups) {
     if (!/\.(md|mdx)$/.test(file)) continue;
     const source = matter((await readFile(file, "utf8")).replace(/^\uFEFF/, ""));
     if (source.data.published === false) continue;
-    const slug = String(source.data.routeSlug ?? path.basename(file).replace(/\.(md|mdx)$/, ""));
+    const slug = path.basename(file).replace(/\.(md|mdx)$/, "");
     contentIds.push(`${group}/${slug}`);
   }
 }

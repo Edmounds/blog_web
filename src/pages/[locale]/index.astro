@@ -10,5 +10,4 @@ export function getStaticPaths() {
 const locale = Astro.params.locale as Locale;
 const site = await getLocalizedSite(locale);
 ---
-<SpaLayout title={site.page.homeTitle} description={site.page.homeDescription} initialPath={`/${Astro.params.locale}/`} locale={locale} />
-
+<SpaLayout title="小の网站" description={site.page.homeDescription} initialPath={`/${Astro.params.locale}/`} locale={locale} />

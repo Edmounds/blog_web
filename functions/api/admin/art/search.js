@@ -8,10 +8,10 @@ export async function onRequestGet({ env, request }) {
   const creator = url.searchParams.get("creator")?.trim() ?? "";
   const rawIsbn = url.searchParams.get("isbn")?.trim() ?? "";
   const isbn = rawIsbn ? normalizeIsbn(rawIsbn) : "";
-  if (!type || !query || query.length > 200 || creator.length > 200) return error(400, "INVALID_SEARCH", "搜索参数无效。");
+  if (!type || !query || query.length > 200 || (type !== "music" && creator.length > 200)) return error(400, "INVALID_SEARCH", "搜索参数无效。");
   if (rawIsbn && !isbn) return error(400, "INVALID_ISBN", "ISBN 格式无效。");
   try {
-    const items = await searchArtCandidates({ type, query, creator, isbn, env });
+    const items = await searchArtCandidates({ type, query, creator: type === "music" ? "" : creator, isbn, env });
     return json({ items });
   } catch (err) {
     console.error("Art search failed", {

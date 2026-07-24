@@ -11,6 +11,7 @@
       "music": "专辑",
       "book": "书籍",
       "screen": "影视",
+      "game": "游戏",
       "film": "电影",
       "series": "剧集",
       "anime": "番剧",
@@ -31,7 +32,6 @@
       "grid": "网格",
       "list": "列表",
       "title": "标题",
-      "category": "分类",
       "reading": "阅读",
       "date": "日期",
       "tableOfContents": "本文目录",
@@ -65,7 +65,10 @@
       "themeDark": "切换到深色主题",
       "languageSelect": "选择语言",
       "copyright": "版权所有。",
-      "artEmpty": "这里还没有收藏。"
+      "artEmpty": "这里还没有收藏。",
+      "gameEmpty": "这里还没有游戏。",
+      "gameHours": "小时",
+      "gameMinutes": "分钟"
     },
     "page": {
       "homeTitle": "首页",
@@ -76,7 +79,8 @@
       "aboutDescription": "关于 chasen 的经历、关注方向与个人故事。",
       "musicDescription": "专辑收藏",
       "bookDescription": "书籍收藏",
-      "screenDescription": "电影、剧集与番剧收藏"
+      "screenDescription": "电影、剧集与番剧收藏",
+      "gameDescription": "按游玩时长排列的游戏收藏"
     }
   }
 }

@@ -25,16 +25,17 @@ test("admin art and API paths are covered by the generic Access boundary", () =>
   assert.equal(existsSync(new URL("../functions/api/admin/_middleware.js", import.meta.url)), true);
 });
 
-test("cutover configuration includes D1 schema, R2 binding, and no sync hooks", () => {
+test("cutover configuration uses the public image bucket and keeps no art sync hooks", () => {
   const packageJson = read("package.json");
   const wrangler = read("wrangler.jsonc");
   assert.match(packageJson, /schema\/art\.sql/);
   assert.doesNotMatch(packageJson, /sync-art\.mjs/);
   assert.match(packageJson, /"deploy:cover-fetcher": "wrangler deploy --config wrangler\.art-cover-fetcher\.jsonc"/);
+  assert.match(packageJson, /"art:covers:migrate": "node scripts\/migrate-art-covers-to-images\.mjs"/);
   assert.match(packageJson, /"deploy": "npm run build && npm run deploy:cover-fetcher && wrangler deploy --config dist\/server\/wrangler\.json"/);
   assert.match(packageJson, /wrangler dev --config dist\/server\/wrangler\.json --persist-to \$INIT_CWD\/\.wrangler\/state/);
   assert.match(wrangler, /ART_COVERS/);
-  assert.match(wrangler, /blog-art-covers/);
+  assert.match(wrangler, /blog-images/);
   assert.doesNotMatch(wrangler, /preview_bucket_name/);
   assert.equal(existsSync(new URL("../src/data/art-source.json", import.meta.url)), false);
   assert.equal(existsSync(new URL("../src/lib/artData.ts", import.meta.url)), false);
@@ -42,11 +43,22 @@ test("cutover configuration includes D1 schema, R2 binding, and no sync hooks", 
   assert.equal(existsSync(new URL("../public/images/content/art", import.meta.url)), false);
 });
 
+test("the cover migration verifies hashes before optional source deletion", () => {
+  const migration = read("scripts/migrate-art-covers-to-images.mjs");
+  assert.match(migration, /blog-art-covers/);
+  assert.match(migration, /blog-images/);
+  assert.match(migration, /createHash\("sha256"\)/);
+  assert.match(migration, /--delete-source/);
+  assert.match(migration, /Hash verification failed/);
+  assert.match(migration, /https:\/\/img\.muelsyse\.us/);
+});
+
 test("the Astro SSR Worker owns the art APIs and media route without a Pages origin fallback", () => {
   for (const file of [
     "src/pages/api/admin/art/search.ts",
     "src/pages/api/admin/art/cover-preview.ts",
     "src/pages/api/admin/art/translate.ts",
+    "src/pages/api/admin/art/covers.ts",
     "src/pages/api/admin/art/items/index.ts",
     "src/pages/api/admin/art/items/[id].ts",
     "src/pages/media/art/[...path].ts",
@@ -124,7 +136,7 @@ test("the preferred-edge Worker forwards same-origin DELETE requests without req
   assert.equal(response.headers.get("x-blog-edge"), "preferred-worker");
 });
 
-test("the preferred-edge Worker allows only the GitHub contribution image host in CSP", async () => {
+test("the preferred-edge Worker keeps the image CDN in its CSP", async () => {
   const response = await preferredProxy.fetch(
     new Request("https://blog.muelsyse.us/"),
     {
@@ -137,7 +149,7 @@ test("the preferred-edge Worker allows only the GitHub contribution image host i
   );
 
   const csp = response.headers.get("content-security-policy");
-  assert.match(csp, /img-src 'self' data: https:\/\/raw\.githubusercontent\.com/);
+  assert.match(csp, /img-src 'self' data: https:\/\/img\.muelsyse\.us/);
   assert.match(csp, /default-src 'self'/);
   assert.match(csp, /connect-src 'self'/);
   assert.doesNotMatch(csp, /img-src[^;]*https:\/\/\*/);
@@ -152,7 +164,7 @@ test("the preferred-edge Worker rejects cross-origin write requests", async () =
         "content-type": "application/json",
         origin: "https://evil.example",
       },
-      body: JSON.stringify({ contentId: "blog/designing-for-clarity-in-chaos" }),
+      body: JSON.stringify({ contentId: "blog/first-note" }),
     }),
     {
       ORIGIN: {

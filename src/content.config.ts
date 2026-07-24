@@ -3,15 +3,11 @@ import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
 const contentSchema = z.object({
-  routeSlug: z.string().optional(),
   title: z.string(),
   description: z.string().default(""),
-  image: z.string().optional(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date().optional(),
   published: z.boolean().default(true),
-  type: z.string().default("article"),
-  category: z.string().default("Notes"),
   tags: z.array(z.string()).default([]),
   order: z.number().optional(),
 });
@@ -35,9 +31,9 @@ const about = defineCollection({
 const translations = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/translations" }),
   schema: z.looseObject({
-    routeSlug: z.string().optional(), title: z.string().optional(), description: z.string().optional(), image: z.string().optional(),
-    createdAt: z.coerce.date().optional(), updatedAt: z.coerce.date().optional(), published: z.boolean().optional(), type: z.string().optional(),
-    category: z.string().optional(), tags: z.array(z.string()).optional(), order: z.number().optional(), projectUrl: z.string().optional(), docUrl: z.string().optional(),
+    title: z.string().optional(), description: z.string().optional(),
+    createdAt: z.coerce.date().optional(), updatedAt: z.coerce.date().optional(), published: z.boolean().optional(),
+    tags: z.array(z.string()).optional(), order: z.number().optional(), projectUrl: z.string().optional(), docUrl: z.string().optional(),
     name: z.string().optional(), city: z.string().optional(), major: z.string().optional(), motto: z.string().optional(), portrait: z.string().optional(),
   }),
 });

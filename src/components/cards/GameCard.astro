@@ -1,0 +1,52 @@
+---
+import type { GameItem } from "../../lib/games";
+
+interface Props {
+  item: GameItem;
+  playtime: string;
+}
+
+const { item, playtime } = Astro.props;
+const CoverTag = item.storeUrl ? "a" : "div";
+---
+
+<article class="group flex min-w-0 flex-col gap-3">
+  <CoverTag
+    class="block aspect-[2/3] w-full overflow-hidden rounded-[var(--radius-control)] border border-[var(--border-soft)] bg-[var(--surface-soft)]"
+    href={item.storeUrl ?? undefined}
+    target={item.storeUrl ? "_blank" : undefined}
+    rel={item.storeUrl ? "noreferrer" : undefined}
+    aria-label={item.storeUrl ? item.title : undefined}
+  >
+    <img
+      src={item.cover}
+      alt={item.title}
+      class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.025]"
+      loading="lazy"
+      data-game-cover
+    />
+  </CoverTag>
+  <div class="min-w-0">
+    <h2 class="game-card__title text-[var(--type-base)] font-semibold leading-tight text-[var(--foreground)]">{item.title}</h2>
+    <p class="mt-1 text-sm text-[var(--text-muted)]">{playtime}</p>
+  </div>
+</article>
+
+<script>
+  function bindGameCoverFallbacks() {
+    document.querySelectorAll<HTMLImageElement>("[data-game-cover]").forEach((image) => {
+      if (image.dataset.bound === "true") return;
+      image.dataset.bound = "true";
+      image.addEventListener("error", () => {
+        const fallback = "/images/placeholders/default-cover.webp";
+        if (image.src !== new URL(fallback, location.href).href) image.src = fallback;
+      });
+    });
+  }
+  bindGameCoverFallbacks();
+  document.addEventListener("astro:page-load", bindGameCoverFallbacks);
+</script>
+
+<style>
+  .game-card__title { overflow-wrap: anywhere; }
+</style>

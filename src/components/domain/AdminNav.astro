@@ -1,8 +1,9 @@
 ---
-interface Props { current: "art" | "comments" }
+interface Props { current: "art" | "comments" | "games" }
 const { current } = Astro.props;
 const items = [
   { id: "art", label: "收藏管理", href: "/admin/art/" },
+  { id: "games", label: "游戏管理", href: "/admin/games/" },
   { id: "comments", label: "评论管理", href: "/admin/comments/" },
 ] as const;
 ---
