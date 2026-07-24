@@ -51,6 +51,18 @@ test("the 404 page renders separate responsive visual layers", () => {
   assert.match(page, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
 });
 
+test("the 404 message and character form one centered horizontal group", () => {
+  const page = read("src/pages/404.astro");
+
+  assert.match(page, /\.not-found__stage\s*\{[^}]*display:\s*flex/s);
+  assert.match(page, /\.not-found__stage\s*\{[^}]*flex-direction:\s*row/s);
+  assert.match(page, /\.not-found__stage\s*\{[^}]*align-items:\s*center/s);
+  assert.match(page, /\.not-found__stage\s*\{[^}]*justify-content:\s*center/s);
+  assert.match(page, /\.not-found__stage\s*\{[^}]*gap:\s*0/s);
+  assert.doesNotMatch(page, /\.not-found__message\s*\{[^}]*position:\s*absolute/s);
+  assert.doesNotMatch(page, /\.not-found__character\s*\{[^}]*position:\s*absolute/s);
+});
+
 test("the home link supports all four site locales", () => {
   const page = read("src/pages/404.astro");
 

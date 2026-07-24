@@ -94,8 +94,12 @@ test("the homepage shows only the compact WakaTime badge and a stable theme-awar
   assert.equal((home.match(/\/api\/wakatime-badge\.svg/g) ?? []).length, 1);
   assert.doesNotMatch(home, /\/api\/wakatime-status\.svg|wakatime-status/);
   assert.match(badge, /getCachedWakaTimeAllTime/);
-  assert.match(badge, /lucide lucide-timer/);
-  assert.match(badge, /width="320" height="32"/);
+  assert.match(badge, /aria-label="Code time/);
+  assert.match(badge, /width="160" height="24"/);
+  assert.match(badge, />CodeTime</);
+  assert.doesNotMatch(badge, /<rect/);
+  assert.match(home, /<\/nav>[\s\S]*class="codetime-badge"[\s\S]*profile-card__intro/);
+  assert.match(home, /html\.dark[^}]*codetime-badge[^}]*filter:\s*invert\(1\)/);
   assert.doesNotMatch(badge, /Today|language|editor/);
   assert.doesNotMatch(home, /Today's coding activity/);
   assert.match(home, new RegExp(lightUrl.replaceAll(".", "\\.")));

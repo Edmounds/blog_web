@@ -894,8 +894,8 @@
       "translation": "你好，歡迎來到我的部落格。"
     },
     "zh-TW:content.about.profile.md.body[1]": {
-      "fingerprint": "7b424ff606c16ac322e28eed64d4786185611dddb9d02dc95552f6ebea665af9",
-      "translation": "我關注如何讓複雜的工具變得平和、清晰、容易理解。這個頁面記錄我反覆回到的原則，網站的其他部分則保存正在進行的工作、文章和實驗。"
+      "fingerprint": "847ae136f04b56c8083099cf99b5734eff8d707c96dbe2429d0eba35102bfe2a",
+      "translation": "這裡是我安靜的個人空間——寫文章、記筆記、記錄看過的書和電影、分享旅行。不是社交媒體，沒有通知和點讚焦慮，只有文字、照片和一些記錄。 不喜歡社交軟體那種高強度對個人生活的影響和侵入"
     },
     "zh-TW:content.about.profile.md.body[0]": {
       "fingerprint": "0c598a16f5e63457c0d3c9c2ccbc10e9a5547d58ada98a7b8dd81bbdf63b5bf0",
@@ -1134,47 +1134,47 @@
       "translation": "Chongqing, China"
     },
     "en:content.about.profile.md.frontmatter.major": {
-      "fingerprint": "842f83b9ef70f82cac09ecd6221c9c2b9e3ae33780766b1915ef1a6ca4162e15",
+      "fingerprint": "0afaefc3059445522ac80ef634f42f571cde463a1327391dbe45bc6ff92209c9",
       "translation": "Product Design"
     },
     "en:content.about.profile.md.frontmatter.motto": {
-      "fingerprint": "6774a97d6528f904d4769a746ade1c7634a829e09cd9e58d021c9ee5d375dbc9",
+      "fingerprint": "19d94f4cf6b0a73d29284c93c34823f1eff30d705a8de9a8a9129138050bffcc",
       "translation": "I focus on making complex tools feel calm and readable."
     },
     "en:content.about.profile.md.body[2]": {
-      "fingerprint": "5dc1d22341d7f9f53a933ef22e1098c95d2bc681828feaee73a7aea8bfc2830f",
+      "fingerprint": "8b9ad50a9c85b0aec4fda51e06b27895a1e397ea6c44148e3ec2398376041a37",
       "translation": "Current Focus"
     },
     "en:content.about.profile.md.body[3]": {
-      "fingerprint": "92688c1d16d3b3306f4eb2ca46b55b8535e97293b2c1ec9bc3fbc5273a8f2403",
+      "fingerprint": "1f9eb3244bff1378f4f82c5de1a6727422533064160cab4065042da4d2fe9ab6",
       "translation": "Design Systems"
     },
     "en:content.about.profile.md.body[4]": {
-      "fingerprint": "5f64db465b5a73e5e6f6660993da31eb29ef7bbfceed6093ae89dd95a86d9414",
+      "fingerprint": "fefb38d9b3e3a81da2edb94c2db5d7ea1d9a8df6a25688c5840a7252421bb409",
       "translation": "Building consistent visual languages and reusable product foundations."
     },
     "en:content.about.profile.md.body[5]": {
-      "fingerprint": "3bbc853934bc21fab596d43e467f3f72179a5246d29658ee75a3649fac2879a0",
+      "fingerprint": "dbba58f50f4ebc4f73617d59072e339ae31b5e12c39ff6153f69c2c660000231",
       "translation": "AI Interfaces"
     },
     "en:content.about.profile.md.body[6]": {
-      "fingerprint": "1dcf2fd7906c609011890de24b281de35c76ce75afd493e27d3531577b1a97c3",
+      "fingerprint": "d029d656f5eb23a9e28157e9a110928f499d4082fd6a814271e5089d5ad4d2dc",
       "translation": "Exploring natural-language interaction and new ways for people to work with intelligent tools."
     },
     "en:content.about.profile.md.body[7]": {
-      "fingerprint": "8b9ad50a9c85b0aec4fda51e06b27895a1e397ea6c44148e3ec2398376041a37",
+      "fingerprint": "67a00167d0dc80b09e7816d5ffe97d6b0eec45ca61d0a8648bcdac8ee91aa6fb",
       "translation": "Experience"
     },
     "en:content.about.profile.md.body[8]": {
-      "fingerprint": "1f9eb3244bff1378f4f82c5de1a6727422533064160cab4065042da4d2fe9ab6",
+      "fingerprint": "b64094a579f0641a63351088886e3ecc2f64fa76016deb5ca2bdb10c6ec5cb7e",
       "translation": "Product Designer"
     },
     "en:content.about.profile.md.body[9]": {
-      "fingerprint": "fefb38d9b3e3a81da2edb94c2db5d7ea1d9a8df6a25688c5840a7252421bb409",
+      "fingerprint": "b8aa60c27934ab757d90279c4d79d1afa63b111a5e91617d8c41477a48e1685e",
       "translation": "Present, independent. Designing and documenting digital products, interfaces, and personal experiments."
     },
     "en:content.about.profile.md.body[10]": {
-      "fingerprint": "dbba58f50f4ebc4f73617d59072e339ae31b5e12c39ff6153f69c2c660000231",
+      "fingerprint": "cc8b0411d6449b76f2556f94c27e901148316357c49d03df6e0bd8d03ec0e3a5",
       "translation": "Contact"
     },
     "en:content.about.profile.md.body[11]": {
@@ -1202,52 +1202,52 @@
       "translation": "中国重慶"
     },
     "ja:content.about.profile.md.frontmatter.major": {
-      "fingerprint": "842f83b9ef70f82cac09ecd6221c9c2b9e3ae33780766b1915ef1a6ca4162e15",
-      "translation": "プロダクトデザイン"
+      "fingerprint": "0afaefc3059445522ac80ef634f42f571cde463a1327391dbe45bc6ff92209c9",
+      "translation": "ロボット工学"
     },
     "ja:content.about.profile.md.frontmatter.motto": {
-      "fingerprint": "6774a97d6528f904d4769a746ade1c7634a829e09cd9e58d021c9ee5d375dbc9",
-      "translation": "私は複雑なツールを穏やかで読みやすくすることに重点を置いています。"
+      "fingerprint": "19d94f4cf6b0a73d29284c93c34823f1eff30d705a8de9a8a9129138050bffcc",
+      "translation": "シンプルに保て、愚か者"
     },
     "ja:content.about.profile.md.body[3]": {
-      "fingerprint": "92688c1d16d3b3306f4eb2ca46b55b8535e97293b2c1ec9bc3fbc5273a8f2403",
-      "translation": "デザインシステム"
-    },
-    "ja:content.about.profile.md.body[2]": {
-      "fingerprint": "5dc1d22341d7f9f53a933ef22e1098c95d2bc681828feaee73a7aea8bfc2830f",
-      "translation": "現在の注目"
-    },
-    "ja:content.about.profile.md.body[4]": {
-      "fingerprint": "5f64db465b5a73e5e6f6660993da31eb29ef7bbfceed6093ae89dd95a86d9414",
-      "translation": "一貫したビジュアル言語と再利用可能な製品基盤を構築する。"
-    },
-    "ja:content.about.profile.md.body[7]": {
-      "fingerprint": "8b9ad50a9c85b0aec4fda51e06b27895a1e397ea6c44148e3ec2398376041a37",
-      "translation": "経験"
-    },
-    "ja:content.about.profile.md.body[6]": {
-      "fingerprint": "1dcf2fd7906c609011890de24b281de35c76ce75afd493e27d3531577b1a97c3",
-      "translation": "自然言語インタラクションを探索し、人と知能ツールの協働の新しい方法を探る。"
-    },
-    "ja:content.about.profile.md.body[8]": {
       "fingerprint": "1f9eb3244bff1378f4f82c5de1a6727422533064160cab4065042da4d2fe9ab6",
       "translation": "プロダクトデザイナー"
     },
+    "ja:content.about.profile.md.body[2]": {
+      "fingerprint": "8b9ad50a9c85b0aec4fda51e06b27895a1e397ea6c44148e3ec2398376041a37",
+      "translation": "経験"
+    },
+    "ja:content.about.profile.md.body[4]": {
+      "fingerprint": "fefb38d9b3e3a81da2edb94c2db5d7ea1d9a8df6a25688c5840a7252421bb409",
+      "translation": "現在、独立して創作。デジタルプロダクト、インターフェース、個人実験をデザインし記録する。"
+    },
+    "ja:content.about.profile.md.body[7]": {
+      "fingerprint": "67a00167d0dc80b09e7816d5ffe97d6b0eec45ca61d0a8648bcdac8ee91aa6fb",
+      "translation": "ビリビリ"
+    },
+    "ja:content.about.profile.md.body[6]": {
+      "fingerprint": "d029d656f5eb23a9e28157e9a110928f499d4082fd6a814271e5089d5ad4d2dc",
+      "translation": "GitHub"
+    },
+    "ja:content.about.profile.md.body[8]": {
+      "fingerprint": "b64094a579f0641a63351088886e3ecc2f64fa76016deb5ca2bdb10c6ec5cb7e",
+      "translation": "i@muelsyse.us"
+    },
     "ja:content.about.profile.md.body[5]": {
-      "fingerprint": "3bbc853934bc21fab596d43e467f3f72179a5246d29658ee75a3649fac2879a0",
-      "translation": "AI インターフェース"
+      "fingerprint": "dbba58f50f4ebc4f73617d59072e339ae31b5e12c39ff6153f69c2c660000231",
+      "translation": "私に連絡してください"
     },
     "ja:content.about.profile.md.body[11]": {
       "fingerprint": "d029d656f5eb23a9e28157e9a110928f499d4082fd6a814271e5089d5ad4d2dc",
       "translation": "GitHub"
     },
     "ja:content.about.profile.md.body[10]": {
-      "fingerprint": "dbba58f50f4ebc4f73617d59072e339ae31b5e12c39ff6153f69c2c660000231",
-      "translation": "私に連絡してください"
+      "fingerprint": "cc8b0411d6449b76f2556f94c27e901148316357c49d03df6e0bd8d03ec0e3a5",
+      "translation": "この製品はTMDB APIを使用していますが、TMDBによって承認または認定されていません。"
     },
     "ja:content.about.profile.md.body[9]": {
-      "fingerprint": "fefb38d9b3e3a81da2edb94c2db5d7ea1d9a8df6a25688c5840a7252421bb409",
-      "translation": "現在、独立創作。デジタルプロダクト、インターフェース、個人実験をデザインし記録する。"
+      "fingerprint": "b8aa60c27934ab757d90279c4d79d1afa63b111a5e91617d8c41477a48e1685e",
+      "translation": "謝辞"
     },
     "ja:content.about.profile.md.body[13]": {
       "fingerprint": "b64094a579f0641a63351088886e3ecc2f64fa76016deb5ca2bdb10c6ec5cb7e",
@@ -1266,48 +1266,48 @@
       "translation": "この製品はTMDB APIを使用していますが、TMDBによって推奨または認定されていません。"
     },
     "zh-TW:content.about.profile.md.frontmatter.major": {
-      "fingerprint": "842f83b9ef70f82cac09ecd6221c9c2b9e3ae33780766b1915ef1a6ca4162e15",
-      "translation": "產品設計"
+      "fingerprint": "0afaefc3059445522ac80ef634f42f571cde463a1327391dbe45bc6ff92209c9",
+      "translation": "機器人工程"
     },
     "zh-TW:content.about.profile.md.frontmatter.city": {
       "fingerprint": "689727cf08aebe1105f0d96500bffd365526649bb52a83feb2a1de690e487c5f",
       "translation": "中國重慶"
     },
     "zh-TW:content.about.profile.md.frontmatter.motto": {
-      "fingerprint": "6774a97d6528f904d4769a746ade1c7634a829e09cd9e58d021c9ee5d375dbc9",
-      "translation": "我注重讓複雜的工具變得平和易讀。"
+      "fingerprint": "19d94f4cf6b0a73d29284c93c34823f1eff30d705a8de9a8a9129138050bffcc",
+      "translation": "保持簡單，笨蛋"
     },
     "zh-TW:content.about.profile.md.body[2]": {
-      "fingerprint": "5dc1d22341d7f9f53a933ef22e1098c95d2bc681828feaee73a7aea8bfc2830f",
-      "translation": "當前關注"
-    },
-    "zh-TW:content.about.profile.md.body[3]": {
-      "fingerprint": "92688c1d16d3b3306f4eb2ca46b55b8535e97293b2c1ec9bc3fbc5273a8f2403",
-      "translation": "設計系統"
-    },
-    "zh-TW:content.about.profile.md.body[4]": {
-      "fingerprint": "5f64db465b5a73e5e6f6660993da31eb29ef7bbfceed6093ae89dd95a86d9414",
-      "translation": "構建一致的視覺語言和可複用的產品基礎。"
-    },
-    "zh-TW:content.about.profile.md.body[7]": {
       "fingerprint": "8b9ad50a9c85b0aec4fda51e06b27895a1e397ea6c44148e3ec2398376041a37",
       "translation": "經歷"
     },
+    "zh-TW:content.about.profile.md.body[3]": {
+      "fingerprint": "dbba58f50f4ebc4f73617d59072e339ae31b5e12c39ff6153f69c2c660000231",
+      "translation": "聯繫我"
+    },
+    "zh-TW:content.about.profile.md.body[4]": {
+      "fingerprint": "d029d656f5eb23a9e28157e9a110928f499d4082fd6a814271e5089d5ad4d2dc",
+      "translation": "GitHub"
+    },
+    "zh-TW:content.about.profile.md.body[7]": {
+      "fingerprint": "b8aa60c27934ab757d90279c4d79d1afa63b111a5e91617d8c41477a48e1685e",
+      "translation": "致謝"
+    },
     "zh-TW:content.about.profile.md.body[5]": {
-      "fingerprint": "3bbc853934bc21fab596d43e467f3f72179a5246d29658ee75a3649fac2879a0",
-      "translation": "AI 介面"
+      "fingerprint": "67a00167d0dc80b09e7816d5ffe97d6b0eec45ca61d0a8648bcdac8ee91aa6fb",
+      "translation": "嗶哩嗶哩"
     },
     "zh-TW:content.about.profile.md.body[8]": {
-      "fingerprint": "1f9eb3244bff1378f4f82c5de1a6727422533064160cab4065042da4d2fe9ab6",
-      "translation": "產品設計師"
+      "fingerprint": "cc8b0411d6449b76f2556f94c27e901148316357c49d03df6e0bd8d03ec0e3a5",
+      "translation": "本產品使用 TMDB API，但並未獲得 TMDB 的認可或認證。"
     },
     "zh-TW:content.about.profile.md.body[10]": {
       "fingerprint": "dbba58f50f4ebc4f73617d59072e339ae31b5e12c39ff6153f69c2c660000231",
       "translation": "聯繫我"
     },
     "zh-TW:content.about.profile.md.body[6]": {
-      "fingerprint": "1dcf2fd7906c609011890de24b281de35c76ce75afd493e27d3531577b1a97c3",
-      "translation": "探索自然語言交互，以及人與智能工具協作的新方式。"
+      "fingerprint": "b64094a579f0641a63351088886e3ecc2f64fa76016deb5ca2bdb10c6ec5cb7e",
+      "translation": "i@muelsyse.us"
     },
     "zh-TW:content.about.profile.md.body[9]": {
       "fingerprint": "fefb38d9b3e3a81da2edb94c2db5d7ea1d9a8df6a25688c5840a7252421bb409",

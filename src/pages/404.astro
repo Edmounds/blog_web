@@ -67,7 +67,7 @@ Astro.response.statusText = "Not Found";
           <source
             type="image/webp"
             srcset="/images/404-character-768.webp 768w, /images/404-character-802.webp 802w, /images/404-character-1024.webp 1024w"
-            sizes="(max-width: 40rem) 78vw, (max-width: 70rem) 66vw, min(52vw, 94vh)"
+            sizes="(max-width: 40rem) 60vw, (max-width: 70rem) 31vw, 24rem"
           />
           <img
             src="/images/404-character.png"
@@ -146,6 +146,11 @@ Astro.response.statusText = "Not Found";
 
   .not-found__stage {
     position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
     width: min(100%, 120rem);
     height: 100%;
     margin-inline: auto;
@@ -157,12 +162,10 @@ Astro.response.statusText = "Not Found";
   }
 
   .not-found__message {
-    position: absolute;
+    flex: 0 1 auto;
     z-index: 2;
-    top: 50%;
-    left: max(5rem, env(safe-area-inset-left));
-    width: min(34rem, 40%);
-    transform: translateY(-50%);
+    width: max-content;
+    max-width: 40%;
     opacity: 0;
     animation: message-in 700ms 120ms ease-out forwards;
   }
@@ -221,13 +224,12 @@ Astro.response.statusText = "Not Found";
   }
 
   .not-found__character {
-    position: absolute;
+    flex: 0 0 auto;
     z-index: 1;
-    right: max(2.5rem, env(safe-area-inset-right));
-    bottom: max(0.25rem, env(safe-area-inset-bottom));
     display: block;
-    width: min(52vw, 94vh);
-    height: min(96vh, 66vw);
+    width: auto;
+    height: min(86vh, 54rem);
+    aspect-ratio: 802 / 1657;
     pointer-events: none;
     opacity: 0;
     animation: character-in 850ms 180ms ease-out forwards;
@@ -238,7 +240,6 @@ Astro.response.statusText = "Not Found";
     width: 100%;
     height: 100%;
     object-fit: contain;
-    object-position: right bottom;
     filter: drop-shadow(0 1.3rem 1.7rem rgba(0, 0, 0, 0.52));
   }
 
@@ -246,11 +247,6 @@ Astro.response.statusText = "Not Found";
     .not-found__stage {
       padding-left: max(2.5rem, env(safe-area-inset-left));
       padding-right: max(1.75rem, env(safe-area-inset-right));
-    }
-
-    .not-found__message {
-      left: max(2.5rem, env(safe-area-inset-left));
-      width: 42%;
     }
 
     .not-found__message h1 {
@@ -274,9 +270,7 @@ Astro.response.statusText = "Not Found";
     }
 
     .not-found__character {
-      right: max(0.75rem, env(safe-area-inset-right));
-      width: min(62vw, 89vh);
-      height: min(94vh, 82vw);
+      height: min(82vh, 45rem);
     }
   }
 
@@ -292,9 +286,7 @@ Astro.response.statusText = "Not Found";
     }
 
     .not-found__message {
-      top: 37%;
-      left: max(1.25rem, env(safe-area-inset-left));
-      width: 43%;
+      max-width: 40%;
     }
 
     .not-found__message h1 {
@@ -320,10 +312,8 @@ Astro.response.statusText = "Not Found";
     }
 
     .not-found__character {
-      right: max(-0.5rem, calc(env(safe-area-inset-right) - 0.5rem));
-      bottom: max(0.25rem, env(safe-area-inset-bottom));
-      width: 78vw;
-      height: min(88vh, 171vw);
+      width: min(calc(100vw - 10.5rem), 26vh, 14rem);
+      height: auto;
     }
   }
 
@@ -336,11 +326,11 @@ Astro.response.statusText = "Not Found";
   @keyframes message-in {
     from {
       opacity: 0;
-      transform: translate(-1.25rem, -50%);
+      transform: translateX(-1.25rem);
     }
     to {
       opacity: 1;
-      transform: translate(0, -50%);
+      transform: translateX(0);
     }
   }
 

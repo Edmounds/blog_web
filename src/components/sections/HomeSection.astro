@@ -40,10 +40,10 @@ const groups = (items: typeof blogs) => {
         </svg>
       </a>
     </nav>
+    <img class="codetime-badge" src="/api/wakatime-badge.svg" alt="Total coding time" width="160" height="24" data-wakatime-image hidden />
     <p class="profile-card__intro">{profile.motto}</p>
     <p class="profile-card__location">{profile.major} · {profile.city}</p>
     <div class="profile-metrics">
-      <img src="/api/wakatime-badge.svg" alt="Total coding time" width="320" height="32" data-wakatime-image hidden />
       <a
         class="github-snake"
         href="https://github.com/Edmounds"
@@ -150,10 +150,11 @@ const groups = (items: typeof blogs) => {
   .profile-card nav { display: flex; gap: 0.45rem; }
   .profile-card nav a { display: inline-flex; width: 2.5rem; height: 2.5rem; align-items: center; justify-content: center; color: var(--text-muted); text-decoration: none; }
   .profile-card nav svg { width: 1.3rem; height: 1.3rem; }
+  .codetime-badge { display: block; width: auto; height: 1.5rem; max-width: 100%; margin-top: 0.2rem; }
+  :global(html.dark) .codetime-badge { filter: invert(1); }
   .profile-card__intro { margin: 0.8rem 0 0; color: var(--text-muted); line-height: 1.7; }
   .profile-card__location { margin: 0.5rem 0 0; color: var(--text-faint); font-size: var(--type-sm); }
   .profile-metrics { display: grid; width: 100%; gap: 0.75rem; margin-top: 1.5rem; }
-  .profile-metrics > img { max-width: 100%; height: auto; margin-inline: auto; }
   .github-snake { display: block; width: 100%; aspect-ratio: 880 / 192; color: var(--text-faint); font-size: var(--type-xs); }
   .github-snake picture, .github-snake img { display: block; width: 100%; height: 100%; }
   .github-snake img { object-fit: contain; }
