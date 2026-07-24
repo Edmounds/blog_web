@@ -47,7 +47,6 @@
       "comments": "コメント",
       "commentName": "名前",
       "commentContent": "コメント内容",
-      "commentDisclosure": "公開後は、サーバーが推定した端末のOS、おおよその地域、北京時間が表示されます。IPアドレスは公開されません。",
       "commentSubmit": "コメントを投稿",
       "commentSubmitting": "投稿中",
       "commentLoading": "コメントを読み込み中",

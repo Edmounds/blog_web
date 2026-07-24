@@ -47,7 +47,6 @@
       "comments": "评论",
       "commentName": "名称",
       "commentContent": "评论内容",
-      "commentDisclosure": "发布后会公开展示服务端推断的设备系统、大致地区和北京时间，但不会公开 IP。",
       "commentSubmit": "发布评论",
       "commentSubmitting": "发布中",
       "commentLoading": "正在加载评论",

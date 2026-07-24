@@ -1,5 +1,5 @@
 ﻿---
-name: 你今天睡够八小时了吗
+name: Lust4ev3r
 city: 中國重慶
 major: 機器人工程
 motto: Keep it Simple,Stupid
@@ -12,7 +12,7 @@ portrait: /images/content/about/profile.png
 
 ## 經歷
 
-## 聯絡我
+## 聯繫我
 
 - [GitHub](https://github.com/Edmounds)
 - [Bilibili](https://space.bilibili.com/397591871)

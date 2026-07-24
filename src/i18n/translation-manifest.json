@@ -153,10 +153,6 @@
       "fingerprint": "aaa87fffe31522f66560f6b5964ff4b8449e1513f9a5dd3f9083061830f2ce5d",
       "translation": "Comment"
     },
-    "en:messages.site.copy.commentDisclosure": {
-      "fingerprint": "e345753ba7c60eb42a91a4b4ab0f6a5109c2b9933c8e5bbc5fa3707da0cef369",
-      "translation": "After publishing, the inferred device system, approximate region, and Beijing time will be displayed publicly. Your IP address will not be shown."
-    },
     "en:messages.site.copy.commentSubmit": {
       "fingerprint": "d1813169f93d5db5ab8373f9266eeca0d98bae869828b663792a455bb191a0aa",
       "translation": "Post comment"
@@ -404,10 +400,6 @@
     "ja:messages.site.copy.commentContent": {
       "fingerprint": "aaa87fffe31522f66560f6b5964ff4b8449e1513f9a5dd3f9083061830f2ce5d",
       "translation": "コメント内容"
-    },
-    "ja:messages.site.copy.commentDisclosure": {
-      "fingerprint": "e345753ba7c60eb42a91a4b4ab0f6a5109c2b9933c8e5bbc5fa3707da0cef369",
-      "translation": "公開後は、サーバーが推定した端末のOS、おおよその地域、北京時間が表示されます。IPアドレスは公開されません。"
     },
     "ja:messages.site.copy.commentSubmit": {
       "fingerprint": "d1813169f93d5db5ab8373f9266eeca0d98bae869828b663792a455bb191a0aa",
@@ -665,10 +657,6 @@
       "fingerprint": "0780254965153c3da39c6260df2eac1b215de1512c71ae6b265df1778dabe7d3",
       "translation": "發布中"
     },
-    "zh-TW:messages.site.copy.commentDisclosure": {
-      "fingerprint": "e345753ba7c60eb42a91a4b4ab0f6a5109c2b9933c8e5bbc5fa3707da0cef369",
-      "translation": "發布後會公開展示服務端推斷的設備系統、大致地區和北京時間，但不會公開 IP。"
-    },
     "zh-TW:messages.site.copy.commentLoading": {
       "fingerprint": "5a3968bdb8b8db35f41b941b9ee484379d5525811b551d34f2b77dead7c309e5",
       "translation": "正在載入評論"
@@ -882,24 +870,24 @@
       "translation": "---\ntitle: Hello\nrouteSlug: designing-for-clarity-in-chaos\ndescription: My first blog post.\ncreatedAt: 2026-01-28\nimage: /images/content/blog/designing-for-clarity-in-chaos.png\npublished: true\ntype: article\ncategory: Essay\norder: 1\ntags:\n  - Essay\n---\n\nHello, welcome to my blog.\n\nThis is the first article I've left here, and also a simple beginning."
     },
     "en:content.about.profile.md.document": {
-      "fingerprint": "9ec8ea8a42b2c86891b014ca9f31f4d2d0bedac779f78503c7d0c01912ea4874",
-      "translation": "---\nname: 你今天睡够八小时了吗\ncity: Chongqing, China\nmajor: Robotics Engineering\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile.png\n---\n\n## About Me\n\nThis is my quiet personal space—writing articles, taking notes, recording books and movies I've watched, and sharing travels. It's not social media; there's no notification or like anxiety, only text, photos, and some records. I don't like the high-intensity impact and intrusion of social apps on personal life.\n\n## Experience\n\n## Contact Me\n\n- [GitHub](https://github.com/Edmounds)\n- [Bilibili](https://space.bilibili.com/397591871)\n- [i@muelsyse.us](mailto:i@muelsyse.us)\n\n## Acknowledgments\n\n![The Movie Database](/images/tmdb-logo.svg)\n\nThis product uses the TMDB API but is not endorsed or certified by TMDB."
+      "fingerprint": "0a00d7b27e1a1cf92f761fa2e862f5aec0c8dd4d3d01177cb10d4ce46b919def",
+      "translation": "---\nname: Lust4ev3r\ncity: Chongqing, China\nmajor: Robotics Engineering\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile.png\n---\n\n## About Me\n\nThis is my quiet personal space—writing articles, taking notes, recording the books and movies I've watched, and sharing travels. It's not social media; there are no notifications or like anxiety, only words, photos, and some records. I don't like the high-intensity impact and intrusion of social apps on personal life.\n\n## Experience\n\n## Contact Me\n\n- [GitHub](https://github.com/Edmounds)\n- [Bilibili](https://space.bilibili.com/397591871)\n- [i@muelsyse.us](mailto:i@muelsyse.us)\n\n## Acknowledgments\n\n![The Movie Database](/images/tmdb-logo.svg)\n\nThis product uses the TMDB API but is not endorsed or certified by TMDB."
     },
     "ja:content.blog.designing-for-clarity-in-chaos.md.document": {
       "fingerprint": "110043051f81e6aa0a55f375166b16cd77866ae5a4597705848e24e81c28bd1f",
       "translation": "---\ntitle: こんにちは\nrouteSlug: designing-for-clarity-in-chaos\ndescription: 私の最初のブログ記事です。\ncreatedAt: 2026-01-28\nimage: /images/content/blog/designing-for-clarity-in-chaos.png\npublished: true\ntype: article\ncategory: 随筆\norder: 1\ntags:\n  - 随筆\n---\n\nこんにちは、私のブログへようこそ。\n\nこれは私がここに残す最初の記事であり、シンプルな始まりでもあります。"
     },
     "ja:content.about.profile.md.document": {
-      "fingerprint": "9ec8ea8a42b2c86891b014ca9f31f4d2d0bedac779f78503c7d0c01912ea4874",
-      "translation": "---\nname: 你今天睡够八小时了吗\ncity: 中国重慶\nmajor: ロボット工学\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile.png\n---\n\n## 私について\n\nここは私の静かな個人空間です——記事を書き、ノートを取り、読んだ本や映画を記録し、旅行を共有します。ソーシャルメディアではなく、通知や「いいね」の不安もなく、文字、写真、そしていくつかの記録だけがあります。ソーシャルソフトウェアのような個人生活への高強度の影響と侵入は好きではありません。\n\n## 経歴\n\n## お問い合わせ\n\n- [GitHub](https://github.com/Edmounds)\n- [Bilibili](https://space.bilibili.com/397591871)\n- [i@muelsyse.us](mailto:i@muelsyse.us)\n\n## 謝辞\n\n![The Movie Database](/images/tmdb-logo.svg)\n\nこの製品はTMDB APIを使用していますが、TMDBによって推奨または認定されたものではありません。"
+      "fingerprint": "0a00d7b27e1a1cf92f761fa2e862f5aec0c8dd4d3d01177cb10d4ce46b919def",
+      "translation": "---\nname: Lust4ev3r\ncity: 中国重慶\nmajor: ロボット工学\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile.png\n---\n\n## 私について\n\nここは私の静かな個人空間です——記事を書き、ノートを取り、読んだ本や映画を記録し、旅行を共有します。ソーシャルメディアではなく、通知やいいねの不安もなく、文字、写真、そしていくつかの記録だけがあります。ソーシャルソフトウェアのような個人生活への高強度の影響と侵入は好きではありません。\n\n## 経歴\n\n## お問い合わせ\n\n- [GitHub](https://github.com/Edmounds)\n- [Bilibili](https://space.bilibili.com/397591871)\n- [i@muelsyse.us](mailto:i@muelsyse.us)\n\n## 謝辞\n\n![The Movie Database](/images/tmdb-logo.svg)\n\nこの製品はTMDB APIを使用していますが、TMDBによって承認または認定されたものではありません。"
     },
     "zh-TW:content.blog.designing-for-clarity-in-chaos.md.document": {
       "fingerprint": "110043051f81e6aa0a55f375166b16cd77866ae5a4597705848e24e81c28bd1f",
       "translation": "---\ntitle: 你好\nrouteSlug: designing-for-clarity-in-chaos\ndescription: 我的第一篇部落格文章。\ncreatedAt: 2026-01-28\nimage: /images/content/blog/designing-for-clarity-in-chaos.png\npublished: true\ntype: article\ncategory: 隨筆\norder: 1\ntags:\n  - 隨筆\n---\n\n你好，歡迎來到我的部落格。\n\n這是我在這裡留下的第一篇文章，也是一個簡單的開始。"
     },
     "zh-TW:content.about.profile.md.document": {
-      "fingerprint": "9ec8ea8a42b2c86891b014ca9f31f4d2d0bedac779f78503c7d0c01912ea4874",
-      "translation": "---\nname: 你今天睡够八小时了吗\ncity: 中國重慶\nmajor: 機器人工程\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile.png\n---\n\n## 關於我\n\n這裡是我安靜的個人空間——寫文章、記筆記、記錄看過的書和電影、分享旅行。不是社交媒體，沒有通知和按讚焦慮，只有文字、照片和一些記錄。 不喜歡社交軟體那種高強度對個人生活的影響和侵入 \n\n## 經歷\n\n## 聯絡我\n\n- [GitHub](https://github.com/Edmounds)\n- [Bilibili](https://space.bilibili.com/397591871)\n- [i@muelsyse.us](mailto:i@muelsyse.us)\n\n## 致謝\n\n![The Movie Database](/images/tmdb-logo.svg)\n\nThis product uses the TMDB API but is not endorsed or certified by TMDB."
+      "fingerprint": "0a00d7b27e1a1cf92f761fa2e862f5aec0c8dd4d3d01177cb10d4ce46b919def",
+      "translation": "---\nname: Lust4ev3r\ncity: 中國重慶\nmajor: 機器人工程\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile.png\n---\n\n## 關於我\n\n這裡是我安靜的個人空間——寫文章、記筆記、記錄看過的書和電影、分享旅行。不是社交媒體，沒有通知和按讚焦慮，只有文字、照片和一些記錄。 不喜歡社交軟體那種高強度對個人生活的影響和侵入 \n\n## 經歷\n\n## 聯繫我\n\n- [GitHub](https://github.com/Edmounds)\n- [Bilibili](https://space.bilibili.com/397591871)\n- [i@muelsyse.us](mailto:i@muelsyse.us)\n\n## 致謝\n\n![The Movie Database](/images/tmdb-logo.svg)\n\nThis product uses the TMDB API but is not endorsed or certified by TMDB."
     }
   }
 }

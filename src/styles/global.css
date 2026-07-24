@@ -642,7 +642,6 @@ html.dark .ui-prose {
 .comments-field input:focus, .comments-field textarea:focus { border-color: var(--foreground); box-shadow: 0 0 0 2px var(--focus-ring); }
 .comments-honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 .comments-form__footer { display: flex; flex-direction: column; gap: 0.75rem; }
-.comments-form__footer p { max-width: 36rem; color: var(--text-faint); font-size: var(--type-xs); line-height: 1.6; }
 .comments-form__footer button svg { width: 1rem; height: 1rem; }
 .comments-status { min-height: 1.25rem; color: var(--text-muted); font-size: var(--type-sm); }
 .comments-list { min-height: 10rem; margin-top: 2.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border-soft); }
@@ -652,7 +651,7 @@ html.dark .ui-prose {
 .comments-list__body { margin-top: 0.5rem; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--text-muted); line-height: 1.75; }
 .comments-list__meta { margin-top: 0.5rem; color: var(--text-faint); font-size: var(--type-xs); }
 .comments-more { width: 100%; margin-top: 1rem; }
-@media (min-width: 40rem) { .post-engagement { flex-direction: row; align-items: center; justify-content: space-between; } .comments-form__footer { flex-direction: row; align-items: center; justify-content: space-between; } }
+@media (min-width: 40rem) { .post-engagement { flex-direction: row; align-items: center; justify-content: space-between; } .comments-form__footer { flex-direction: row; align-items: center; justify-content: flex-end; } }
 @media (prefers-reduced-motion: reduce) { .footer-reveal, .archive-reveal { animation: none; } }
 
 @theme inline {

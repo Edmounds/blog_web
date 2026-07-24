@@ -47,7 +47,6 @@
       "comments": "評論",
       "commentName": "名稱",
       "commentContent": "評論內容",
-      "commentDisclosure": "發布後會公開展示服務端推斷的設備系統、大致地區和北京時間，但不會公開 IP。",
       "commentSubmit": "發佈評論",
       "commentSubmitting": "發布中",
       "commentLoading": "正在載入評論",

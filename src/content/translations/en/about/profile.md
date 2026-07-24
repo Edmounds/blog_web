@@ -1,5 +1,5 @@
 ﻿---
-name: 你今天睡够八小时了吗
+name: Lust4ev3r
 city: Chongqing, China
 major: Robotics Engineering
 motto: Keep it Simple,Stupid
@@ -8,7 +8,7 @@ portrait: /images/content/about/profile.png
 
 ## About Me
 
-This is my quiet personal space—writing articles, taking notes, recording books and movies I've watched, and sharing travels. It's not social media; there's no notification or like anxiety, only text, photos, and some records. I don't like the high-intensity impact and intrusion of social apps on personal life.
+This is my quiet personal space—writing articles, taking notes, recording the books and movies I've watched, and sharing travels. It's not social media; there are no notifications or like anxiety, only words, photos, and some records. I don't like the high-intensity impact and intrusion of social apps on personal life.
 
 ## Experience
 

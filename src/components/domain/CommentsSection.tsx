@@ -19,7 +19,7 @@ interface ApiError {
 }
 
 export default function CommentsSection({ contentId, labels = {} }: CommentsSectionProps) {
-  const copy = { comments: "评论", commentName: "名称", commentContent: "评论内容", commentDisclosure: "发布后会公开展示服务端推断的设备系统、大致地区和北京时间，但不会公开 IP。", commentSubmit: "发布评论", commentSubmitting: "发布中", commentLoading: "正在加载评论", commentReload: "重新加载", commentEmpty: "还没有评论，来留下第一条吧。", commentLoadMore: "加载更多", commentLoadingMore: "加载中", commentNameInvalid: "名称需为 1 至 20 个字符。", commentContentInvalid: "评论需为 1 至 500 个字符。", commentPublished: "评论已发布。", commentLoadFailed: "暂时无法加载评论，请稍后重试。", commentSubmitFailed: "评论发布失败，请稍后重试。", ...labels };
+  const copy = { comments: "评论", commentName: "名称", commentContent: "评论内容", commentSubmit: "发布评论", commentSubmitting: "发布中", commentLoading: "正在加载评论", commentReload: "重新加载", commentEmpty: "还没有评论，来留下第一条吧。", commentLoadMore: "加载更多", commentLoadingMore: "加载中", commentNameInvalid: "名称需为 1 至 20 个字符。", commentContentInvalid: "评论需为 1 至 500 个字符。", commentPublished: "评论已发布。", commentLoadFailed: "暂时无法加载评论，请稍后重试。", commentSubmitFailed: "评论发布失败，请稍后重试。", ...labels };
   const [comments, setComments] = useState<PublicComment[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -134,10 +134,7 @@ export default function CommentsSection({ contentId, labels = {} }: CommentsSect
           <input id="comment-website" name="website" tabIndex={-1} autoComplete="off" value={website} onChange={(event) => setWebsite(event.target.value)} />
         </div>
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="max-w-xl text-xs leading-5 text-[var(--text-faint)]">
-            {copy.commentDisclosure}
-          </p>
+        <div className="flex justify-end">
           <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto">
             {isSubmitting ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : <Send aria-hidden="true" />}
             {isSubmitting ? copy.commentSubmitting : copy.commentSubmit}

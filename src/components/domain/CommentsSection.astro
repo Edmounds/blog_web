@@ -1,7 +1,7 @@
 ---
 interface Props { contentId: string; labels?: Record<string, string>; }
 const { contentId, labels = {} } = Astro.props;
-const copy = { comments: "评论", commentName: "名称", commentContent: "评论内容", commentDisclosure: "发布后会公开展示服务端推断的设备系统、大致地区和北京时间，但不会公开 IP。", commentSubmit: "发布评论", commentSubmitting: "发布中", commentLoading: "正在加载评论", commentReload: "重新加载", commentEmpty: "还没有评论，来留下第一条吧。", commentLoadMore: "加载更多", commentLoadingMore: "加载中", commentNameInvalid: "名称需为 1 至 20 个字符。", commentContentInvalid: "评论需为 1 至 500 个字符。", commentPublished: "评论已发布。", commentLoadFailed: "暂时无法加载评论，请稍后重试。", commentSubmitFailed: "评论发布失败，请稍后重试。", ...labels };
+const copy = { comments: "评论", commentName: "名称", commentContent: "评论内容", commentSubmit: "发布评论", commentSubmitting: "发布中", commentLoading: "正在加载评论", commentReload: "重新加载", commentEmpty: "还没有评论，来留下第一条吧。", commentLoadMore: "加载更多", commentLoadingMore: "加载中", commentNameInvalid: "名称需为 1 至 20 个字符。", commentContentInvalid: "评论需为 1 至 500 个字符。", commentPublished: "评论已发布。", commentLoadFailed: "暂时无法加载评论，请稍后重试。", commentSubmitFailed: "评论发布失败，请稍后重试。", ...labels };
 ---
 
 <section id="comments" class="comments-section" aria-labelledby="comments-title" data-comments data-content-id={contentId} data-copy={JSON.stringify(copy)}>
@@ -10,7 +10,7 @@ const copy = { comments: "评论", commentName: "名称", commentContent: "评�
     <div class="comments-field"><div><label for="comment-name">{copy.commentName}</label><span data-name-count>0/20</span></div><input id="comment-name" name="name" required maxlength="20" autocomplete="name" /></div>
     <div class="comments-field"><div><label for="comment-content">{copy.commentContent}</label><span data-content-count>0/500</span></div><textarea id="comment-content" name="content" required maxlength="500" rows="6"></textarea></div>
     <div class="comments-honeypot" aria-hidden="true"><label for="comment-website">网站</label><input id="comment-website" name="website" tabindex="-1" autocomplete="off" /></div>
-    <div class="comments-form__footer"><p>{copy.commentDisclosure}</p><button type="submit" data-submit><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg><span>{copy.commentSubmit}</span></button></div>
+    <div class="comments-form__footer"><button type="submit" data-submit><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg><span>{copy.commentSubmit}</span></button></div>
     <p class="comments-status" role="status" aria-live="polite" data-submit-status></p>
   </form>
   <div class="comments-list" data-comment-list><p class="comments-list__message" role="status" data-list-message>{copy.commentLoading}</p><ol data-comment-items></ol><button type="button" class="comments-secondary" data-retry hidden>{copy.commentReload}</button><button type="button" class="comments-secondary comments-more" data-more hidden>{copy.commentLoadMore}</button></div>

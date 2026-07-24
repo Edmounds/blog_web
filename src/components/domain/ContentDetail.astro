@@ -78,7 +78,7 @@ const articleJsonLd = JSON.stringify({
 </BaseLayout>
 
 <style>
-  .article-page { padding-block: clamp(4rem, 9vw, 8rem) 6rem; }
+  .article-page { --article-content-width: 46rem; padding-block: clamp(4rem, 9vw, 8rem) 6rem; }
   .article-page__header { max-width: 60rem; margin-inline: auto; }
   .article-page__header > a, .article-page__header > p:first-of-type { color: var(--text-faint); font-size: var(--type-sm); text-decoration: none; }
   .article-page__header h1 { margin: 1rem 0; font-size: clamp(2.6rem, 7vw, 6.5rem); line-height: 0.98; overflow-wrap: anywhere; }
@@ -87,16 +87,16 @@ const articleJsonLd = JSON.stringify({
   .article-page__links { display: flex; flex-wrap: wrap; gap: 1.25rem; margin-top: 1.5rem; }
   .article-page__links a { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--foreground); font-size: var(--type-sm); text-decoration: none; }
   .article-page__links :global(svg) { width: 1rem; height: 1rem; }
-  .article-page__cover { display: block; width: min(100%, 76rem); height: auto; aspect-ratio: 1; max-height: 42rem; margin: 3rem auto; object-fit: cover; border-radius: var(--radius-control); }
-  .article-page__body { display: grid; grid-template-columns: minmax(12rem, 16rem) minmax(0, 46rem); justify-content: center; gap: clamp(2rem, 5vw, 5rem); margin-top: 4rem; }
+  .article-page__cover { display: block; width: min(100%, 40rem); height: auto; margin: 3rem auto; border-radius: var(--radius-control); }
+  .article-page__body { display: grid; width: min(100%, calc(16rem + var(--article-content-width) + clamp(2rem, 5vw, 5rem))); grid-template-columns: minmax(12rem, 16rem) minmax(0, var(--article-content-width)); justify-content: center; gap: clamp(2rem, 5vw, 5rem); margin: 4rem auto 0; }
   .article-page__body aside { position: sticky; top: 6rem; align-self: start; }
   .article-prose { min-width: 0; font-size: var(--type-content-body); line-height: 1.85; }
   .article-prose :global(h2), .article-prose :global(h3) { scroll-margin-top: 6rem; line-height: 1.25; }
   .article-prose :global(img) { max-width: 100%; border-radius: var(--radius-control); }
   .article-prose :global(pre) { max-width: 100%; overflow: auto; padding: 1rem; border: 1px solid var(--border-soft); border-radius: var(--radius-control); }
-  .article-page__interaction, .article-page__next { display: block; max-width: 46rem; margin: 4rem auto 0; }
+  .article-page__interaction, .article-page__next { display: block; max-width: var(--article-content-width); margin: 4rem auto 0; }
   .article-page__next { padding-top: 1.5rem; color: var(--foreground); text-decoration: none; border-top: 1px solid var(--border-soft); }
   .article-page__next span { display: block; color: var(--text-faint); font-size: var(--type-xs); }
   .article-page__next strong { display: block; margin-top: 0.4rem; font-size: var(--type-lg); }
-  @media (max-width: 56rem) { .article-page__body { grid-template-columns: 1fr; } .article-page__body aside { position: static; } }
+  @media (max-width: 56rem) { .article-page__body { width: min(100%, var(--article-content-width)); grid-template-columns: 1fr; } .article-page__body aside { position: static; } }
 </style>
