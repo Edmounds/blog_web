@@ -7,8 +7,15 @@ import {
   inferDevice,
   inferRegion,
   inferRegionFromHeaders,
+  normalizeCommentContentId,
   validateCommentInput,
 } from "../functions/_shared/comments.js";
+
+test("About uses one shared comment content ID without enabling other About IDs", () => {
+  assert.equal(normalizeCommentContentId("about/profile"), "about/profile");
+  assert.equal(normalizeCommentContentId("/about/profile/"), "about/profile");
+  assert.equal(normalizeCommentContentId("about/other"), undefined);
+});
 
 test("validateCommentInput trims names and preserves comment line breaks", () => {
   assert.deepEqual(
@@ -36,6 +43,13 @@ test("validateCommentInput enforces name and content boundaries", () => {
   assert.equal(validateCommentInput({ contentId: "blog/first-note", name: "访客", content: "文".repeat(501) }).error.code, "INVALID_CONTENT");
   assert.equal(validateCommentInput({ contentId: "blog/missing-post", name: "访客", content: "内容" }).error.code, "INVALID_CONTENT_ID");
   assert.equal(validateCommentInput({ contentId: "blog/first-note", name: "访客", content: "内容", website: "bot" }).error.code, "INVALID_COMMENT");
+});
+
+test("validateCommentInput accepts the shared About comment ID", () => {
+  assert.deepEqual(
+    validateCommentInput({ contentId: "about/profile", name: "访客", content: "你好", website: "" }),
+    { ok: true, value: { contentId: "about/profile", name: "访客", content: "你好" } },
+  );
 });
 
 test("inferDevice exposes only coarse operating-system labels", () => {

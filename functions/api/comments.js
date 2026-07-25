@@ -3,15 +3,16 @@ import {
   createComment,
   getCommentCursor,
   listPublicComments,
+  normalizeCommentContentId,
   validateCommentInput,
 } from "../_shared/comments.js";
-import { error, json, normalizeContentId, requireDb, requireSameOriginJson } from "../_shared/engagement.js";
+import { error, json, requireDb, requireSameOriginJson } from "../_shared/engagement.js";
 import { createEdgeCacheKey, noStore, readEdgeJson } from "../_shared/edge-cache.js";
 
 export async function onRequestGet({ env, request, waitUntil }) {
   try {
     const url = new URL(request.url);
-    const contentId = normalizeContentId(url.searchParams.get("contentId"));
+    const contentId = normalizeCommentContentId(url.searchParams.get("contentId"));
     if (!contentId) return error(400, "INVALID_CONTENT_ID", "请选择一篇已发布的内容。");
 
     const rawCursor = url.searchParams.get("cursor");

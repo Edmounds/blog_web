@@ -124,6 +124,7 @@ html.dark {
   --space: clamp(0.1rem, 0.2vw, 1.25rem);
   --header-main-gap: clamp(1.25rem, 1.4vw, 2.75rem);
   --content-padding: clamp(0.85rem, 1.8vw, 1.4rem);
+  --content-mobile-padding: clamp(1.5rem, 5vw, 3rem);
   --content-frame-inline-start: max(
     var(--content-padding),
     calc((100vw - var(--shell-max)) / 2 + var(--content-padding))
@@ -205,6 +206,8 @@ samp {
   .content-container {
     width: 100%;
     margin-inline: 0;
+    padding-left: max(var(--content-mobile-padding), env(safe-area-inset-left));
+    padding-right: max(var(--content-mobile-padding), env(safe-area-inset-right));
   }
 }
 

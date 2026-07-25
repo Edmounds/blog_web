@@ -85,6 +85,22 @@ test("comments isolate identical slugs across Blog Note and Project", async () =
   }
 });
 
+test("About comments use the shared about/profile content ID", async () => {
+  const db = new FakeD1();
+  const request = new Request("https://blog.muelsyse.us/api/comments", { headers: { "cf-connecting-ip": "203.0.113.88" } });
+  const result = await createComment(
+    db,
+    request,
+    { contentId: "about/profile", name: "访客", content: "About comment" },
+    "test-only-secret",
+    new Date("2026-07-25T12:00:00.000Z"),
+  );
+
+  assert.equal(result.ok, true);
+  assert.deepEqual((await listPublicComments(db, "about/profile")).items.map((item) => item.content), ["About comment"]);
+  assert.equal((await listPublicComments(db, "blog/first-note")).items.length, 0);
+});
+
 function requestWithIp(request, ip) {
   const headers = new Headers(request.headers);
   headers.set("cf-connecting-ip", ip);

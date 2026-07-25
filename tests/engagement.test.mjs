@@ -17,6 +17,7 @@ import { readFileSync } from "node:fs";
 
 test("normalizeContentId accepts a published content ID", () => {
   assert.equal(normalizeContentId("blog/first-note"), "blog/first-note");
+  assert.equal(normalizeContentId("about/profile"), undefined);
 });
 
 test("the content ID migration prefixes every legacy Blog table idempotently", () => {

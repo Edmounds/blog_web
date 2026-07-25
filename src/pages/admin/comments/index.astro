@@ -9,6 +9,7 @@ export const prerender = false;
 
 const posts = (await getAllPublishedContent())
   .map((post) => ({ contentId: post.contentId, title: `${post.section}: ${post.title}` }));
+posts.push({ contentId: "about/profile", title: "about: profile" });
 ---
 
 <BaseLayout title="评论管理" description="管理内容评论" currentPath="/admin/comments/" showFooter={false}>

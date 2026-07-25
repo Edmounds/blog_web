@@ -3,6 +3,7 @@ import { render } from "astro:content";
 import { getAboutProfile } from "../../lib/content";
 import type { Locale } from "../../lib/i18n";
 import { getLocalizedAbout, getLocalizedSite } from "../../lib/localized-content";
+import CommentsSection from "../domain/CommentsSection.astro";
 
 interface Props { locale?: Locale }
 
@@ -14,45 +15,19 @@ const { Content } = await render(profile);
 
 <div class="about-shell content-container">
   <article class="about-article" aria-label={site.labels.about}>
-    <header class="about-article__header">
-      <div>
-        <h1>{profile.data.name}</h1>
-        <p>{profile.data.motto}</p>
-        <p class="about-article__meta">{profile.data.city}</p>
-      </div>
-      <picture>
-        <source
-          type="image/avif"
-          srcset="/images/content/about/profile-8646bdb863b8-w160.avif 160w, /images/content/about/profile-8646bdb863b8-w320.avif 320w"
-          sizes="128px"
-        />
-        <source
-          type="image/webp"
-          srcset="/images/content/about/profile-8646bdb863b8-w160.webp 160w, /images/content/about/profile-8646bdb863b8-w320.webp 320w"
-          sizes="128px"
-        />
-        <img src={profile.data.portrait} alt={profile.data.name} width="320" height="320" loading="lazy" decoding="async" />
-      </picture>
-    </header>
-
     <div class="about-article__body ui-prose">
       <Content />
+    </div>
+
+    <div class="about-article__comments">
+      <CommentsSection contentId="about/profile" locale={locale} labels={site.copy} />
     </div>
   </article>
 </div>
 
 <style>
   .about-article { width: 100%; max-width: 52rem; min-height: calc(100vh - 4.5rem); margin-inline: auto; padding-block: clamp(4rem, 8vh, 7rem) 6rem; }
-  .about-article__header { display: grid; grid-template-columns: minmax(0, 1fr) 8rem; gap: 2rem; align-items: end; padding-bottom: 2rem; border-bottom: 1px solid var(--border-soft); }
-  .about-article__header h1 { margin: 0; font-size: clamp(2.3rem, 2rem + 1.5vw, 4.3rem); line-height: 1.05; overflow-wrap: anywhere; }
-  .about-article__header p { max-width: 38rem; margin: 1rem 0 0; color: var(--text-muted); line-height: 1.7; }
-  .about-article__header .about-article__meta { margin-top: 0.5rem; color: var(--text-faint); font-size: var(--type-sm); }
-  .about-article__header picture { display: block; width: 8rem; aspect-ratio: 1; }
-  .about-article__header img { display: block; width: 100%; height: 100%; object-fit: cover; border: 1px solid var(--border-soft); border-radius: 50%; }
-  .about-article__body { margin-top: 3rem; }
   .about-article__body :global(img) { width: auto; max-height: 2rem; border: 0; border-radius: 0; }
-  @media (max-width: 34rem) {
-    .about-article__header { grid-template-columns: 1fr; align-items: start; }
-    .about-article__header picture { order: -1; width: 6rem; }
-  }
+  .about-article__comments { --article-title-size: clamp(1.82rem, 1.52rem + 0.9vw, 2.95rem); margin-top: 4rem; }
+  :global(html:lang(zh-CN)) .about-article__comments, :global(html:lang(zh-TW)) .about-article__comments, :global(html:lang(ja)) .about-article__comments { --article-title-size: clamp(1.56rem, 1.36rem + 0.6vw, 2.28rem); }
 </style>

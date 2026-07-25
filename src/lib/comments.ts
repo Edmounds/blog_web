@@ -6,6 +6,7 @@ export const COMMENT_PAGE_SIZE = 20;
 export const COMMENT_RATE_LIMIT_SECONDS = 60;
 export const MAX_COMMENT_BODY_BYTES = 4_096;
 
+const ABOUT_COMMENT_CONTENT_ID = "about/profile";
 const CONTENT_ID_PATTERN = /^(blog|note|project)\/[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const CHINA_REGIONS: Record<string, string> = {
   AH: "安徽", BJ: "北京", CQ: "重庆", FJ: "福建", GD: "广东", GS: "甘肃", GX: "广西", GZ: "贵州",
@@ -61,6 +62,7 @@ interface CommentRow {
 export function normalizeCommentContentId(value: unknown): string | undefined {
   if (typeof value !== "string") return undefined;
   const contentId = value.trim().replace(/^\/+|\/+$/g, "");
+  if (contentId === ABOUT_COMMENT_CONTENT_ID) return contentId;
   return CONTENT_ID_PATTERN.test(contentId) && (CONTENT_IDS as readonly string[]).includes(contentId) ? contentId : undefined;
 }
 

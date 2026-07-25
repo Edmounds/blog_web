@@ -31,7 +31,7 @@ test("the transparent header keeps its side controls visible while auto-hiding d
   assert.match(header, /\.site-header__inner\s*\{[^}]*min-height:\s*4\.5rem;/s);
   assert.match(header, /--desktop-nav-font-size:\s*clamp\(16\.3px,\s*0\.82rem \+ 0\.13vw,\s*20px\);/s);
   assert.match(header, /\.desktop-nav\s*>\s*a,[\s\S]*?\.life-menu__items a\s*\{[^}]*font-family:\s*var\(--font-ui\);[^}]*font-size:\s*var\(--desktop-nav-font-size\);/s);
-  assert.match(header, /\.mobile-menu\s*\{[^}]*background:\s*color-mix\(in srgb, var\(--canvas\) 82%, transparent\);/s);
+  assert.match(header, /\.mobile-menu\s*\{[^}]*background:\s*var\(--canvas\);/s);
   assert.match(header, /desktopNav\.dataset\.hidden/);
   assert.match(header, /window\.addEventListener\("scroll"/);
   assert.match(header, /revealZone\.addEventListener\("pointerenter"/);
@@ -39,9 +39,13 @@ test("the transparent header keeps its side controls visible while auto-hiding d
   assert.match(header, /\.desktop-nav\[data-hidden="true"\]/);
   assert.doesNotMatch(header, /\.site-header\[data-hidden="true"\]/);
   assert.match(header, /@media\s*\(max-width:\s*64rem\)[\s\S]*?\.site-header__inner\s*\{[^}]*min-height:\s*4rem;/);
+  assert.match(header, /@media\s*\(max-width:\s*64rem\)[\s\S]*?\.site-header\s*\{[^}]*background:\s*var\(--canvas\);[^}]*border-bottom:\s*1px solid var\(--border-soft\);/s);
+  assert.match(header, /@media\s*\(max-width:\s*64rem\)[\s\S]*?\.site-signature\s*\{[^}]*transform:\s*translateY\(-0\.625rem\);/s);
   assert.match(header, /@media\s*\(max-width:\s*30rem\)[\s\S]*?\.site-header__tools\s*\{[^}]*gap:\s*0;/);
   assert.match(header, /@media\s*\(max-width:\s*30rem\)[\s\S]*?\.site-signature\s*\{[^}]*width:\s*min\(100%,\s*8\.75rem\);[^}]*font-size:\s*2\.15rem;/);
   assert.doesNotMatch(header, /backdrop-filter/);
+  assert.match(header, /\.life-menu__items\s*\{[^}]*top:\s*50%;[^}]*left:\s*100%;[^}]*padding-left:\s*0\.75rem;[^}]*transform:\s*translateX\(-0\.25rem\);/s);
+  assert.match(header, /\.life-menu__items\[data-open="true"\][^\{]*\{[^}]*transform:\s*translateX\(0\);/s);
 });
 
 test("public content pages stay inside the measured header frame", () => {
@@ -50,7 +54,8 @@ test("public content pages stay inside the measured header frame", () => {
   assert.match(global, /--content-frame-inline-end:/);
   assert.doesNotMatch(global, /--content-(?:shell-max|rail-left|rail-right):/);
   assert.match(global, /\.content-container\s*\{[^}]*margin-left:\s*var\(--content-frame-inline-start\);[^}]*margin-right:\s*var\(--content-frame-inline-end\);/s);
-  assert.match(global, /@media\s*\(max-width:\s*64rem\)[\s\S]*?\.content-container\s*\{[^}]*margin-inline:\s*0;/s);
+  assert.match(global, /--content-mobile-padding:\s*clamp\(1\.5rem,\s*5vw,\s*3rem\);/);
+  assert.match(global, /@media\s*\(max-width:\s*64rem\)[\s\S]*?\.content-container\s*\{[^}]*margin-inline:\s*0;[^}]*padding-left:\s*max\(var\(--content-mobile-padding\),\s*env\(safe-area-inset-left\)\);[^}]*padding-right:\s*max\(var\(--content-mobile-padding\),\s*env\(safe-area-inset-right\)\);/s);
 
   for (const path of [
     "src/components/sections/HomeSection.astro",
@@ -89,19 +94,21 @@ test("top-level writing sections use the compact Astro-star archive layout", () 
   assert.match(activity, /height:\s*6\.75rem;/);
   assert.match(activity, /margin-block:\s*0 2rem;/);
   assert.match(activity, /top:\s*5\.15rem;/);
+  assert.match(activity, /@media\s*\(max-width:\s*64rem\)[\s\S]*?\.archive-activity__year\s*\{[^}]*display:\s*none;/s);
   assert.doesNotMatch(content, /View categories|content-listing__categories|Essays and longer-form writing|Short observations and working notes|Selected work and experiments/);
 
   const art = read("src/components/sections/ArtSection.astro");
   assert.match(art, /<h1 class="ui-page-title">\{title\}<\/h1>/);
   assert.doesNotMatch(art, /<p class="ui-lead">|const description\s*=/);
   assert.match(art, /type === "screen"[\s\S]*data-screen-tabs/);
+  assert.match(art, /class="grid min-h-48 grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-3 lg:grid-cols-5"/);
+  assert.match(art, /class="col-span-2 hidden min-h-48 items-center text-sm text-\[var\(--text-muted\)\] md:col-span-3 lg:col-span-5"/);
 
   const about = read("src/components/sections/AboutSection.astro");
   assert.match(about, /<div class="about-shell content-container">[\s\S]*?<article class="about-article"/);
   assert.match(about, /\.about-article\s*\{[^}]*max-width:\s*52rem;[^}]*margin-inline:\s*auto;/s);
-  assert.match(about, /<header class="about-article__header">[\s\S]*<h1>\{profile\.data\.name\}<\/h1>[\s\S]*<img /);
-  assert.match(about, /\.about-article__header h1\s*\{[^}]*font-size:\s*clamp\(2\.3rem,\s*2rem \+ 1\.5vw,\s*4\.3rem\);/s);
   assert.match(about, /<Content \/>/);
+  assert.doesNotMatch(about, /about-article__header|profile\.data\.(?:name|motto|city|portrait)/);
   assert.doesNotMatch(about, /profile\.(?:story|meta|focusCards|experience|homeFeatured)/);
 });
 
@@ -319,7 +326,8 @@ test("About renders the profile as a normal Markdown article with the code-rain 
   const about = read("src/components/sections/AboutSection.astro");
   const background = read("src/components/site/RouteBackground.astro");
   assert.match(about, /render\(profile\)/);
-  assert.match(about, /profile\.data\.city/);
+  assert.doesNotMatch(about, /about-article__header|profile\.data\.(?:name|motto|city|portrait)/);
+  assert.match(about, /CommentsSection contentId="about\/profile"/);
   assert.doesNotMatch(about, /about-document__toc|href="#about-focus"/);
   assert.match(background, /path === "\/about\/"[\s\S]*\? "rain"/);
 });
@@ -351,8 +359,9 @@ test("writing detail pages keep interactions while moving the table of contents 
   assert.doesNotMatch(detail, /<main class="article-page__main">/);
   assert.match(detail, /PostEngagement/);
   assert.match(detail, /CommentsSection/);
-  assert.match(detail, /article-page__toc-mobile/);
-  assert.match(detail, /data-scroll-top/);
+  assert.match(detail, /showTitle=\{false\}/);
+  assert.match(detail, /gap:\s*clamp\(1\.5rem,\s*3\.5vw,\s*3\.5rem\);/);
+  assert.doesNotMatch(detail, /article-page__floating-actions|article-page__toc-mobile|data-scroll-top/);
   assert.match(toc, /data-toc-progress/);
   assert.match(toc, /data-toc-link/);
   assert.doesNotMatch(toc, /data-toc-expand|toc-children/);

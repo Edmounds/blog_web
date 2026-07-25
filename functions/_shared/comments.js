@@ -3,6 +3,14 @@ import { normalizeContentId } from "./engagement.js";
 export const COMMENT_PAGE_SIZE = 20;
 export const COMMENT_RATE_LIMIT_SECONDS = 60;
 export const MAX_COMMENT_BODY_BYTES = 4_096;
+const ABOUT_COMMENT_CONTENT_ID = "about/profile";
+
+export function normalizeCommentContentId(value) {
+  if (typeof value !== "string") return undefined;
+  const contentId = value.trim().replace(/^\/+|\/+$/g, "");
+  if (contentId === ABOUT_COMMENT_CONTENT_ID) return contentId;
+  return normalizeContentId(contentId);
+}
 
 const DEVICE_LABELS = {
   android: "Android",
@@ -52,7 +60,7 @@ export function validateCommentInput(value) {
   if (!value || typeof value !== "object") return invalid("INVALID_COMMENT", "评论数据无效。");
   if (typeof value.website === "string" && value.website.trim()) return invalid("INVALID_COMMENT", "评论数据无效。");
 
-  const contentId = normalizeContentId(value.contentId);
+  const contentId = normalizeCommentContentId(value.contentId);
   if (!contentId) return invalid("INVALID_CONTENT_ID", "请选择一篇已发布的内容。");
 
   const name = typeof value.name === "string" ? value.name.trim() : "";

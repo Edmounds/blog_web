@@ -1,5 +1,5 @@
 ---
-import { ArrowLeft, ArrowUp, BookOpen, ExternalLink, TableOfContents as TableOfContentsIcon } from "lucide-static";
+import { ArrowLeft, BookOpen, ExternalLink } from "lucide-static";
 import type { ContentSummary } from "../../lib/content";
 import { render } from "astro:content";
 import { getLocaleDefinition, localizePath, type Locale } from "../../lib/i18n";
@@ -101,62 +101,11 @@ const articleJsonLd = JSON.stringify({
       </div>
 
       <aside class="article-page__toc" aria-label={labels.tableOfContents} data-article-toc>
-        <TableOfContents headings={headings} labels={{ title: labels.tableOfContents, introduction: labels.introduction }} />
+        <TableOfContents headings={headings} labels={{ title: labels.tableOfContents, introduction: labels.introduction }} showTitle={false} />
       </aside>
-    </div>
-
-    <div class="article-page__floating-actions">
-      <button class="article-page__toc-mobile" type="button" aria-label={labels.tableOfContents} aria-expanded="false" data-article-toc-trigger data-visible="true">
-        <Icon svg={TableOfContentsIcon} />
-      </button>
-      <button type="button" aria-label="Back to top" data-scroll-top>
-        <Icon svg={ArrowUp} />
-      </button>
     </div>
   </article>
 </BaseLayout>
-
-<script>
-  const initArticleControls = () => {
-    document.querySelectorAll<HTMLElement>("[data-article-page]:not([data-controls-initialized])").forEach((page) => {
-      page.dataset.controlsInitialized = "true";
-      const toc = page.querySelector<HTMLElement>("[data-article-toc]");
-      const tocTrigger = page.querySelector<HTMLButtonElement>("[data-article-toc-trigger]");
-      const scrollTop = page.querySelector<HTMLButtonElement>("[data-scroll-top]");
-      const closeToc = () => { if (toc) toc.dataset.open = "false"; tocTrigger?.setAttribute("aria-expanded", "false"); };
-      const toggleToc = () => {
-        if (!toc) return;
-        const open = toc.dataset.open !== "true";
-        toc.dataset.open = String(open);
-        tocTrigger?.setAttribute("aria-expanded", String(open));
-      };
-      const onPointer = (event: PointerEvent) => {
-        if (toc?.dataset.open === "true" && event.target instanceof Node && !toc.contains(event.target) && !tocTrigger?.contains(event.target)) closeToc();
-      };
-      const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") closeToc(); };
-      const onScroll = () => { if (scrollTop) scrollTop.dataset.visible = String(window.scrollY > 500); };
-      tocTrigger?.addEventListener("click", toggleToc);
-      const onTocClick = (event: Event) => { if (event.target instanceof Element && event.target.closest("a")) closeToc(); };
-      const onScrollTop = () => window.scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
-      toc?.addEventListener("click", onTocClick);
-      scrollTop?.addEventListener("click", onScrollTop);
-      document.addEventListener("pointerdown", onPointer);
-      document.addEventListener("keydown", onKey);
-      window.addEventListener("scroll", onScroll, { passive: true });
-      onScroll();
-      page.addEventListener("astro:before-swap", () => {
-        tocTrigger?.removeEventListener("click", toggleToc);
-        toc?.removeEventListener("click", onTocClick);
-        scrollTop?.removeEventListener("click", onScrollTop);
-        document.removeEventListener("pointerdown", onPointer);
-        document.removeEventListener("keydown", onKey);
-        window.removeEventListener("scroll", onScroll);
-      }, { once: true });
-    });
-  };
-  initArticleControls();
-  document.addEventListener("astro:page-load", initArticleControls);
-</script>
 
 <style>
   .article-page { --article-content-width: 46rem; --article-title-size: clamp(1.82rem, 1.52rem + 0.9vw, 2.95rem); padding-block: clamp(2.5rem, 6vw, 5rem) 6rem; }
@@ -165,7 +114,7 @@ const articleJsonLd = JSON.stringify({
     display: grid;
     grid-template-columns: minmax(0, var(--article-content-width)) minmax(13rem, 17rem);
     justify-content: center;
-    gap: clamp(3rem, 7vw, 7rem);
+    gap: clamp(1.5rem, 3.5vw, 3.5rem);
   }
   .article-page__main { min-width: 0; }
   .article-page__back {
@@ -208,54 +157,8 @@ const articleJsonLd = JSON.stringify({
   .article-page__next { padding-top: 1.5rem; color: var(--foreground); text-decoration: none; border-top: 1px solid var(--border-soft); }
   .article-page__next span { display: block; color: var(--text-faint); font-size: var(--type-xs); }
   .article-page__next strong { display: block; margin-top: 0.4rem; font-size: var(--type-lg); }
-  .article-page__floating-actions {
-    position: fixed;
-    right: max(1rem, env(safe-area-inset-right));
-    bottom: calc(1rem + env(safe-area-inset-bottom));
-    z-index: 45;
-    display: flex;
-    gap: 0.65rem;
-    pointer-events: none;
-  }
-  .article-page__floating-actions button {
-    display: flex;
-    width: 3.25rem;
-    height: 3.25rem;
-    align-items: center;
-    justify-content: center;
-    color: var(--foreground);
-    background: color-mix(in srgb, var(--canvas) 90%, transparent);
-    border: 1px solid var(--border-strong);
-    border-radius: 999px;
-    box-shadow: var(--shadow-soft);
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: opacity 180ms ease, visibility 180ms ease;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-  .article-page__floating-actions button[data-visible="true"] { opacity: 1; visibility: visible; pointer-events: auto; }
-  .article-page__floating-actions :global(svg) { width: 1.2rem; height: 1.2rem; }
   @media (max-width: 56.25rem) {
     .article-page__content { grid-template-columns: minmax(0, 1fr); }
     .article-page__toc { display: none; }
-    .article-page__toc[data-open="true"] {
-      position: fixed;
-      right: 1rem;
-      bottom: calc(5rem + env(safe-area-inset-bottom));
-      z-index: 44;
-      display: block;
-      width: min(20rem, calc(100vw - 2rem));
-      max-height: min(65vh, 30rem);
-      overflow: auto;
-      padding: 0.9rem;
-      background: color-mix(in srgb, var(--canvas) 96%, transparent);
-      border: 1px solid var(--border-strong);
-      border-radius: var(--radius-control);
-      box-shadow: var(--shadow-soft);
-      backdrop-filter: blur(14px);
-    }
-    .article-page__floating-actions .article-page__toc-mobile { display: flex !important; opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
   }
 </style>

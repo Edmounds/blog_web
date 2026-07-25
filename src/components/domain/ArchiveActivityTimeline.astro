@@ -163,6 +163,7 @@ if (rangeStart) {
     color: var(--foreground);
     font-size: var(--type-xs);
     font-weight: 500;
+    white-space: nowrap;
     transform: translateX(-50%);
   }
   .archive-activity__year {
@@ -171,6 +172,7 @@ if (rangeStart) {
     left: var(--activity-x);
     color: var(--text-muted);
     font-size: var(--type-xs);
+    white-space: nowrap;
     transform: translateX(-50%);
   }
   .archive-activity__tooltip {
@@ -206,6 +208,10 @@ if (rangeStart) {
   @media (hover: hover) {
     .archive-activity__month:hover .archive-activity__bar { transform: translateX(-50%) scaleY(1.12); }
     .archive-activity__month:hover .archive-activity__tooltip { opacity: 1; visibility: visible; pointer-events: auto; transform: translate(var(--tooltip-x), 0); transition-delay: 0s; }
+  }
+  @media (max-width: 64rem) {
+    .archive-activity { height: 4.75rem; }
+    .archive-activity__year { display: none; }
   }
   @media (prefers-reduced-motion: reduce) { .archive-activity__bar, .archive-activity__tooltip { transition: none; } }
 </style>

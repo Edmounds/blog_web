@@ -226,7 +226,7 @@ export async function getGitHubContributionHeatmap(username: string, options: Gi
 }
 
 export async function getCachedGitHubContributionHeatmap(username: string, options: GitHubContributionOptions = {}) {
-  const key = new Request(`https://github-contributions-cache.internal/${encodeURIComponent(username)}`);
+  const key = new Request(`https://github-contributions-cache.internal/v2/${encodeURIComponent(username)}`);
   if (options.cache) {
     try {
       const cached = await options.cache.match(key);
