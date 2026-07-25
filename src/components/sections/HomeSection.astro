@@ -58,15 +58,15 @@ const latestBlocks = [
         </svg>
       </a>
     </nav>
-    <div class="profile-metrics">
-      <img class="codetime-badge" src="/api/wakatime-badge.svg" alt="Total coding time" width="424" height="52" data-wakatime-image hidden />
-      <GitHubHeatmap />
-    </div>
     <p class="profile-card__intro">{profile.motto}</p>
     <p class="profile-card__location">
       <span>{profile.major}</span>
       <span>{profile.city}</span>
     </p>
+    <div class="profile-metrics">
+      <img class="codetime-badge" src="/api/wakatime-badge.svg" alt="Total coding time" width="240" height="28" data-wakatime-image hidden />
+      <GitHubHeatmap />
+    </div>
   </div>
 
   <div class="latest-content">
@@ -117,11 +117,11 @@ const latestBlocks = [
   .profile-card nav { display: flex; gap: 0.45rem; }
   .profile-card nav a { display: inline-flex; width: 2.5rem; height: 2.5rem; align-items: center; justify-content: center; color: var(--text-muted); text-decoration: none; }
   .profile-card nav svg { width: 1.3rem; height: 1.3rem; }
-  .codetime-badge { display: block; width: min(100%, 26.5rem); height: auto; margin-inline: auto; }
+  .codetime-badge { display: block; width: min(100%, 15rem); height: auto; margin-inline: auto; }
   :global(html.dark) .codetime-badge { filter: invert(1) grayscale(1); }
   .profile-card__intro { margin: 1rem 0 0; color: var(--text-muted); line-height: 1.7; }
   .profile-card__location { display: grid; gap: 0.2rem; margin: 0.5rem 0 0; color: var(--text-faint); font-size: var(--type-sm); }
-  .profile-metrics { display: grid; width: min(100%, 38rem); gap: 2.25rem; margin-top: 1.1rem; }
+  .profile-metrics { display: grid; width: min(100%, 38rem); gap: 2.25rem; margin-top: 1rem; }
   .latest-content { display: grid; gap: 1rem; }
   .latest-content > section { padding: 0.75rem; }
   .latest-content > section:first-child { padding-top: 0; }

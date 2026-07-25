@@ -6,20 +6,19 @@ motto: Keep it Simple,Stupid
 portrait: /images/content/about/profile-8646bdb863b8.png
 ---
 
-## About the Website
-This is my quiet personal space—writing articles, taking notes, sharing projects, and recording the books and movies I've watched.
-This is not social media; there are no notifications or like anxiety, only text, photos, and some records.
-I don't like the high-intensity impact and intrusion that social apps have on personal life
+## About This Website
+This is my quiet personal space—to write articles, take notes, share projects, and keep track of the books and movies I’ve seen.
+This isn’t social media. There are no notifications or anxiety over likes, only words, photos, and a few records.
+I don’t like the intense influence and intrusion that social apps have on personal life.
 
 
 ## About Me
-Third-year student at the National Excellence Engineer College of Chongqing University
+A third-year student at the National School of Excellence in Engineers at Chongqing University.
 
 
 ## Contact Me
-- [i@muelsyse.us](mailto:i@muelsyse.us)
+[i@muelsyse.us](mailto:i@muelsyse.us)
 
 ## Acknowledgments
 
 ![The Movie Database](/images/tmdb-logo.svg)
-This website uses the TMDB API

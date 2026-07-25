@@ -17,11 +17,10 @@ portrait: /images/content/about/profile-8646bdb863b8.png
 
 
 ## 联系我
-- [i@muelsyse.us](mailto:i@muelsyse.us)
+[i@muelsyse.us](mailto:i@muelsyse.us)
 
 ## 致谢
 
 ![The Movie Database](/images/tmdb-logo.svg)  
-This website uses the TMDB API
 
 

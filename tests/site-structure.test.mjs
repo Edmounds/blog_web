@@ -189,7 +189,7 @@ test("localized RSS routes and the WakaTime proxy support both server-side key n
   assert.match(envTypes, /WAKATIME_API_KEY\?: string/);
 });
 
-test("the homepage renders the expanded WakaTime badge and native GitHub heatmap", () => {
+test("the homepage renders a compact WakaTime label and native GitHub heatmap", () => {
   const home = read("src/components/sections/HomeSection.astro");
   const badge = read("src/pages/api/wakatime-badge.svg.ts");
   const heatmap = read("src/components/domain/GitHubHeatmap.astro");
@@ -198,10 +198,12 @@ test("the homepage renders the expanded WakaTime badge and native GitHub heatmap
   assert.match(home, /import GitHubHeatmap/);
   assert.match(home, /<GitHubHeatmap \/>/);
   assert.match(badge, /getCachedWakaTimeAllTime/);
-  assert.match(badge, /width="424" height="52"/);
-  assert.match(badge, /<rect/);
-  assert.match(badge, />Codetime</);
+  assert.match(badge, /width="240" height="28"/);
+  assert.match(badge, /font-size="16"/);
+  assert.match(badge, />Codetime .*<\/text>/);
+  assert.doesNotMatch(badge, /<circle|<path|<rect/);
   assert.match(home, /html\.dark[^}]*codetime-badge[^}]*filter:\s*invert\(1\)/);
+  assert.match(home, /profile-card__intro[\s\S]*profile-card__location[\s\S]*profile-metrics/);
   assert.match(heatmap, /\/api\/github-contributions\.json/);
   assert.match(heatmap, /data-github-grid/);
   assert.match(heatmap, /data-github-months/);

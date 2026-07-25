@@ -854,16 +854,16 @@
       "translation": "項目、作品與實驗。"
     },
     "en:content.about.profile.md.document": {
-      "fingerprint": "c0f2f81fd0d402412b2308bbc21870171a24e16e7f41ee0ecbef877a73060107",
-      "translation": "---\nname: Lust4ev3r\ncity: Chongqing, China\nmajor: Robotics Engineering\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile-8646bdb863b8.png\n---\n\n## About the Website\nThis is my quiet personal space—writing articles, taking notes, sharing projects, and recording the books and movies I've watched.\nThis is not social media; there are no notifications or like anxiety, only text, photos, and some records. \nI don't like the high-intensity impact and intrusion that social apps have on personal life \n\n\n## About Me\nThird-year student at the National Excellence Engineer College of Chongqing University\n\n\n## Contact Me\n- [i@muelsyse.us](mailto:i@muelsyse.us)\n\n## Acknowledgments\n\n![The Movie Database](/images/tmdb-logo.svg)  \nThis website uses the TMDB API"
+      "fingerprint": "9e6f5c6a8f9a11e82b1ec3e12954f4e6c0360ac4c7c1594f77885401cab15034",
+      "translation": "---\nname: Lust4ev3r\ncity: Chongqing, China\nmajor: Robotics Engineering\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile-8646bdb863b8.png\n---\n\n## About This Website\nThis is my quiet personal space—to write articles, take notes, share projects, and keep track of the books and movies I’ve seen.\nThis isn’t social media. There are no notifications or anxiety over likes, only words, photos, and a few records. \nI don’t like the intense influence and intrusion that social apps have on personal life.\n\n\n## About Me\nA third-year student at the National School of Excellence in Engineers at Chongqing University.\n\n\n## Contact Me\n[i@muelsyse.us](mailto:i@muelsyse.us)\n\n## Acknowledgments\n\n![The Movie Database](/images/tmdb-logo.svg)"
     },
     "ja:content.about.profile.md.document": {
-      "fingerprint": "c0f2f81fd0d402412b2308bbc21870171a24e16e7f41ee0ecbef877a73060107",
-      "translation": "---\nname: Lust4ev3r\ncity: 中国重慶\nmajor: ロボット工学\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile-8646bdb863b8.png\n---\n\n## ウェブサイトについて\nここは私の静かな個人空間です——記事を書き、ノートを取り、プロジェクトを共有し、読んだ本や観た映画を記録しています。\nここはソーシャルメディアではありません。通知や「いいね」の不安はなく、文字、写真、そしていくつかの記録だけがあります。 \nソーシャルメディアのような、個人生活への強い影響や侵入は好みません \n\n\n## 私について\n重慶大学国家卓越工程師学院3年生\n\n\n## お問い合わせ\n- [i@muelsyse.us](mailto:i@muelsyse.us)\n\n## 謝辞\n\n![The Movie Database](/images/tmdb-logo.svg)  \nThis website uses the TMDB API"
+      "fingerprint": "9e6f5c6a8f9a11e82b1ec3e12954f4e6c0360ac4c7c1594f77885401cab15034",
+      "translation": "---\nname: Lust4ev3r\ncity: 中国・重慶\nmajor: ロボット工学\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile-8646bdb863b8.png\n---\n\n## このウェブサイトについて\nここは私の静かな個人スペースです。記事を書いたり、メモを残したり、プロジェクトを共有したり、観た本や映画を記録したりしています。\nここはソーシャルメディアではありません。通知や「いいね」への不安もなく、あるのは文章や写真、いくつかの記録だけです。 \nソーシャルアプリが個人の生活に与える、強く過度な影響や侵入が好きではありません。\n\n\n## 私について\n重慶大学国家卓越エンジニア学院の学部3年生\n\n\n## 連絡先\n[i@muelsyse.us](mailto:i@muelsyse.us)\n\n## 謝辞\n\n![The Movie Database](/images/tmdb-logo.svg)"
     },
     "zh-TW:content.about.profile.md.document": {
-      "fingerprint": "c0f2f81fd0d402412b2308bbc21870171a24e16e7f41ee0ecbef877a73060107",
-      "translation": "---\nname: Lust4ev3r\ncity: 中國重慶\nmajor: 機器人工程\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile-8646bdb863b8.png\n---\n\n## 關於網站\n這裡是我安靜的個人空間——寫文章、記筆記、分享專案、記錄看過的書和電影。\n這裡不是社交媒體，沒有通知和按讚焦慮，只有文字、照片和一些記錄。 \n不喜歡社交軟體那種高強度對個人生活的影響和侵入 \n\n\n## 關於我\n重慶大學國家卓越工程師學院大三\n\n\n## 聯繫我\n- [i@muelsyse.us](mailto:i@muelsyse.us)\n\n## 致謝\n\n![The Movie Database](/images/tmdb-logo.svg)  \nThis website uses the TMDB API"
+      "fingerprint": "9e6f5c6a8f9a11e82b1ec3e12954f4e6c0360ac4c7c1594f77885401cab15034",
+      "translation": "---\nname: Lust4ev3r\ncity: 中國重慶\nmajor: 機器人工程\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile-8646bdb863b8.png\n---\n\n## 關於網站\n這裡是我安靜的個人空間——寫文章、記筆記、分享專案、記錄看過的書和電影。\n這裡不是社群媒體，沒有通知和按讚焦慮，只有文字、照片和一些記錄。 \n不喜歡社交軟體那種高強度對個人生活的影響和侵入 \n\n\n## 關於我\n重慶大學國家卓越工程師學院大三\n\n\n## 聯絡我\n[i@muelsyse.us](mailto:i@muelsyse.us)\n\n## 致謝\n\n![The Movie Database](/images/tmdb-logo.svg)"
     },
     "en:content.blog.first-note.md.document": {
       "fingerprint": "eae6f12c7b66ee4585b5d3543742f48f7bdc33ead459e1490c367b139e76f62d",
