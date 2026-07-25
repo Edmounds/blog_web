@@ -5,6 +5,8 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type ArtType = "book" | "music" | "movie" | "series" | "anime";
+type MusicKind = "album" | "single";
+type AdminType = "book" | "album" | "single" | "movie" | "series" | "anime";
 type Locale = "zh-CN" | "zh-TW" | "en" | "ja";
 
 interface Translation { title: string; creator: string; extra: string }
@@ -22,6 +24,7 @@ interface Candidate {
 interface ArtItem {
   id: string;
   type: ArtType;
+  musicKind: MusicKind | null;
   source: string;
   sourceId: string;
   isbn: string;
@@ -35,6 +38,7 @@ interface ArtItem {
 interface FormState {
   id?: string;
   type: ArtType;
+  musicKind: MusicKind | null;
   source: string;
   sourceId: string;
   isbn: string;
@@ -49,11 +53,12 @@ interface FormState {
 
 const TYPES = [
   { id: "book", label: "书籍", Icon: BookOpen },
-  { id: "music", label: "专辑", Icon: Music2 },
+  { id: "album", label: "专辑", Icon: Music2 },
+  { id: "single", label: "单曲", Icon: Music2 },
   { id: "movie", label: "电影", Icon: Film },
   { id: "series", label: "剧集", Icon: Tv2 },
   { id: "anime", label: "番剧", Icon: Tv2 },
-] satisfies { id: ArtType; label: string; Icon: typeof BookOpen }[];
+] satisfies { id: AdminType; label: string; Icon: typeof BookOpen }[];
 const LOCALES: { id: Locale; label: string }[] = [
   { id: "zh-CN", label: "简中" }, { id: "zh-TW", label: "繁中" }, { id: "en", label: "English" }, { id: "ja", label: "日本語" },
 ];
@@ -63,7 +68,8 @@ const today = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Shanghai"
 const MUSIC_PAGE_SIZE = 10;
 
 export default function ArtAdmin() {
-  const [type, setType] = useState<ArtType>("book");
+  const [selected, setSelected] = useState(() => selection("book"));
+  const { type, musicKind } = selected;
   const [query, setQuery] = useState("");
   const [creator, setCreator] = useState("");
   const [isbn, setIsbn] = useState("");
@@ -81,20 +87,22 @@ export default function ArtAdmin() {
   const [saveMessage, setSaveMessage] = useState("");
   const pendingCoverKey = useRef<string | null>(null);
 
-  useEffect(() => { void loadItems(type); }, [type]);
+  useEffect(() => { void loadItems(type, musicKind); }, [type, musicKind]);
   useEffect(() => () => { if (pendingCoverKey.current) void deleteUploadedCover(pendingCoverKey.current); }, []);
 
-  async function loadItems(selectedType: ArtType, ensuredItem?: ArtItem) {
+  async function loadItems(selectedType: ArtType, selectedMusicKind: MusicKind | null, ensuredItem?: ArtItem) {
     setIsLoadingItems(true);
     try {
-      const data = await fetchJson<{ items: ArtItem[] }>(`/api/admin/art/items?type=${selectedType}`, { cache: "no-store" });
+      const suffix = selectedMusicKind ? `&musicKind=${selectedMusicKind}` : "";
+      const data = await fetchJson<{ items: ArtItem[] }>(`/api/admin/art/items?type=${selectedType}${suffix}`, { cache: "no-store" });
       setItems(ensuredItem ? [ensuredItem, ...data.items.filter((item) => item.id !== ensuredItem.id)] : data.items);
     } catch (error) { setMessage(errorMessage(error)); } finally { setIsLoadingItems(false); }
   }
 
-  function changeType(next: ArtType) {
+  function changeType(next: AdminType) {
     discardPendingCover();
-    setType(next); setQuery(""); setCreator(""); setIsbn(""); setCandidates([]); setCandidatePage(1); setForm(blankForm(next)); setLocale("zh-CN"); setMessage(""); setSaveMessage("");
+    const nextSelection = selection(next);
+    setSelected(nextSelection); setQuery(""); setCreator(""); setIsbn(""); setCandidates([]); setCandidatePage(1); setForm(blankForm(nextSelection.type, nextSelection.musicKind)); setLocale("zh-CN"); setMessage(""); setSaveMessage("");
   }
 
   async function search(event: React.SyntheticEvent<HTMLFormElement>) {
@@ -102,6 +110,7 @@ export default function ArtAdmin() {
     if (!query.trim()) return;
     setIsSearching(true); setMessage(""); setSaveMessage("");
     const params = new URLSearchParams({ type, q: query.trim() });
+    if (musicKind) params.set("musicKind", musicKind);
     if (type !== "music" && creator.trim()) params.set("creator", creator.trim());
     if (isbn.trim()) params.set("isbn", isbn.trim());
     try {
@@ -112,11 +121,11 @@ export default function ArtAdmin() {
 
   function selectCandidate(candidate: Candidate) {
     discardPendingCover();
-    const next = blankForm(type);
+    const next = blankForm(type, musicKind);
     next.source = candidate.source; next.sourceId = candidate.sourceId; next.isbn = candidate.isbn ?? isbn;
     next.originalTitle = candidate.originalTitle ?? candidate.title; next.releaseDate = candidate.releaseDate ?? "";
     next.coverUrl = candidate.coverUrl; next.cover = { kind: "url", url: candidate.coverUrl };
-    next.translations["zh-CN"] = { title: candidate.title, creator: candidate.creator || "待填写", extra: candidate.description?.slice(0, 120) ?? "" };
+    next.translations["zh-CN"] = { title: candidate.title, creator: candidate.creator || "待填写", extra: musicKind === "single" ? "" : candidate.description?.slice(0, 120) ?? "" };
     setForm(next); setLocale("zh-CN"); setMessage(""); setSaveMessage("");
   }
 
@@ -137,7 +146,7 @@ export default function ArtAdmin() {
     const savedTitle = form.translations["zh-CN"].title.trim();
     setIsSaving(true); setMessage(""); setSaveMessage("");
     const body: Record<string, unknown> = {
-      type: form.type, source: form.source, sourceId: form.sourceId, isbn: form.isbn, originalTitle: form.originalTitle,
+      type: form.type, musicKind: form.musicKind, source: form.source, sourceId: form.sourceId, isbn: form.isbn, originalTitle: form.originalTitle,
       releaseDate: form.releaseDate, collectedOn: form.collectedOn, isVisible: form.isVisible, translations: translationsForType(form.type, form.translations),
     };
     if (form.cover) body.cover = form.cover;
@@ -148,14 +157,14 @@ export default function ArtAdmin() {
       pendingCoverKey.current = null;
       setItems((current) => [data.item, ...current.filter((item) => item.id !== data.item.id)]);
       setSaveMessage(form.id ? `已更新“${savedTitle}”。` : `已添加“${savedTitle}”。`);
-      setForm(blankForm(type)); setLocale("zh-CN");
+      setForm(blankForm(type, musicKind)); setLocale("zh-CN");
     } catch (error) { setSaveMessage(errorMessage(error)); } finally { setIsSaving(false); }
   }
 
   function edit(item: ArtItem) {
     discardPendingCover();
     setForm({
-      id: item.id, type: item.type, source: item.source, sourceId: item.sourceId, isbn: item.isbn, originalTitle: item.originalTitle,
+      id: item.id, type: item.type, musicKind: item.musicKind, source: item.source, sourceId: item.sourceId, isbn: item.isbn, originalTitle: item.originalTitle,
       releaseDate: item.releaseDate, collectedOn: item.collectedOn, isVisible: item.isVisible, coverUrl: item.coverUrl, cover: null,
       translations: Object.fromEntries(LOCALES.map(({ id }) => [id, item.translations[id] ?? emptyTranslation()])) as Record<Locale, Translation>,
     });
@@ -165,7 +174,7 @@ export default function ArtAdmin() {
   async function toggle(item: ArtItem) {
     try {
       await fetchJson(`/api/admin/art/items/${item.id}`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ isVisible: !item.isVisible }) });
-      await loadItems(type);
+      await loadItems(type, musicKind);
     } catch (error) { setMessage(errorMessage(error)); }
   }
 
@@ -173,7 +182,7 @@ export default function ArtAdmin() {
     if (!window.confirm(`永久删除“${display(item).title}”？此操作不可恢复。`)) return;
     try {
       await fetchJson(`/api/admin/art/items/${item.id}`, { method: "DELETE" });
-      if (form.id === item.id) setForm(blankForm(type)); await loadItems(type);
+      if (form.id === item.id) setForm(blankForm(type, musicKind)); await loadItems(type, musicKind);
     } catch (error) { setMessage(errorMessage(error)); }
   }
 
@@ -215,7 +224,7 @@ export default function ArtAdmin() {
 
   return <div className="space-y-8">
     <div className="flex max-w-full gap-1 overflow-x-auto border-b border-[var(--border-soft)] pb-2" role="tablist" aria-label="收藏类型">
-      {TYPES.map(({ id, label, Icon }) => <button key={id} type="button" onClick={() => changeType(id)} className={segment(type === id)}>
+      {TYPES.map(({ id, label, Icon }) => <button key={id} type="button" onClick={() => changeType(id)} className={segment(selected.id === id)}>
         <Icon className="size-4" aria-hidden="true" />{label}
       </button>)}
     </div>
@@ -227,7 +236,7 @@ export default function ArtAdmin() {
         <section className="space-y-5" aria-labelledby="art-search-heading">
           <div><h2 id="art-search-heading" className="text-lg font-semibold text-[var(--foreground)]">搜索候选</h2><p className="mt-1 text-sm text-[var(--text-muted)]">搜索只提供候选，最终分类、文字和封面由你确认。</p></div>
           <form onSubmit={search} className="grid gap-3 md:grid-cols-2">
-            <label className="space-y-1.5 text-sm"><span>{type === "music" ? "专辑名或歌手" : "标题或关键词"}</span><input className={inputClass} value={query} onChange={(e) => setQuery(e.target.value)} maxLength={200} required /></label>
+            <label className="space-y-1.5 text-sm"><span>{musicKind === "single" ? "歌曲名或歌手" : type === "music" ? "专辑名或歌手" : "标题或关键词"}</span><input className={inputClass} value={query} onChange={(e) => setQuery(e.target.value)} maxLength={200} required /></label>
             {type !== "music" && <label className="space-y-1.5 text-sm"><span>{type === "book" ? "作者" : "补充关键词"}</span><input className={inputClass} value={creator} onChange={(e) => setCreator(e.target.value)} maxLength={200} /></label>}
             {type === "book" && <label className="space-y-1.5 text-sm"><span>ISBN（可选，精确查询）</span><input className={inputClass} value={isbn} onChange={(e) => setIsbn(e.target.value)} inputMode="numeric" maxLength={20} /></label>}
             <div className="flex items-end"><button className={primaryButton} disabled={isSearching}><Search className="size-4" />{isSearching ? "搜索中" : "搜索"}</button></div>
@@ -247,7 +256,7 @@ export default function ArtAdmin() {
         </section>
 
         <section className="space-y-6 border-t border-[var(--border-soft)] pt-8" aria-labelledby="art-editor-heading">
-          <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 id="art-editor-heading" className="text-lg font-semibold text-[var(--foreground)]">{form.id ? "编辑收藏" : "新增收藏"}</h2><p className="mt-1 text-sm text-[var(--text-muted)]">{sourceLabel}</p></div>{form.id && <button className={quietButton} onClick={() => { discardPendingCover(); setForm(blankForm(type)); }}><X className="size-4" />取消编辑</button>}</div>
+          <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 id="art-editor-heading" className="text-lg font-semibold text-[var(--foreground)]">{form.id ? "编辑收藏" : "新增收藏"}</h2><p className="mt-1 text-sm text-[var(--text-muted)]">{sourceLabel}</p></div>{form.id && <button className={quietButton} onClick={() => { discardPendingCover(); setForm(blankForm(type, musicKind)); }}><X className="size-4" />取消编辑</button>}</div>
           <div className="grid gap-6 md:grid-cols-[12rem_minmax(0,1fr)]">
             <div className="space-y-3">
               {type === "music" ? <AlbumCover src={form.coverUrl ? previewUrl(form.coverUrl) : ""} alt="封面预览" emptyIcon /> : <PosterCover src={form.coverUrl ? previewUrl(form.coverUrl) : ""} alt="封面预览" emptyIcon />}
@@ -307,8 +316,12 @@ function PosterCover({ src, alt, emptyIcon = false, hover = false }: { src: stri
   </div>;
 }
 
-function blankForm(type: ArtType): FormState {
-  return { type, source: type === "music" ? "deezer_music" : ["movie", "series", "anime"].includes(type) ? "tmdb" : "apple_books", sourceId: "", isbn: "", originalTitle: "", releaseDate: "", collectedOn: today(), isVisible: true, coverUrl: "", cover: null, translations: Object.fromEntries(LOCALES.map(({ id }) => [id, emptyTranslation()])) as Record<Locale, Translation> };
+function selection(id: AdminType): { id: AdminType; type: ArtType; musicKind: MusicKind | null } {
+  if (id === "album" || id === "single") return { id, type: "music", musicKind: id };
+  return { id, type: id, musicKind: null };
+}
+function blankForm(type: ArtType, musicKind: MusicKind | null = null): FormState {
+  return { type, musicKind, source: musicKind === "single" ? "deezer_track" : type === "music" ? "deezer_music" : ["movie", "series", "anime"].includes(type) ? "tmdb" : "apple_books", sourceId: "", isbn: "", originalTitle: "", releaseDate: "", collectedOn: today(), isVisible: true, coverUrl: "", cover: null, translations: Object.fromEntries(LOCALES.map(({ id }) => [id, emptyTranslation()])) as Record<Locale, Translation> };
 }
 function candidateKey(item: Pick<Candidate, "source" | "sourceId">) { return `${item.source}:${item.sourceId}`; }
 function previewUrl(url: string) { return url.startsWith("/") || url.startsWith("https://img.muelsyse.us/") ? url : `/api/admin/art/cover-preview?url=${encodeURIComponent(url)}`; }

@@ -159,7 +159,8 @@ const articleJsonLd = JSON.stringify({
 </script>
 
 <style>
-  .article-page { --article-content-width: 46rem; padding-block: clamp(2.5rem, 6vw, 5rem) 6rem; }
+  .article-page { --article-content-width: 46rem; --article-title-size: clamp(1.82rem, 1.52rem + 0.9vw, 2.95rem); padding-block: clamp(2.5rem, 6vw, 5rem) 6rem; }
+  :global(html:lang(zh-CN)) .article-page, :global(html:lang(zh-TW)) .article-page, :global(html:lang(ja)) .article-page { --article-title-size: clamp(1.56rem, 1.36rem + 0.6vw, 2.28rem); }
   .article-page__content {
     display: grid;
     grid-template-columns: minmax(0, var(--article-content-width)) minmax(13rem, 17rem);
@@ -187,14 +188,13 @@ const articleJsonLd = JSON.stringify({
   .article-page__header h1 {
     margin: 0;
     color: transparent;
-    font-size: clamp(1.82rem, 1.52rem + 0.9vw, 2.95rem);
+    font-size: var(--article-title-size);
     font-weight: 400;
     line-height: 1.05;
     overflow-wrap: anywhere;
     -webkit-text-stroke: 1px var(--foreground);
     paint-order: stroke fill;
   }
-  :global(html:lang(zh-CN)) .article-page__header h1, :global(html:lang(zh-TW)) .article-page__header h1, :global(html:lang(ja)) .article-page__header h1 { font-size: clamp(1.56rem, 1.36rem + 0.6vw, 2.28rem); }
   .article-page__description { margin: 0.65rem 0 0; color: var(--foreground-soft); line-height: 1.7; }
   .article-page__meta-line { display: flex; flex-wrap: wrap; gap: 0.25rem 0.45rem; margin: 0.75rem 0 0; color: var(--text-muted); font-size: var(--type-sm); font-style: italic; }
   .article-page__meta-line strong { color: var(--foreground-soft); font-weight: 600; }

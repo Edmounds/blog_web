@@ -23,7 +23,7 @@ test("art input validates types, dates, translations, and required covers", () =
 
 test("art input accepts Deezer album candidates", () => {
   const result = validateArtItemInput({
-    type: "music", source: "deezer_music", sourceId: "12", isbn: "", originalTitle: "Abbey Road", releaseDate: "1969-09-26",
+    type: "music", musicKind: "album", source: "deezer_music", sourceId: "12", isbn: "", originalTitle: "Abbey Road", releaseDate: "1969-09-26",
     collectedOn: "2026-07-24", isVisible: true, cover: { kind: "url", url: "https://deezer.test/cover.jpg" },
     translations: {
       "zh-CN": { title: "Abbey Road", creator: "The Beatles", extra: "" },
@@ -32,7 +32,19 @@ test("art input accepts Deezer album candidates", () => {
     },
   });
   assert.equal(result.ok, true);
+  assert.equal(result.value.musicKind, "album");
   assert.deepEqual(Object.keys(result.value.translations), ["zh-CN"]);
+});
+
+test("art input accepts Deezer singles and rejects invalid music classifications", () => {
+  const input = {
+    type: "music", musicKind: "single", source: "deezer_track", sourceId: "99", isbn: "", originalTitle: "Song", releaseDate: "",
+    collectedOn: "2026-07-25", isVisible: true, cover: { kind: "url", url: "https://deezer.test/song.jpg" },
+    translations: { "zh-CN": { title: "Song", creator: "Artist", extra: "" } },
+  };
+  assert.equal(validateArtItemInput(input).value.musicKind, "single");
+  assert.equal(validateArtItemInput({ ...input, musicKind: "ep" }).ok, false);
+  assert.equal(validateArtItemInput({ ...input, type: "book", musicKind: "single" }).ok, false);
 });
 
 test("books and movies retain all supported translation locales", () => {
@@ -83,9 +95,25 @@ test("admin art lists are never served from browser or shared caches", async () 
   assert.deepEqual(await response.json(), { items: [] });
 });
 
-test("public localization falls back to simplified Chinese", () => {
-  const item = { id: "1", type: "book", coverUrl: "https://img.muelsyse.us/art/1/a.jpg", translations: { "zh-CN": { title: "标题", creator: "作者", extra: "备注" } } };
-  assert.deepEqual(localizeArtItems([item], "ja"), [{ id: "1", type: "book", title: "标题", creator: "作者", extra: "备注", cover: "https://img.muelsyse.us/art/1/a.jpg" }]);
+test("admin art lists validate and forward a music classification filter", async () => {
+  let boundArgs = [];
+  const response = await listItems({
+    env: { DB: { prepare: () => ({ bind: (...args) => { boundArgs = args; return { all: async () => ({ results: [] }) }; } }) } },
+    request: new Request("https://blog.muelsyse.us/api/admin/art/items?type=music&musicKind=single"),
+  });
+  assert.equal(response.status, 200);
+  assert.deepEqual(boundArgs, ["music", "single"]);
+
+  const invalid = await listItems({
+    env: { DB: {} },
+    request: new Request("https://blog.muelsyse.us/api/admin/art/items?type=book&musicKind=single"),
+  });
+  assert.equal(invalid.status, 400);
+});
+
+test("public localization falls back to simplified Chinese and carries music classification", () => {
+  const item = { id: "1", type: "music", musicKind: "single", coverUrl: "https://img.muelsyse.us/art/1/a.jpg", translations: { "zh-CN": { title: "歌曲", creator: "歌手", extra: "备注" } } };
+  assert.deepEqual(localizeArtItems([item], "ja"), [{ id: "1", type: "music", musicKind: "single", title: "歌曲", creator: "歌手", extra: "备注", cover: "https://img.muelsyse.us/art/1/a.jpg" }]);
 });
 
 test("art cover keys resolve to the public R2 image domain", () => {
@@ -257,7 +285,7 @@ test("creating the same sourced album twice returns 409 before downloading anoth
   });
 
   assert.equal(response.status, 409);
-  assert.deepEqual(await response.json(), { error: { code: "ART_ALREADY_EXISTS", message: "该专辑已经收藏。" } });
+  assert.deepEqual(await response.json(), { error: { code: "ART_ALREADY_EXISTS", message: "该收藏已经存在。" } });
   assert.equal(coverFetches, 0);
   assert.equal(bucket.objects.size, 0);
   assert.equal(db.batchCalls, 0);
@@ -287,7 +315,7 @@ test("a concurrent duplicate insert returns 409 and removes its unreferenced cov
   }
 
   assert.equal(response.status, 409);
-  assert.deepEqual(await response.json(), { error: { code: "ART_ALREADY_EXISTS", message: "该专辑已经收藏。" } });
+  assert.deepEqual(await response.json(), { error: { code: "ART_ALREADY_EXISTS", message: "该收藏已经存在。" } });
   assert.equal(bucket.objects.size, 0);
 });
 
@@ -340,7 +368,7 @@ function duplicateRaceDb() {
 
 function albumInput() {
   return {
-    type: "music", source: "deezer_music", sourceId: "9007781", isbn: "", originalTitle: "1989 (Deluxe)", releaseDate: "2014-10-27",
+    type: "music", musicKind: "album", source: "deezer_music", sourceId: "9007781", isbn: "", originalTitle: "1989 (Deluxe)", releaseDate: "2014-10-27",
     collectedOn: "2026-07-25", isVisible: true, cover: { kind: "url", url: "https://deezer.test/1989.png" },
     translations: { "zh-CN": { title: "1989 (Deluxe)", creator: "Taylor Swift", extra: "" } },
   };

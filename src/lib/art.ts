@@ -1,4 +1,5 @@
 export type ArtType = "book" | "music" | "movie" | "series" | "anime";
+export type ArtMusicKind = "album" | "single";
 export type ArtLocale = "zh-CN" | "zh-TW" | "en" | "ja";
 
 export interface ArtTranslation {
@@ -10,6 +11,7 @@ export interface ArtTranslation {
 export interface ArtRecord {
   id: string;
   type: ArtType;
+  musicKind: ArtMusicKind | null;
   source: string;
   sourceId: string;
   isbn: string;
@@ -28,6 +30,7 @@ export interface ArtRecord {
 export interface ArtItem {
   id: string;
   type: ArtType;
+  musicKind: ArtMusicKind | null;
   title: string;
   creator: string;
   extra: string;
@@ -37,6 +40,7 @@ export interface ArtItem {
 interface ArtRow {
   id: string;
   type: ArtType;
+  music_kind: ArtMusicKind | null;
   source: string;
   source_id: string | null;
   isbn: string | null;
@@ -78,6 +82,7 @@ function groupRows(rows: ArtRow[]): ArtRecord[] {
       item = {
         id: row.id,
         type: row.type,
+        musicKind: row.type === "music" ? row.music_kind ?? "album" : null,
         source: row.source,
         sourceId: row.source_id ?? "",
         isbn: row.isbn ?? "",
@@ -105,6 +110,6 @@ function localize(items: ArtRecord[], locale: ArtLocale): ArtItem[] {
   return items.flatMap((item) => {
     const translation = item.translations[locale] ?? item.translations["zh-CN"];
     if (!translation) return [];
-    return [{ id: item.id, type: item.type, title: translation.title, creator: translation.creator, extra: translation.extra, cover: item.coverUrl }];
+    return [{ id: item.id, type: item.type, musicKind: item.musicKind, title: translation.title, creator: translation.creator, extra: translation.extra, cover: item.coverUrl }];
   });
 }

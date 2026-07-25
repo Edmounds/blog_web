@@ -1,17 +1,18 @@
-import { error, json, normalizeArtType, normalizeIsbn } from "../../../_shared/art.js";
+import { error, json, normalizeArtMusicKind, normalizeArtType, normalizeIsbn } from "../../../_shared/art.js";
 import { searchArtCandidates } from "../../../_shared/art-search.js";
 
 export async function onRequestGet({ env, request, cache, fetchImpl = fetch }) {
   const url = new URL(request.url);
   const type = normalizeArtType(url.searchParams.get("type"));
   const query = url.searchParams.get("q")?.trim() ?? "";
+  const musicKind = type === "music" ? normalizeArtMusicKind(url.searchParams.get("musicKind")) : undefined;
   const creator = url.searchParams.get("creator")?.trim() ?? "";
   const rawIsbn = url.searchParams.get("isbn")?.trim() ?? "";
   const isbn = rawIsbn ? normalizeIsbn(rawIsbn) : "";
-  if (!type || !query || query.length > 200 || (type !== "music" && creator.length > 200)) return error(400, "INVALID_SEARCH", "搜索参数无效。");
+  if (!type || !query || query.length > 200 || (type === "music" && !musicKind) || (type !== "music" && creator.length > 200)) return error(400, "INVALID_SEARCH", "搜索参数无效。");
   if (rawIsbn && !isbn) return error(400, "INVALID_ISBN", "ISBN 格式无效。");
   try {
-    const items = await searchArtCandidates({ type, query, creator: type === "music" ? "" : creator, isbn, env, cache, fetchImpl });
+    const items = await searchArtCandidates({ type, musicKind, query, creator: type === "music" ? "" : creator, isbn, env, cache, fetchImpl });
     return json({ items }, { headers: { "cache-control": "private, no-store" } });
   } catch (err) {
     console.error("Art search failed", {

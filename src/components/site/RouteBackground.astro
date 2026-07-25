@@ -8,38 +8,80 @@ const particles = Array.from({ length: 44 }, (_, index) => ({
   left: (index * 37 + 11) % 100,
   top: (index * 53 + 7) % 100,
   size: 2 + (index % 4),
-  duration: 16 + (index * 7) % 29,
+  duration: 16 + ((index * 7) % 29),
   delay: -((index * 11) % 31),
 }));
 const keywords = [
-  "Chasen", "design", "writing", "clarity", "systems", "interface", "AI", "experience",
-  "重庆", "设计", "写作", "工具", "协作", "产品", "内容", "思考", "layers", "psychology",
+  "Fate",
+  "烧肉",
+  "烧鹅",
+  "肠粉",
+  "C++",
+  "ROS2",
+  "KISS",
+  "ubuntu",
+  "Linux",
+  "天文",
+  "AI",
+  "Python",
+  "音乐",
+  "Music",
+  "美剧",
+  "steam",
+  "重庆大学",
+  "重庆",
+  "CQU",
+  "水瓶座",
+  "INFP",
 ];
 const drops = Array.from({ length: 60 }, (_, index) => ({
   word: keywords[index % keywords.length],
   left: (index * 43 + 5) % 100,
-  size: 12 + (index * 5) % 11,
-  duration: 14 + (index * 9) % 21,
+  size: 12 + ((index * 5) % 11),
+  duration: 14 + ((index * 9) % 21),
   delay: -((index * 13) % 34),
   opacity: index % 13 === 0 ? 0.14 : 0.03 + (index % 6) * 0.01,
 }));
 ---
 
-<div class="route-background" data-route-background data-path={currentPath} aria-hidden="true">
-  <div class="route-background__layer route-background__particles" data-background-kind="particles">
-    {particles.map((particle) => (
-      <span
-        style={`--x:${particle.left}%;--y:${particle.top}%;--size:${particle.size}px;--duration:${particle.duration}s;--delay:${particle.delay}s`}
-      ></span>
-    ))}
+<div
+  class="route-background"
+  data-route-background
+  data-path={currentPath}
+  aria-hidden="true"
+>
+  <div
+    class="route-background__layer route-background__particles"
+    data-background-kind="particles"
+  >
+    {
+      particles.map((particle) => (
+        <span
+          style={`--x:${particle.left}%;--y:${particle.top}%;--size:${particle.size}px;--duration:${particle.duration}s;--delay:${particle.delay}s`}
+        />
+      ))
+    }
   </div>
 
-  <div class="route-background__layer route-background__grid" data-background-kind="grid"></div>
+  <div
+    class="route-background__layer route-background__grid"
+    data-background-kind="grid"
+  >
+  </div>
 
-  <div class="route-background__layer route-background__rain" data-background-kind="rain">
-    {drops.map((drop) => (
-      <span style={`--x:${drop.left}%;--size:${drop.size}px;--duration:${drop.duration}s;--delay:${drop.delay}s;--opacity:${drop.opacity}`}>{drop.word}</span>
-    ))}
+  <div
+    class="route-background__layer route-background__rain"
+    data-background-kind="rain"
+  >
+    {
+      drops.map((drop) => (
+        <span
+          style={`--x:${drop.left}%;--size:${drop.size}px;--duration:${drop.duration}s;--delay:${drop.delay}s;--opacity:${drop.opacity}`}
+        >
+          {drop.word}
+        </span>
+      ))
+    }
   </div>
 
   <canvas
@@ -47,8 +89,7 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
     data-background-kind="constellation"
     data-density="1"
     data-max-distance="140"
-    data-speed="0.22"
-  ></canvas>
+    data-speed="0.22"></canvas>
 </div>
 
 <script is:inline define:vars={{ currentPath }}>
@@ -57,14 +98,23 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
     if (!root) return;
     const segments = currentPath.split("/").filter(Boolean);
     if (["en", "ja", "zh-TW"].includes(segments[0])) segments.shift();
-    const path = `/${segments.join("/")}${currentPath.endsWith("/") && segments.length ? "/" : ""}` || "/";
+    const path =
+      `/${segments.join("/")}${currentPath.endsWith("/") && segments.length ? "/" : ""}` ||
+      "/";
     const kind = path.startsWith("/admin")
       ? "plain"
       : path === "/about/" || path === "/about"
         ? "rain"
-        : path === "/project/" || path === "/project" || path.startsWith("/project/") || path === "/art" || path.startsWith("/art/")
+        : path === "/project/" ||
+            path === "/project" ||
+            path.startsWith("/project/") ||
+            path === "/art" ||
+            path.startsWith("/art/")
           ? "constellation"
-          : path === "/blog/" || path.startsWith("/blog/") || path === "/note/" || path.startsWith("/note/")
+          : path === "/blog/" ||
+              path.startsWith("/blog/") ||
+              path === "/note/" ||
+              path.startsWith("/note/")
             ? "grid"
             : "particles";
     root.setAttribute("data-active-kind", kind);
@@ -87,20 +137,36 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
 
   const localeSegments = new Set(["en", "ja", "zh-TW"]);
   const reducedMotionQuery = "(prefers-reduced-motion: reduce)";
-  const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
+  const clamp = (value: number, min: number, max: number) =>
+    Math.max(min, Math.min(max, value));
 
   function stripLocale(pathname: string) {
     const segments = pathname.split("/").filter(Boolean);
     if (localeSegments.has(segments[0])) segments.shift();
-    return `/${segments.join("/")}${pathname.endsWith("/") && segments.length ? "/" : ""}` || "/";
+    return (
+      `/${segments.join("/")}${pathname.endsWith("/") && segments.length ? "/" : ""}` ||
+      "/"
+    );
   }
 
   function getBackgroundKind(pathname: string) {
     const path = stripLocale(pathname);
     if (path.startsWith("/admin")) return "plain";
     if (path === "/about/" || path === "/about") return "rain";
-    if (path === "/project/" || path.startsWith("/project/") || path === "/art" || path.startsWith("/art/")) return "constellation";
-    if (path === "/blog/" || path.startsWith("/blog/") || path === "/note/" || path.startsWith("/note/")) return "grid";
+    if (
+      path === "/project/" ||
+      path.startsWith("/project/") ||
+      path === "/art" ||
+      path.startsWith("/art/")
+    )
+      return "constellation";
+    if (
+      path === "/blog/" ||
+      path.startsWith("/blog/") ||
+      path === "/note/" ||
+      path.startsWith("/note/")
+    )
+      return "grid";
     return "particles";
   }
 
@@ -108,8 +174,11 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
     const normalized = value.trim();
     const rgbMatch = normalized.match(/^rgba?\(([^)]+)\)$/);
     if (rgbMatch) {
-      const parts = rgbMatch[1].split(",").map((part) => Number.parseFloat(part.trim()));
-      if (parts.length >= 3 && parts.every(Number.isFinite)) return { r: parts[0], g: parts[1], b: parts[2] };
+      const parts = rgbMatch[1]
+        .split(",")
+        .map((part) => Number.parseFloat(part.trim()));
+      if (parts.length >= 3 && parts.every(Number.isFinite))
+        return { r: parts[0], g: parts[1], b: parts[2] };
     }
     if (!normalized.startsWith("#")) return null;
     const hex = normalized.slice(1);
@@ -129,15 +198,22 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
   }
 
   function resolveConstellationColor() {
-    return parseColor(getComputedStyle(document.documentElement).getPropertyValue("--foreground"))
-      ?? { r: 17, g: 17, b: 17 };
+    return (
+      parseColor(
+        getComputedStyle(document.documentElement).getPropertyValue(
+          "--foreground",
+        ),
+      ) ?? { r: 17, g: 17, b: 17 }
+    );
   }
 
   function initConstellation(root: HTMLElement) {
     const browserWindow = window as RouteBackgroundWindow;
     browserWindow.__routeBackgroundConstellationCleanup?.();
 
-    const canvas = root.querySelector<HTMLCanvasElement>('[data-background-kind="constellation"]');
+    const canvas = root.querySelector<HTMLCanvasElement>(
+      '[data-background-kind="constellation"]',
+    );
     const context = canvas?.getContext("2d", { alpha: true });
     if (!canvas || !context) return;
 
@@ -177,8 +253,13 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
       canvas.width = Math.floor(state.width * scale);
       canvas.height = Math.floor(state.height * scale);
       context.setTransform(scale, 0, 0, scale, 0, 0);
-      const count = clamp(Math.floor((state.width * state.height * density) / 16000), 40, 140);
-      while (state.particles.length < count) state.particles.push(makeParticle());
+      const count = clamp(
+        Math.floor((state.width * state.height * density) / 16000),
+        40,
+        140,
+      );
+      while (state.particles.length < count)
+        state.particles.push(makeParticle());
       while (state.particles.length > count) state.particles.pop();
     };
 
@@ -207,7 +288,8 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
             const dy = state.pointer.y - particle.y;
             const distanceSquared = dx * dx + dy * dy;
             if (distanceSquared > maxDistanceSquared) continue;
-            const force = (1 - Math.sqrt(distanceSquared) / maxDistance) * 0.018;
+            const force =
+              (1 - Math.sqrt(distanceSquared) / maxDistance) * 0.018;
             particle.vx += dx * force * 0.0009;
             particle.vy += dy * force * 0.0009;
           }
@@ -217,7 +299,11 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
       context.lineWidth = 1;
       for (let index = 0; index < state.particles.length; index += 1) {
         const first = state.particles[index];
-        for (let nextIndex = index + 1; nextIndex < state.particles.length; nextIndex += 1) {
+        for (
+          let nextIndex = index + 1;
+          nextIndex < state.particles.length;
+          nextIndex += 1
+        ) {
           const second = state.particles[nextIndex];
           const dx = first.x - second.x;
           const dy = first.y - second.y;
@@ -243,7 +329,9 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
       }
     };
 
-    const isActive = () => root.dataset.activeKind === "constellation" && document.visibilityState !== "hidden";
+    const isActive = () =>
+      root.dataset.activeKind === "constellation" &&
+      document.visibilityState !== "hidden";
     const stop = () => {
       cancelAnimationFrame(state.frame);
       state.frame = 0;
@@ -266,25 +354,47 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
     };
 
     const routeObserver = new MutationObserver(refreshAnimation);
-    routeObserver.observe(root, { attributes: true, attributeFilter: ["data-active-kind"] });
+    routeObserver.observe(root, {
+      attributes: true,
+      attributeFilter: ["data-active-kind"],
+    });
     const themeObserver = new MutationObserver(() => {
       state.ink = resolveConstellationColor();
       if (reducedMotion || !state.frame) draw(false);
     });
-    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-theme"] });
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class", "data-theme"],
+    });
 
-    window.addEventListener("resize", () => {
-      resize();
-      if (reducedMotion || !state.frame) draw(false);
-    }, { passive: true, signal: controller.signal });
-    window.addEventListener("pointermove", (event) => {
-      const rect = canvas.getBoundingClientRect();
-      state.pointer.x = event.clientX - rect.left;
-      state.pointer.y = event.clientY - rect.top;
-      state.pointer.active = true;
-    }, { passive: true, signal: controller.signal });
-    window.addEventListener("pointerleave", () => { state.pointer.active = false; }, { passive: true, signal: controller.signal });
-    document.addEventListener("visibilitychange", refreshAnimation, { signal: controller.signal });
+    window.addEventListener(
+      "resize",
+      () => {
+        resize();
+        if (reducedMotion || !state.frame) draw(false);
+      },
+      { passive: true, signal: controller.signal },
+    );
+    window.addEventListener(
+      "pointermove",
+      (event) => {
+        const rect = canvas.getBoundingClientRect();
+        state.pointer.x = event.clientX - rect.left;
+        state.pointer.y = event.clientY - rect.top;
+        state.pointer.active = true;
+      },
+      { passive: true, signal: controller.signal },
+    );
+    window.addEventListener(
+      "pointerleave",
+      () => {
+        state.pointer.active = false;
+      },
+      { passive: true, signal: controller.signal },
+    );
+    document.addEventListener("visibilitychange", refreshAnimation, {
+      signal: controller.signal,
+    });
 
     resize();
     refreshAnimation();
@@ -333,10 +443,12 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
     transition: opacity 240ms ease;
   }
 
-  .route-background[data-active-kind="particles"] [data-background-kind="particles"],
+  .route-background[data-active-kind="particles"]
+    [data-background-kind="particles"],
   .route-background[data-active-kind="grid"] [data-background-kind="grid"],
   .route-background[data-active-kind="rain"] [data-background-kind="rain"],
-  .route-background[data-active-kind="constellation"] [data-background-kind="constellation"] {
+  .route-background[data-active-kind="constellation"]
+    [data-background-kind="constellation"] {
     visibility: visible;
     opacity: 1;
   }
@@ -359,12 +471,32 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
   .route-background__grid {
     --grid-size: 24px;
     --grid-major-size: 120px;
-    background-color: color-mix(in srgb, var(--canvas) 98%, var(--foreground) 2%);
+    background-color: color-mix(
+      in srgb,
+      var(--canvas) 98%,
+      var(--foreground) 2%
+    );
     background-image:
-      linear-gradient(to right, color-mix(in srgb, var(--foreground) 9.5%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in srgb, var(--foreground) 9.5%, transparent) 1px, transparent 1px),
-      linear-gradient(to right, color-mix(in srgb, var(--foreground) 16%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in srgb, var(--foreground) 16%, transparent) 1px, transparent 1px);
+      linear-gradient(
+        to right,
+        color-mix(in srgb, var(--foreground) 9.5%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--foreground) 9.5%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to right,
+        color-mix(in srgb, var(--foreground) 16%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--foreground) 16%, transparent) 1px,
+        transparent 1px
+      );
     background-size:
       var(--grid-size) var(--grid-size),
       var(--grid-size) var(--grid-size),
@@ -396,13 +528,21 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
   }
 
   @keyframes particle-drift {
-    from { transform: translate3d(0, -10vh, 0); }
-    to { transform: translate3d(1.4rem, 110vh, 0); }
+    from {
+      transform: translate3d(0, -10vh, 0);
+    }
+    to {
+      transform: translate3d(1.4rem, 110vh, 0);
+    }
   }
 
   @keyframes code-rain {
-    from { transform: translate3d(0, -10vh, 0); }
-    to { transform: translate3d(0.6rem, 125vh, 0); }
+    from {
+      transform: translate3d(0, -10vh, 0);
+    }
+    to {
+      transform: translate3d(0.6rem, 125vh, 0);
+    }
   }
 
   @media (max-width: 48rem) {

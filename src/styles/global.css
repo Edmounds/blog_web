@@ -112,7 +112,9 @@ html.dark {
   --type-content-caption: clamp(14px, 13px + 0.08vw, 16.2px);
 
   --shell-max: min(92vw, 112.5rem);
-  --content-shell-max: 80rem;
+  --content-shell-max: 88rem;
+  --content-rail-left: clamp(21rem, 32vw, 33rem);
+  --content-rail-right: clamp(11rem, 13.5vw, 18rem);
   --space: clamp(0.1rem, 0.2vw, 1.25rem);
   --header-main-gap: clamp(1.25rem, 1.4vw, 2.75rem);
   --content-padding: clamp(0.85rem, 1.8vw, 1.4rem);
@@ -180,11 +182,20 @@ samp {
 }
 
 .content-container {
-  width: 100%;
-  max-width: var(--content-shell-max);
-  margin-inline: auto;
+  width: auto;
+  max-width: none;
+  margin-left: max(var(--content-rail-left), calc((100vw - var(--content-shell-max)) / 2));
+  margin-right: max(var(--content-rail-right), calc((100vw - var(--content-shell-max)) / 2));
   padding-left: max(var(--content-padding), env(safe-area-inset-left));
   padding-right: max(var(--content-padding), env(safe-area-inset-right));
+}
+
+@media (max-width: 64rem) {
+  .content-container {
+    width: 100%;
+    max-width: var(--content-shell-max);
+    margin-inline: auto;
+  }
 }
 
 .ui-panel {
@@ -821,7 +832,7 @@ html.dark .ui-prose pre.astro-code span {
 .comments-section { min-height: 28rem; scroll-margin-top: 6rem; padding-top: clamp(1.75rem, 4vw, 2.75rem); border-top: 1px solid var(--border-soft); }
 .comments-section__header { display: grid; grid-template-columns: auto minmax(2rem, 1fr); gap: 0.45rem 0.9rem; align-items: end; margin-bottom: clamp(1.75rem, 4vw, 3rem); }
 .comments-section__header::after { height: 1px; margin-bottom: 0.35rem; background: var(--border-strong); content: ""; }
-.comments-section__header h2 { margin: 0; color: transparent; font-size: clamp(2rem, 1.75rem + 1vw, 3.35rem); font-weight: 400; line-height: 1.05; -webkit-text-stroke: 1px var(--foreground); paint-order: stroke fill; }
+.comments-section__header h2 { margin: 0; color: transparent; font-size: var(--article-title-size); font-weight: 400; line-height: 1.05; -webkit-text-stroke: 1px var(--foreground); paint-order: stroke fill; }
 .comments-section__header p { grid-column: 1 / -1; margin: 0; color: var(--text-muted); font-size: var(--type-base); line-height: 1.65; }
 .comments-form { display: grid; grid-template-rows: auto minmax(10rem, auto) auto auto; overflow: hidden; background: color-mix(in srgb, var(--canvas) 97%, var(--foreground) 3%); border: 1px solid var(--border-soft); border-radius: var(--radius-control); }
 .comments-field { min-width: 0; }

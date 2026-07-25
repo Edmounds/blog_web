@@ -12,7 +12,7 @@ export async function onRequestPatch({ env, params, request }) {
     const db = requireDb(env);
     const current = await getArtItem(db, id);
     if (!current) return error(404, "ART_NOT_FOUND", "未找到该收藏。");
-    const validation = validateArtItemInput(await readJson(request), { partial: true, currentType: current.type });
+    const validation = validateArtItemInput(await readJson(request), { partial: true, currentType: current.type, currentMusicKind: current.musicKind });
     if (!validation.ok) return error(400, validation.error.code, validation.error.message);
     const bucket = requireBucket(env);
     if (validation.value.cover) stored = await storeCover(bucket, id, validation.value.cover, coverFetch(env), { db, currentItemId: id });
@@ -24,7 +24,7 @@ export async function onRequestPatch({ env, params, request }) {
   } catch (err) {
     if (stored?.key) await deleteCoverIfUnreferenced(env.ART_COVERS, env.DB, stored.key).catch((cleanupError) => console.error("Replacement cover cleanup failed", cleanupError));
     if (err instanceof Response) return err;
-    if (isArtSourceIdConflict(err)) return error(409, "ART_ALREADY_EXISTS", "该专辑已经收藏。");
+    if (isArtSourceIdConflict(err)) return error(409, "ART_ALREADY_EXISTS", "该收藏已经存在。");
     console.error("Art item update failed", err);
     return error(500, "ART_UPDATE_FAILED", "更新收藏失败。");
   }

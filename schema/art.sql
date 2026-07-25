@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS art_items (
   id TEXT PRIMARY KEY,
   type TEXT NOT NULL CHECK (type IN ('book', 'music', 'movie', 'series', 'anime')),
+  music_kind TEXT CHECK (music_kind IN ('album', 'single')),
   source TEXT NOT NULL,
   source_id TEXT,
   isbn TEXT,

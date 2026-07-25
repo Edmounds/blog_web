@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
-  searchArtCandidates, searchBooks, searchDeezerMusic, searchDoubanBookByIsbn, searchDoubanBooks, searchGoogleBooks,
+  searchArtCandidates, searchBooks, searchDeezerMusic, searchDeezerTracks, searchDoubanBookByIsbn, searchDoubanBooks, searchGoogleBooks,
   searchMusic, searchTmdb,
 } from "../functions/_shared/art-search.js";
 import { onRequestGet as searchArt } from "../functions/api/admin/art/search.js";
@@ -193,6 +193,47 @@ test("Deezer album search maps official albums with selectable covers", async ()
   });
   assert.deepEqual(items[0], { source: "deezer_music", sourceId: "12", title: "Abbey Road (Remastered)", creator: "The Beatles", originalTitle: "Abbey Road (Remastered)", releaseDate: "1969-09-26", description: "17 tracks", coverUrl: "https://deezer.test/cover.jpg" });
   assert.equal(items.length, 1);
+});
+
+test("Deezer track search maps songs with artist and album artwork", async () => {
+  const items = await searchDeezerTracks({
+    query: "Birds of a Feather",
+    fetchImpl: async (url) => {
+      assert.match(String(url), /\/search\/track\?q=Birds\+of\+a\+Feather/);
+      return response({ data: [{
+        id: 3135558851,
+        title: "BIRDS OF A FEATHER",
+        artist: { name: "Billie Eilish" },
+        album: { title: "HIT ME HARD AND SOFT", cover_xl: "https://deezer.test/song.jpg" },
+      }] });
+    },
+  });
+  assert.deepEqual(items, [{
+    source: "deezer_track",
+    sourceId: "3135558851",
+    title: "BIRDS OF A FEATHER",
+    creator: "Billie Eilish",
+    originalTitle: "BIRDS OF A FEATHER",
+    releaseDate: "",
+    description: "HIT ME HARD AND SOFT",
+    coverUrl: "https://deezer.test/song.jpg",
+  }]);
+});
+
+test("art candidate search requires a music kind and separates album and track providers", async () => {
+  const album = await searchArtCandidates({
+    type: "music", musicKind: "album", query: "Album",
+    fetchImpl: async (url) => String(url).includes("/search/album") ? response({ data: [] }) : response({ data: [] }),
+  });
+  const single = await searchArtCandidates({
+    type: "music", musicKind: "single", query: "Song",
+    fetchImpl: async (url) => {
+      assert.match(String(url), /\/search\/track/);
+      return response({ data: [{ id: 1, title: "Song", artist: { name: "Artist" }, album: { cover_big: "https://deezer.test/track.jpg" } }] });
+    },
+  });
+  assert.deepEqual(album, []);
+  assert.equal(single[0].source, "deezer_track");
 });
 
 test("music search uses only the query for both Deezer searches and picks the most popular released artist", async () => {

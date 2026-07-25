@@ -1,15 +1,18 @@
 import {
   createArtItem, deleteCoverIfUnreferenced, error, findArtItemBySourceId, isArtSourceIdConflict, json, listArtItems,
-  normalizeArtType, readJson, requireBucket, requireDb, requireSameOriginJson, storeCover, validateArtItemInput,
+  normalizeArtMusicKind, normalizeArtType, readJson, requireBucket, requireDb, requireSameOriginJson, storeCover, validateArtItemInput,
 } from "../../../_shared/art.js";
 
 export async function onRequestGet({ env, request }) {
   try {
     const rawType = new URL(request.url).searchParams.get("type");
     const type = rawType ? normalizeArtType(rawType) : undefined;
+    const rawMusicKind = new URL(request.url).searchParams.get("musicKind");
+    const musicKind = rawMusicKind ? normalizeArtMusicKind(rawMusicKind) : undefined;
     if (rawType && !type) return error(400, "INVALID_TYPE", "收藏类型无效。");
+    if (rawMusicKind && (!musicKind || type !== "music")) return error(400, "INVALID_MUSIC_KIND", "音乐分类无效。");
     return json(
-      { items: await listArtItems(requireDb(env), { type }) },
+      { items: await listArtItems(requireDb(env), { type, musicKind }) },
       { headers: { "cache-control": "private, no-store" } },
     );
   } catch (err) {
@@ -42,7 +45,7 @@ export async function onRequestPost({ env, request }) {
 }
 
 function alreadyExists() {
-  return error(409, "ART_ALREADY_EXISTS", "该专辑已经收藏。");
+  return error(409, "ART_ALREADY_EXISTS", "该收藏已经存在。");
 }
 
 function coverFetch(env) {

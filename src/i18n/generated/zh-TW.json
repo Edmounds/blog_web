@@ -8,7 +8,7 @@
       "note": "筆記",
       "project": "項目",
       "art": "收藏",
-      "music": "專輯",
+      "music": "音樂",
       "book": "書籍",
       "screen": "影視",
       "game": "遊戲",
@@ -66,6 +66,8 @@
       "languageSelect": "選擇語言",
       "copyright": "版權所有。",
       "artEmpty": "這裡還沒有收藏。",
+      "musicAlbum": "專輯",
+      "musicSingle": "單曲",
       "gameEmpty": "這裡還沒有遊戲。",
       "gameHours": "小時",
       "gameMinutes": "分鐘"
@@ -77,7 +79,7 @@
       "notesDescription": "短筆記與階段性想法。",
       "projectsDescription": "項目、作品與實驗。",
       "aboutDescription": "關於 chasen 的經歷、關注方向與個人故事。",
-      "musicDescription": "專輯收藏",
+      "musicDescription": "音樂收藏",
       "bookDescription": "書籍收藏",
       "screenDescription": "電影、劇集與番劇收藏",
       "gameDescription": "按遊玩時長排列的遊戲收藏"

@@ -8,7 +8,7 @@
       "note": "Notes",
       "project": "Project",
       "art": "Collections",
-      "music": "Albums",
+      "music": "Music",
       "book": "Books",
       "screen": "Screen",
       "game": "Game",
@@ -66,6 +66,8 @@
       "languageSelect": "Select language",
       "copyright": "All rights reserved.",
       "artEmpty": "Nothing has been added here yet.",
+      "musicAlbum": "Album",
+      "musicSingle": "Single",
       "gameEmpty": "There are no games here yet.",
       "gameHours": "hour",
       "gameMinutes": "minute"
@@ -77,7 +79,7 @@
       "notesDescription": "Short notes and phased ideas.",
       "projectsDescription": "Projects, Works, and Experiments.",
       "aboutDescription": "Background, interests, and personal notes from chasen.",
-      "musicDescription": "Album collection",
+      "musicDescription": "Music Collection",
       "bookDescription": "Book collection",
       "screenDescription": "Films, series, and anime",
       "gameDescription": "Game Collection Sorted by Playtime"

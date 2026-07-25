@@ -19,6 +19,10 @@ const screenTabs = [
   { type: "series", label: site.labels.series },
   { type: "anime", label: site.labels.anime },
 ] as const;
+const musicTabs = [
+  { type: "album", label: site.copy.musicAlbum },
+  { type: "single", label: site.copy.musicSingle },
+] as const;
 ---
 
 <div class="content-container py-12 md:py-20">
@@ -51,12 +55,37 @@ const screenTabs = [
     </div>
   )}
 
+  {type === "music" && (
+    <div
+      class="mb-8 inline-flex rounded-[var(--radius-control)] border border-[var(--border-strong)] bg-[var(--canvas)] p-0.5"
+      role="tablist"
+      aria-label={title}
+      data-music-tabs
+    >
+      {musicTabs.map((tab, index) => (
+        <button
+          type="button"
+          role="tab"
+          aria-selected={index === 0 ? "true" : "false"}
+          tabindex={index === 0 ? 0 : -1}
+          data-music-tab={tab.type}
+          class:list={[
+            "min-h-11 min-w-16 rounded-[calc(var(--radius-control)-2px)] px-4 py-2 text-sm transition",
+            index === 0 ? "bg-[var(--foreground)] text-[var(--canvas)]" : "text-[var(--text-muted)]",
+          ]}
+        >
+          {tab.label}
+        </button>
+      ))}
+    </div>
+  )}
+
   <div
     class="grid min-h-48 grid-cols-1 gap-x-5 gap-y-10 min-[480px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-5"
     data-art-grid
   >
     {items.map((item) => (
-      <div data-art-type={item.type} class={type === "screen" && item.type !== "movie" ? "hidden" : undefined}>
+      <div data-art-type={item.type} data-music-kind={item.musicKind ?? undefined} class={(type === "screen" && item.type !== "movie") || (type === "music" && item.musicKind !== "album") ? "hidden" : undefined}>
         <ArtCard item={item} />
       </div>
     ))}
@@ -65,6 +94,15 @@ const screenTabs = [
         class="hidden min-h-48 items-center text-sm text-[var(--text-muted)] min-[480px]:col-span-2 md:col-span-3 lg:col-span-5"
         role="status"
         data-art-empty={tab.type}
+      >
+        {site.copy.artEmpty}
+      </p>
+    ))}
+    {type === "music" && musicTabs.map((tab) => (
+      <p
+        class="hidden min-h-48 items-center text-sm text-[var(--text-muted)] min-[480px]:col-span-2 md:col-span-3 lg:col-span-5"
+        role="status"
+        data-music-empty={tab.type}
       >
         {site.copy.artEmpty}
       </p>
@@ -125,5 +163,57 @@ const screenTabs = [
 
     bindScreenTabs();
     document.addEventListener("astro:page-load", bindScreenTabs);
+  </script>
+)}
+
+{type === "music" && (
+  <script>
+    function bindMusicTabs() {
+      document.querySelectorAll<HTMLElement>("[data-music-tabs]").forEach((root) => {
+        if (root.dataset.bound === "true") return;
+        root.dataset.bound = "true";
+        const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-music-tab]"));
+        const grid = root.parentElement?.querySelector<HTMLElement>("[data-art-grid]");
+        if (!grid) return;
+
+        const select = (selected: HTMLButtonElement) => {
+          const musicKind = selected.dataset.musicTab;
+          let visibleItems = 0;
+          tabs.forEach((tab) => {
+            const active = tab === selected;
+            tab.setAttribute("aria-selected", String(active));
+            tab.tabIndex = active ? 0 : -1;
+            tab.classList.toggle("bg-[var(--foreground)]", active);
+            tab.classList.toggle("text-[var(--canvas)]", active);
+            tab.classList.toggle("text-[var(--text-muted)]", !active);
+          });
+          grid.querySelectorAll<HTMLElement>("[data-music-kind]").forEach((item) => {
+            const visible = item.dataset.musicKind === musicKind;
+            item.classList.toggle("hidden", !visible);
+            if (visible) visibleItems += 1;
+          });
+          grid.querySelectorAll<HTMLElement>("[data-music-empty]").forEach((empty) => {
+            const visible = empty.dataset.musicEmpty === musicKind && visibleItems === 0;
+            empty.classList.toggle("hidden", !visible);
+            empty.classList.toggle("flex", visible);
+          });
+        };
+
+        tabs.forEach((tab, index) => {
+          tab.addEventListener("click", () => select(tab));
+          tab.addEventListener("keydown", (event) => {
+            if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+            event.preventDefault();
+            const direction = event.key === "ArrowRight" ? 1 : -1;
+            const next = tabs[(index + direction + tabs.length) % tabs.length];
+            select(next);
+            next.focus();
+          });
+        });
+      });
+    }
+
+    bindMusicTabs();
+    document.addEventListener("astro:page-load", bindMusicTabs);
   </script>
 )}

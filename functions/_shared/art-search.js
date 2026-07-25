@@ -6,9 +6,9 @@ const TMDB_URL = "https://api.themoviedb.org/3";
 const TMDB_IMAGE_URL = "https://image.tmdb.org/t/p/w780";
 const BOOK_CACHE_SECONDS = 7 * 24 * 60 * 60;
 
-export async function searchArtCandidates({ type, query, creator = "", isbn = "", env = {}, fetchImpl = fetch, cache }) {
+export async function searchArtCandidates({ type, musicKind, query, creator = "", isbn = "", env = {}, fetchImpl = fetch, cache }) {
   if (type === "book") return searchBooks({ query, creator, isbn, env, fetchImpl, cache });
-  if (type === "music") return searchMusic({ query, fetchImpl });
+  if (type === "music") return musicKind === "single" ? searchDeezerTracks({ query, fetchImpl }) : searchMusic({ query, fetchImpl });
   if (["movie", "series", "anime"].includes(type)) return searchTmdb({ type, query, env, fetchImpl });
   return [];
 }
@@ -87,6 +87,12 @@ export async function searchDeezerMusic({ query, fetchImpl = fetch }) {
 
 export async function searchMusic({ query, fetchImpl = fetch }) {
   return searchDeezerMusic({ query, fetchImpl });
+}
+
+export async function searchDeezerTracks({ query, fetchImpl = fetch }) {
+  const url = new URL(`${DEEZER_URL}/search/track`);
+  url.search = new URLSearchParams({ q: query }).toString();
+  return deezerData(await fetchJson(url, fetchImpl)).map(mapDeezerTrack).filter(validCandidate);
 }
 
 export async function searchTmdb({ type, query, env = {}, fetchImpl = fetch }) {
@@ -378,5 +384,14 @@ function mapDeezerAlbum(entry) {
     source: "deezer_music", sourceId: String(entry.id ?? ""), title: entry.title ?? "", creator: entry.artist?.name ?? "",
     originalTitle: entry.title ?? "", releaseDate: normalizeDate(entry.release_date),
     description: entry.nb_tracks ? `${entry.nb_tracks} tracks` : "", coverUrl: entry.cover_xl ?? entry.cover_big ?? entry.cover_medium ?? entry.cover ?? "",
+  };
+}
+
+function mapDeezerTrack(entry) {
+  const album = entry?.album ?? {};
+  return {
+    source: "deezer_track", sourceId: String(entry?.id ?? ""), title: entry?.title ?? "", creator: entry?.artist?.name ?? "",
+    originalTitle: entry?.title ?? "", releaseDate: normalizeDate(entry?.release_date), description: album.title ?? "",
+    coverUrl: album.cover_xl ?? album.cover_big ?? album.cover_medium ?? album.cover ?? "",
   };
 }

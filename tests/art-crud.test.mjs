@@ -35,10 +35,11 @@ test("non-translated art types persist only simplified Chinese through create, e
   };
 
   const music = await createArtItem(db, {
-    type: "music", source: "legacy", sourceId: "", isbn: "", originalTitle: "", releaseDate: "",
+    type: "music", musicKind: "album", source: "legacy", sourceId: "", isbn: "", originalTitle: "", releaseDate: "",
     collectedOn: "2026-07-24", isVisible: true, translations,
   }, { key: "art/music/a.jpg", sourceUrl: "" }, { id: "music", now: new Date("2026-07-24T00:00:00Z") });
   assert.deepEqual(Object.keys(music.translations), ["zh-CN"]);
+  assert.equal(music.musicKind, "album");
 
   db.translations.set("music:en", { item_id: "music", locale: "en", title: "Old English", creator: "Old creator", extra: "" });
   const toggled = await updateArtItem(db, "music", await getArtItem(db, "music"), { isVisible: false }, undefined, new Date("2026-07-25T00:00:00Z"));
@@ -97,9 +98,17 @@ test("admin deletion keeps D1 metadata when R2 cover deletion fails", async () =
 
 test("art schema allows manual items without source IDs and rejects duplicate sourced items", () => {
   const schema = readFileSync(new URL("../schema/art.sql", import.meta.url), "utf8");
+  assert.match(schema, /music_kind TEXT CHECK \(music_kind IN \('album', 'single'\)\)/);
   assert.match(schema, /CREATE UNIQUE INDEX IF NOT EXISTS idx_art_items_unique_source_id/);
   assert.match(schema, /ON art_items\(source, source_id\)/);
   assert.match(schema, /WHERE source_id IS NOT NULL/);
+});
+
+test("music classification migration backfills legacy music without altering other art", () => {
+  const migration = readFileSync(new URL("../scripts/migrate-art-music-kind.mjs", import.meta.url), "utf8");
+  assert.match(migration, /PRAGMA table_info\(art_items\)/);
+  assert.match(migration, /ADD COLUMN music_kind TEXT CHECK \(music_kind IN \('album', 'single'\)\)/);
+  assert.match(migration, /WHERE type = 'music' AND music_kind IS NULL/);
 });
 
 class FakeD1 {
@@ -115,8 +124,8 @@ class FakeStatement {
   bind(...args) { this.args = args; return this; }
   async run() {
     if (this.sql.startsWith("INSERT INTO art_items")) {
-      const [id, type, source, source_id, isbn, original_title, release_date, cover_key, cover_source_url, collected_on, is_visible, created_at, updated_at] = this.args;
-      this.db.items.set(id, { id, type, source, source_id, isbn, original_title, release_date, cover_key, cover_source_url, collected_on, is_visible, created_at, updated_at });
+      const [id, type, music_kind, source, source_id, isbn, original_title, release_date, cover_key, cover_source_url, collected_on, is_visible, created_at, updated_at] = this.args;
+      this.db.items.set(id, { id, type, music_kind, source, source_id, isbn, original_title, release_date, cover_key, cover_source_url, collected_on, is_visible, created_at, updated_at });
       return { meta: { changes: 1 } };
     }
     if (this.sql.startsWith("INSERT INTO art_item_translations")) {
@@ -125,8 +134,8 @@ class FakeStatement {
       return { meta: { changes: 1 } };
     }
     if (this.sql.startsWith("UPDATE art_items SET")) {
-      const [type, source, source_id, isbn, original_title, release_date, cover_key, cover_source_url, collected_on, is_visible, updated_at, id] = this.args;
-      const item = this.db.items.get(id); this.db.items.set(id, { ...item, type, source, source_id, isbn, original_title, release_date, cover_key, cover_source_url, collected_on, is_visible, updated_at });
+      const [type, music_kind, source, source_id, isbn, original_title, release_date, cover_key, cover_source_url, collected_on, is_visible, updated_at, id] = this.args;
+      const item = this.db.items.get(id); this.db.items.set(id, { ...item, type, music_kind, source, source_id, isbn, original_title, release_date, cover_key, cover_source_url, collected_on, is_visible, updated_at });
       return { meta: { changes: item ? 1 : 0 } };
     }
     if (this.sql.startsWith("DELETE FROM art_item_translations")) {
@@ -145,6 +154,7 @@ class FakeStatement {
     let rows = [...this.db.items.values()];
     if (this.sql.includes("WHERE item.id = ?")) rows = rows.filter((item) => item.id === this.args[0]);
     if (this.sql.includes("item.type = ?")) rows = rows.filter((item) => item.type === this.args[0]);
+    if (this.sql.includes("item.music_kind = ?")) rows = rows.filter((item) => item.music_kind === this.args.at(-1));
     if (this.sql.includes("item.is_visible = 1")) rows = rows.filter((item) => item.is_visible === 1);
     rows.sort((a, b) => b.collected_on.localeCompare(a.collected_on) || b.created_at.localeCompare(a.created_at) || b.id.localeCompare(a.id));
     const results = rows.flatMap((item) => {

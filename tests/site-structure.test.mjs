@@ -24,7 +24,7 @@ test("navigation labels stay English and Life exposes the four collection routes
   assert.match(header, /\/art\/game\//);
 });
 
-test("the transparent header uses Anthropic navigation type and auto-hide behavior", () => {
+test("the transparent header keeps its side controls visible while auto-hiding desktop navigation", () => {
   const header = read("src/components/site/Header.astro");
   assert.match(header, /data-header-reveal-zone/);
   assert.match(header, /\.site-header\s*\{[^}]*position:\s*sticky;[^}]*background:\s*transparent;/s);
@@ -32,10 +32,12 @@ test("the transparent header uses Anthropic navigation type and auto-hide behavi
   assert.match(header, /--desktop-nav-font-size:\s*clamp\(16\.3px,\s*0\.82rem \+ 0\.13vw,\s*20px\);/s);
   assert.match(header, /\.desktop-nav\s*>\s*a,[\s\S]*?\.life-menu__items a\s*\{[^}]*font-family:\s*var\(--font-ui\);[^}]*font-size:\s*var\(--desktop-nav-font-size\);/s);
   assert.match(header, /\.mobile-menu\s*\{[^}]*background:\s*color-mix\(in srgb, var\(--canvas\) 82%, transparent\);/s);
-  assert.match(header, /header\.dataset\.hidden/);
+  assert.match(header, /desktopNav\.dataset\.hidden/);
   assert.match(header, /window\.addEventListener\("scroll"/);
   assert.match(header, /revealZone\.addEventListener\("pointerenter"/);
   assert.match(header, /matchMedia\("\(hover: hover\) and \(pointer: fine\)"\)/);
+  assert.match(header, /\.desktop-nav\[data-hidden="true"\]/);
+  assert.doesNotMatch(header, /\.site-header\[data-hidden="true"\]/);
   assert.match(header, /@media\s*\(max-width:\s*64rem\)[\s\S]*?\.site-header__inner\s*\{[^}]*min-height:\s*4rem;/);
   assert.match(header, /@media\s*\(max-width:\s*30rem\)[\s\S]*?\.site-header__tools\s*\{[^}]*gap:\s*0;/);
   assert.match(header, /@media\s*\(max-width:\s*30rem\)[\s\S]*?\.site-signature\s*\{[^}]*width:\s*min\(100%,\s*8\.75rem\);[^}]*font-size:\s*2\.15rem;/);
@@ -44,8 +46,11 @@ test("the transparent header uses Anthropic navigation type and auto-hide behavi
 
 test("public content pages share a narrower symmetric content container", () => {
   const global = read("src/styles/global.css");
-  assert.match(global, /--content-shell-max:\s*80rem;/);
-  assert.match(global, /\.content-container\s*\{[^}]*max-width:\s*var\(--content-shell-max\);[^}]*margin-inline:\s*auto;[^}]*padding-left:[^}]*padding-right:/s);
+  assert.match(global, /--content-shell-max:\s*88rem;/);
+  assert.match(global, /--content-rail-left:\s*clamp\(21rem,\s*32vw,\s*33rem\);/);
+  assert.match(global, /--content-rail-right:\s*clamp\(11rem,\s*13\.5vw,\s*18rem\);/);
+  assert.match(global, /\.content-container\s*\{[^}]*max-width:\s*none;[^}]*margin-left:\s*max\(var\(--content-rail-left\),[^}]*margin-right:\s*max\(var\(--content-rail-right\),/s);
+  assert.match(global, /@media\s*\(max-width:\s*64rem\)[\s\S]*?\.content-container\s*\{[^}]*margin-inline:\s*auto;/s);
 
   for (const path of [
     "src/components/sections/HomeSection.astro",
@@ -127,20 +132,25 @@ test("art covers render from the public image CDN and local uploads avoid blob p
   assert.match(publicArt, /https:\/\/img\.muelsyse\.us/);
 });
 
-test("music administration uses one Deezer search field and preserves selectable results after saving", () => {
+test("music administration separates albums and singles while preserving selectable results after saving", () => {
   const admin = read("src/components/domain/ArtAdmin.tsx");
   const search = read("functions/_shared/art-search.js");
 
-  assert.match(admin, /专辑名或歌手/);
+  assert.match(admin, /歌曲名或歌手/);
+  assert.match(admin, /type MusicKind = "album" \| "single"/);
+  assert.match(admin, /musicKind=\$\{selectedMusicKind\}/);
+  assert.match(admin, /params\.set\("musicKind", musicKind\)/);
   assert.match(admin, /type !== "music"[\s\S]*type === "book" \? "作者" : "补充关键词"/);
   assert.match(admin, /type === "music" \? "deezer_music"/);
   assert.match(admin, /已收藏/);
   assert.match(admin, /const collectedCandidates = useMemo/);
-  assert.match(admin, /\/api\/admin\/art\/items\?type=\$\{selectedType\}`,[\s\S]*cache: "no-store"/);
+  assert.match(admin, /\/api\/admin\/art\/items\?type=\$\{selectedType\}\$\{suffix\}`,[\s\S]*cache: "no-store"/);
   assert.match(admin, /setItems\(ensuredItem \? \[ensuredItem,[\s\S]*item\.id !== ensuredItem\.id/);
   assert.match(admin, /setItems\(\(current\) => \[data\.item,[\s\S]*item\.id !== data\.item\.id/);
   assert.doesNotMatch(admin, /setForm\(blankForm\(type\)\); setCandidates\(\[\]\); await loadItems/);
   assert.doesNotMatch(search, /itunes\.apple\.com|searchAppleMusic|upgradeAppleArtwork/);
+  assert.match(search, /searchDeezerTracks/);
+  assert.match(search, /deezer_track/);
   assert.doesNotMatch(read("src/lib/cover-api.ts"), /itunes\.apple\.com|ItunesSearchResponse/);
 });
 
@@ -173,6 +183,19 @@ test("album covers use square contain layers while non-music covers remain poste
   assert.match(card, /aria-hidden="true"/);
   assert.match(card, /object-contain/);
   assert.match(card, /aspect-\[2\/3\][\s\S]*object-cover/);
+});
+
+test("public music collection has localized album and single tabs and hides single notes", () => {
+  const section = read("src/components/sections/ArtSection.astro");
+  const card = read("src/components/cards/ArtCard.astro");
+  const messages = read("src/i18n/source.json");
+
+  assert.match(section, /data-music-tab/);
+  assert.match(section, /site\.copy\.musicAlbum/);
+  assert.match(section, /site\.copy\.musicSingle/);
+  assert.match(card, /item\.musicKind !== "single"/);
+  assert.match(messages, /"musicAlbum": "专辑"/);
+  assert.match(messages, /"musicSingle": "单曲"/);
 });
 
 test("art save operations expose independent progress and nearby live feedback", () => {
@@ -294,8 +317,8 @@ test("About renders the profile as a normal Markdown article with the code-rain 
 test("Project and every Life route use the dynamic constellation canvas", () => {
   const background = read("src/components/site/RouteBackground.astro");
   assert.match(background, /<canvas[\s\S]*data-background-kind="constellation"/);
-  assert.match(background, /path === "\/project\/" \|\| path\.startsWith\("\/project\/"\)/);
-  assert.match(background, /path === "\/art" \|\| path\.startsWith\("\/art\/"\)/);
+  assert.match(background, /path === "\/project\/" \|\|[\s\S]*?path\.startsWith\("\/project\/"\)/);
+  assert.match(background, /path === "\/art" \|\|[\s\S]*?path\.startsWith\("\/art\/"\)/);
   assert.match(background, /requestAnimationFrame\(tick\)/);
   assert.match(background, /prefers-reduced-motion: reduce/);
   assert.doesNotMatch(background, /route-background__constellation line|route-background__constellation circle/);
@@ -312,6 +335,9 @@ test("writing detail pages keep interactions while moving the table of contents 
   const toc = read("src/components/domain/TableOfContents.astro");
 
   assert.match(detail, /article-page__content[\s\S]*article-prose[\s\S]*article-page__toc/);
+  assert.match(detail, /--article-title-size:\s*clamp\(1\.82rem,\s*1\.52rem \+ 0\.9vw,\s*2\.95rem\)/);
+  assert.match(detail, /\.article-page__header h1[\s\S]*?font-size:\s*var\(--article-title-size\)/);
+  assert.match(detail, /html:lang\(zh-CN\)[\s\S]*?--article-title-size:\s*clamp\(1\.56rem,\s*1\.36rem \+ 0\.6vw,\s*2\.28rem\)/);
   assert.doesNotMatch(detail, /<main class="article-page__main">/);
   assert.match(detail, /PostEngagement/);
   assert.match(detail, /CommentsSection/);

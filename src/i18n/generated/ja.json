@@ -8,7 +8,7 @@
       "note": "ノート",
       "project": "プロジェクト",
       "art": "コレクション",
-      "music": "アルバム",
+      "music": "音楽",
       "book": "本",
       "screen": "映像",
       "game": "ゲーム",
@@ -66,6 +66,8 @@
       "languageSelect": "言語を選択",
       "copyright": "無断転載を禁じます。",
       "artEmpty": "まだコレクションはありません。",
+      "musicAlbum": "アルバム",
+      "musicSingle": "シングル曲",
       "gameEmpty": "ここにはまだゲームがありません。",
       "gameHours": "時間",
       "gameMinutes": "分"
@@ -77,7 +79,7 @@
       "notesDescription": "短いメモと段階的なアイデア。",
       "projectsDescription": "プロジェクト、作品と実験。",
       "aboutDescription": "chasenの経歴、関心、個人的な記録。",
-      "musicDescription": "アルバムコレクション",
+      "musicDescription": "音楽コレクション",
       "bookDescription": "本のコレクション",
       "screenDescription": "映画、ドラマ、アニメのコレクション",
       "gameDescription": "プレイ時間順のゲームコレクション"

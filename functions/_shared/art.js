@@ -1,7 +1,8 @@
 export const ART_TYPES = ["book", "music", "movie", "series", "anime"];
+export const ART_MUSIC_KINDS = ["album", "single"];
 export const ART_LOCALES = ["zh-CN", "zh-TW", "en", "ja"];
 export const ART_TRANSLATED_TYPES = ["book", "movie"];
-export const ART_SOURCES = ["douban_books", "apple_books", "google_books", "apple_music", "deezer_music", "tmdb", "legacy"];
+export const ART_SOURCES = ["douban_books", "apple_books", "google_books", "apple_music", "deezer_music", "deezer_track", "tmdb", "legacy"];
 export const ART_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"];
 export const ART_STORED_IMAGE_TYPES = [...ART_IMAGE_TYPES, "image/svg+xml"];
 
@@ -10,6 +11,7 @@ export const MAX_ART_IMAGE_BYTES = 10 * 1024 * 1024;
 export const ART_COVER_BASE_URL = "https://img.muelsyse.us";
 
 const TYPE_SET = new Set(ART_TYPES);
+const MUSIC_KIND_SET = new Set(ART_MUSIC_KINDS);
 const LOCALE_SET = new Set(ART_LOCALES);
 const TRANSLATED_TYPE_SET = new Set(ART_TRANSLATED_TYPES);
 const SOURCE_SET = new Set(ART_SOURCES);
@@ -71,6 +73,10 @@ export function normalizeArtLocale(value) {
   return typeof value === "string" && LOCALE_SET.has(value) ? value : undefined;
 }
 
+export function normalizeArtMusicKind(value) {
+  return typeof value === "string" && MUSIC_KIND_SET.has(value) ? value : undefined;
+}
+
 export function normalizeArtId(value) {
   if (typeof value !== "string") return undefined;
   const id = value.trim();
@@ -120,7 +126,7 @@ export function validateTranslations(value, type) {
   return { ok: true, value: translations };
 }
 
-export function validateArtItemInput(value, { partial = false, currentType } = {}) {
+export function validateArtItemInput(value, { partial = false, currentType, currentMusicKind } = {}) {
   if (!value || typeof value !== "object" || Array.isArray(value)) return invalid("INVALID_ITEM", "收藏数据无效。");
   const result = {};
 
@@ -128,6 +134,18 @@ export function validateArtItemInput(value, { partial = false, currentType } = {
     const type = normalizeArtType(value.type);
     if (!type) return invalid("INVALID_TYPE", "收藏类型无效。");
     result.type = type;
+  }
+  const effectiveType = result.type ?? currentType;
+  if (!partial || Object.hasOwn(value, "musicKind") || Object.hasOwn(value, "type")) {
+    if (effectiveType === "music") {
+      const musicKind = normalizeArtMusicKind(value.musicKind ?? (partial ? currentMusicKind ?? "album" : undefined));
+      if (!musicKind) return invalid("INVALID_MUSIC_KIND", "音乐分类无效。");
+      result.musicKind = musicKind;
+    } else if (value.musicKind != null) {
+      return invalid("INVALID_MUSIC_KIND", "只有音乐收藏可以设置音乐分类。");
+    } else if (Object.hasOwn(value, "type")) {
+      result.musicKind = null;
+    }
   }
   if (!partial || Object.hasOwn(value, "source")) {
     const source = typeof value.source === "string" && SOURCE_SET.has(value.source) ? value.source : undefined;
@@ -359,10 +377,11 @@ export function assertResolvedPublicAddress(address) {
   return value;
 }
 
-export async function listArtItems(db, { type, visibleOnly = false } = {}) {
+export async function listArtItems(db, { type, musicKind, visibleOnly = false } = {}) {
   const clauses = [];
   const args = [];
   if (type) { clauses.push("item.type = ?"); args.push(type); }
+  if (musicKind) { clauses.push("item.music_kind = ?"); args.push(musicKind); }
   if (visibleOnly) clauses.push("item.is_visible = 1");
   const where = clauses.length ? `WHERE ${clauses.join(" AND ")}` : "";
   const rows = (await db.prepare(
@@ -407,9 +426,9 @@ export async function createArtItem(db, input, storedCover, { id = crypto.random
   const statements = [
     db.prepare(
       `INSERT INTO art_items
-       (id, type, source, source_id, isbn, original_title, release_date, cover_key, cover_source_url, collected_on, is_visible, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    ).bind(id, input.type, input.source, input.sourceId || null, input.isbn || null, input.originalTitle || null,
+       (id, type, music_kind, source, source_id, isbn, original_title, release_date, cover_key, cover_source_url, collected_on, is_visible, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    ).bind(id, input.type, input.type === "music" ? input.musicKind : null, input.source, input.sourceId || null, input.isbn || null, input.originalTitle || null,
       input.releaseDate || null, storedCover.key, storedCover.sourceUrl || null, input.collectedOn, input.isVisible ? 1 : 0, createdAt, createdAt),
     ...translationStatements(db, id, translations),
   ];
@@ -420,6 +439,7 @@ export async function createArtItem(db, input, storedCover, { id = crypto.random
 export async function updateArtItem(db, id, current, input, storedCover, now = new Date()) {
   const merged = {
     type: input.type ?? current.type,
+    musicKind: input.musicKind ?? current.musicKind,
     source: input.source ?? current.source,
     sourceId: input.sourceId ?? current.sourceId,
     isbn: input.isbn ?? current.isbn,
@@ -430,13 +450,14 @@ export async function updateArtItem(db, id, current, input, storedCover, now = n
     translations: input.translations ?? current.translations,
   };
   merged.translations = filterArtTranslations(merged.type, merged.translations);
+  if (merged.type !== "music") merged.musicKind = null;
   const coverKey = storedCover?.key ?? current.coverKey;
   const coverSourceUrl = storedCover ? storedCover.sourceUrl : current.coverSourceUrl;
   const statements = [
     db.prepare(
-      `UPDATE art_items SET type = ?, source = ?, source_id = ?, isbn = ?, original_title = ?, release_date = ?,
+      `UPDATE art_items SET type = ?, music_kind = ?, source = ?, source_id = ?, isbn = ?, original_title = ?, release_date = ?,
        cover_key = ?, cover_source_url = ?, collected_on = ?, is_visible = ?, updated_at = ? WHERE id = ?`,
-    ).bind(merged.type, merged.source, merged.sourceId || null, merged.isbn || null, merged.originalTitle || null,
+    ).bind(merged.type, merged.musicKind, merged.source, merged.sourceId || null, merged.isbn || null, merged.originalTitle || null,
       merged.releaseDate || null, coverKey, coverSourceUrl || null, merged.collectedOn, merged.isVisible ? 1 : 0, now.toISOString(), id),
     db.prepare("DELETE FROM art_item_translations WHERE item_id = ?").bind(id),
     ...translationStatements(db, id, merged.translations),
@@ -453,7 +474,7 @@ export async function deleteArtItem(db, id) {
 export function localizeArtItems(items, locale) {
   return items.map((item) => {
     const translation = item.translations[locale] ?? item.translations["zh-CN"];
-    return { id: item.id, type: item.type, title: translation.title, creator: translation.creator, extra: translation.extra, cover: item.coverUrl };
+    return { id: item.id, type: item.type, musicKind: item.musicKind, title: translation.title, creator: translation.creator, extra: translation.extra, cover: item.coverUrl };
   });
 }
 
@@ -533,7 +554,7 @@ function groupArtRows(rows) {
     let item = items.get(row.id);
     if (!item) {
       item = {
-        id: row.id, type: row.type, source: row.source, sourceId: row.source_id ?? "", isbn: row.isbn ?? "",
+        id: row.id, type: row.type, musicKind: row.type === "music" ? row.music_kind ?? "album" : null, source: row.source, sourceId: row.source_id ?? "", isbn: row.isbn ?? "",
         originalTitle: row.original_title ?? "", releaseDate: row.release_date ?? "", coverKey: row.cover_key,
         coverSourceUrl: row.cover_source_url ?? "", coverUrl: getArtCoverUrl(row.cover_key), collectedOn: row.collected_on,
         isVisible: Number(row.is_visible) === 1, createdAt: row.created_at, updatedAt: row.updated_at, translations: {},
