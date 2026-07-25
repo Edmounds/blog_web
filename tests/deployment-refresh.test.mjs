@@ -35,11 +35,27 @@ test("Cloudflare revalidates HTML while keeping the version marker uncached", ()
   assert.match(headers, /\/art\/\*\s+Cache-Control: public, max-age=0, s-maxage=0, must-revalidate/);
 });
 
-test("deployment checks only run after thirty minutes away", () => {
+test("public pages check for deployments on load, every minute, and when revisited", () => {
   const layout = read("src/layouts/BaseLayout.astro");
-  assert.doesNotMatch(layout, /setInterval\(check/);
-  assert.doesNotMatch(layout, /void check\(\);\s*window/);
-  assert.match(layout, /Date\.now\(\) - hiddenAt < 30 \* 60_000/);
+
+  assert.match(layout, /const DEPLOYMENT_CHECK_INTERVAL_MS = 60_000/);
+  assert.match(layout, /void checkForDeployment\(\)/);
+  assert.match(layout, /window\.setInterval\(\(\) => void checkForDeployment\(\), DEPLOYMENT_CHECK_INTERVAL_MS\)/);
+  assert.match(layout, /document\.addEventListener\("visibilitychange", onVisibilityChange\)/);
+  assert.match(layout, /window\.addEventListener\("focus", onFocus\)/);
+  assert.match(layout, /document\.visibilityState !== "visible"/);
+  assert.doesNotMatch(layout, /30 \* 60_000|hiddenAt/);
+});
+
+test("deployment refresh is single-instance, skips admin pages, and cannot loop", () => {
+  const layout = read("src/layouts/BaseLayout.astro");
+
+  assert.match(layout, /!window\.location\.pathname\.startsWith\("\/admin\/"\)/);
+  assert.match(layout, /__deploymentRefreshCleanup/);
+  assert.match(layout, /checkInFlight/);
+  assert.match(layout, /sessionStorage\.getItem\(DEPLOYMENT_REFRESH_KEY\)/);
+  assert.match(layout, /sessionStorage\.setItem\(DEPLOYMENT_REFRESH_KEY, deployment\.buildId\)/);
+  assert.match(layout, /window\.clearInterval\(intervalId\)/);
 });
 
 test("public assets are immutable and public pages have security headers", () => {

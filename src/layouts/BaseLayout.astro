@@ -110,19 +110,50 @@ if (!Astro.response.headers.has("Cache-Control")) Astro.response.headers.set("Ca
         document.documentElement.dataset.transitionDirection = direction;
       });
 
-      if (import.meta.env.PROD) {
+      if (import.meta.env.PROD && !window.location.pathname.startsWith("/admin/")) {
+        const DEPLOYMENT_CHECK_INTERVAL_MS = 60_000;
+        const DEPLOYMENT_REFRESH_KEY = "blog-deployment-refresh";
+        const browserWindow = window as typeof window & { __deploymentRefreshCleanup?: () => void };
         const currentBuildId = document.documentElement.dataset.buildId;
-        let hiddenAt = document.visibilityState === "hidden" ? Date.now() : 0;
-        const check = async () => {
-          if (document.visibilityState !== "visible" || !hiddenAt || Date.now() - hiddenAt < 30 * 60_000) return;
-          hiddenAt = 0;
+        let checkInFlight = false;
+
+        browserWindow.__deploymentRefreshCleanup?.();
+        if (sessionStorage.getItem(DEPLOYMENT_REFRESH_KEY) === currentBuildId) {
+          sessionStorage.removeItem(DEPLOYMENT_REFRESH_KEY);
+        }
+
+        const checkForDeployment = async () => {
+          if (document.visibilityState !== "visible" || checkInFlight) return;
+          checkInFlight = true;
           try {
             const response = await fetch(`/version.json?t=${Date.now()}`, { cache: "no-store" });
             const deployment = response.ok ? await response.json() as { buildId?: string } : {};
-            if (deployment.buildId && deployment.buildId !== currentBuildId) window.location.reload();
-          } catch {}
+            if (
+              deployment.buildId
+              && deployment.buildId !== currentBuildId
+              && sessionStorage.getItem(DEPLOYMENT_REFRESH_KEY) !== deployment.buildId
+            ) {
+              sessionStorage.setItem(DEPLOYMENT_REFRESH_KEY, deployment.buildId);
+              window.location.reload();
+            }
+          } catch {} finally {
+            checkInFlight = false;
+          }
         };
-        document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") hiddenAt = Date.now(); else void check(); });
+        const onVisibilityChange = () => {
+          if (document.visibilityState === "visible") void checkForDeployment();
+        };
+        const onFocus = () => void checkForDeployment();
+        const intervalId = window.setInterval(() => void checkForDeployment(), DEPLOYMENT_CHECK_INTERVAL_MS);
+
+        document.addEventListener("visibilitychange", onVisibilityChange);
+        window.addEventListener("focus", onFocus);
+        browserWindow.__deploymentRefreshCleanup = () => {
+          window.clearInterval(intervalId);
+          document.removeEventListener("visibilitychange", onVisibilityChange);
+          window.removeEventListener("focus", onFocus);
+        };
+        void checkForDeployment();
       }
     </script>
   </body>
