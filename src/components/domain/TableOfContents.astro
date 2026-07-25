@@ -2,75 +2,81 @@
 interface Heading { depth: number; slug: string; text: string; }
 interface Props {
   headings: Heading[];
-  labels?: { title: string; introduction: string; collapse: string; expand: string };
+  labels?: { title: string; introduction: string; collapse?: string; expand?: string };
+  showTitle?: boolean;
 }
-const { headings, labels = { title: "On this page", introduction: "Introduction", collapse: "Collapse section", expand: "Expand section" } } = Astro.props;
-const items: Array<Heading & { children: Heading[] }> = [{ depth: 2, slug: "", text: labels.introduction, children: [] }];
-let parent = items[0];
-for (const heading of headings) {
-  if (heading.depth <= 2) {
-    parent = { ...heading, children: [] };
-    items.push(parent);
-  } else parent.children.push(heading);
-}
+
+const {
+  headings,
+  labels = { title: "On this page", introduction: "Introduction" },
+  showTitle = true,
+} = Astro.props;
+const minimumDepth = Math.min(2, ...headings.map((heading) => heading.depth));
+const items = [
+  { depth: 1, slug: "", text: labels.introduction },
+  ...headings.map((heading) => ({ ...heading, depth: Math.min(6, Math.max(1, heading.depth - minimumDepth + 1)) })),
+];
 ---
 
 <section class="toc-desktop" data-toc>
-  <h2>{labels.title}</h2>
-  <nav class="toc-nav" aria-label={labels.title}>
-    {items.map((item) => (
-      <div class="toc-group">
-        <div class="toc-row">
-          <a href={item.slug ? `#${item.slug}` : "#"} class="toc-link" data-toc-link={item.slug}>{item.text}</a>
-          {item.children.length > 0 && (
-            <button type="button" class="toc-expand" aria-label={labels.expand} aria-expanded="false" data-toc-expand data-label-expand={labels.expand} data-label-collapse={labels.collapse}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
-            </button>
-          )}
-        </div>
-        {item.children.length > 0 && (
-          <ul class="toc-children" hidden>
-            {item.children.map((child) => <li><a href={`#${child.slug}`} class="toc-link toc-link--sub" data-toc-link={child.slug}>{child.text}</a></li>)}
-          </ul>
-        )}
-      </div>
-    ))}
-  </nav>
+  {showTitle && <h2>{labels.title}</h2>}
+  <div class="toc-list-frame">
+    <span class="toc-progress" data-toc-progress aria-hidden="true"><span></span></span>
+    <nav class="toc-nav" aria-label={labels.title}>
+      {items.map((item) => (
+        <a
+          href={item.slug ? `#${item.slug}` : "#"}
+          class={`toc-link toc-link--depth-${item.depth}`}
+          style={`--toc-depth: ${item.depth - 1};`}
+          data-toc-link={item.slug}
+        >{item.text}</a>
+      ))}
+    </nav>
+  </div>
 </section>
 
 <script>
   const initToc = () => {
     document.querySelectorAll<HTMLElement>("[data-toc]:not([data-initialized])").forEach((root) => {
       root.dataset.initialized = "true";
-      const cleanups: Array<() => void> = [];
-      root.querySelectorAll<HTMLButtonElement>("[data-toc-expand]").forEach((button) => {
-        const children = button.closest(".toc-group")?.querySelector<HTMLElement>(".toc-children");
-        const toggle = () => {
-          const expanded = button.getAttribute("aria-expanded") !== "true";
-          button.setAttribute("aria-expanded", String(expanded));
-          button.setAttribute("aria-label", expanded ? button.dataset.labelCollapse ?? "" : button.dataset.labelExpand ?? "");
-          button.querySelector("svg")?.classList.toggle("is-expanded", expanded);
-          if (children) children.hidden = !expanded;
-        };
-        button.addEventListener("click", toggle);
-        cleanups.push(() => button.removeEventListener("click", toggle));
-      });
       const links = Array.from(root.querySelectorAll<HTMLAnchorElement>("[data-toc-link]"));
-      const headings = links.map((link) => document.getElementById(link.dataset.tocLink ?? "")).filter((element): element is HTMLElement => Boolean(element));
+      const progress = root.querySelector<HTMLElement>("[data-toc-progress] span");
+      const listFrame = root.querySelector<HTMLElement>(".toc-list-frame");
+      const headings = links.map((link) => {
+        const slug = link.dataset.tocLink ?? "";
+        return { link, heading: slug ? document.getElementById(slug) : document.querySelector<HTMLElement>("[data-article-introduction]") };
+      }).filter((entry): entry is { link: HTMLAnchorElement; heading: HTMLElement } => Boolean(entry.heading));
+
       const update = () => {
-        let active = "";
-        if (window.scrollY >= 120) for (const heading of headings) { if (heading.offsetTop - 120 <= window.scrollY) active = heading.id; else break; }
-        links.forEach((link) => link.classList.toggle("is-active", link.dataset.tocLink === active));
-        const activeLink = links.find((link) => link.dataset.tocLink === active);
-        const button = activeLink?.closest(".toc-group")?.querySelector<HTMLButtonElement>("[data-toc-expand]");
-        if (activeLink?.classList.contains("toc-link--sub") && button?.getAttribute("aria-expanded") !== "true") button?.click();
+        let active = headings[0];
+        for (const entry of headings) {
+          if (entry.heading.getBoundingClientRect().top <= 150) active = entry;
+          else break;
+        }
+        links.forEach((link) => {
+          const selected = link === active?.link;
+          link.classList.toggle("is-active", selected);
+          if (selected) link.setAttribute("aria-current", "location");
+          else link.removeAttribute("aria-current");
+        });
+        if (active && progress && listFrame) {
+          const frameRect = listFrame.getBoundingClientRect();
+          const linkRect = active.link.getBoundingClientRect();
+          progress.style.setProperty("--toc-progress-top", `${linkRect.top - frameRect.top + listFrame.scrollTop}px`);
+          progress.style.setProperty("--toc-progress-height", `${linkRect.height}px`);
+          active.link.scrollIntoView({ block: "nearest" });
+        }
       };
+
       window.addEventListener("scroll", update, { passive: true });
-      cleanups.push(() => window.removeEventListener("scroll", update));
+      window.addEventListener("resize", update);
       update();
-      root.addEventListener("astro:before-swap", () => cleanups.forEach((cleanup) => cleanup()), { once: true });
+      root.addEventListener("astro:before-swap", () => {
+        window.removeEventListener("scroll", update);
+        window.removeEventListener("resize", update);
+      }, { once: true });
     });
   };
-  document.addEventListener("astro:page-load", initToc);
   initToc();
+  document.addEventListener("astro:page-load", initToc);
 </script>

@@ -28,7 +28,7 @@ test("WakaTime formats a complete all-time total from the dedicated endpoint", a
     },
   });
 
-  assert.deepEqual(data, { duration: "12h 35m" });
+  assert.deepEqual(data, { duration: "12hrs 35mins" });
   assert.deepEqual(calls, [{
     url: "https://wakatime.com/api/v1/users/current/all_time_since_today",
     authorization: "Basic c2VydmVyLXNlY3JldA==",
@@ -149,7 +149,7 @@ test("WakaTime caches complete all-time data separately from today's data", asyn
     fetchImpl: async () => assert.fail("cached all-time data should avoid upstream requests"),
   });
 
-  assert.deepEqual(first, { duration: "35m" });
+  assert.deepEqual(first, { duration: "35mins" });
   assert.deepEqual(second, first);
   assert.equal(calls, 1);
   assert.ok(values.has("https://wakatime-cache.internal/all-time"));

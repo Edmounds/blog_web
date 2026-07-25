@@ -41,6 +41,7 @@ export const getLocalizedContentSections = async (locale: Locale, section: Conte
       summary: item.description,
       readingTime: item.readingTime,
       dateLabel: formatter.format(item.createdAt),
+      dateIso: item.createdAt.toISOString(),
       archiveTags: item.tags,
     })),
   }));

@@ -58,7 +58,7 @@ export async function getWakaTimeAllTime(apiKey: string, options: RequestOptions
 
   const seconds = numberValue(data.total_seconds);
   if (seconds === undefined || seconds <= 0) return undefined;
-  return { duration: formatDuration(seconds) };
+  return { duration: formatBadgeDuration(seconds) };
 }
 
 export async function getWakaTimeToday(apiKey: string, options: RequestOptions = {}): Promise<WakaTimeToday | undefined> {
@@ -200,6 +200,15 @@ function formatDuration(seconds: number) {
   const hours = Math.floor(roundedMinutes / 60);
   const minutes = roundedMinutes % 60;
   return hours ? `${hours}h ${minutes}m` : `${minutes}m`;
+}
+
+function formatBadgeDuration(seconds: number) {
+  const roundedMinutes = Math.max(1, Math.round(seconds / 60));
+  const hours = Math.floor(roundedMinutes / 60);
+  const minutes = roundedMinutes % 60;
+  const minuteLabel = `${minutes}${minutes === 1 ? "min" : "mins"}`;
+  if (!hours) return minuteLabel;
+  return `${hours}${hours === 1 ? "hr" : "hrs"} ${minuteLabel}`;
 }
 
 function formatLastActivity(date: Date) {

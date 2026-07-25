@@ -1,0 +1,211 @@
+---
+import type { ArchivePostSectionModel } from "../../types/ui";
+
+interface Props {
+  sections: ArchivePostSectionModel[];
+  label: string;
+  locale?: string;
+}
+
+interface TimelineArticle {
+  date: Date;
+  dateLabel: string;
+  href: string;
+  title: string;
+}
+
+interface TimelineMonth {
+  articles: TimelineArticle[];
+  count: number;
+  key: string;
+  label: string;
+  level: number;
+  tooltipAlign: "start" | "center" | "end";
+  x: number;
+}
+
+const { sections, label, locale = "zh-CN" } = Astro.props;
+const articles = sections.flatMap((section) => section.posts).map((post) => ({
+  date: new Date(post.dateIso),
+  dateLabel: post.dateLabel,
+  href: post.href,
+  title: post.title,
+})).filter((article) => !Number.isNaN(article.date.getTime()));
+
+const latestDate = articles.reduce<Date | undefined>((latest, article) =>
+  !latest || article.date > latest ? article.date : latest, undefined);
+const rangeEnd = latestDate ? new Date(latestDate.getFullYear(), latestDate.getMonth() + 1, 0) : undefined;
+const rangeStart = rangeEnd ? new Date(rangeEnd.getFullYear(), rangeEnd.getMonth() - 11, 1) : undefined;
+const monthFormatter = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" });
+const monthKey = (date: Date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+const monthGroups = new Map<string, TimelineArticle[]>();
+
+for (const article of articles) {
+  if (!rangeStart || !rangeEnd || article.date < rangeStart || article.date > rangeEnd) continue;
+  const key = monthKey(article.date);
+  monthGroups.set(key, [...(monthGroups.get(key) ?? []), article]);
+}
+
+const maxCount = Math.max(1, ...[...monthGroups.values()].map((items) => items.length));
+const months: TimelineMonth[] = [];
+const years: Array<{ label: string; x: number }> = [];
+
+if (rangeStart) {
+  for (let index = 0; index < 12; index += 1) {
+    const date = new Date(rangeStart.getFullYear(), rangeStart.getMonth() + index, 1);
+    const monthArticles = (monthGroups.get(monthKey(date)) ?? []).sort((a, b) => b.date.getTime() - a.date.getTime());
+    const x = 4.5 + (index / 11) * 91;
+    months.push({
+      articles: monthArticles,
+      count: monthArticles.length,
+      key: monthKey(date),
+      label: new Intl.DateTimeFormat(locale, { month: "numeric" }).format(date),
+      level: monthArticles.length === 0 ? 0 : Math.max(1, Math.ceil((monthArticles.length / maxCount) * 4)),
+      tooltipAlign: x < 18 ? "start" : x > 82 ? "end" : "center",
+      x,
+    });
+    if (date.getMonth() === 0 || index === 0) years.push({ label: String(date.getFullYear()), x });
+  }
+}
+---
+
+{months.length > 0 && (
+  <section class="archive-activity" aria-label={`${label} activity timeline`}>
+    <div class="archive-activity__line" aria-hidden="true"></div>
+    <div class="archive-activity__leading" aria-hidden="true">...</div>
+    {months.map((month) => (
+      <div
+        class="archive-activity__month"
+        data-level={month.level}
+        data-tooltip-align={month.tooltipAlign}
+        style={`--activity-x: ${month.x.toFixed(3)}%;`}
+        tabindex={month.count > 0 ? "0" : undefined}
+        aria-label={month.count > 0 ? `${month.count} posts in ${month.key}` : undefined}
+      >
+        {month.count > 0 && <span class="archive-activity__bar" aria-hidden="true"></span>}
+        <span class="archive-activity__dot" aria-hidden="true"></span>
+        <span class="archive-activity__label">{month.label}</span>
+        {month.count > 0 && (
+          <div class="archive-activity__tooltip" role="tooltip">
+            <strong>{month.count} {month.count === 1 ? "post" : "posts"} in {monthFormatter.format(new Date(`${month.key}-01T00:00:00`))}</strong>
+            <ol>
+              {month.articles.map((article) => (
+                <li><a href={article.href}><time>{article.dateLabel}</time><span>{article.title}</span></a></li>
+              ))}
+            </ol>
+          </div>
+        )}
+      </div>
+    ))}
+    {years.map((year) => <span class="archive-activity__year" style={`--activity-x: ${year.x.toFixed(3)}%;`}>{year.label}</span>)}
+  </section>
+)}
+
+<style>
+  .archive-activity {
+    --activity-axis: 3rem;
+    position: relative;
+    height: 7.25rem;
+    min-width: 0;
+    margin-block: 1.25rem 2rem;
+  }
+  .archive-activity__line {
+    position: absolute;
+    top: var(--activity-axis);
+    right: 0;
+    left: 1.4rem;
+    height: 1px;
+    background: color-mix(in srgb, var(--foreground) 28%, transparent);
+  }
+  .archive-activity__leading {
+    position: absolute;
+    top: calc(var(--activity-axis) - 0.68rem);
+    left: 0;
+    color: var(--text-muted);
+    font-size: var(--type-sm);
+  }
+  .archive-activity__month {
+    position: absolute;
+    top: var(--activity-axis);
+    left: var(--activity-x);
+    width: 0;
+    height: 0;
+    outline: none;
+  }
+  .archive-activity__bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    height: 0.75rem;
+    background: color-mix(in srgb, var(--foreground) 72%, transparent);
+    transform: translateX(-50%);
+    transform-origin: bottom;
+    transition: transform 160ms ease;
+  }
+  .archive-activity__month[data-level="2"] .archive-activity__bar { height: 1.1rem; }
+  .archive-activity__month[data-level="3"] .archive-activity__bar { height: 1.55rem; }
+  .archive-activity__month[data-level="4"] .archive-activity__bar { height: 2.05rem; }
+  .archive-activity__dot {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--foreground) 72%, transparent);
+    transform: translate(-50%, -50%);
+  }
+  .archive-activity__label {
+    position: absolute;
+    top: 0.85rem;
+    left: 0;
+    color: var(--foreground);
+    font-size: var(--type-xs);
+    font-weight: 500;
+    transform: translateX(-50%);
+  }
+  .archive-activity__year {
+    position: absolute;
+    top: 5.65rem;
+    left: var(--activity-x);
+    color: var(--text-muted);
+    font-size: var(--type-xs);
+    transform: translateX(-50%);
+  }
+  .archive-activity__tooltip {
+    --tooltip-x: -50%;
+    position: absolute;
+    z-index: 10;
+    bottom: 1.2rem;
+    left: 0;
+    width: min(19rem, calc(100vw - 2rem));
+    max-height: 16rem;
+    overflow: auto;
+    padding: 0.7rem;
+    color: var(--foreground);
+    background: color-mix(in srgb, var(--canvas) 96%, transparent);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-control);
+    box-shadow: var(--shadow-soft);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translate(var(--tooltip-x), 0.25rem);
+    transition: opacity 160ms ease, transform 160ms ease, visibility 0s linear 160ms;
+    backdrop-filter: blur(12px);
+  }
+  [data-tooltip-align="start"] .archive-activity__tooltip { --tooltip-x: 0; }
+  [data-tooltip-align="end"] .archive-activity__tooltip { --tooltip-x: -100%; }
+  .archive-activity__tooltip strong { display: block; font-size: var(--type-xs); }
+  .archive-activity__tooltip ol { display: grid; gap: 0.35rem; margin: 0.55rem 0 0; padding: 0; list-style: none; }
+  .archive-activity__tooltip a { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.55rem; color: inherit; font-size: var(--type-xs); text-decoration: none; }
+  .archive-activity__tooltip time { color: var(--text-faint); white-space: nowrap; }
+  .archive-activity__tooltip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .archive-activity__month:focus-within .archive-activity__tooltip { opacity: 1; visibility: visible; pointer-events: auto; transform: translate(var(--tooltip-x), 0); transition-delay: 0s; }
+  @media (hover: hover) {
+    .archive-activity__month:hover .archive-activity__bar { transform: translateX(-50%) scaleY(1.12); }
+    .archive-activity__month:hover .archive-activity__tooltip { opacity: 1; visibility: visible; pointer-events: auto; transform: translate(var(--tooltip-x), 0); transition-delay: 0s; }
+  }
+  @media (prefers-reduced-motion: reduce) { .archive-activity__bar, .archive-activity__tooltip { transition: none; } }
+</style>

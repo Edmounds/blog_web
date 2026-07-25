@@ -1,5 +1,5 @@
 ---
-import { BookOpen, ExternalLink } from "lucide-static";
+import { ArrowLeft, ArrowUp, BookOpen, ExternalLink, TableOfContents as TableOfContentsIcon } from "lucide-static";
 import type { ContentSummary } from "../../lib/content";
 import { render } from "astro:content";
 import { getLocaleDefinition, localizePath, type Locale } from "../../lib/i18n";
@@ -20,10 +20,17 @@ interface Props {
 const { item, locale = "zh-CN", next } = Astro.props;
 const { Content, headings } = await render(item.entry);
 const site = await getLocalizedSite(locale);
-const dateLabel = new Intl.DateTimeFormat(getLocaleDefinition(locale).dateLocale, { dateStyle: "long" }).format(item.createdAt);
+const localeDefinition = getLocaleDefinition(locale);
+const dateFormatter = new Intl.DateTimeFormat(localeDefinition.dateLocale, { dateStyle: "long" });
+const dateLabel = dateFormatter.format(item.createdAt);
+const updatedLabel = dateFormatter.format(item.updatedAt ?? item.createdAt);
 const canonicalPath = localizePath(`/${item.section}/${item.slug}/`, locale);
 const labels = site.copy;
 const hasMath = /(^|\n)\s*\$\$?|\\\(|\\\[/.test(item.entry.body ?? "");
+const sectionLabels = { blog: "Blog", note: "Note", project: "Project" } as const;
+const sectionLabel = sectionLabels[item.section];
+const backLabel = `Back to ${sectionLabel}`;
+const words = (item.entry.body ?? "").replace(/```[\s\S]*?```/g, " ").replace(/<[^>]+>/g, " ").match(/[\p{L}\p{N}]+/gu)?.length ?? 0;
 const articleJsonLd = JSON.stringify({
   "@context": "https://schema.org",
   "@type": item.section === "project" ? "CreativeWork" : "BlogPosting",
@@ -33,6 +40,7 @@ const articleJsonLd = JSON.stringify({
   dateModified: (item.updatedAt ?? item.createdAt).toISOString(),
   url: new URL(canonicalPath, "https://blog.muelsyse.us").toString(),
   keywords: item.tags,
+  wordCount: words,
   author: { "@type": "Person", name: "Chasen Chen" },
 }).replace(/</g, "\\u003c");
 ---
@@ -46,54 +54,208 @@ const articleJsonLd = JSON.stringify({
   hasMath={hasMath}
 >
   <script slot="head" is:inline type="application/ld+json" set:html={articleJsonLd} />
-  <article class="article-page app-container">
-    <header class="article-page__header">
-      <a href={localizePath(`/${item.section}/`, locale)}>Back to {item.section}</a>
-      <h1>{item.title}</h1>
-      <p class="article-page__description">{item.description}</p>
-      <div class="article-page__meta"><time datetime={item.createdAt.toISOString()}>{dateLabel}</time><span>{item.readingTime}</span></div>
-      {item.tags.length > 0 && <div class="article-page__tags" aria-label="Tags">{item.tags.map((tag) => <span>#{tag}</span>)}</div>}
-      {item.section === "project" && (item.projectUrl || item.docUrl) && (
-        <nav class="article-page__links" aria-label="Project links">
-          {item.projectUrl && <a href={item.projectUrl} target="_blank" rel="noreferrer"><Icon svg={ExternalLink} />Project</a>}
-          {item.docUrl && <a href={item.docUrl} target="_blank" rel="noreferrer"><Icon svg={BookOpen} />Docs</a>}
-        </nav>
-      )}
-    </header>
+  <article class="article-page app-container" data-article-page>
+    <div class="article-page__content">
+      <div class="article-page__main">
+        <a class="article-page__back" href={localizePath(`/${item.section}/`, locale)}>
+          <Icon svg={ArrowLeft} /><span>{backLabel}</span>
+        </a>
 
-    <div class="article-page__body">
-      <aside><TableOfContents headings={headings} labels={{ title: labels.tableOfContents, introduction: labels.introduction, collapse: labels.collapseSection, expand: labels.expandSection }} /></aside>
-      <div class="article-prose ui-prose"><Content /></div>
+        <header class="article-page__header" data-article-introduction>
+          <h1>{item.title}</h1>
+          {item.description && <p class="article-page__description">{item.description}</p>}
+          {item.tags.length > 0 && (
+            <p class="article-page__meta-line"><span>Type:</span> <strong>{item.tags.join(" / ")}</strong></p>
+          )}
+          <p class="article-page__meta-line">
+            <span>Created:</span> <strong>{dateLabel}</strong>
+            <i>/</i>
+            <span>Updated:</span> <strong>{updatedLabel}</strong>
+          </p>
+          <p class="article-page__meta-line">
+            <span>{labels.blogMetaRead}:</span> <strong>{item.readingTime}</strong>
+            <i>/</i>
+            <span>Words:</span> <strong>{words.toLocaleString(localeDefinition.dateLocale)}</strong>
+          </p>
+          {item.section === "project" && (item.projectUrl || item.docUrl) && (
+            <nav class="article-page__links" aria-label="Project links">
+              {item.projectUrl && <a href={item.projectUrl} target="_blank" rel="noreferrer" aria-label="Project" title="Project"><Icon svg={ExternalLink} /></a>}
+              {item.docUrl && <a href={item.docUrl} target="_blank" rel="noreferrer" aria-label="Docs" title="Docs"><Icon svg={BookOpen} /></a>}
+            </nav>
+          )}
+        </header>
+
+        <div class="article-prose ui-prose"><Content /></div>
+        <MarkdownEnhancements locale={locale} />
+
+        <div class="article-page__interaction">
+          <PostEngagement contentId={item.contentId} locale={locale} labels={labels} />
+          <CommentsSection contentId={item.contentId} labels={labels} />
+        </div>
+
+        {next && (
+          <a class="article-page__next" href={localizePath(`/${item.section}/${next.slug}/`, locale)}>
+            <span>{labels.blogNextArticle}</span><strong>{next.title}</strong>
+          </a>
+        )}
+      </div>
+
+      <aside class="article-page__toc" aria-label={labels.tableOfContents} data-article-toc>
+        <TableOfContents headings={headings} labels={{ title: labels.tableOfContents, introduction: labels.introduction }} />
+      </aside>
     </div>
 
-    <MarkdownEnhancements locale={locale} />
-
-    <div class="article-page__interaction">
-      <PostEngagement contentId={item.contentId} locale={locale} labels={labels} />
-      <CommentsSection contentId={item.contentId} labels={labels} />
+    <div class="article-page__floating-actions">
+      <button class="article-page__toc-mobile" type="button" aria-label={labels.tableOfContents} aria-expanded="false" data-article-toc-trigger data-visible="true">
+        <Icon svg={TableOfContentsIcon} />
+      </button>
+      <button type="button" aria-label="Back to top" data-scroll-top>
+        <Icon svg={ArrowUp} />
+      </button>
     </div>
-
-    {next && <a class="article-page__next" href={localizePath(`/${item.section}/${next.slug}/`, locale)}><span>Next</span><strong>{next.title}</strong></a>}
   </article>
 </BaseLayout>
 
+<script>
+  const initArticleControls = () => {
+    document.querySelectorAll<HTMLElement>("[data-article-page]:not([data-controls-initialized])").forEach((page) => {
+      page.dataset.controlsInitialized = "true";
+      const toc = page.querySelector<HTMLElement>("[data-article-toc]");
+      const tocTrigger = page.querySelector<HTMLButtonElement>("[data-article-toc-trigger]");
+      const scrollTop = page.querySelector<HTMLButtonElement>("[data-scroll-top]");
+      const closeToc = () => { if (toc) toc.dataset.open = "false"; tocTrigger?.setAttribute("aria-expanded", "false"); };
+      const toggleToc = () => {
+        if (!toc) return;
+        const open = toc.dataset.open !== "true";
+        toc.dataset.open = String(open);
+        tocTrigger?.setAttribute("aria-expanded", String(open));
+      };
+      const onPointer = (event: PointerEvent) => {
+        if (toc?.dataset.open === "true" && event.target instanceof Node && !toc.contains(event.target) && !tocTrigger?.contains(event.target)) closeToc();
+      };
+      const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") closeToc(); };
+      const onScroll = () => { if (scrollTop) scrollTop.dataset.visible = String(window.scrollY > 500); };
+      tocTrigger?.addEventListener("click", toggleToc);
+      const onTocClick = (event: Event) => { if (event.target instanceof Element && event.target.closest("a")) closeToc(); };
+      const onScrollTop = () => window.scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      toc?.addEventListener("click", onTocClick);
+      scrollTop?.addEventListener("click", onScrollTop);
+      document.addEventListener("pointerdown", onPointer);
+      document.addEventListener("keydown", onKey);
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+      page.addEventListener("astro:before-swap", () => {
+        tocTrigger?.removeEventListener("click", toggleToc);
+        toc?.removeEventListener("click", onTocClick);
+        scrollTop?.removeEventListener("click", onScrollTop);
+        document.removeEventListener("pointerdown", onPointer);
+        document.removeEventListener("keydown", onKey);
+        window.removeEventListener("scroll", onScroll);
+      }, { once: true });
+    });
+  };
+  initArticleControls();
+  document.addEventListener("astro:page-load", initArticleControls);
+</script>
+
 <style>
-  .article-page { --article-content-width: 46rem; padding-block: clamp(4rem, 9vw, 8rem) 6rem; }
-  .article-page__header { max-width: 60rem; margin-inline: auto; }
-  .article-page__header > a { color: var(--text-faint); font-size: var(--type-sm); text-decoration: none; }
-  .article-page__header h1 { margin: 1rem 0; font-size: clamp(2.6rem, 7vw, 6.5rem); line-height: 0.98; overflow-wrap: anywhere; }
-  .article-page__description { max-width: 46rem; color: var(--text-muted); font-size: var(--type-md); }
-  .article-page__meta { display: flex; gap: 1rem; margin-top: 1.25rem; color: var(--text-faint); font-size: var(--type-sm); }
-  .article-page__tags { display: flex; flex-wrap: wrap; gap: 0.4rem 0.8rem; margin-top: 0.75rem; color: var(--text-faint); font-size: var(--type-sm); }
-  .article-page__links { display: flex; flex-wrap: wrap; gap: 1.25rem; margin-top: 1.5rem; }
-  .article-page__links a { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--foreground); font-size: var(--type-sm); text-decoration: none; }
+  .article-page { --article-content-width: 46rem; padding-block: clamp(2.5rem, 6vw, 5rem) 6rem; }
+  .article-page__content {
+    display: grid;
+    grid-template-columns: minmax(0, var(--article-content-width)) minmax(13rem, 17rem);
+    justify-content: center;
+    gap: clamp(3rem, 7vw, 7rem);
+  }
+  .article-page__main { min-width: 0; }
+  .article-page__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-bottom: 1rem;
+    padding: 0.48rem 0.7rem;
+    color: var(--foreground-soft);
+    font-size: var(--type-sm);
+    text-decoration: none;
+    background: color-mix(in srgb, var(--foreground) 3.5%, transparent);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-control);
+    transition: color 180ms ease, transform 180ms ease, border-color 180ms ease;
+  }
+  .article-page__back:hover, .article-page__back:focus-visible { color: var(--foreground); border-color: var(--border-strong); transform: translateX(-0.12rem); }
+  .article-page__back :global(svg) { width: 1rem; height: 1rem; }
+  .article-page__header { margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border-soft); }
+  .article-page__header h1 {
+    margin: 0;
+    color: transparent;
+    font-size: clamp(1.82rem, 1.52rem + 0.9vw, 2.95rem);
+    font-weight: 400;
+    line-height: 1.05;
+    overflow-wrap: anywhere;
+    -webkit-text-stroke: 1px var(--foreground);
+    paint-order: stroke fill;
+  }
+  :global(html:lang(zh-CN)) .article-page__header h1, :global(html:lang(zh-TW)) .article-page__header h1, :global(html:lang(ja)) .article-page__header h1 { font-size: clamp(1.56rem, 1.36rem + 0.6vw, 2.28rem); }
+  .article-page__description { margin: 0.65rem 0 0; color: var(--foreground-soft); line-height: 1.7; }
+  .article-page__meta-line { display: flex; flex-wrap: wrap; gap: 0.25rem 0.45rem; margin: 0.75rem 0 0; color: var(--text-muted); font-size: var(--type-sm); font-style: italic; }
+  .article-page__meta-line strong { color: var(--foreground-soft); font-weight: 600; }
+  .article-page__meta-line i { color: var(--text-faint); font-style: normal; }
+  .article-page__links { display: flex; gap: 0.45rem; margin-top: 0.9rem; }
+  .article-page__links a { display: inline-flex; width: 2.25rem; height: 2.25rem; align-items: center; justify-content: center; color: var(--foreground); border: 1px solid var(--border-soft); border-radius: 999px; }
   .article-page__links :global(svg) { width: 1rem; height: 1rem; }
-  .article-page__body { display: grid; width: min(100%, calc(16rem + var(--article-content-width) + clamp(2rem, 5vw, 5rem))); grid-template-columns: minmax(12rem, 16rem) minmax(0, var(--article-content-width)); justify-content: center; gap: clamp(2rem, 5vw, 5rem); margin: 4rem auto 0; }
-  .article-page__body aside { position: sticky; top: 6rem; align-self: start; }
-  .article-prose { min-width: 0; font-size: var(--type-content-body); line-height: 1.85; }
-  .article-page__interaction, .article-page__next { display: block; max-width: var(--article-content-width); margin: 4rem auto 0; }
+  .article-page__toc { position: sticky; top: 6.25rem; align-self: start; max-height: calc(100vh - 7.25rem); }
+  .article-prose { min-width: 0; }
+  .article-page__interaction, .article-page__next { display: block; margin-top: 4rem; }
   .article-page__next { padding-top: 1.5rem; color: var(--foreground); text-decoration: none; border-top: 1px solid var(--border-soft); }
   .article-page__next span { display: block; color: var(--text-faint); font-size: var(--type-xs); }
   .article-page__next strong { display: block; margin-top: 0.4rem; font-size: var(--type-lg); }
-  @media (max-width: 56rem) { .article-page__body { width: min(100%, var(--article-content-width)); grid-template-columns: 1fr; } .article-page__body aside { position: static; } }
+  .article-page__floating-actions {
+    position: fixed;
+    right: max(1rem, env(safe-area-inset-right));
+    bottom: calc(1rem + env(safe-area-inset-bottom));
+    z-index: 45;
+    display: flex;
+    gap: 0.65rem;
+    pointer-events: none;
+  }
+  .article-page__floating-actions button {
+    display: flex;
+    width: 3.25rem;
+    height: 3.25rem;
+    align-items: center;
+    justify-content: center;
+    color: var(--foreground);
+    background: color-mix(in srgb, var(--canvas) 90%, transparent);
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    box-shadow: var(--shadow-soft);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 180ms ease, visibility 180ms ease;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .article-page__floating-actions button[data-visible="true"] { opacity: 1; visibility: visible; pointer-events: auto; }
+  .article-page__floating-actions :global(svg) { width: 1.2rem; height: 1.2rem; }
+  @media (max-width: 56.25rem) {
+    .article-page__content { grid-template-columns: minmax(0, 1fr); }
+    .article-page__toc { display: none; }
+    .article-page__toc[data-open="true"] {
+      position: fixed;
+      right: 1rem;
+      bottom: calc(5rem + env(safe-area-inset-bottom));
+      z-index: 44;
+      display: block;
+      width: min(20rem, calc(100vw - 2rem));
+      max-height: min(65vh, 30rem);
+      overflow: auto;
+      padding: 0.9rem;
+      background: color-mix(in srgb, var(--canvas) 96%, transparent);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-control);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(14px);
+    }
+    .article-page__floating-actions .article-page__toc-mobile { display: flex !important; opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
+  }
 </style>

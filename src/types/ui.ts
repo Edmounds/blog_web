@@ -8,6 +8,7 @@ export interface ArchivePostSummaryModel {
   summary: string;
   href: string;
   dateLabel: string;
+  dateIso: string;
   readingTime: string;
   tags: string[];
 }

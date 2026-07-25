@@ -1,0 +1,138 @@
+---
+const legendLevels = [0, 1, 2, 3, 4];
+---
+
+<a
+  class="github-heatmap"
+  href="https://github.com/Edmounds"
+  target="_blank"
+  rel="noreferrer"
+  aria-label="View Edmounds on GitHub"
+  data-github-heatmap
+  data-state="loading"
+>
+  <span class="github-heatmap__summary" data-github-summary>GitHub contribution heatmap</span>
+  <div class="github-heatmap__calendar" aria-hidden="true">
+    <div class="github-heatmap__months" data-github-months></div>
+    <ol class="github-heatmap__grid" data-github-grid></ol>
+  </div>
+  <div class="github-heatmap__footer" aria-hidden="true">
+    <span class="github-heatmap__count" data-github-count>contributions</span>
+    <span class="github-heatmap__legend">
+      <span>Less</span>
+      <span class="github-heatmap__legend-scale">
+        {legendLevels.map((level) => <span class="github-heatmap__legend-cell" data-level={level}></span>)}
+      </span>
+      <span>More</span>
+    </span>
+  </div>
+</a>
+
+<script>
+  interface HeatmapDay {
+    count: number;
+    date: string;
+    dayIndex: number;
+    isBlank: boolean;
+    label: string;
+    level: number;
+    weekIndex: number;
+  }
+
+  interface HeatmapMonth { label: string; weekIndex: number }
+  interface HeatmapPayload {
+    days: HeatmapDay[];
+    months: HeatmapMonth[];
+    rangeEnd: string;
+    rangeStart: string;
+    state: "ready" | "fallback";
+    total: number;
+    weekCount: number;
+  }
+
+  const compactCount = (total: number) => total >= 1_000
+    ? `${Intl.NumberFormat("en-US", { maximumFractionDigits: 1, notation: "compact" }).format(total).toLowerCase()} contributions`
+    : `${total.toLocaleString("en-US")} contributions`;
+
+  function bindGitHubHeatmaps() {
+    document.querySelectorAll('[data-github-heatmap]').forEach((root) => {
+      if (!(root instanceof HTMLAnchorElement) || root.dataset.bound === "true") return;
+      root.dataset.bound = "true";
+      const months = root.querySelector('[data-github-months]');
+      const grid = root.querySelector('[data-github-grid]');
+      const count = root.querySelector('[data-github-count]');
+      const summary = root.querySelector('[data-github-summary]');
+      if (!(months instanceof HTMLElement) || !(grid instanceof HTMLOListElement)) return;
+
+      fetch("/api/github-contributions.json", { headers: { accept: "application/json" } })
+        .then((response) => response.ok ? response.json() as Promise<HeatmapPayload> : Promise.reject())
+        .then((heatmap) => {
+          root.dataset.state = heatmap.state;
+          root.style.setProperty("--github-week-count", String(heatmap.weekCount));
+          months.replaceChildren(...heatmap.months.map((month) => {
+            const label = document.createElement("span");
+            label.className = "github-heatmap__month";
+            label.style.gridColumn = String(month.weekIndex + 1);
+            label.textContent = month.label;
+            return label;
+          }));
+          grid.replaceChildren(...heatmap.days.map((day) => {
+            const cell = document.createElement("li");
+            cell.className = "github-heatmap__cell";
+            cell.dataset.level = String(day.level);
+            if (day.isBlank) cell.dataset.blank = "true";
+            cell.style.gridColumn = String(day.weekIndex + 1);
+            cell.style.gridRow = String(day.dayIndex + 1);
+            cell.style.setProperty("--github-hover-delay", `${day.weekIndex * 8}ms`);
+            if (day.label) cell.title = day.label;
+            return cell;
+          }));
+          if (count) count.textContent = heatmap.state === "ready" ? compactCount(heatmap.total) : "contributions";
+          if (summary) summary.textContent = heatmap.state === "ready"
+            ? `${heatmap.total.toLocaleString("en-US")} GitHub contributions in the last year`
+            : "GitHub contribution heatmap";
+        })
+        .catch(() => { root.dataset.state = "fallback"; });
+    });
+  }
+
+  bindGitHubHeatmaps();
+  document.addEventListener("astro:page-load", bindGitHubHeatmaps);
+</script>
+
+<style is:global>
+  .github-heatmap {
+    --github-empty: color-mix(in srgb, var(--foreground) 8%, transparent);
+    --github-active: var(--foreground);
+    display: grid;
+    width: 100%;
+    gap: 0.55rem;
+    color: var(--foreground);
+    text-align: left;
+    text-decoration: none;
+  }
+  .github-heatmap__summary { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .github-heatmap__calendar { display: grid; min-width: 0; gap: 0.22rem; }
+  .github-heatmap__months { display: grid; grid-template-columns: repeat(var(--github-week-count, 53), 1fr); height: 1rem; line-height: 1; }
+  .github-heatmap__month { display: block; overflow: visible; color: var(--text-muted); font-size: clamp(0.68rem, 0.62rem + 0.12vw, 0.82rem); font-weight: 600; white-space: nowrap; }
+  .github-heatmap__grid { display: grid; grid-template-columns: repeat(var(--github-week-count, 53), 1fr); grid-template-rows: repeat(7, 1fr); gap: clamp(2px, 0.22vw, 3px); width: 100%; aspect-ratio: var(--github-week-count, 53) / 7; margin: 0; padding: 0; list-style: none; }
+  .github-heatmap__cell, .github-heatmap__legend-cell { --github-fill: var(--github-empty); background: var(--github-fill); border-radius: 3px; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 5%, transparent); }
+  .github-heatmap__cell { width: 100%; height: 100%; transform-origin: center; }
+  .github-heatmap__cell[data-blank="true"] { background: transparent; box-shadow: none; }
+  :is(.github-heatmap__cell, .github-heatmap__legend-cell)[data-level="1"] { --github-fill: color-mix(in srgb, var(--github-active) 22%, transparent); }
+  :is(.github-heatmap__cell, .github-heatmap__legend-cell)[data-level="2"] { --github-fill: color-mix(in srgb, var(--github-active) 42%, transparent); }
+  :is(.github-heatmap__cell, .github-heatmap__legend-cell)[data-level="3"] { --github-fill: color-mix(in srgb, var(--github-active) 64%, transparent); }
+  :is(.github-heatmap__cell, .github-heatmap__legend-cell)[data-level="4"] { --github-fill: color-mix(in srgb, var(--github-active) 86%, transparent); }
+  .github-heatmap__footer { display: flex; min-height: 1rem; align-items: center; justify-content: space-between; gap: 0.75rem; color: var(--text-muted); font-size: clamp(0.68rem, 0.62rem + 0.12vw, 0.82rem); font-weight: 500; line-height: 1; }
+  .github-heatmap__count { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .github-heatmap__legend { display: flex; flex: 0 0 auto; align-items: center; gap: 0.4rem; }
+  .github-heatmap__legend-scale { display: inline-grid; grid-template-columns: repeat(5, 0.72rem); gap: 0.16rem; }
+  .github-heatmap__legend-cell { width: 0.72rem; height: 0.72rem; }
+  .github-heatmap[data-state="loading"] :is(.github-heatmap__grid, .github-heatmap__months), .github-heatmap[data-state="fallback"] :is(.github-heatmap__grid, .github-heatmap__legend-scale) { opacity: 0.45; }
+  @keyframes github-cell-sweep { 0% { opacity: 0.45; transform: scale(0.72); } 72% { opacity: 1; transform: scale(1.08); } 100% { opacity: 1; transform: scale(1); } }
+  @media (hover: hover) { .github-heatmap:hover .github-heatmap__cell:not([data-blank="true"]) { animation: github-cell-sweep 0.34s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: var(--github-hover-delay, 0ms); } }
+  .github-heatmap:focus-visible { outline-color: var(--foreground); }
+  .github-heatmap:focus-visible .github-heatmap__cell:not([data-blank="true"]) { animation: github-cell-sweep 0.34s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: var(--github-hover-delay, 0ms); }
+  @media (max-width: 30rem) { .github-heatmap__month:nth-child(even) { visibility: hidden; } .github-heatmap__footer { align-items: flex-start; } .github-heatmap__legend { gap: 0.28rem; } .github-heatmap__legend-scale { grid-template-columns: repeat(5, 0.58rem); } .github-heatmap__legend-cell { width: 0.58rem; height: 0.58rem; } }
+  @media (prefers-reduced-motion: reduce) { .github-heatmap:hover .github-heatmap__cell, .github-heatmap:focus-visible .github-heatmap__cell { animation: none; } }
+</style>

@@ -34,9 +34,12 @@ test("the sticky header uses an opaque theme canvas and larger desktop navigatio
   assert.doesNotMatch(header, /\.(?:site-header|mobile-menu)\s*\{[^}]*\b(?:border|box-shadow|backdrop-filter)\s*:/s);
 });
 
-test("top-level section headers render titles without nearby descriptions or category links", () => {
+test("top-level writing sections use the compact Astro-star archive layout", () => {
   const content = read("src/components/sections/ContentSection.astro");
-  assert.match(content, /<header class="content-listing__header">\s*<h1>\{title\}<\/h1>\s*<\/header>/);
+  assert.match(content, /<h1>All \{sectionLabel\}<\/h1>/);
+  assert.match(content, /font-size:\s*clamp\(2\.3rem,\s*2rem \+ 1\.5vw,\s*4\.3rem\)/);
+  assert.match(content, /ArchiveActivityTimeline/);
+  assert.match(content, /ArchiveTableOfContents/);
   assert.doesNotMatch(content, /View categories|content-listing__categories|Essays and longer-form writing|Short observations and working notes|Selected work and experiments/);
 
   const art = read("src/components/sections/ArtSection.astro");
@@ -155,7 +158,7 @@ test("only books and movies expose art translation controls or request translate
   assert.match(admin, /const TRANSLATED_TYPES = new Set<ArtType>\(\["book", "movie"\]\)/);
   assert.match(admin, /TRANSLATED_TYPES\.has\(type\)[\s\S]*aria-label="翻译语言"/);
   assert.match(admin, /TRANSLATED_TYPES\.has\(type\)[\s\S]*生成翻译草稿/);
-  assert.match(admin, /if \(TRANSLATED_TYPES\.has\(type\)\) await translate/);
+  assert.doesNotMatch(admin, /selectCandidate[\s\S]*if \(TRANSLATED_TYPES\.has\(type\)\) await translate/);
   assert.match(admin, /JSON\.stringify\(\{ type, \.\.\.source \}\)/);
   assert.match(admin, /translations: translationsForType\(form\.type, form\.translations\)/);
   assert.match(translateApi, /TRANSLATED_TYPES\.has\(type\)/);
@@ -186,31 +189,24 @@ test("localized RSS routes and the WakaTime proxy support both server-side key n
   assert.match(envTypes, /WAKATIME_API_KEY\?: string/);
 });
 
-test("the homepage shows only the compact WakaTime badge and a stable theme-aware GitHub animation", () => {
+test("the homepage renders the expanded WakaTime badge and native GitHub heatmap", () => {
   const home = read("src/components/sections/HomeSection.astro");
   const badge = read("src/pages/api/wakatime-badge.svg.ts");
-  const lightUrl = "https://raw.githubusercontent.com/Edmounds/Edmounds/refs/heads/output/github-contribution-grid-snake.svg";
-  const darkUrl = "https://raw.githubusercontent.com/Edmounds/Edmounds/refs/heads/output/github-contribution-grid-snake-dark.svg";
+  const heatmap = read("src/components/domain/GitHubHeatmap.astro");
 
   assert.equal((home.match(/\/api\/wakatime-badge\.svg/g) ?? []).length, 1);
-  assert.doesNotMatch(home, /\/api\/wakatime-status\.svg|wakatime-status/);
+  assert.match(home, /import GitHubHeatmap/);
+  assert.match(home, /<GitHubHeatmap \/>/);
   assert.match(badge, /getCachedWakaTimeAllTime/);
-  assert.match(badge, /aria-label="Code time/);
-  assert.match(badge, /width="160" height="24"/);
-  assert.match(badge, />CodeTime</);
-  assert.doesNotMatch(badge, /<rect/);
-  assert.match(home, /<\/nav>[\s\S]*class="codetime-badge"[\s\S]*profile-card__intro/);
+  assert.match(badge, /width="424" height="52"/);
+  assert.match(badge, /<rect/);
+  assert.match(badge, />Codetime</);
   assert.match(home, /html\.dark[^}]*codetime-badge[^}]*filter:\s*invert\(1\)/);
-  assert.doesNotMatch(badge, /Today|language|editor/);
-  assert.doesNotMatch(home, /Today's coding activity/);
-  assert.match(home, new RegExp(lightUrl.replaceAll(".", "\\.")));
-  assert.match(home, new RegExp(darkUrl.replaceAll(".", "\\.")));
-  assert.match(home, /<picture>[\s\S]*prefers-color-scheme: dark[\s\S]*prefers-color-scheme: light[\s\S]*<img/);
-  assert.match(home, /width="880" height="192"/);
-  assert.match(home, /aspect-ratio:\s*880\s*\/\s*192/);
-  assert.match(home, /document\.documentElement\.classList\.contains\("dark"\)/);
-  assert.match(home, /blog:theme-change/);
-  assert.match(home, /querySelectorAll\("source"\)/);
+  assert.match(heatmap, /\/api\/github-contributions\.json/);
+  assert.match(heatmap, /data-github-grid/);
+  assert.match(heatmap, /data-github-months/);
+  assert.match(heatmap, /prefers-reduced-motion/);
+  assert.doesNotMatch(home, /github-contribution-grid-snake/);
 });
 
 test("the homepage aligns latest content with the profile and lists projects last", () => {
@@ -244,7 +240,7 @@ test("category archive routes are removed in favor of tags", () => {
   assert.throws(() => read("src/pages/[locale]/[section]-archive/[archiveSlug].astro"));
 
   const content = read("src/components/sections/ContentSection.astro");
-  assert.match(content, /post\.tags\.map/);
+  assert.doesNotMatch(content, /View categories|category archive/);
 });
 
 test("About renders the profile as a normal Markdown article with the code-rain background", () => {
@@ -260,4 +256,19 @@ test("Project detail supports project and documentation links", () => {
   const detail = read("src/components/domain/ContentDetail.astro");
   assert.match(detail, /item\.projectUrl/);
   assert.match(detail, /item\.docUrl/);
+});
+
+test("writing detail pages keep interactions while moving the table of contents to the right", () => {
+  const detail = read("src/components/domain/ContentDetail.astro");
+  const toc = read("src/components/domain/TableOfContents.astro");
+
+  assert.match(detail, /article-page__content[\s\S]*article-prose[\s\S]*article-page__toc/);
+  assert.doesNotMatch(detail, /<main class="article-page__main">/);
+  assert.match(detail, /PostEngagement/);
+  assert.match(detail, /CommentsSection/);
+  assert.match(detail, /article-page__toc-mobile/);
+  assert.match(detail, /data-scroll-top/);
+  assert.match(toc, /data-toc-progress/);
+  assert.match(toc, /data-toc-link/);
+  assert.doesNotMatch(toc, /data-toc-expand|toc-children/);
 });

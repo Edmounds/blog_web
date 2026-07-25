@@ -18,14 +18,19 @@ test("writing collections use tags instead of category, type, or cover fields", 
   assert.doesNotMatch(localized, /default-cover|\bcover:|\bcategory:/);
 });
 
-test("all writing sections render as list-only tag-based listings", async () => {
+test("all writing sections render as localized Astro-star timeline archives", async () => {
   const section = await read("src/components/sections/ContentSection.astro");
   const models = await read("src/lib/view-models.ts");
 
   assert.doesNotMatch(section, /<img\b|ArchiveGrid|ContentCard/);
-  assert.match(section, /post\.tags\.map/);
+  assert.match(section, /All \{sectionLabel\}/);
+  assert.match(section, /ArchiveActivityTimeline/);
+  assert.match(section, /ArchiveTableOfContents/);
+  assert.match(section, /post\.dateLabel/);
+  assert.doesNotMatch(section, /post\.summary|post\.readingTime|post\.tags\.map/);
   assert.doesNotMatch(models, /\bcover\b|\bcategory\b|\bimage\b/);
   assert.match(models, /tags:\s*post\.archiveTags/);
+  assert.match(models, /dateIso:\s*post\.dateIso/);
 });
 
 test("the current blog entry uses only tags for classification metadata", async () => {

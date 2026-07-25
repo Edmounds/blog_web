@@ -1,4 +1,6 @@
 ---
+import ArchiveActivityTimeline from "../domain/ArchiveActivityTimeline.astro";
+import ArchiveTableOfContents from "../domain/ArchiveTableOfContents.astro";
 import { getLocalizedContentSections } from "../../lib/localized-content";
 import type { ContentSection as Section } from "../../lib/content";
 import type { Locale } from "../../lib/i18n";
@@ -12,91 +14,132 @@ interface Props {
 const { section, locale = "zh-CN" } = Astro.props;
 const sourceSections = await getLocalizedContentSections(locale, section);
 const sections = toArchivePostSections(sourceSections, locale, section);
-const title = section[0].toUpperCase() + section.slice(1);
-const empty = `No ${section}s published yet.`;
+const sectionLabel = `${section[0].toUpperCase()}${section.slice(1)}s`;
+const empty = `No ${sectionLabel.toLowerCase()} published yet.`;
+const years = sections.map((group) => group.year);
 ---
 
 <div class="content-listing app-container">
-  <header class="content-listing__header">
-    <h1>{title}</h1>
-  </header>
+  <div class="content-listing__layout">
+    <main class="content-listing__main">
+      <header class="content-listing__header">
+        <h1>All {sectionLabel}</h1>
+      </header>
 
-  {sections.length === 0 ? (
-    <p class="content-listing__empty" role="status">{empty}</p>
-  ) : (
-    <div class="content-timeline">
-      {sections.map((group) => (
-        <section class="content-timeline__group" aria-labelledby={`${section}-${group.year}`}>
-          <h2 id={`${section}-${group.year}`}>{group.year}</h2>
-          <ol>
-            {group.posts.map((post) => (
-              <li>
-                <time>{post.dateLabel}</time>
-                <a href={post.href}>
-                  <span>{post.title}</span>
-                  <span aria-hidden="true">-&gt;</span>
-                </a>
-                <p>{post.summary}</p>
-                {post.tags.length > 0 && (
-                  <div class="content-timeline__tags" aria-label="Tags">
-                    {post.tags.map((tag) => <span>#{tag}</span>)}
-                  </div>
-                )}
-              </li>
+      {sections.length === 0 ? (
+        <p class="content-listing__empty" role="status">{empty}</p>
+      ) : (
+        <>
+          <ArchiveActivityTimeline sections={sections} label={sectionLabel} locale={locale} />
+          <div class="content-timeline">
+            {sections.map((group) => (
+              <section class="content-timeline__group" aria-labelledby={`year-${group.year}`}>
+                <h2 id={`year-${group.year}`}>{group.year}</h2>
+                <ol aria-label={`${group.year} ${sectionLabel}`}>
+                  {group.posts.map((post) => (
+                    <li>
+                      <time datetime={post.dateIso}>{post.dateLabel}</time>
+                      <a href={post.href}>
+                        <span>{post.title}</span>
+                        <span class="content-timeline__arrow" aria-hidden="true"></span>
+                      </a>
+                    </li>
+                  ))}
+                </ol>
+              </section>
             ))}
-          </ol>
-        </section>
-      ))}
-    </div>
-  )}
+          </div>
+        </>
+      )}
+    </main>
+    <ArchiveTableOfContents years={years} label={`${sectionLabel} archive navigation`} />
+  </div>
 </div>
 
 <style>
   .content-listing {
     min-height: calc(100vh - 5rem);
-    padding-block: clamp(5rem, 10vh, 8rem) 5rem;
+    padding-block: clamp(3.5rem, 7vh, 6rem) 5rem;
   }
+  .content-listing__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 70rem) minmax(8rem, 12rem);
+    justify-content: center;
+    gap: clamp(3rem, 7vw, 7rem);
+  }
+  .content-listing__main { min-width: 0; }
   .content-listing__header {
-    max-width: 58rem;
-    margin-bottom: clamp(3rem, 7vw, 6rem);
+    margin-bottom: 1.25rem;
+    padding-bottom: clamp(2rem, 4vw, 3.5rem);
+    border-bottom: 1px solid var(--border-soft);
   }
   .content-listing__header h1 {
     margin: 0;
     color: transparent;
-    font-size: clamp(3.2rem, 8vw, 8rem);
-    line-height: 0.94;
-    -webkit-text-stroke: 1.3px var(--foreground);
+    font-size: clamp(2.3rem, 2rem + 1.5vw, 4.3rem);
+    font-weight: 400;
+    line-height: 1.05;
+    overflow-wrap: anywhere;
+    -webkit-text-stroke: 1px var(--foreground);
+    paint-order: stroke fill;
   }
   .content-listing__empty { color: var(--text-muted); }
-  .content-timeline { max-width: 72rem; }
-  .content-timeline__group {
-    display: grid;
-    grid-template-columns: minmax(4.5rem, 8rem) minmax(0, 1fr);
-    gap: clamp(1.5rem, 4vw, 4rem);
-    padding-block: 1.5rem;
-    border-top: 1px solid var(--border-soft);
-  }
+  .content-timeline { display: grid; gap: 2.5rem; }
+  .content-timeline__group { display: grid; gap: 0.9rem; scroll-margin-top: 7rem; }
   .content-timeline__group h2 {
     margin: 0;
-    color: transparent;
-    font-size: var(--type-xl);
-    -webkit-text-stroke: 1px var(--foreground);
-  }
-  .content-timeline ol { margin: 0; padding: 0; list-style: none; }
-  .content-timeline li {
-    display: grid;
-    grid-template-columns: 6rem minmax(0, 1fr);
-    gap: 0.35rem 1rem;
-    padding: 1rem 0;
+    padding-bottom: 0.55rem;
+    color: var(--foreground);
+    font-size: var(--type-lg);
+    font-weight: 600;
+    line-height: 1.35;
     border-bottom: 1px solid var(--border-soft);
   }
-  .content-timeline time { color: var(--text-faint); font-family: var(--font-mono); font-size: var(--type-xs); }
-  .content-timeline a { display: flex; justify-content: space-between; gap: 1rem; color: var(--foreground); font-weight: 600; text-decoration: none; }
-  .content-timeline p { grid-column: 2; margin: 0; color: var(--text-muted); font-size: var(--type-sm); }
-  .content-timeline__tags { grid-column: 2; display: flex; flex-wrap: wrap; gap: 0.4rem 0.8rem; color: var(--text-faint); font-size: var(--type-xs); }
+  .content-timeline ol { display: grid; gap: 0.65rem; margin: 0; padding: 0; list-style: none; }
+  .content-timeline li {
+    display: grid;
+    grid-template-columns: minmax(6rem, auto) minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0.9rem;
+  }
+  .content-timeline time {
+    color: var(--text-muted);
+    font-size: var(--type-sm);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .content-timeline a {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--foreground);
+    line-height: 1.6;
+    text-decoration: none;
+    transform: translateX(0);
+    transition: color 180ms ease, transform 180ms ease;
+  }
+  .content-timeline a > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .content-timeline__arrow {
+    position: relative;
+    width: 0.75rem;
+    height: 0.75rem;
+    flex: 0 0 0.75rem;
+    opacity: 0;
+    transform: translateX(-0.35rem);
+    transition: opacity 180ms ease, transform 180ms ease;
+  }
+  .content-timeline__arrow::before, .content-timeline__arrow::after { content: ""; position: absolute; top: 50%; right: 0; }
+  .content-timeline__arrow::before { width: 0.75rem; height: 1px; background: currentColor; }
+  .content-timeline__arrow::after { width: 0.38rem; height: 0.38rem; border-top: 1px solid currentColor; border-right: 1px solid currentColor; transform: translateY(-45%) rotate(45deg); }
+  .content-timeline a:hover, .content-timeline a:focus-visible { color: var(--foreground-soft); transform: translateX(0.14rem); }
+  .content-timeline a:hover .content-timeline__arrow, .content-timeline a:focus-visible .content-timeline__arrow { opacity: 1; transform: translateX(0); }
+  @media (max-width: 56.25rem) {
+    .content-listing__layout { grid-template-columns: minmax(0, 1fr); }
+  }
   @media (max-width: 40rem) {
-    .content-timeline__group { grid-template-columns: 1fr; }
-    .content-timeline li { grid-template-columns: 1fr; }
-    .content-timeline p, .content-timeline__tags { grid-column: auto; }
+    .content-listing { padding-block-start: 2.5rem; }
+    .content-timeline li { grid-template-columns: minmax(0, 1fr); gap: 0.1rem; }
+    .content-timeline time { white-space: normal; }
   }
 </style>

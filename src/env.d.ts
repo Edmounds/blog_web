@@ -2,6 +2,7 @@
 /// <reference types="@cloudflare/workers-types" />
 
 interface ImportMetaEnv {
+  readonly GITHUB_TOKEN?: string;
   readonly WAKA_TIME_API_KEY?: string;
   readonly WAKATIME_API_KEY?: string;
 }
@@ -21,6 +22,7 @@ declare namespace Cloudflare {
     OPENAI_BASE_URL?: string;
     API_KEY?: string;
     MODEL?: string;
+    GITHUB_TOKEN?: string;
     WAKA_TIME_API_KEY?: string;
     WAKATIME_API_KEY?: string;
     COMMENT_HASH_SALT?: string;

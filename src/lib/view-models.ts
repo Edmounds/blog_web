@@ -6,6 +6,7 @@ interface ContentListSource {
   title: string;
   summary: string;
   dateLabel: string;
+  dateIso: string;
   readingTime: string;
   archiveTags: string[];
 }
@@ -26,6 +27,7 @@ export const toArchivePostSections = (
     summary: post.summary,
     href: localizePath(`/${contentSection}/${post.slug}/`, locale),
     dateLabel: post.dateLabel,
+    dateIso: post.dateIso,
     readingTime: post.readingTime,
     tags: post.archiveTags,
   })),

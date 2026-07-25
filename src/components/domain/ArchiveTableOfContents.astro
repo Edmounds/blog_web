@@ -1,0 +1,124 @@
+---
+import { TableOfContents } from "lucide-static";
+import Icon from "../ui/Icon.astro";
+
+interface Props {
+  years: number[];
+  label?: string;
+}
+
+const { years, label = "Archive navigation" } = Astro.props;
+---
+
+{years.length > 0 && (
+  <>
+    <aside class="archive-toc" aria-label={label} data-archive-toc>
+      <nav>
+        {years.map((year) => <a href={`#year-${year}`} data-archive-toc-link={year}>{year}</a>)}
+      </nav>
+    </aside>
+    <button class="archive-toc__mobile-trigger" type="button" aria-label={label} aria-expanded="false" data-archive-toc-trigger>
+      <Icon svg={TableOfContents} />
+    </button>
+  </>
+)}
+
+<script>
+  const initArchiveToc = () => {
+    document.querySelectorAll<HTMLElement>("[data-archive-toc]:not([data-initialized])").forEach((toc) => {
+      toc.dataset.initialized = "true";
+      const trigger = document.querySelector<HTMLButtonElement>("[data-archive-toc-trigger]");
+      const links = Array.from(toc.querySelectorAll<HTMLAnchorElement>("[data-archive-toc-link]"));
+      const headings = links.map((link) => document.getElementById(`year-${link.dataset.archiveTocLink}`)).filter((heading): heading is HTMLElement => Boolean(heading));
+      const close = () => { toc.dataset.open = "false"; trigger?.setAttribute("aria-expanded", "false"); };
+      const update = () => {
+        let active = headings[0]?.id ?? "";
+        for (const heading of headings) {
+          if (heading.getBoundingClientRect().top <= 150) active = heading.id;
+          else break;
+        }
+        links.forEach((link) => link.classList.toggle("is-active", `year-${link.dataset.archiveTocLink}` === active));
+      };
+      const onTrigger = () => {
+        const open = toc.dataset.open !== "true";
+        toc.dataset.open = String(open);
+        trigger?.setAttribute("aria-expanded", String(open));
+      };
+      const onPointer = (event: PointerEvent) => {
+        if (toc.dataset.open === "true" && event.target instanceof Node && !toc.contains(event.target) && !trigger?.contains(event.target)) close();
+      };
+      const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") close(); };
+      trigger?.addEventListener("click", onTrigger);
+      links.forEach((link) => link.addEventListener("click", close));
+      document.addEventListener("pointerdown", onPointer);
+      document.addEventListener("keydown", onKey);
+      window.addEventListener("scroll", update, { passive: true });
+      update();
+      toc.addEventListener("astro:before-swap", () => {
+        trigger?.removeEventListener("click", onTrigger);
+        document.removeEventListener("pointerdown", onPointer);
+        document.removeEventListener("keydown", onKey);
+        window.removeEventListener("scroll", update);
+      }, { once: true });
+    });
+  };
+  initArchiveToc();
+  document.addEventListener("astro:page-load", initArchiveToc);
+</script>
+
+<style>
+  .archive-toc {
+    position: sticky;
+    top: 6.5rem;
+    align-self: start;
+    padding-left: 1rem;
+    border-left: 2px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+  }
+  .archive-toc nav { display: grid; gap: 0.7rem; }
+  .archive-toc a {
+    color: color-mix(in srgb, var(--foreground) 50%, transparent);
+    font-size: var(--type-lg);
+    text-decoration: none;
+    transition: color 180ms ease, transform 180ms ease;
+  }
+  .archive-toc a:hover, .archive-toc a:focus-visible, .archive-toc a.is-active { color: var(--foreground); transform: translateX(0.16rem); }
+  .archive-toc a.is-active { font-weight: 600; }
+  .archive-toc__mobile-trigger {
+    position: fixed;
+    right: 1rem;
+    bottom: calc(1rem + env(safe-area-inset-bottom));
+    z-index: 45;
+    display: none;
+    width: 3.25rem;
+    height: 3.25rem;
+    align-items: center;
+    justify-content: center;
+    color: var(--foreground);
+    background: color-mix(in srgb, var(--canvas) 90%, transparent);
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    box-shadow: var(--shadow-soft);
+    backdrop-filter: blur(12px);
+  }
+  .archive-toc__mobile-trigger :global(svg) { width: 1.2rem; height: 1.2rem; }
+  @media (max-width: 56.25rem) {
+    .archive-toc { display: none; }
+    .archive-toc[data-open="true"] {
+      position: fixed;
+      right: 1rem;
+      bottom: calc(5rem + env(safe-area-inset-bottom));
+      z-index: 44;
+      display: block;
+      width: min(18rem, calc(100vw - 2rem));
+      max-height: 60vh;
+      overflow: auto;
+      padding: 1rem;
+      background: color-mix(in srgb, var(--canvas) 95%, transparent);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-control);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(14px);
+    }
+    .archive-toc__mobile-trigger { display: inline-flex; }
+  }
+</style>

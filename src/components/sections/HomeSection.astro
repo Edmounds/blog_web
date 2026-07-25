@@ -2,6 +2,7 @@
 import { getAboutProfile, getPublishedContent } from "../../lib/content";
 import { getLocalizedAbout } from "../../lib/localized-content";
 import { localizePath, type Locale } from "../../lib/i18n";
+import GitHubHeatmap from "../domain/GitHubHeatmap.astro";
 
 interface Props { locale?: Locale }
 const { locale = "zh-CN" } = Astro.props;
@@ -57,30 +58,15 @@ const latestBlocks = [
         </svg>
       </a>
     </nav>
-    <img class="codetime-badge" src="/api/wakatime-badge.svg" alt="Total coding time" width="160" height="24" data-wakatime-image hidden />
+    <div class="profile-metrics">
+      <img class="codetime-badge" src="/api/wakatime-badge.svg" alt="Total coding time" width="424" height="52" data-wakatime-image hidden />
+      <GitHubHeatmap />
+    </div>
     <p class="profile-card__intro">{profile.motto}</p>
     <p class="profile-card__location">
       <span>{profile.major}</span>
       <span>{profile.city}</span>
     </p>
-    <div class="profile-metrics">
-      <a
-        class="github-snake"
-        href="https://github.com/Edmounds"
-        target="_blank"
-        rel="noreferrer"
-        data-github-snake-root
-        data-light-src="https://raw.githubusercontent.com/Edmounds/Edmounds/refs/heads/output/github-contribution-grid-snake.svg"
-        data-dark-src="https://raw.githubusercontent.com/Edmounds/Edmounds/refs/heads/output/github-contribution-grid-snake-dark.svg"
-      >
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Edmounds/Edmounds/refs/heads/output/github-contribution-grid-snake-dark.svg" data-github-snake-source="dark" />
-          <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/Edmounds/Edmounds/refs/heads/output/github-contribution-grid-snake.svg" data-github-snake-source="light" />
-          <img src="https://raw.githubusercontent.com/Edmounds/Edmounds/refs/heads/output/github-contribution-grid-snake.svg" alt="GitHub contribution activity for Edmounds" width="880" height="192" data-github-snake />
-        </picture>
-        <span class="github-snake__fallback" data-github-snake-fallback hidden>View Edmounds on GitHub</span>
-      </a>
-    </div>
   </div>
 
   <div class="latest-content">
@@ -120,62 +106,22 @@ const latestBlocks = [
   revealWakatime();
   document.addEventListener("astro:page-load", revealWakatime);
 
-  function initGithubSnake() {
-    document.querySelectorAll('[data-github-snake]').forEach((image) => {
-      if (!(image instanceof HTMLImageElement)) return;
-      const root = image.closest('[data-github-snake-root]');
-      const fallback = root?.querySelector('[data-github-snake-fallback]');
-      const showFallback = () => {
-        image.hidden = true;
-        if (fallback instanceof HTMLElement) fallback.hidden = false;
-      };
-      const syncTheme = () => {
-        const isDark = document.documentElement.classList.contains("dark");
-        const src = root instanceof HTMLElement ? root.dataset[isDark ? "darkSrc" : "lightSrc"] : undefined;
-        if (!src) return;
-        if (image.dataset.themeSrc !== src) {
-          image.dataset.themeSrc = src;
-          image.parentElement?.querySelectorAll("source").forEach((item) => {
-            if (item instanceof HTMLSourceElement) item.srcset = src;
-          });
-          image.src = src;
-        }
-        image.hidden = false;
-        if (fallback instanceof HTMLElement) fallback.hidden = true;
-      };
-
-      if (image.dataset.bound !== "true") {
-        image.dataset.bound = "true";
-        image.dataset.themeSrc = image.currentSrc || image.src;
-        image.addEventListener("error", showFallback);
-        window.addEventListener("blog:theme-change", syncTheme);
-      }
-      syncTheme();
-      if (image.complete && image.naturalWidth === 0) showFallback();
-    });
-  }
-  initGithubSnake();
-  document.addEventListener("astro:page-load", initGithubSnake);
 </script>
 
 <style>
   .home-shell { display: grid; grid-template-columns: minmax(18rem, 0.8fr) minmax(28rem, 1.2fr); gap: clamp(3rem, 8vw, 9rem); align-items: start; min-height: calc(100vh - 4.5rem); padding-block: clamp(3rem, 7vh, 6rem); }
-  .profile-card { display: flex; max-width: 32rem; flex-direction: column; align-items: center; justify-self: center; text-align: center; }
+  .profile-card { display: flex; width: min(100%, 38rem); flex-direction: column; align-items: center; justify-self: center; text-align: center; }
   .profile-avatar-wrap { position: relative; width: clamp(6.5rem, 10vw, 9rem); aspect-ratio: 1; }
   .profile-avatar { display: block; width: 100%; height: 100%; object-fit: cover; border: 1px solid var(--border-soft); border-radius: 50%; }
   .profile-card h1 { margin: 1.25rem 0 0.7rem; font-size: clamp(1.8rem, 4vw, 4rem); line-height: 1; }
   .profile-card nav { display: flex; gap: 0.45rem; }
   .profile-card nav a { display: inline-flex; width: 2.5rem; height: 2.5rem; align-items: center; justify-content: center; color: var(--text-muted); text-decoration: none; }
   .profile-card nav svg { width: 1.3rem; height: 1.3rem; }
-  .codetime-badge { display: block; width: auto; height: 1.5rem; max-width: 100%; margin-top: 0.2rem; }
-  :global(html.dark) .codetime-badge { filter: invert(1); }
-  .profile-card__intro { margin: 0.8rem 0 0; color: var(--text-muted); line-height: 1.7; }
+  .codetime-badge { display: block; width: min(100%, 26.5rem); height: auto; margin-inline: auto; }
+  :global(html.dark) .codetime-badge { filter: invert(1) grayscale(1); }
+  .profile-card__intro { margin: 1rem 0 0; color: var(--text-muted); line-height: 1.7; }
   .profile-card__location { display: grid; gap: 0.2rem; margin: 0.5rem 0 0; color: var(--text-faint); font-size: var(--type-sm); }
-  .profile-metrics { display: grid; width: 100%; gap: 0.75rem; margin-top: 1.5rem; }
-  .github-snake { display: block; width: 100%; aspect-ratio: 880 / 192; color: var(--text-faint); font-size: var(--type-xs); }
-  .github-snake picture, .github-snake img { display: block; width: 100%; height: 100%; }
-  .github-snake img { object-fit: contain; }
-  .github-snake__fallback { padding: 1rem 0; text-decoration: underline; text-underline-offset: 0.2em; }
+  .profile-metrics { display: grid; width: min(100%, 38rem); gap: 2.25rem; margin-top: 1.1rem; }
   .latest-content { display: grid; gap: 1rem; }
   .latest-content > section { padding: 0.75rem; }
   .latest-content > section:first-child { padding-top: 0; }

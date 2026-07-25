@@ -110,7 +110,7 @@ export default function ArtAdmin() {
     } catch (error) { setMessage(errorMessage(error)); } finally { setIsSearching(false); }
   }
 
-  async function selectCandidate(candidate: Candidate) {
+  function selectCandidate(candidate: Candidate) {
     discardPendingCover();
     const next = blankForm(type);
     next.source = candidate.source; next.sourceId = candidate.sourceId; next.isbn = candidate.isbn ?? isbn;
@@ -118,7 +118,6 @@ export default function ArtAdmin() {
     next.coverUrl = candidate.coverUrl; next.cover = { kind: "url", url: candidate.coverUrl };
     next.translations["zh-CN"] = { title: candidate.title, creator: candidate.creator || "待填写", extra: candidate.description?.slice(0, 120) ?? "" };
     setForm(next); setLocale("zh-CN"); setMessage(""); setSaveMessage("");
-    if (TRANSLATED_TYPES.has(type)) await translate(next.translations["zh-CN"]);
   }
 
   async function translate(source = form.translations["zh-CN"]) {
@@ -234,7 +233,7 @@ export default function ArtAdmin() {
             <div className="flex items-end"><button className={primaryButton} disabled={isSearching}><Search className="size-4" />{isSearching ? "搜索中" : "搜索"}</button></div>
           </form>
           {candidates.length > 0 && <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {visibleCandidates.map((candidate) => { const isCollected = collectedCandidates.has(candidateKey(candidate)); return <button key={candidateKey(candidate)} type="button" onClick={() => candidate.coverUrl && !isCollected && void selectCandidate(candidate)} disabled={!candidate.coverUrl || isCollected} className="group text-left disabled:cursor-not-allowed disabled:opacity-45">
+            {visibleCandidates.map((candidate) => { const isCollected = collectedCandidates.has(candidateKey(candidate)); return <button key={candidateKey(candidate)} type="button" onClick={() => candidate.coverUrl && !isCollected && selectCandidate(candidate)} disabled={!candidate.coverUrl || isCollected} className="group text-left disabled:cursor-not-allowed disabled:opacity-45">
               {type === "music" ? <AlbumCover src={candidate.coverUrl ? previewUrl(candidate.coverUrl) : ""} alt="" /> : <PosterCover src={candidate.coverUrl ? previewUrl(candidate.coverUrl) : ""} alt="" hover />}
               <p className="mt-3 font-medium leading-tight text-[var(--foreground)]">{candidate.title}</p><p className="mt-1 text-sm text-[var(--text-muted)]">{candidate.creator || "创作者待补充"}</p>
               <p className="mt-1 text-xs text-[var(--text-faint)]">{isCollected ? "已收藏" : `${candidate.releaseDate || "日期未知"} · ${candidate.source}`}</p>
