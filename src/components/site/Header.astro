@@ -33,7 +33,7 @@ const isActive = (href: string) => routePath === href || routePath.startsWith(hr
 <div class="header-reveal-zone" data-header-reveal-zone aria-hidden="true"></div>
 <header class="site-header" data-site-header>
   <div class="site-header__inner app-container">
-    <a class="site-signature" href={localizePath("/", locale)} data-primary-route data-astro-prefetch="viewport" aria-label="Lust4ev3r home">Lust4ev3r</a>
+    <a class="site-signature" href={localizePath("/", locale)} data-content-frame-start data-primary-route data-astro-prefetch="viewport" aria-label="Lust4ev3r home">Lust4ev3r</a>
 
     <nav class="desktop-nav" data-desktop-nav data-hidden="false" aria-label="Primary navigation">
       {primary.map((item) => (
@@ -47,7 +47,7 @@ const isActive = (href: string) => routePath === href || routePath.startsWith(hr
       </div>
     </nav>
 
-    <div class="site-header__tools">
+    <div class="site-header__tools" data-content-frame-end>
       <LanguageSelector locale={locale} currentPath={currentPath} label={languageLabel} />
       <ThemeToggle />
       <button class="mobile-menu-button" type="button" aria-label="Open menu" aria-expanded="false" data-mobile-menu-trigger>
@@ -88,14 +88,62 @@ const isActive = (href: string) => routePath === href || routePath.startsWith(hr
     const mobileTrigger = header.querySelector("[data-mobile-menu-trigger]");
     const mobileMenu = header.querySelector("[data-mobile-menu]");
     const desktopNav = header.querySelector("[data-desktop-nav]");
+    const frameStart = header.querySelector("[data-content-frame-start]");
+    const frameEnd = header.querySelector("[data-content-frame-end]");
     const lifeTrigger = header.querySelector("[data-life-trigger]");
     const lifeMenu = header.querySelector("[data-life-menu]");
     const desktopPointer = matchMedia("(hover: hover) and (pointer: fine)");
     const desktopLayout = matchMedia("(min-width: 64.0625rem)");
-    if (!(desktopNav instanceof HTMLElement)) return;
+    if (!(desktopNav instanceof HTMLElement)
+      || !(frameStart instanceof HTMLElement)
+      || !(frameEnd instanceof HTMLElement)) return;
 
     let pointerInsideNav = false;
     let pointerInsideRevealZone = false;
+    let frameId = 0;
+
+    const clearContentFrame = () => {
+      document.documentElement.style.removeProperty("--content-frame-inline-start");
+      document.documentElement.style.removeProperty("--content-frame-inline-end");
+    };
+    const syncContentFrame = () => {
+      frameId = 0;
+      if (!desktopLayout.matches) {
+        clearContentFrame();
+        return;
+      }
+
+      const style = getComputedStyle(frameStart);
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      if (!context) return;
+      context.font = style.font;
+      context.fontKerning = style.fontKerning as CanvasFontKerning;
+
+      const metrics = context.measureText(frameStart.textContent?.trim() ?? "");
+      const startRect = frameStart.getBoundingClientRect();
+      const endRect = frameEnd.getBoundingClientRect();
+      const viewportWidth = document.documentElement.clientWidth;
+      const glyphRight = metrics.actualBoundingBoxRight || metrics.width;
+      const inlineStart = startRect.left + glyphRight;
+      const inlineEnd = viewportWidth - endRect.left;
+
+      if (inlineStart >= endRect.left) {
+        clearContentFrame();
+        return;
+      }
+      document.documentElement.style.setProperty("--content-frame-inline-start", `${inlineStart}px`);
+      document.documentElement.style.setProperty("--content-frame-inline-end", `${inlineEnd}px`);
+    };
+    const scheduleContentFrame = () => {
+      if (signal.aborted) return;
+      if (frameId) cancelAnimationFrame(frameId);
+      frameId = requestAnimationFrame(syncContentFrame);
+    };
+    const frameObserver = new ResizeObserver(scheduleContentFrame);
+    frameObserver.observe(frameStart);
+    frameObserver.observe(frameEnd);
+    frameObserver.observe(header);
 
     const lifeIsOpen = () => lifeTrigger?.getAttribute("aria-expanded") === "true";
     const navHasFocus = () => desktopNav.contains(document.activeElement);
@@ -175,10 +223,21 @@ const isActive = (href: string) => routePath === href || routePath.startsWith(hr
       if (window.scrollY <= header.offsetHeight || lifeIsOpen() || pointerInsideNav || pointerInsideRevealZone || navHasFocus()) setHidden(false);
       else setHidden(true);
     }, { passive: true, signal });
-    desktopLayout.addEventListener("change", () => setHidden(window.scrollY > header.offsetHeight), { signal });
+    window.addEventListener("resize", scheduleContentFrame, { passive: true, signal });
+    window.visualViewport?.addEventListener("resize", scheduleContentFrame, { passive: true, signal });
+    desktopLayout.addEventListener("change", () => {
+      setHidden(window.scrollY > header.offsetHeight);
+      scheduleContentFrame();
+    }, { signal });
 
     desktopNav.dataset.hidden = "false";
-    const cleanup = () => controller.abort();
+    scheduleContentFrame();
+    document.fonts.ready.then(scheduleContentFrame);
+    const cleanup = () => {
+      controller.abort();
+      frameObserver.disconnect();
+      if (frameId) cancelAnimationFrame(frameId);
+    };
     document.addEventListener("astro:before-swap", cleanup, { once: true, signal });
     headerWindow.__siteHeaderCleanup = cleanup;
   }
@@ -187,7 +246,7 @@ const isActive = (href: string) => routePath === href || routePath.startsWith(hr
 </script>
 
 <style>
-  .header-reveal-zone { position: fixed; top: 0; right: max(var(--content-rail-right), calc((100vw - var(--content-shell-max)) / 2)); left: max(var(--content-rail-left), calc((100vw - var(--content-shell-max)) / 2)); z-index: 51; height: 12px; }
+  .header-reveal-zone { position: fixed; top: 0; right: var(--content-frame-inline-end); left: var(--content-frame-inline-start); z-index: 51; height: 12px; }
   .site-header { --desktop-nav-font-size: clamp(16.3px, 0.82rem + 0.13vw, 20px); position: sticky; top: 0; z-index: 50; color: var(--foreground); background: transparent; }
   .site-header__inner { display: grid; grid-template-columns: 1fr auto 1fr; min-height: 4.5rem; align-items: center; gap: 1rem; }
   @font-face { font-family: "Site Signature"; src: url("/fonts/Allura-Lust4ev3r.woff") format("woff"); font-weight: 400; font-display: swap; }

@@ -44,13 +44,13 @@ test("the transparent header keeps its side controls visible while auto-hiding d
   assert.doesNotMatch(header, /backdrop-filter/);
 });
 
-test("public content pages share a narrower symmetric content container", () => {
+test("public content pages stay inside the measured header frame", () => {
   const global = read("src/styles/global.css");
-  assert.match(global, /--content-shell-max:\s*88rem;/);
-  assert.match(global, /--content-rail-left:\s*clamp\(21rem,\s*32vw,\s*33rem\);/);
-  assert.match(global, /--content-rail-right:\s*clamp\(11rem,\s*13\.5vw,\s*18rem\);/);
-  assert.match(global, /\.content-container\s*\{[^}]*max-width:\s*none;[^}]*margin-left:\s*max\(var\(--content-rail-left\),[^}]*margin-right:\s*max\(var\(--content-rail-right\),/s);
-  assert.match(global, /@media\s*\(max-width:\s*64rem\)[\s\S]*?\.content-container\s*\{[^}]*margin-inline:\s*auto;/s);
+  assert.match(global, /--content-frame-inline-start:/);
+  assert.match(global, /--content-frame-inline-end:/);
+  assert.doesNotMatch(global, /--content-(?:shell-max|rail-left|rail-right):/);
+  assert.match(global, /\.content-container\s*\{[^}]*margin-left:\s*var\(--content-frame-inline-start\);[^}]*margin-right:\s*var\(--content-frame-inline-end\);/s);
+  assert.match(global, /@media\s*\(max-width:\s*64rem\)[\s\S]*?\.content-container\s*\{[^}]*margin-inline:\s*0;/s);
 
   for (const path of [
     "src/components/sections/HomeSection.astro",
@@ -63,7 +63,15 @@ test("public content pages share a narrower symmetric content container", () => 
     assert.match(read(path), /class="[^"]*content-container/);
   }
 
-  assert.match(read("src/components/site/Header.astro"), /site-header__inner app-container/);
+  const header = read("src/components/site/Header.astro");
+  assert.match(header, /data-content-frame-start/);
+  assert.match(header, /data-content-frame-end/);
+  assert.match(header, /actualBoundingBoxRight/);
+  assert.match(header, /--content-frame-inline-start/);
+  assert.match(header, /--content-frame-inline-end/);
+  assert.match(header, /visualViewport/);
+  assert.match(header, /ResizeObserver/);
+  assert.match(header, /site-header__inner app-container/);
   assert.match(read("src/pages/admin/art/index.astro"), /class="app-container/);
 });
 
@@ -89,6 +97,8 @@ test("top-level writing sections use the compact Astro-star archive layout", () 
   assert.match(art, /type === "screen"[\s\S]*data-screen-tabs/);
 
   const about = read("src/components/sections/AboutSection.astro");
+  assert.match(about, /<div class="about-shell content-container">[\s\S]*?<article class="about-article"/);
+  assert.match(about, /\.about-article\s*\{[^}]*max-width:\s*52rem;[^}]*margin-inline:\s*auto;/s);
   assert.match(about, /<header class="about-article__header">[\s\S]*<h1>\{profile\.data\.name\}<\/h1>[\s\S]*<img /);
   assert.match(about, /\.about-article__header h1\s*\{[^}]*font-size:\s*clamp\(2\.3rem,\s*2rem \+ 1\.5vw,\s*4\.3rem\);/s);
   assert.match(about, /<Content \/>/);
