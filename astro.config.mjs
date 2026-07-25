@@ -34,6 +34,7 @@ const deploymentVersion = {
 
 // https://astro.build/config
 export default defineConfig({
+  compressHTML: true,
   site: "https://blog.muelsyse.us",
   output: 'server',
   adapter: cloudflare({

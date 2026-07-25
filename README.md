@@ -21,7 +21,7 @@ Astro-star 版权所有 © 2025 hanlife02，并以 [Apache License 2.0](./LICENS
 
 ## 本地开发
 
-需要 Node 22：
+需要 Node 22.12 或更高版本：
 
 ```bash
 npm ci
