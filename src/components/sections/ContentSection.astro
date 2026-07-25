@@ -19,7 +19,7 @@ const empty = `No ${sectionLabel.toLowerCase()} published yet.`;
 const years = sections.map((group) => group.year);
 ---
 
-<div class="content-listing app-container">
+<div class="content-listing content-container">
   <div class="content-listing__layout">
     <main class="content-listing__main">
       <header class="content-listing__header">
@@ -69,8 +69,8 @@ const years = sections.map((group) => group.year);
   }
   .content-listing__main { min-width: 0; }
   .content-listing__header {
-    margin-bottom: 1.25rem;
-    padding-bottom: clamp(2rem, 4vw, 3.5rem);
+    margin-bottom: 0;
+    padding-bottom: clamp(0.75rem, 1.5vw, 1.25rem);
     border-bottom: 1px solid var(--border-soft);
   }
   .content-listing__header h1 {

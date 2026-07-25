@@ -24,14 +24,42 @@ test("navigation labels stay English and Life exposes the four collection routes
   assert.match(header, /\/art\/game\//);
 });
 
-test("the sticky header uses an opaque theme canvas and larger desktop navigation type", () => {
+test("the transparent header uses Anthropic navigation type and auto-hide behavior", () => {
   const header = read("src/components/site/Header.astro");
-  assert.match(header, /\.site-header\s*\{[^}]*position:\s*sticky;[^}]*background:\s*var\(--canvas\);/s);
+  assert.match(header, /data-header-reveal-zone/);
+  assert.match(header, /\.site-header\s*\{[^}]*position:\s*sticky;[^}]*background:\s*transparent;/s);
   assert.match(header, /\.site-header__inner\s*\{[^}]*min-height:\s*4\.5rem;/s);
-  assert.match(header, /\.desktop-nav\s*>\s*a,[^}]*\.life-menu\s*>\s*button\s*\{[^}]*font-size:\s*var\(--type-base\);/s);
-  assert.match(header, /\.mobile-menu\s*\{[^}]*background:\s*var\(--canvas\);/s);
-  assert.match(header, /@media\s*\(max-width:\s*48rem\)[\s\S]*?\.site-header__inner\s*\{[^}]*min-height:\s*4rem;/);
-  assert.doesNotMatch(header, /\.(?:site-header|mobile-menu)\s*\{[^}]*\b(?:border|box-shadow|backdrop-filter)\s*:/s);
+  assert.match(header, /--desktop-nav-font-size:\s*clamp\(16\.3px,\s*0\.82rem \+ 0\.13vw,\s*20px\);/s);
+  assert.match(header, /\.desktop-nav\s*>\s*a,[\s\S]*?\.life-menu__items a\s*\{[^}]*font-family:\s*var\(--font-ui\);[^}]*font-size:\s*var\(--desktop-nav-font-size\);/s);
+  assert.match(header, /\.mobile-menu\s*\{[^}]*background:\s*color-mix\(in srgb, var\(--canvas\) 82%, transparent\);/s);
+  assert.match(header, /header\.dataset\.hidden/);
+  assert.match(header, /window\.addEventListener\("scroll"/);
+  assert.match(header, /revealZone\.addEventListener\("pointerenter"/);
+  assert.match(header, /matchMedia\("\(hover: hover\) and \(pointer: fine\)"\)/);
+  assert.match(header, /@media\s*\(max-width:\s*64rem\)[\s\S]*?\.site-header__inner\s*\{[^}]*min-height:\s*4rem;/);
+  assert.match(header, /@media\s*\(max-width:\s*30rem\)[\s\S]*?\.site-header__tools\s*\{[^}]*gap:\s*0;/);
+  assert.match(header, /@media\s*\(max-width:\s*30rem\)[\s\S]*?\.site-signature\s*\{[^}]*width:\s*min\(100%,\s*8\.75rem\);[^}]*font-size:\s*2\.15rem;/);
+  assert.doesNotMatch(header, /backdrop-filter/);
+});
+
+test("public content pages share a narrower symmetric content container", () => {
+  const global = read("src/styles/global.css");
+  assert.match(global, /--content-shell-max:\s*80rem;/);
+  assert.match(global, /\.content-container\s*\{[^}]*max-width:\s*var\(--content-shell-max\);[^}]*margin-inline:\s*auto;[^}]*padding-left:[^}]*padding-right:/s);
+
+  for (const path of [
+    "src/components/sections/HomeSection.astro",
+    "src/components/sections/AboutSection.astro",
+    "src/components/sections/ContentSection.astro",
+    "src/components/sections/ArtSection.astro",
+    "src/components/sections/GameSection.astro",
+    "src/components/domain/ContentDetail.astro",
+  ]) {
+    assert.match(read(path), /class="[^"]*content-container/);
+  }
+
+  assert.match(read("src/components/site/Header.astro"), /site-header__inner app-container/);
+  assert.match(read("src/pages/admin/art/index.astro"), /class="app-container/);
 });
 
 test("top-level writing sections use the compact Astro-star archive layout", () => {
@@ -40,6 +68,14 @@ test("top-level writing sections use the compact Astro-star archive layout", () 
   assert.match(content, /font-size:\s*clamp\(2\.3rem,\s*2rem \+ 1\.5vw,\s*4\.3rem\)/);
   assert.match(content, /ArchiveActivityTimeline/);
   assert.match(content, /ArchiveTableOfContents/);
+  assert.match(content, /padding-bottom:\s*clamp\(0\.75rem,\s*1\.5vw,\s*1\.25rem\)/);
+  assert.match(content, /margin-bottom:\s*0;/);
+
+  const activity = read("src/components/domain/ArchiveActivityTimeline.astro");
+  assert.match(activity, /--activity-axis:\s*2\.5rem;/);
+  assert.match(activity, /height:\s*6\.75rem;/);
+  assert.match(activity, /margin-block:\s*0 2rem;/);
+  assert.match(activity, /top:\s*5\.15rem;/);
   assert.doesNotMatch(content, /View categories|content-listing__categories|Essays and longer-form writing|Short observations and working notes|Selected work and experiments/);
 
   const art = read("src/components/sections/ArtSection.astro");
@@ -49,6 +85,7 @@ test("top-level writing sections use the compact Astro-star archive layout", () 
 
   const about = read("src/components/sections/AboutSection.astro");
   assert.match(about, /<header class="about-article__header">[\s\S]*<h1>\{profile\.data\.name\}<\/h1>[\s\S]*<img /);
+  assert.match(about, /\.about-article__header h1\s*\{[^}]*font-size:\s*clamp\(2\.3rem,\s*2rem \+ 1\.5vw,\s*4\.3rem\);/s);
   assert.match(about, /<Content \/>/);
   assert.doesNotMatch(about, /profile\.(?:story|meta|focusCards|experience|homeFeatured)/);
 });
@@ -252,6 +289,16 @@ test("About renders the profile as a normal Markdown article with the code-rain 
   assert.match(about, /profile\.data\.city/);
   assert.doesNotMatch(about, /about-document__toc|href="#about-focus"/);
   assert.match(background, /path === "\/about\/"[\s\S]*\? "rain"/);
+});
+
+test("Project and every Life route use the dynamic constellation canvas", () => {
+  const background = read("src/components/site/RouteBackground.astro");
+  assert.match(background, /<canvas[\s\S]*data-background-kind="constellation"/);
+  assert.match(background, /path === "\/project\/" \|\| path\.startsWith\("\/project\/"\)/);
+  assert.match(background, /path === "\/art" \|\| path\.startsWith\("\/art\/"\)/);
+  assert.match(background, /requestAnimationFrame\(tick\)/);
+  assert.match(background, /prefers-reduced-motion: reduce/);
+  assert.doesNotMatch(background, /route-background__constellation line|route-background__constellation circle/);
 });
 
 test("Project detail supports project and documentation links", () => {

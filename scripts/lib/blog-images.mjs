@@ -1,13 +1,18 @@
 import { createHash } from "node:crypto";
-import { access, readFile, readdir, rename, rm, stat, writeFile } from "node:fs/promises";
+import { access, mkdir, mkdtemp, readFile, readdir, rename, rm, stat, writeFile } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+
+import sharp from "sharp";
+
+import { createResponsiveImage } from "./image-optimization.mjs";
 
 const DEFAULT_BUCKET = "blog-images";
 const DEFAULT_PUBLIC_URL = "https://img.muelsyse.us";
 const CACHE_CONTROL = "public, max-age=31536000, immutable";
 const MANIFEST_FILE = ".blog-images-manifest.json";
-const MANIFEST_VERSION = 1;
+const MANIFEST_VERSION = 2;
 export const CONTENT_GROUPS = ["blog", "note", "project"];
 
 const contentTypes = new Map([
@@ -19,6 +24,7 @@ const contentTypes = new Map([
   [".svg", "image/svg+xml"],
   [".webp", "image/webp"],
 ]);
+const rasterExtensions = new Set([".jpeg", ".jpg", ".png", ".webp"]);
 
 const isLocalAbsolutePath = (value) => {
   if (value.startsWith("file://")) return true;
@@ -34,13 +40,8 @@ const splitMarkdownDestination = (destination) => {
   if (destination.startsWith("<")) {
     const close = destination.indexOf(">");
     if (close === -1) return undefined;
-    return {
-      before: "<",
-      path: destination.slice(1, close),
-      after: destination.slice(close),
-    };
+    return { before: "<", path: destination.slice(1, close), after: destination.slice(close) };
   }
-
   return { before: "", path: destination, after: "" };
 };
 
@@ -49,14 +50,8 @@ const findMarkdownImageClose = (source, start) => {
   let escaped = false;
   for (let index = start; index < source.length; index += 1) {
     const character = source[index];
-    if (escaped) {
-      escaped = false;
-      continue;
-    }
-    if (character === "\\") {
-      escaped = true;
-      continue;
-    }
+    if (escaped) { escaped = false; continue; }
+    if (character === "\\") { escaped = true; continue; }
     if (character === "(") depth += 1;
     else if (character === ")") {
       if (depth === 0) return index;
@@ -71,12 +66,8 @@ const splitDestinationAndTitle = (destination) => {
   if (destination.startsWith("<")) {
     const close = destination.indexOf(">");
     if (close === -1) return undefined;
-    return {
-      pathDestination: destination.slice(0, close + 1),
-      title: destination.slice(close + 1),
-    };
+    return { pathDestination: destination.slice(0, close + 1), title: destination.slice(close + 1) };
   }
-
   const titleMatch = destination.match(/[ \t]+(?:"[^"\n]*"|'[^'\n]*'|\([^\)\n]*\))[ \t]*$/);
   return titleMatch
     ? { pathDestination: destination.slice(0, titleMatch.index), title: titleMatch[0] }
@@ -84,24 +75,21 @@ const splitDestinationAndTitle = (destination) => {
 };
 
 const collectBodyReferences = (source, offset, references) => {
-  const imageStartPattern = /!\[[^\]\n]*\]\(/g;
-  for (const match of source.matchAll(imageStartPattern)) {
+  for (const match of source.matchAll(/!\[[^\]\n]*\]\(/g)) {
     const destinationStartInSource = match.index + match[0].length;
     const destinationEndInSource = findMarkdownImageClose(source, destinationStartInSource);
     if (destinationEndInSource === -1) continue;
     const destination = source.slice(destinationStartInSource, destinationEndInSource);
     const destinationParts = splitDestinationAndTitle(destination);
     if (!destinationParts) continue;
-    const { pathDestination } = destinationParts;
-    const split = splitMarkdownDestination(pathDestination);
+    const split = splitMarkdownDestination(destinationParts.pathDestination);
     if (!split) continue;
     const localPath = toLocalPath(split.path);
     if (!isLocalAbsolutePath(localPath)) continue;
-
     const destinationStart = offset + destinationStartInSource;
     references.push({
       start: destinationStart,
-      end: destinationStart + pathDestination.length,
+      end: destinationStart + destinationParts.pathDestination.length,
       localPath,
       render: (url) => `${split.before}${url}${split.after}`,
     });
@@ -113,44 +101,9 @@ const collectReferences = (source) => {
   const bomOffset = source.startsWith("\uFEFF") ? 1 : 0;
   const hasFrontmatter = source.slice(bomOffset).startsWith("---");
   const frontmatterEnd = hasFrontmatter ? source.indexOf("\n---", bomOffset + 3) : -1;
-
   const bodyStart = frontmatterEnd === -1 ? 0 : frontmatterEnd + 4;
   collectBodyReferences(source.slice(bodyStart), bodyStart, references);
   return references;
-};
-
-const describeImage = async (filePath, publicUrl) => {
-  try {
-    await access(filePath);
-  } catch {
-    throw new Error(`${filePath} does not exist`);
-  }
-
-  const fileStat = await stat(filePath);
-  if (!fileStat.isFile()) throw new Error(`${filePath} is not a file`);
-
-  const extension = path.extname(filePath).toLowerCase();
-  const contentType = contentTypes.get(extension);
-  if (!contentType) throw new Error(`${filePath} uses an unsupported image type`);
-
-  const digest = createHash("sha256").update(await readFile(filePath)).digest("hex");
-  const key = `blog/${digest}${extension}`;
-  return {
-    filePath,
-    key,
-    url: `${publicUrl.replace(/\/$/, "")}/${key}`,
-    contentType,
-    cacheControl: CACHE_CONTROL,
-  };
-};
-
-const rewriteSource = (source, references, imagesByPath) => {
-  let output = source;
-  for (const reference of [...references].sort((a, b) => b.start - a.start)) {
-    const image = imagesByPath.get(reference.localPath);
-    output = `${output.slice(0, reference.start)}${reference.render(image.url)}${output.slice(reference.end)}`;
-  }
-  return output;
 };
 
 const atomicWrite = async (filePath, contents) => {
@@ -164,25 +117,128 @@ const atomicWrite = async (filePath, contents) => {
   }
 };
 
-const readManifest = async (manifestPath) => {
+const emptyManifest = () => ({ version: MANIFEST_VERSION, assets: {}, keys: [], pendingDeletion: [] });
+
+export const readImageManifest = async (manifestPath) => {
   try {
     const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
-    if (manifest.version !== MANIFEST_VERSION || !Array.isArray(manifest.keys)) {
+    if (manifest.version === 1 && Array.isArray(manifest.keys)) {
+      return { ...emptyManifest(), keys: manifest.keys.filter((key) => typeof key === "string" && key.startsWith("blog/")) };
+    }
+    if (manifest.version !== MANIFEST_VERSION || !manifest.assets || !Array.isArray(manifest.keys) || !Array.isArray(manifest.pendingDeletion)) {
       throw new Error(`${manifestPath} has an unsupported format`);
     }
-    return new Set(manifest.keys.filter((key) => typeof key === "string" && key.startsWith("blog/")));
+    return manifest;
   } catch (error) {
-    if (error?.code === "ENOENT") return new Set();
+    if (error?.code === "ENOENT") return emptyManifest();
     throw error;
   }
 };
 
+export const writeImageManifest = (manifestPath, manifest) => atomicWrite(
+  manifestPath,
+  `${JSON.stringify(manifest, null, 2)}\n`,
+);
+
+const assetUrl = (publicUrl, key) => `${publicUrl.replace(/\/$/, "")}/${key}`;
+
+export const createManagedImage = async ({ filePath, publicUrl = DEFAULT_PUBLIC_URL, temporaryRoot }) => {
+  try { await access(filePath); } catch { throw new Error(`${filePath} does not exist`); }
+  if (!(await stat(filePath)).isFile()) throw new Error(`${filePath} is not a file`);
+  const extension = path.extname(filePath).toLowerCase();
+  const contentType = contentTypes.get(extension);
+  if (!contentType) throw new Error(`${filePath} uses an unsupported image type`);
+  const bytes = await readFile(filePath);
+  const digest = createHash("sha256").update(bytes).digest("hex");
+
+  if (!rasterExtensions.has(extension)) {
+    const key = `blog/${digest}${extension}`;
+    return {
+      sourceUrl: assetUrl(publicUrl, key),
+      fallbackUrl: assetUrl(publicUrl, key),
+      manifestAsset: undefined,
+      uploads: [{ filePath, key, contentType, cacheControl: CACHE_CONTROL }],
+    };
+  }
+
+  const frameCount = (await sharp(filePath, { animated: true }).metadata()).pages ?? 1;
+  if (frameCount > 1) {
+    const key = `blog/${digest}${extension}`;
+    return {
+      sourceUrl: assetUrl(publicUrl, key),
+      fallbackUrl: assetUrl(publicUrl, key),
+      manifestAsset: undefined,
+      uploads: [{ filePath, key, contentType, cacheControl: CACHE_CONTROL }],
+    };
+  }
+
+  const outputDirectory = path.join(temporaryRoot, digest);
+  const responsive = await createResponsiveImage({ sourcePath: filePath, outputDirectory, stem: digest });
+  const uploads = responsive.variants.map((variant) => ({
+    filePath: variant.filePath,
+    key: `blog/${path.basename(variant.filePath)}`,
+    contentType: `image/${variant.format}`,
+    cacheControl: CACHE_CONTROL,
+  }));
+  const sources = Object.fromEntries(["avif", "webp"].map((format) => [
+    format,
+    responsive.variants.filter((variant) => variant.format === format).map((variant) => ({
+      width: variant.width,
+      url: assetUrl(publicUrl, `blog/${path.basename(variant.filePath)}`),
+      quality: variant.quality,
+      ssim: Number(variant.ssim.toFixed(6)),
+      bytes: variant.size,
+    })),
+  ]));
+  const fallback = sources.webp.at(-1).url;
+  return {
+    sourceUrl: fallback,
+    fallbackUrl: fallback,
+    manifestAsset: {
+      sourceDigest: responsive.digest,
+      width: responsive.width,
+      height: responsive.height,
+      fallback,
+      sources,
+    },
+    uploads,
+  };
+};
+
+const rewriteSource = (source, references, imagesByPath) => {
+  let output = source;
+  for (const reference of [...references].sort((a, b) => b.start - a.start)) {
+    const image = imagesByPath.get(reference.localPath);
+    output = `${output.slice(0, reference.start)}${reference.render(image.fallbackUrl)}${output.slice(reference.end)}`;
+  }
+  return output;
+};
+
+const managedKeyPattern = (publicUrl) => new RegExp(
+  `${publicUrl.replace(/\/$/, "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/(blog/[a-f0-9]{64}(?:-w\d+)?\\.(?:avif|gif|jpe?g|png|svg|webp))`,
+  "gi",
+);
+
+const collectManagedReferences = (source, publicUrl) => {
+  const references = [];
+  for (const match of source.matchAll(managedKeyPattern(publicUrl))) {
+    references.push({ start: match.index, end: match.index + match[0].length, url: match[0], key: match[1] });
+  }
+  return references;
+};
+
 const collectManagedKeys = (source, publicUrl) => {
   const keys = new Set();
-  const escapedBase = publicUrl.replace(/\/$/, "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const pattern = new RegExp(`${escapedBase}/(blog/[a-f0-9]{64}\\.(?:avif|gif|jpe?g|png|svg|webp))`, "gi");
-  for (const match of source.matchAll(pattern)) keys.add(match[1]);
+  for (const match of source.matchAll(managedKeyPattern(publicUrl))) keys.add(match[1]);
   return keys;
+};
+
+const rewriteManagedUrls = (source, replacements) => {
+  let output = source;
+  for (const replacement of [...replacements].sort((a, b) => b.start - a.start)) {
+    output = `${output.slice(0, replacement.start)}${replacement.url}${output.slice(replacement.end)}`;
+  }
+  return output;
 };
 
 export const syncBlogImages = async ({
@@ -190,105 +246,186 @@ export const syncBlogImages = async ({
   bucket = DEFAULT_BUCKET,
   publicUrl = DEFAULT_PUBLIC_URL,
   upload,
-  deleteObject,
 } = {}) => {
   if (typeof upload !== "function") throw new Error("syncBlogImages requires an upload function");
-
   const manifestPath = path.join(root, MANIFEST_FILE);
-  const previousKeys = await readManifest(manifestPath);
+  const previous = await readImageManifest(manifestPath);
   const articles = [];
   const localPaths = new Set();
   const referencedKeys = new Set();
-
   for (const group of CONTENT_GROUPS) {
-    const contentDir = path.join(root, "src/content", group);
-    const filePaths = await walkContentFiles(contentDir);
-    for (const filePath of filePaths) {
-    const source = await readFile(filePath, "utf8");
-    const references = collectReferences(source);
-    for (const reference of references) localPaths.add(reference.localPath);
-    for (const key of collectManagedKeys(source, publicUrl)) referencedKeys.add(key);
-    articles.push({ filePath, source, references });
+    for (const filePath of await walkContentFiles(path.join(root, "src/content", group))) {
+      const source = await readFile(filePath, "utf8");
+      const references = collectReferences(source);
+      for (const reference of references) localPaths.add(reference.localPath);
+      for (const key of collectManagedKeys(source, publicUrl)) referencedKeys.add(key);
+      articles.push({ filePath, source, references });
     }
   }
 
+  const temporaryRoot = await mkdtemp(path.join(os.tmpdir(), "blog-images-"));
   const imagesByPath = new Map();
   const validationErrors = [];
-  for (const filePath of [...localPaths].sort()) {
-    try {
-      imagesByPath.set(filePath, await describeImage(filePath, publicUrl));
-    } catch (error) {
-      const articleNames = articles
-        .filter((article) => article.references.some((reference) => reference.localPath === filePath))
-        .map((article) => path.relative(root, article.filePath))
-        .join(", ");
-      validationErrors.push(`${articleNames}: ${error.message}`);
+  try {
+    for (const filePath of [...localPaths].sort()) {
+      try { imagesByPath.set(filePath, await createManagedImage({ filePath, publicUrl, temporaryRoot })); }
+      catch (error) {
+        const articleNames = articles.filter((article) => article.references.some((reference) => reference.localPath === filePath))
+          .map((article) => path.relative(root, article.filePath)).join(", ");
+        validationErrors.push(`${articleNames}: ${error.message}`);
+      }
+    }
+    if (validationErrors.length > 0) throw new Error(validationErrors.join("\n"));
+
+    const uploadsByKey = new Map();
+    for (const image of imagesByPath.values()) for (const object of image.uploads) uploadsByKey.set(object.key, object);
+    const uploadErrors = [];
+    for (const object of uploadsByKey.values()) {
+      try { await upload({ ...object, bucket }); }
+      catch (error) { uploadErrors.push(`${object.filePath}: ${error.message}`); }
+    }
+    if (uploadErrors.length > 0) throw new Error(uploadErrors.join("\n"));
+
+    let rewrittenFiles = 0;
+    for (const article of articles) {
+      if (article.references.length === 0) continue;
+      const rewritten = rewriteSource(article.source, article.references, imagesByPath);
+      if (rewritten === article.source) continue;
+      await atomicWrite(article.filePath, rewritten);
+      rewrittenFiles += 1;
+    }
+
+    const uploadedKeys = new Set(uploadsByKey.keys());
+    const assets = {};
+    for (const [fallbackUrl, asset] of Object.entries(previous.assets)) {
+      const assetKeys = Object.values(asset.sources ?? {}).flat().map((variant) => new URL(variant.url).pathname.slice(1));
+      if (assetKeys.some((key) => referencedKeys.has(key) || uploadedKeys.has(key))) assets[fallbackUrl] = asset;
+    }
+    for (const image of imagesByPath.values()) {
+      for (const object of image.uploads) referencedKeys.add(object.key);
+      if (image.manifestAsset) assets[image.fallbackUrl] = image.manifestAsset;
+    }
+    const activeKeys = [...new Set([...referencedKeys, ...uploadedKeys])].sort();
+    const pendingDeletion = [...new Set([
+      ...previous.pendingDeletion,
+      ...previous.keys.filter((key) => !activeKeys.includes(key)),
+    ])].filter((key) => !activeKeys.includes(key)).sort();
+    await writeImageManifest(manifestPath, {
+      version: MANIFEST_VERSION,
+      assets,
+      keys: activeKeys,
+      pendingDeletion,
+    });
+    return {
+      scannedFiles: articles.length,
+      uploaded: uploadsByKey.size,
+      rewrittenFiles,
+      pendingDeletion: pendingDeletion.length,
+    };
+  } finally {
+    await rm(temporaryRoot, { recursive: true, force: true });
+  }
+};
+
+export const cleanupBlogImages = async ({
+  root = process.cwd(),
+  bucket = DEFAULT_BUCKET,
+  deleteObject,
+  verifyDeleted,
+} = {}) => {
+  if (typeof deleteObject !== "function") throw new Error("cleanupBlogImages requires a deleteObject function");
+  if (typeof verifyDeleted !== "function") throw new Error("cleanupBlogImages requires a verifyDeleted function");
+  const manifestPath = path.join(root, MANIFEST_FILE);
+  const manifest = await readImageManifest(manifestPath);
+  const deleted = [];
+  for (const key of manifest.pendingDeletion) {
+    await deleteObject({ bucket, key });
+    await verifyDeleted({ bucket, key });
+    deleted.push(key);
+  }
+  await writeImageManifest(manifestPath, { ...manifest, pendingDeletion: [] });
+  return { deleted: deleted.length };
+};
+
+export const migrateBlogImages = async ({
+  root = process.cwd(),
+  bucket = DEFAULT_BUCKET,
+  publicUrl = DEFAULT_PUBLIC_URL,
+  upload,
+  download,
+} = {}) => {
+  if (typeof upload !== "function") throw new Error("migrateBlogImages requires an upload function");
+  if (typeof download !== "function") throw new Error("migrateBlogImages requires a download function");
+  const manifestPath = path.join(root, MANIFEST_FILE);
+  const previous = await readImageManifest(manifestPath);
+  const articles = [];
+  const urls = new Map();
+  for (const group of CONTENT_GROUPS) {
+    for (const filePath of await walkContentFiles(path.join(root, "src/content", group))) {
+      const source = await readFile(filePath, "utf8");
+      const references = collectManagedReferences(source, publicUrl)
+        .filter((reference) => /\.(?:jpe?g|png|webp)$/i.test(reference.key) && !/-w\d+\.webp$/i.test(reference.key));
+      for (const reference of references) urls.set(reference.url, reference.key);
+      articles.push({ filePath, source, references });
     }
   }
-  if (validationErrors.length > 0) throw new Error(validationErrors.join("\n"));
+  if (urls.size === 0) {
+    return { migrated: 0, uploaded: 0, rewrittenFiles: 0, pendingDeletion: previous.pendingDeletion.length };
+  }
 
-  const imagesByKey = new Map();
-  for (const image of imagesByPath.values()) imagesByKey.set(image.key, image);
-  const uploadErrors = [];
-  for (const image of imagesByKey.values()) {
-    try {
-      await upload({ ...image, bucket });
-    } catch (error) {
-      uploadErrors.push(`${image.filePath}: ${error.message}`);
+  const temporaryRoot = await mkdtemp(path.join(os.tmpdir(), "blog-images-migrate-"));
+  try {
+    const migratedByUrl = new Map();
+    for (const [url, key] of urls) {
+      const sourceDirectory = path.join(temporaryRoot, "sources");
+      await mkdir(sourceDirectory, { recursive: true });
+      const filePath = path.join(sourceDirectory, path.basename(key));
+      await download({ url, key, filePath, bucket });
+      migratedByUrl.set(url, await createManagedImage({ filePath, publicUrl, temporaryRoot }));
     }
-  }
-  if (uploadErrors.length > 0) throw new Error(uploadErrors.join("\n"));
 
-  let rewrittenFiles = 0;
-  for (const article of articles) {
-    if (article.references.length === 0) continue;
-    const rewritten = rewriteSource(article.source, article.references, imagesByPath);
-    if (rewritten === article.source) continue;
-    await atomicWrite(article.filePath, rewritten);
-    rewrittenFiles += 1;
-  }
+    const uploadsByKey = new Map();
+    for (const image of migratedByUrl.values()) for (const object of image.uploads) uploadsByKey.set(object.key, object);
+    for (const object of uploadsByKey.values()) await upload({ ...object, bucket });
 
-  for (const image of imagesByKey.values()) referencedKeys.add(image.key);
-
-  const staleKeys = [...previousKeys].filter((key) => !referencedKeys.has(key)).sort();
-  if (staleKeys.length > 0 && typeof deleteObject !== "function") {
-    throw new Error("syncBlogImages requires a deleteObject function to remove stale images");
-  }
-  const deleteErrors = [];
-  for (const key of staleKeys) {
-    try {
-      await deleteObject({ bucket, key });
-    } catch (error) {
-      deleteErrors.push(`${key}: ${error.message}`);
+    let rewrittenFiles = 0;
+    for (const article of articles) {
+      const replacements = article.references.map((reference) => ({
+        ...reference,
+        url: migratedByUrl.get(reference.url).fallbackUrl,
+      }));
+      const rewritten = rewriteManagedUrls(article.source, replacements);
+      if (rewritten === article.source) continue;
+      await atomicWrite(article.filePath, rewritten);
+      rewrittenFiles += 1;
     }
+
+    const migratedKeys = new Set(urls.values());
+    const activeKeys = [...new Set([
+      ...previous.keys.filter((key) => !migratedKeys.has(key)),
+      ...uploadsByKey.keys(),
+    ])].sort();
+    const assets = { ...previous.assets };
+    for (const image of migratedByUrl.values()) assets[image.fallbackUrl] = image.manifestAsset;
+    const pendingDeletion = [...new Set([...previous.pendingDeletion, ...migratedKeys])]
+      .filter((key) => !activeKeys.includes(key)).sort();
+    await writeImageManifest(manifestPath, {
+      version: MANIFEST_VERSION,
+      assets,
+      keys: activeKeys,
+      pendingDeletion,
+    });
+    return { migrated: migratedByUrl.size, uploaded: uploadsByKey.size, rewrittenFiles, pendingDeletion: pendingDeletion.length };
+  } finally {
+    await rm(temporaryRoot, { recursive: true, force: true });
   }
-  if (deleteErrors.length > 0) throw new Error(deleteErrors.join("\n"));
-
-  const manifestKeys = [...new Set([...previousKeys, ...referencedKeys])]
-    .filter((key) => !staleKeys.includes(key))
-    .sort();
-  await atomicWrite(
-    manifestPath,
-    `${JSON.stringify({ version: MANIFEST_VERSION, keys: manifestKeys }, null, 2)}\n`,
-  );
-
-  return {
-    scannedFiles: articles.length,
-    uploaded: imagesByKey.size,
-    rewrittenFiles,
-    deleted: staleKeys.length,
-  };
 };
 
 const walkContentFiles = async (directory) => {
   const files = [];
   let entries;
-  try {
-    entries = await readdir(directory, { withFileTypes: true });
-  } catch (error) {
-    if (error?.code === "ENOENT") return files;
-    throw error;
-  }
+  try { entries = await readdir(directory, { withFileTypes: true }); }
+  catch (error) { if (error?.code === "ENOENT") return files; throw error; }
   for (const entry of entries) {
     const fullPath = path.join(directory, entry.name);
     if (entry.isDirectory()) files.push(...await walkContentFiles(fullPath));

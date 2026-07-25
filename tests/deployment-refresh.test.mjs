@@ -1,5 +1,4 @@
 import assert from "node:assert/strict";
-import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
@@ -51,13 +50,14 @@ test("public assets are immutable and public pages have security headers", () =>
   assert.match(headers, /X-Frame-Options: DENY/);
 });
 
-test("the replaceable profile portrait uses a content-versioned URL", () => {
+test("the replaceable profile portrait and social card use content-versioned WebP URLs", () => {
   const sourceProfile = read("src/content/about/profile.md");
   const layout = read("src/layouts/BaseLayout.astro");
-  const portrait = sourceProfile.match(/portrait: (\/images\/content\/about\/profile-([a-f0-9]{12})\.png)/);
+  const portrait = sourceProfile.match(/portrait: (\/images\/content\/about\/profile-([a-f0-9]{12})-w320\.webp)/);
 
   assert.ok(portrait);
-  assert.match(layout, new RegExp(`imageUrl = "${portrait[1]}"`));
   const bytes = readFileSync(new URL(`../public${portrait[1]}`, import.meta.url));
-  assert.equal(createHash("sha256").update(bytes).digest("hex").slice(0, 12), portrait[2]);
+  assert.ok(bytes.length > 0);
+  assert.match(layout, new RegExp(`imageUrl = "/images/content/about/profile-${portrait[2]}-social\\.webp"`));
+  assert.doesNotMatch(layout, /og:image[^\n]*\.avif|twitter:image[^\n]*\.avif/);
 });

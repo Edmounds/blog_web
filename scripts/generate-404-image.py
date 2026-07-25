@@ -1,7 +1,7 @@
 #!/usr/bin/env -S uv run --script
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["openai>=2.48.0", "pillow>=11.0.0"]
+# dependencies = ["openai>=2.48.0", "pillow>=11.0.0", "pillow-avif-plugin>=1.5.2"]
 # ///
 
 import argparse
@@ -16,6 +16,7 @@ from urllib.request import urlopen
 
 from openai import OpenAI
 from PIL import Image, ImageChops, ImageFilter
+import pillow_avif  # noqa: F401
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,12 +32,12 @@ CHROMA_HELPER = (
 
 BACKGROUND_MASTER = PUBLIC_IMAGES / "404-background.png"
 BACKGROUND_VARIANTS = {
-    1280: PUBLIC_IMAGES / "404-background-1280.webp",
-    1920: PUBLIC_IMAGES / "404-background-1920.webp",
-    3840: PUBLIC_IMAGES / "404-background-3840.webp",
+    1280: PUBLIC_IMAGES / "404-background-w1280",
+    1920: PUBLIC_IMAGES / "404-background-w1920",
+    3840: PUBLIC_IMAGES / "404-background-w3840",
 }
 CHARACTER_MASTER = PUBLIC_IMAGES / "404-character.png"
-CHARACTER_VARIANTS = (768, 1024)
+CHARACTER_VARIANTS = (768,)
 LOGO_OUTPUT = PUBLIC_IMAGES / "404-rhine-mark.png"
 LEGACY_OUTPUT = PUBLIC_IMAGES / "404-muelsyse.png"
 
@@ -238,7 +239,8 @@ def write_background_variants(master: Path, directory: Path) -> None:
         image = opened.convert("RGB")
     for width, destination in BACKGROUND_VARIANTS.items():
         resized = image.resize((width, width * 9 // 16), Image.Resampling.LANCZOS)
-        resized.save(directory / destination.name, "WEBP", quality=88, method=6)
+        resized.save(directory / f"{destination.name}.avif", "AVIF", quality=65)
+        resized.save(directory / f"{destination.name}.webp", "WEBP", quality=90, method=6)
 
 
 def write_character_variants(master: Path, directory: Path) -> list[Path]:
@@ -254,9 +256,11 @@ def write_character_variants(master: Path, directory: Path) -> list[Path]:
             (width, round(image.height * scale)),
             Image.Resampling.LANCZOS,
         )
-        output = directory / f"404-character-{width}.webp"
-        resized.save(output, "WEBP", quality=92, method=6, lossless=False)
-        outputs.append(output)
+        avif_output = directory / f"404-character-w{width}.avif"
+        webp_output = directory / f"404-character-w{width}.webp"
+        resized.save(avif_output, "AVIF", quality=65)
+        resized.save(webp_output, "WEBP", quality=90, method=6, lossless=False)
+        outputs.extend([avif_output, webp_output])
     return outputs
 
 
@@ -331,7 +335,8 @@ def main() -> None:
             write_background_variants(master, temp)
             staged[BACKGROUND_MASTER] = master
             for destination in BACKGROUND_VARIANTS.values():
-                staged[destination] = temp / destination.name
+                staged[destination.with_suffix(".avif")] = temp / f"{destination.name}.avif"
+                staged[destination.with_suffix(".webp")] = temp / f"{destination.name}.webp"
 
         if args.asset in {"character", "all"}:
             chroma = temp / "character-magenta.png"
@@ -381,7 +386,9 @@ def publish_local_sources(background_source: Path, character_source: Path, force
             CHARACTER_MASTER: character,
             LOGO_OUTPUT: logo,
         }
-        staged.update({path: temp / path.name for path in BACKGROUND_VARIANTS.values()})
+        for path in BACKGROUND_VARIANTS.values():
+            staged[path.with_suffix(".avif")] = temp / f"{path.name}.avif"
+            staged[path.with_suffix(".webp")] = temp / f"{path.name}.webp"
         staged.update({PUBLIC_IMAGES / path.name: path for path in character_variants})
         publish(staged, force)
 

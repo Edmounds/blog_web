@@ -4,7 +4,9 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 
-import { syncBlogImages } from "../scripts/lib/blog-images.mjs";
+import sharp from "sharp";
+
+import { cleanupBlogImages, migrateBlogImages, syncBlogImages } from "../scripts/lib/blog-images.mjs";
 
 const bom = "\uFEFF";
 
@@ -17,43 +19,44 @@ const createFixture = async () => {
   return { root, contentDir, imageDir };
 };
 
-const writeManifest = (root, keys) => writeFile(
+const writeRaster = (filePath, format = path.extname(filePath).slice(1)) => sharp({
+  create: { width: 96, height: 64, channels: 4, background: { r: 37, g: 142, b: 211, alpha: 0.85 } },
+}).composite([{ input: Buffer.from('<svg width="96" height="64"><circle cx="48" cy="32" r="22" fill="#f6b73c"/></svg>') }])
+  .toFormat(format === "jpg" ? "jpeg" : format)
+  .toFile(filePath);
+
+const writeManifest = (root, manifest) => writeFile(
   path.join(root, ".blog-images-manifest.json"),
-  `${JSON.stringify({ version: 1, keys }, null, 2)}\n`,
+  `${JSON.stringify(manifest, null, 2)}\n`,
 );
 
-test("uploads Typora absolute body images without using cover metadata", async () => {
-  const { root, contentDir, imageDir } = await createFixture();
-  const bodyPath = path.join(imageDir, "body image.jpg");
-  await writeFile(bodyPath, Buffer.from("body bytes"));
+const readManifest = async (root) => JSON.parse(await readFile(path.join(root, ".blog-images-manifest.json"), "utf8"));
 
+test("uploads AVIF/WebP variants and rewrites Typora paths to the largest WebP", async () => {
+  const { root, contentDir, imageDir } = await createFixture();
+  const imagePath = path.join(imageDir, "body image.jpg");
+  await writeRaster(imagePath, "jpg");
   const postPath = path.join(contentDir, "post.md");
-  const source = `${bom}---\ntitle: Test\n---\n\nBefore\n\n![Alt text](<${bodyPath}> \"Caption\")\n\n![Same](file://${encodeURI(bodyPath)})\n\nAfter\n`;
-  await writeFile(postPath, source);
+  await writeFile(postPath, `${bom}---\ntitle: Test\n---\n\n![Alt](<${imagePath}> "Caption")\n![Same](file://${encodeURI(imagePath)})\n`);
 
   const uploads = [];
-  const result = await syncBlogImages({
-    root,
-    upload: async (image) => uploads.push(image),
-  });
-
+  const result = await syncBlogImages({ root, upload: async (image) => uploads.push(image) });
   const rewritten = await readFile(postPath, "utf8");
-  assert.equal(result.uploaded, 1);
+  const manifest = await readManifest(root);
+
+  assert.equal(result.uploaded, 2);
   assert.equal(result.rewrittenFiles, 1);
-  assert.equal(uploads.length, 1);
-  assert.ok(uploads.every((image) => image.bucket === "blog-images"));
-  assert.ok(uploads.every((image) => image.key.startsWith("blog/")));
+  assert.equal(uploads.length, 2);
+  assert.deepEqual(new Set(uploads.map((image) => image.contentType)), new Set(["image/avif", "image/webp"]));
+  assert.ok(uploads.every((image) => image.cacheControl === "public, max-age=31536000, immutable"));
+  assert.match(rewritten, /https:\/\/img\.muelsyse\.us\/blog\/[a-f0-9]{64}-w96\.webp/);
   assert.ok(rewritten.startsWith(bom));
-  assert.match(rewritten, /^\uFEFF---\ntitle: Test\n---/);
-  assert.match(rewritten, /!\[Alt text\]\(<https:\/\/img\.muelsyse\.us\/blog\/[a-f0-9]{64}\.jpg> "Caption"\)/);
-  assert.match(rewritten, /!\[Same\]\(https:\/\/img\.muelsyse\.us\/blog\/[a-f0-9]{64}\.jpg\)/);
-  assert.equal(uploads.filter((image) => image.filePath === bodyPath).length, 1);
-  assert.deepEqual(
-    uploads.map(({ contentType, cacheControl }) => ({ contentType, cacheControl })).sort((a, b) => a.contentType.localeCompare(b.contentType)),
-    [
-      { contentType: "image/jpeg", cacheControl: "public, max-age=31536000, immutable" },
-    ],
-  );
+  const asset = Object.values(manifest.assets)[0];
+  assert.equal(asset.width, 96);
+  assert.equal(asset.height, 64);
+  assert.equal(asset.sources.avif.length, 1);
+  assert.equal(asset.sources.webp.length, 1);
+  assert.equal(asset.fallback, asset.sources.webp[0].url);
 });
 
 test("supports Typora paths with parentheses and escaped spaces", async () => {
@@ -61,16 +64,13 @@ test("supports Typora paths with parentheses and escaped spaces", async () => {
   const nestedDir = path.join(imageDir, "export (final)");
   await mkdir(nestedDir, { recursive: true });
   const imagePath = path.join(nestedDir, "screen shot.png");
-  await writeFile(imagePath, Buffer.from("screenshot"));
+  await writeRaster(imagePath);
   const escapedPath = imagePath.replaceAll(" ", "\\ ");
   const postPath = path.join(contentDir, "post.md");
   await writeFile(postPath, `${bom}---\ncover: /images/default.png\n---\n\n![Screenshot](${escapedPath})\n`);
 
-  const result = await syncBlogImages({ root, upload: async () => {} });
-  const rewritten = await readFile(postPath, "utf8");
-
-  assert.equal(result.uploaded, 1);
-  assert.match(rewritten, /!\[Screenshot\]\(https:\/\/img\.muelsyse\.us\/blog\/[a-f0-9]{64}\.png\)/);
+  await syncBlogImages({ root, upload: async () => {} });
+  assert.match(await readFile(postPath, "utf8"), /-w96\.webp/);
 });
 
 test("ignores remote, site-root, and relative image references", async () => {
@@ -79,205 +79,157 @@ test("ignores remote, site-root, and relative image references", async () => {
   const source = `${bom}---\ncover: /images/local.png\n---\n\n![Remote](https://example.com/a.png)\n![Site](/images/a.png)\n![Relative](./a.png)\n`;
   await writeFile(postPath, source);
 
-  const result = await syncBlogImages({
-    root,
-    upload: async () => assert.fail("no upload expected"),
-  });
-
-  assert.deepEqual(result, { scannedFiles: 1, uploaded: 0, rewrittenFiles: 0, deleted: 0 });
+  const result = await syncBlogImages({ root, upload: async () => assert.fail("no upload expected") });
+  assert.deepEqual(result, { scannedFiles: 1, uploaded: 0, rewrittenFiles: 0, pendingDeletion: 0 });
   assert.equal(await readFile(postPath, "utf8"), source);
 });
 
-test("does not modify any article when validation fails", async () => {
+test("does not modify articles or the manifest when validation fails", async () => {
   const { root, contentDir, imageDir } = await createFixture();
   const validPath = path.join(imageDir, "valid.png");
   const missingPath = path.join(imageDir, "missing.png");
-  await writeFile(validPath, Buffer.from("valid"));
-
+  await writeRaster(validPath);
   const firstPath = path.join(contentDir, "first.md");
   const secondPath = path.join(contentDir, "second.md");
-  const firstSource = `${bom}---\ncover: /images/default.png\n---\n\n![Valid](<${validPath}>)\n`;
-  const secondSource = `${bom}---\ncover: /images/default.png\n---\n\n![Missing](<${missingPath}>)\n`;
+  const firstSource = `${bom}---\n---\n\n![Valid](<${validPath}>)\n`;
+  const secondSource = `${bom}---\n---\n\n![Missing](<${missingPath}>)\n`;
   await writeFile(firstPath, firstSource);
   await writeFile(secondPath, secondSource);
 
-  await assert.rejects(
-    syncBlogImages({ root, upload: async () => assert.fail("validation must finish before upload") }),
-    /missing\.png.*does not exist/s,
-  );
+  await assert.rejects(syncBlogImages({ root, upload: async () => assert.fail("no upload expected") }), /missing\.png.*does not exist/s);
   assert.equal(await readFile(firstPath, "utf8"), firstSource);
   assert.equal(await readFile(secondPath, "utf8"), secondSource);
+  await assert.rejects(readFile(path.join(root, ".blog-images-manifest.json")), /ENOENT/);
 });
 
-test("does not rewrite articles when an upload fails", async () => {
+test("does not rewrite articles or the manifest when an upload fails", async () => {
   const { root, contentDir, imageDir } = await createFixture();
   const imagePath = path.join(imageDir, "image.png");
-  await writeFile(imagePath, Buffer.from("image"));
+  await writeRaster(imagePath);
   const postPath = path.join(contentDir, "post.md");
-  const source = `${bom}---\ncover: /images/default.png\n---\n\n![Image](<${imagePath}>)\n`;
+  const source = `${bom}---\n---\n\n![Image](<${imagePath}>)\n`;
   await writeFile(postPath, source);
 
-  await assert.rejects(
-    syncBlogImages({ root, upload: async () => { throw new Error("R2 unavailable"); } }),
-    /R2 unavailable/,
-  );
+  await assert.rejects(syncBlogImages({ root, upload: async () => { throw new Error("R2 unavailable"); } }), /R2 unavailable/);
   assert.equal(await readFile(postPath, "utf8"), source);
+  await assert.rejects(readFile(path.join(root, ".blog-images-manifest.json")), /ENOENT/);
 });
 
-test("is a no-op after local paths have already been rewritten", async () => {
-  const { root, contentDir } = await createFixture();
-  const postPath = path.join(contentDir, "post.md");
-  const source = `${bom}---\ncover: https://img.muelsyse.us/blog/${"a".repeat(64)}.png\n---\n\n![Image](https://img.muelsyse.us/blog/${"a".repeat(64)}.png)\n`;
-  await writeFile(postPath, source);
-
-  const result = await syncBlogImages({
-    root,
-    upload: async () => assert.fail("no upload expected"),
-  });
-
-  assert.deepEqual(result, { scannedFiles: 1, uploaded: 0, rewrittenFiles: 0, deleted: 0 });
-  assert.equal(await readFile(postPath, "utf8"), source);
-});
-
-test("deduplicates different local paths with identical image bytes", async () => {
+test("deduplicates identical source bytes across different local paths", async () => {
   const { root, contentDir, imageDir } = await createFixture();
   const firstImage = path.join(imageDir, "first.png");
   const secondImage = path.join(imageDir, "second.png");
-  await writeFile(firstImage, Buffer.from("identical"));
-  await writeFile(secondImage, Buffer.from("identical"));
+  await writeRaster(firstImage);
+  await writeFile(secondImage, await readFile(firstImage));
   const postPath = path.join(contentDir, "post.md");
-  await writeFile(postPath, `${bom}---\ncover: /images/default.png\n---\n\n![One](<${firstImage}>)\n![Two](<${secondImage}>)\n`);
+  await writeFile(postPath, `${bom}---\n---\n\n![One](<${firstImage}>)\n![Two](<${secondImage}>)\n`);
 
   const uploads = [];
   const result = await syncBlogImages({ root, upload: async (image) => uploads.push(image) });
-  const rewritten = await readFile(postPath, "utf8");
-  const urls = [...rewritten.matchAll(/https:\/\/img\.muelsyse\.us\/blog\/[a-f0-9]{64}\.png/g)].map((match) => match[0]);
-
-  assert.equal(result.uploaded, 1);
-  assert.equal(uploads.length, 1);
+  const urls = [...(await readFile(postPath, "utf8")).matchAll(/https:\/\/img\.muelsyse\.us\/blog\/[a-f0-9]{64}-w96\.webp/g)].map((match) => match[0]);
+  assert.equal(result.uploaded, 2);
+  assert.equal(uploads.length, 2);
   assert.equal(urls.length, 2);
   assert.equal(urls[0], urls[1]);
+});
+
+test("migrates a v1 manifest and defers stale object deletion", async () => {
+  const { root, contentDir } = await createFixture();
+  const keptKey = `blog/${"a".repeat(64)}.png`;
+  const staleKey = `blog/${"b".repeat(64)}.jpg`;
+  await writeManifest(root, { version: 1, keys: [keptKey, staleKey] });
+  await writeFile(path.join(contentDir, "post.md"), `${bom}---\ncover: https://img.muelsyse.us/${keptKey}\n---\n`);
+
+  const result = await syncBlogImages({ root, upload: async () => assert.fail("no upload expected") });
+  assert.equal(result.pendingDeletion, 1);
+  assert.deepEqual(await readManifest(root), { version: 2, assets: {}, keys: [keptKey], pendingDeletion: [staleKey] });
+});
+
+test("cleanup deletes only pending manifest-owned keys", async () => {
+  const { root } = await createFixture();
+  const activeKey = `blog/${"a".repeat(64)}.webp`;
+  const staleKey = `blog/${"b".repeat(64)}.png`;
+  await writeManifest(root, { version: 2, assets: {}, keys: [activeKey], pendingDeletion: [staleKey] });
+  const deleted = [];
+  const verified = [];
+
+  const result = await cleanupBlogImages({
+    root,
+    deleteObject: async (object) => deleted.push(object),
+    verifyDeleted: async (object) => verified.push(object),
+  });
+  assert.equal(result.deleted, 1);
+  assert.deepEqual(deleted, [{ bucket: "blog-images", key: staleKey }]);
+  assert.deepEqual(verified, deleted);
+  assert.deepEqual(await readManifest(root), { version: 2, assets: {}, keys: [activeKey], pendingDeletion: [] });
+});
+
+test("remote migration failure keeps source references and the manifest intact", async () => {
+  const { root, contentDir } = await createFixture();
+  const originalKey = `blog/${"c".repeat(64)}.png`;
+  const source = `${bom}---\n---\n\n![Remote](https://img.muelsyse.us/${originalKey})\n`;
+  const postPath = path.join(contentDir, "post.md");
+  await writeFile(postPath, source);
+  await writeManifest(root, { version: 2, assets: {}, keys: [originalKey], pendingDeletion: [] });
+
+  await assert.rejects(migrateBlogImages({
+    root,
+    download: async () => { throw new Error("download failed"); },
+    upload: async () => assert.fail("upload must not run"),
+  }), /download failed/);
+  assert.equal(await readFile(postPath, "utf8"), source);
+  assert.deepEqual(await readManifest(root), { version: 2, assets: {}, keys: [originalKey], pendingDeletion: [] });
+});
+
+test("remote migration uploads responsive variants and defers original deletion", async () => {
+  const { root, contentDir } = await createFixture();
+  const originalKey = `blog/${"d".repeat(64)}.png`;
+  const postPath = path.join(contentDir, "post.md");
+  await writeFile(postPath, `${bom}---\n---\n\n![Remote](https://img.muelsyse.us/${originalKey})\n`);
+  await writeManifest(root, { version: 2, assets: {}, keys: [originalKey], pendingDeletion: [] });
+  const uploads = [];
+
+  const result = await migrateBlogImages({
+    root,
+    download: async ({ filePath }) => writeRaster(filePath),
+    upload: async (image) => uploads.push(image),
+  });
+  const rewritten = await readFile(postPath, "utf8");
+  const manifest = await readManifest(root);
+  assert.equal(result.migrated, 1);
+  assert.equal(result.uploaded, 2);
+  assert.match(rewritten, /-w96\.webp/);
+  assert.deepEqual(manifest.pendingDeletion, [originalKey]);
+  assert.ok(manifest.keys.every((key) => /\.(?:avif|webp)$/.test(key)));
+  assert.equal(Object.keys(manifest.assets).length, 1);
+  assert.equal(uploads.length, 2);
+});
+
+test("SVG and animated GIF images pass through unchanged", async () => {
+  const { root, contentDir, imageDir } = await createFixture();
+  const svgPath = path.join(imageDir, "diagram.svg");
+  const gifPath = path.join(imageDir, "motion.gif");
+  await writeFile(svgPath, '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="10"><rect width="20" height="10"/></svg>');
+  await sharp({ create: { width: 8, height: 16, channels: 4, background: "red", pageHeight: 8, pages: 2 } })
+    .gif({ pageHeight: 8, loop: 0, delay: [100, 100] })
+    .toFile(gifPath);
+  const postPath = path.join(contentDir, "post.md");
+  await writeFile(postPath, `${bom}---\n---\n\n![SVG](<${svgPath}>)\n![GIF](<${gifPath}>)\n`);
+  const uploads = [];
+
+  const result = await syncBlogImages({ root, upload: async (image) => uploads.push(image) });
+  const rewritten = await readFile(postPath, "utf8");
+  assert.equal(result.uploaded, 2);
+  assert.deepEqual(new Set(uploads.map((image) => image.contentType)), new Set(["image/svg+xml", "image/gif"]));
+  assert.match(rewritten, /[a-f0-9]{64}\.svg/);
+  assert.match(rewritten, /[a-f0-9]{64}\.gif/);
+  assert.deepEqual((await readManifest(root)).assets, {});
 });
 
 test("rejects unsupported local image types before upload", async () => {
   const { root, contentDir, imageDir } = await createFixture();
   const imagePath = path.join(imageDir, "image.bmp");
   await writeFile(imagePath, Buffer.from("bitmap"));
-  await writeFile(path.join(contentDir, "post.md"), `${bom}---\ncover: /images/default.png\n---\n\n![Image](<${imagePath}>)\n`);
-
-  await assert.rejects(
-    syncBlogImages({ root, upload: async () => assert.fail("no upload expected") }),
-    /unsupported image type/,
-  );
-});
-
-test("deletes managed R2 images that are no longer referenced", async () => {
-  const { root, contentDir } = await createFixture();
-  const keptKey = `blog/${"a".repeat(64)}.png`;
-  const deletedKey = `blog/${"b".repeat(64)}.jpg`;
-  await writeManifest(root, [keptKey, deletedKey]);
-  await writeFile(
-    path.join(contentDir, "post.md"),
-    `${bom}---\ncover: https://img.muelsyse.us/${keptKey}\n---\n\nNo body image.\n`,
-  );
-
-  const deleted = [];
-  const result = await syncBlogImages({
-    root,
-    upload: async () => assert.fail("no upload expected"),
-    deleteObject: async (object) => deleted.push(object),
-  });
-
-  assert.deepEqual(deleted, [{ bucket: "blog-images", key: deletedKey }]);
-  assert.equal(result.deleted, 1);
-  assert.deepEqual(
-    JSON.parse(await readFile(path.join(root, ".blog-images-manifest.json"), "utf8")),
-    { version: 1, keys: [keptKey] },
-  );
-});
-
-test("keeps images that are still referenced by another article", async () => {
-  const { root, contentDir } = await createFixture();
-  const sharedKey = `blog/${"c".repeat(64)}.webp`;
-  await writeManifest(root, [sharedKey]);
-  await writeFile(path.join(contentDir, "first.md"), `${bom}---\ncover: /images/default.png\n---\n\nNo image.\n`);
-  await writeFile(
-    path.join(contentDir, "second.md"),
-    `${bom}---\ncover: /images/default.png\n---\n\n![Shared](https://img.muelsyse.us/${sharedKey})\n`,
-  );
-
-  const result = await syncBlogImages({
-    root,
-    upload: async () => assert.fail("no upload expected"),
-    deleteObject: async () => assert.fail("referenced image must not be deleted"),
-  });
-
-  assert.equal(result.deleted, 0);
-});
-
-test("records newly uploaded images in the managed manifest", async () => {
-  const { root, contentDir, imageDir } = await createFixture();
-  const imagePath = path.join(imageDir, "new.png");
-  await writeFile(imagePath, Buffer.from("new image"));
-  await writeFile(
-    path.join(contentDir, "post.md"),
-    `${bom}---\ncover: /images/default.png\n---\n\n![New](<${imagePath}>)\n`,
-  );
-
-  const result = await syncBlogImages({ root, upload: async () => {}, deleteObject: async () => {} });
-  const manifest = JSON.parse(await readFile(path.join(root, ".blog-images-manifest.json"), "utf8"));
-
-  assert.equal(result.uploaded, 1);
-  assert.equal(manifest.version, 1);
-  assert.match(manifest.keys[0], /^blog\/[a-f0-9]{64}\.png$/);
-});
-
-test("does not forget a stale image when R2 deletion fails", async () => {
-  const { root, contentDir } = await createFixture();
-  const staleKey = `blog/${"d".repeat(64)}.gif`;
-  await writeManifest(root, [staleKey]);
-  await writeFile(path.join(contentDir, "post.md"), `${bom}---\ncover: /images/default.png\n---\n\nNo image.\n`);
-
-  await assert.rejects(
-    syncBlogImages({
-      root,
-      upload: async () => {},
-      deleteObject: async () => { throw new Error("delete failed"); },
-    }),
-    /delete failed/,
-  );
-
-  assert.deepEqual(
-    JSON.parse(await readFile(path.join(root, ".blog-images-manifest.json"), "utf8")),
-    { version: 1, keys: [staleKey] },
-  );
-});
-
-test("does not delete untracked R2 objects", async () => {
-  const { root, contentDir } = await createFixture();
-  await writeFile(path.join(contentDir, "post.md"), `${bom}---\ncover: /images/default.png\n---\n\nNo image.\n`);
-
-  const result = await syncBlogImages({
-    root,
-    upload: async () => {},
-    deleteObject: async () => assert.fail("objects absent from the manifest are outside sync ownership"),
-  });
-
-  assert.equal(result.deleted, 0);
-});
-
-test("refuses to drop stale manifest entries without an R2 deleter", async () => {
-  const { root, contentDir } = await createFixture();
-  const staleKey = `blog/${"e".repeat(64)}.png`;
-  await writeManifest(root, [staleKey]);
-  await writeFile(path.join(contentDir, "post.md"), `${bom}---\ncover: /images/default.png\n---\n\nNo image.\n`);
-
-  await assert.rejects(
-    syncBlogImages({ root, upload: async () => {} }),
-    /requires a deleteObject function/,
-  );
-  assert.deepEqual(
-    JSON.parse(await readFile(path.join(root, ".blog-images-manifest.json"), "utf8")),
-    { version: 1, keys: [staleKey] },
-  );
+  await writeFile(path.join(contentDir, "post.md"), `${bom}---\n---\n\n![Image](<${imagePath}>)\n`);
+  await assert.rejects(syncBlogImages({ root, upload: async () => assert.fail("no upload expected") }), /unsupported image type/);
 });

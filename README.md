@@ -13,6 +13,12 @@
 
 `Astro-star/` 是只读模板参考，不参与站点构建，也不发布模板示例内容。移植部分的 Apache-2.0 许可证和来源说明见根目录 `LICENSE-ASTRO-STAR` 与 `NOTICE`。
 
+## 致谢与许可
+
+本项目基于 [Astro-star 0.16.25](https://github.com/hanlife02/Astro-star) 修改与重建。感谢 [hanlife02](https://github.com/hanlife02) 开源原项目。
+
+Astro-star 版权所有 © 2025 hanlife02，并以 [Apache License 2.0](./LICENSE-ASTRO-STAR) 授权。原项目来源及本项目的修改说明见 [NOTICE](./NOTICE)。除另有说明外，本站文章、图片等个人内容不因引用 Astro-star 的开源许可证而自动获得授权。
+
 ## 本地开发
 
 需要 Node 22：
@@ -62,6 +68,18 @@ LEGACY_ART_COVERS_DIR=/absolute/path/to/legacy-art-covers node --env-file-if-exi
 ```
 
 博客、笔记和项目正文图片由 `npm run images:sync` 同步至 `blog-images` R2，历史 Blog 对象仍使用 `blog/<sha256>.<ext>`。Life 收藏封面与数据只通过 D1/R2 和 `/admin/art/` 管理。
+
+受控图片使用 AVIF 优先、WebP 回退。正文栅格图生成不放大的 `640 / 1280 / 1920 / 原图宽度` 版本，编码目标优先为 `SSIM >= 0.985`，必要时放宽至 `0.975`。常用命令：
+
+```bash
+npm run images:optimize   # 生成头像与 404 的本地 AVIF/WebP
+npm run images:sync       # 上传 Typora 本地图片并改写 Markdown
+npm run images:migrate    # 迁移已有、由 manifest 管理的 R2 栅格图
+npm run images:verify     # 校验尺寸、质量、引用与 manifest 所有权
+npm run images:verify -- --remote  # 额外校验 R2 对象和 MIME
+```
+
+同步与迁移只把旧对象加入 `pendingDeletion`，不会立即删除。现代格式部署通过生产检查后，才执行 `npm run images:cleanup -- --confirmed-production`；清理会逐个删除并通过 R2 直读确认对象确实不存在。PNG/JPEG 源文件在首次现代格式部署中保留，避免上线验证失败时失去回滚资源。
 
 从旧 `blog-art-covers` 桶迁移已有封面时，先复制并逐个校验哈希：
 

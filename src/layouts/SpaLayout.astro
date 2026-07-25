@@ -21,23 +21,50 @@ const routePath = stripLocaleFromPath(initialPath).pathname;
 const initialIndex = Math.max(0, routes.indexOf(routePath));
 ---
 
-<BaseLayout title={title} description={description} currentPath={initialPath} locale={locale} showFooter={false}>
+<BaseLayout
+  title={title}
+  description={description}
+  currentPath={initialPath}
+  locale={locale}
+  showFooter={false}
+>
   <div class="spa-root" data-spa-root data-active-index={initialIndex}>
     <div class="spa-viewport">
-      <div class="spa-track" data-track style={`transform: translate3d(-${initialIndex * 100}vw, 0, 0);`}>
-        <section data-slide-index="0" data-path="/"><HomeSection locale={locale} /></section>
-        <section data-slide-index="1" data-path="/about/"><AboutSection locale={locale} /></section>
-        <section data-slide-index="2" data-path="/blog/"><BlogsSection locale={locale} /></section>
-        <section data-slide-index="3" data-path="/note/"><NotesSection locale={locale} /></section>
-        <section data-slide-index="4" data-path="/project/"><ProjectsSection locale={locale} /></section>
+      <div
+        class="spa-track"
+        data-track
+        style={`transform: translate3d(-${initialIndex * 100}vw, 0, 0);`}
+      >
+        <section data-slide-index="0" data-path="/">
+          <HomeSection locale={locale} />
+        </section>
+        <section data-slide-index="1" data-path="/about/">
+          <AboutSection locale={locale} />
+        </section>
+        <section data-slide-index="2" data-path="/blog/">
+          <BlogsSection locale={locale} />
+        </section>
+        <section data-slide-index="3" data-path="/note/">
+          <NotesSection locale={locale} />
+        </section>
+        <section data-slide-index="4" data-path="/project/">
+          <ProjectsSection locale={locale} />
+        </section>
       </div>
     </div>
   </div>
 </BaseLayout>
 
 <style>
-  .spa-root { position: relative; width: 100%; isolation: isolate; }
-  .spa-viewport { width: 100%; overflow-x: clip; }
+  .spa-root {
+    position: relative;
+    width: 100%;
+    isolation: isolate;
+  }
+  .spa-viewport {
+    width: 100%;
+    overflow-x: clip;
+  }
   .spa-track {
     display: flex;
     width: 500vw;
@@ -50,7 +77,9 @@ const initialIndex = Math.max(0, routes.indexOf(routePath));
     width: 100vw;
     transition: opacity 240ms ease;
   }
-  .spa-root:not([data-transitioning="true"]) .spa-track > section:not([data-active="true"]) {
+  .spa-root:not([data-transitioning="true"])
+    .spa-track
+    > section:not([data-active="true"]) {
     height: 0;
     overflow: hidden;
     visibility: hidden;
@@ -58,19 +87,27 @@ const initialIndex = Math.max(0, routes.indexOf(routePath));
     pointer-events: none;
   }
   @media (prefers-reduced-motion: reduce) {
-    .spa-track, .spa-track > section { transition: none; }
+    .spa-track,
+    .spa-track > section {
+      transition: none;
+    }
   }
 </style>
 
-<script is:inline define:vars={{ localizedRoutes: routes.map((route) => localizePath(route, locale)) }}>
+<script
+  is:inline
+  define:vars={{
+    localizedRoutes: routes.map((route) => localizePath(route, locale)),
+  }}
+>
   const PRIMARY_ROUTES = ["/", "/about/", "/blog/", "/note/", "/project/"];
 
   function initSpa() {
-    const root = document.querySelector('[data-spa-root]');
+    const root = document.querySelector("[data-spa-root]");
     if (!(root instanceof HTMLElement) || root.dataset.bound === "true") return;
     root.dataset.bound = "true";
-    const track = root.querySelector('[data-track]');
-    const slides = Array.from(root.querySelectorAll('[data-slide-index]'));
+    const track = root.querySelector("[data-track]");
+    const slides = Array.from(root.querySelectorAll("[data-slide-index]"));
     if (!(track instanceof HTMLElement)) return;
 
     let activeIndex = Number(root.dataset.activeIndex ?? 0);
@@ -81,16 +118,20 @@ const initialIndex = Math.max(0, routes.indexOf(routePath));
     let wheelLocked = false;
 
     const stripLocale = (pathname) => {
-      const parts = pathname.split('/').filter(Boolean);
+      const parts = pathname.split("/").filter(Boolean);
       if (["en", "ja", "zh-TW"].includes(parts[0])) parts.shift();
-      const path = `/${parts.join('/')}/`.replace('//', '/');
+      const path = `/${parts.join("/")}/`.replace("//", "/");
       return path === "//" ? "/" : path;
     };
-    const indexForPath = (pathname) => PRIMARY_ROUTES.indexOf(stripLocale(pathname));
+    const indexForPath = (pathname) =>
+      PRIMARY_ROUTES.indexOf(stripLocale(pathname));
     const syncDocument = (index) => {
-      const label = index === 0 ? "小の网站" : `${PRIMARY_ROUTES[index].split('/')[1][0].toUpperCase()}${PRIMARY_ROUTES[index].split('/')[1].slice(1)}`;
+      const label =
+        index === 0
+          ? "cqcの网站"
+          : `${PRIMARY_ROUTES[index].split("/")[1][0].toUpperCase()}${PRIMARY_ROUTES[index].split("/")[1].slice(1)}`;
       document.title = label;
-      document.querySelectorAll('a[data-primary-route]').forEach((link) => {
+      document.querySelectorAll("a[data-primary-route]").forEach((link) => {
         if (!(link instanceof HTMLAnchorElement)) return;
         const active = indexForPath(new URL(link.href).pathname) === index;
         if (active && index !== 0) link.setAttribute("aria-current", "page");
@@ -108,20 +149,27 @@ const initialIndex = Math.max(0, routes.indexOf(routePath));
         slide.dataset.active = String(active);
         slide.setAttribute("aria-hidden", String(!active));
       });
-      if (push && window.location.pathname !== path) history.pushState({}, "", path);
+      if (push && window.location.pathname !== path)
+        history.pushState({}, "", path);
       activeIndex = index;
       window.scrollTo({ top: 0, behavior: "instant" });
       syncDocument(index);
-      const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const reducedMotion = matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
       if (reducedMotion) root.dataset.transitioning = "false";
-      else window.setTimeout(() => { root.dataset.transitioning = "false"; }, 760);
+      else
+        window.setTimeout(() => {
+          root.dataset.transitioning = "false";
+        }, 760);
     };
 
     track.addEventListener("transitionend", (event) => {
-      if (event.target === track && event.propertyName === "transform") root.dataset.transitioning = "false";
+      if (event.target === track && event.propertyName === "transform")
+        root.dataset.transitioning = "false";
     });
-    document.querySelectorAll('a[data-primary-route]').forEach((link) => {
-      link.addEventListener('click', (event) => {
+    document.querySelectorAll("a[data-primary-route]").forEach((link) => {
+      link.addEventListener("click", (event) => {
         if (!(link instanceof HTMLAnchorElement)) return;
         const url = new URL(link.href);
         const index = indexForPath(url.pathname);
@@ -130,31 +178,49 @@ const initialIndex = Math.max(0, routes.indexOf(routePath));
         setActive(index, url.pathname);
       });
     });
-    window.addEventListener("popstate", () => setActive(indexForPath(location.pathname), location.pathname, false));
-    root.addEventListener("pointerdown", (event) => { pointerStartX = event.clientX; pointerStartY = event.clientY; });
+    window.addEventListener("popstate", () =>
+      setActive(indexForPath(location.pathname), location.pathname, false),
+    );
+    root.addEventListener("pointerdown", (event) => {
+      pointerStartX = event.clientX;
+      pointerStartY = event.clientY;
+    });
     root.addEventListener("pointerup", (event) => {
       const dx = event.clientX - pointerStartX;
       const dy = event.clientY - pointerStartY;
       if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
-      const next = Math.min(slides.length - 1, Math.max(0, activeIndex + (dx < 0 ? 1 : -1)));
+      const next = Math.min(
+        slides.length - 1,
+        Math.max(0, activeIndex + (dx < 0 ? 1 : -1)),
+      );
       if (next !== activeIndex) setActive(next, localizedRoutes[next]);
     });
-    root.addEventListener("wheel", (event) => {
-      if (Math.abs(event.deltaX) <= Math.abs(event.deltaY) || wheelLocked) return;
-      wheelDelta += event.deltaX;
-      clearTimeout(wheelTimer);
-      wheelTimer = setTimeout(() => {
-        if (Math.abs(wheelDelta) > 80) {
-          const next = Math.min(slides.length - 1, Math.max(0, activeIndex + (wheelDelta > 0 ? 1 : -1)));
-          if (next !== activeIndex) {
-            wheelLocked = true;
-            setActive(next, localizedRoutes[next]);
-            window.setTimeout(() => { wheelLocked = false; }, 700);
+    root.addEventListener(
+      "wheel",
+      (event) => {
+        if (Math.abs(event.deltaX) <= Math.abs(event.deltaY) || wheelLocked)
+          return;
+        wheelDelta += event.deltaX;
+        clearTimeout(wheelTimer);
+        wheelTimer = setTimeout(() => {
+          if (Math.abs(wheelDelta) > 80) {
+            const next = Math.min(
+              slides.length - 1,
+              Math.max(0, activeIndex + (wheelDelta > 0 ? 1 : -1)),
+            );
+            if (next !== activeIndex) {
+              wheelLocked = true;
+              setActive(next, localizedRoutes[next]);
+              window.setTimeout(() => {
+                wheelLocked = false;
+              }, 700);
+            }
           }
-        }
-        wheelDelta = 0;
-      }, 90);
-    }, { passive: true });
+          wheelDelta = 0;
+        }, 90);
+      },
+      { passive: true },
+    );
 
     setActive(activeIndex, location.pathname, false);
   }

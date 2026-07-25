@@ -1,5 +1,5 @@
 // @ts-check
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
@@ -9,8 +9,14 @@ import mdx from "@astrojs/mdx";
 import { unified } from "@astrojs/markdown-remark";
 import sitemap from "@astrojs/sitemap";
 import { markdownOptions, markdownPlugins } from "./src/lib/markdown.mjs";
+import { createResponsiveImagePlugin } from "./src/lib/responsive-images.mjs";
 
 const buildId = process.env.PUBLIC_BUILD_ID ?? `local-${Date.now()}`;
+const imageManifest = JSON.parse(await readFile(new URL("./.blog-images-manifest.json", import.meta.url), "utf8"));
+const rehypePlugins = /** @type {any} */ ([
+  ...markdownPlugins.rehypePlugins,
+  [createResponsiveImagePlugin, { manifest: imageManifest }],
+]);
 
 const deploymentVersion = {
   name: "deployment-version",
@@ -40,7 +46,7 @@ export default defineConfig({
     shikiConfig: markdownOptions.shikiConfig,
     processor: unified({
       remarkPlugins: markdownPlugins.remarkPlugins,
-      rehypePlugins: markdownPlugins.rehypePlugins,
+      rehypePlugins,
     }),
   },
   vite: {

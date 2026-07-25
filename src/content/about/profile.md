@@ -3,7 +3,7 @@ name: Lust4ev3r
 city: 中国重庆
 major: 机器人工程
 motto: Keep it Simple,Stupid
-portrait: /images/content/about/profile-8646bdb863b8.png
+portrait: /images/content/about/profile-8646bdb863b8-w320.webp
 ---
 
 ## 关于网站
@@ -21,6 +21,8 @@ portrait: /images/content/about/profile-8646bdb863b8.png
 
 ## 致谢
 
-![The Movie Database](/images/tmdb-logo.svg)  
+本站基于 [Astro-star](https://github.com/hanlife02/Astro-star) 0.16.25 修改与重建。感谢 [hanlife02](https://github.com/hanlife02) 开源这个项目；原项目采用 [Apache License 2.0](https://github.com/hanlife02/Astro-star/blob/main/LICENSE) 授权。
 
+影视资料由 [The Movie Database（TMDB）](https://www.themoviedb.org/) 提供。本产品使用 TMDB API，但未经 TMDB 认可或认证。
 
+![The Movie Database](/images/tmdb-logo.svg)

@@ -30,21 +30,27 @@ test("the 404 page renders separate responsive visual layers", () => {
 
   for (const asset of [
     "public/images/404-background.png",
-    "public/images/404-background-1280.webp",
-    "public/images/404-background-1920.webp",
-    "public/images/404-background-3840.webp",
+    "public/images/404-background-w1280.avif",
+    "public/images/404-background-w1280.webp",
+    "public/images/404-background-w1920.avif",
+    "public/images/404-background-w1920.webp",
+    "public/images/404-background-w3840.avif",
+    "public/images/404-background-w3840.webp",
     "public/images/404-character.png",
-    "public/images/404-character-768.webp",
-    "public/images/404-character-1024.webp",
-    "public/images/404-character-802.webp",
+    "public/images/404-character-w768.avif",
+    "public/images/404-character-w768.webp",
+    "public/images/404-character-w802.avif",
+    "public/images/404-character-w802.webp",
     "public/images/404-rhine-mark.png",
   ]) {
     assert.equal(exists(asset), true, `${asset} should exist`);
   }
 
   assert.equal(exists("public/images/404-muelsyse.png"), false);
-  assert.match(page, /404-background-1280\.webp 1280w/);
-  assert.match(page, /404-character-768\.webp 768w/);
+  assert.match(page, /404-background-w1280\.avif 1280w/);
+  assert.match(page, /404-background-w1280\.webp 1280w/);
+  assert.match(page, /404-character-w768\.avif 768w/);
+  assert.match(page, /404-character-w768\.webp 768w/);
   assert.match(page, /object-fit:\s*cover/);
   assert.match(page, /height:\s*100svh/);
   assert.match(page, /height:\s*100dvh/);
@@ -103,7 +109,7 @@ from pathlib import Path
 from PIL import Image
 
 root = Path.cwd() / "public/images"
-for name in ["404-background.png", "404-background-1280.webp", "404-background-1920.webp", "404-background-3840.webp"]:
+for name in ["404-background.png", "404-background-w1280.avif", "404-background-w1280.webp", "404-background-w1920.avif", "404-background-w1920.webp", "404-background-w3840.avif", "404-background-w3840.webp"]:
     image = Image.open(root / name)
     assert image.width * 9 == image.height * 16, (name, image.size)
 

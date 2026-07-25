@@ -1,8 +1,10 @@
 {
-  "version": 1,
+  "version": 2,
+  "assets": {},
   "keys": [
     "blog/36357886a211c5a9e1f9664b9ecb190aa034a1fe9054c8cab2415e58a6783ab5.svg",
     "blog/aef376fcd64e4d81a4330335441b6dcd1730c9d4336a59fb861ea8e9a083ffef.svg",
     "blog/bd64bc8d70d86e5486ed4b4b895c2cb7ce2e9b72396fdd17d878dea078a9958a.svg"
-  ]
+  ],
+  "pendingDeletion": []
 }

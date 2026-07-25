@@ -28,7 +28,7 @@ const {
   mainClass = "",
   showFooter = true,
   locale = defaultLocale,
-  imageUrl = "/images/content/about/profile-8646bdb863b8.png",
+  imageUrl = "/images/content/about/profile-8646bdb863b8-social.webp",
   ogType = "website",
   hasMath = false,
 } = Astro.props;
@@ -92,7 +92,7 @@ if (!Astro.response.headers.has("Cache-Control")) Astro.response.headers.set("Ca
     <div class="relative z-10 flex min-h-screen flex-col">
       <Header currentPath={currentPath} locale={locale} languageLabel={site.copy.languageSelect} />
       <main transition:name="page-content" class={`flex-1 ${mainClass}`.trim()}><slot /></main>
-      {showFooter && <Footer brand="chasen" copyright={site.copy.copyright} />}
+      {showFooter && <Footer brand="lust4ev3r" copyright={site.copy.copyright} />}
     </div>
 
     <script>

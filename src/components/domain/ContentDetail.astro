@@ -54,7 +54,7 @@ const articleJsonLd = JSON.stringify({
   hasMath={hasMath}
 >
   <script slot="head" is:inline type="application/ld+json" set:html={articleJsonLd} />
-  <article class="article-page app-container" data-article-page>
+  <article class="article-page content-container" data-article-page>
     <div class="article-page__content">
       <div class="article-page__main">
         <a class="article-page__back" href={localizePath(`/${item.section}/`, locale)}>
@@ -90,7 +90,7 @@ const articleJsonLd = JSON.stringify({
 
         <div class="article-page__interaction">
           <PostEngagement contentId={item.contentId} locale={locale} labels={labels} />
-          <CommentsSection contentId={item.contentId} labels={labels} />
+          <CommentsSection contentId={item.contentId} locale={locale} labels={labels} />
         </div>
 
         {next && (
