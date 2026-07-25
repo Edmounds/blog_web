@@ -3,7 +3,7 @@ import test from "node:test";
 
 import {
   assertResolvedPublicAddress, fetchRemoteImage, getArtCoverUrl, getShanghaiDate, localizeArtItems,
-  parsePublicHttpsUrl, validateArtItemInput,
+  parsePublicHttpsUrl, resolveArtCoverDelivery, validateArtItemInput,
 } from "../functions/_shared/art.js";
 import { onRequestGet as previewCover } from "../functions/api/admin/art/cover-preview.js";
 import { onRequestDelete as deleteCover, onRequestPost as uploadCover } from "../functions/api/admin/art/covers.js";
@@ -45,6 +45,18 @@ test("art input accepts Deezer singles and rejects invalid music classifications
   assert.equal(validateArtItemInput(input).value.musicKind, "single");
   assert.equal(validateArtItemInput({ ...input, musicKind: "ep" }).ok, false);
   assert.equal(validateArtItemInput({ ...input, type: "book", musicKind: "single" }).ok, false);
+});
+
+test("art input accepts NetEase albums and singles", () => {
+  for (const [musicKind, source] of [["album", "netease_album"], ["single", "netease_track"]]) {
+    const result = validateArtItemInput({
+      type: "music", musicKind, source, sourceId: "185811", isbn: "", originalTitle: "夜曲", releaseDate: "2005-11-07",
+      collectedOn: "2026-07-26", isVisible: true, cover: { kind: "url", url: "https://p1.music.126.net/cover.jpg" },
+      translations: { "zh-CN": { title: "夜曲", creator: "周杰伦", extra: "" } },
+    });
+    assert.equal(result.ok, true);
+    assert.equal(result.value.source, source);
+  }
 });
 
 test("books and movies retain all supported translation locales", () => {
@@ -112,8 +124,68 @@ test("admin art lists validate and forward a music classification filter", async
 });
 
 test("public localization falls back to simplified Chinese and carries music classification", () => {
-  const item = { id: "1", type: "music", musicKind: "single", coverUrl: "https://img.muelsyse.us/art/1/a.jpg", translations: { "zh-CN": { title: "歌曲", creator: "歌手", extra: "备注" } } };
-  assert.deepEqual(localizeArtItems([item], "ja"), [{ id: "1", type: "music", musicKind: "single", title: "歌曲", creator: "歌手", extra: "备注", cover: "https://img.muelsyse.us/art/1/a.jpg" }]);
+  const item = {
+    id: "1", type: "music", musicKind: "single", source: "netease_track", coverKey: "art/1/a.jpg",
+    coverSourceUrl: "https://p3.music.126.net/song.jpg?size=large",
+    translations: { "zh-CN": { title: "歌曲", creator: "歌手", extra: "备注" } },
+  };
+  assert.deepEqual(localizeArtItems([item], "ja"), [{
+    id: "1", type: "music", musicKind: "single", title: "歌曲", creator: "歌手", extra: "备注",
+    cover: "https://p1.music.126.net/song.jpg?size=large", coverFallback: "https://img.muelsyse.us/art/1/a.jpg",
+  }]);
+});
+
+test("art cover delivery uses valid Douban images with an R2 fallback", () => {
+  assert.deepEqual(resolveArtCoverDelivery({
+    source: "douban_books",
+    coverKey: "art/book/cover.jpg",
+    coverSourceUrl: "https://img9.doubanio.com/view/subject/l/public/s30014644.jpg?x=1",
+  }), {
+    primary: "https://img9.doubanio.com/view/subject/l/public/s30014644.jpg?x=1",
+    fallback: "https://img.muelsyse.us/art/book/cover.jpg",
+    external: true,
+  });
+});
+
+test("art cover delivery rejects invalid or impersonated Douban URLs", () => {
+  for (const coverSourceUrl of [
+    "", "http://img9.doubanio.com/cover.jpg", "https://doubanio.com.evil.test/cover.jpg",
+    "not a url", "https://user:pass@img9.doubanio.com/cover.jpg", "https://img9.doubanio.com:8443/cover.jpg",
+  ]) {
+    assert.deepEqual(resolveArtCoverDelivery({ source: "douban_books", coverKey: "art/book/cover.jpg", coverSourceUrl }), {
+      primary: "https://img.muelsyse.us/art/book/cover.jpg", fallback: null, external: false,
+    });
+  }
+});
+
+test("art cover delivery normalizes NetEase album and track hosts", () => {
+  for (const source of ["netease_album", "netease_track"]) {
+    assert.deepEqual(resolveArtCoverDelivery({
+      source, coverKey: "art/music/cover.webp", coverSourceUrl: "https://p23.music.126.net/path/cover.jpg?param=600y600",
+    }), {
+      primary: "https://p1.music.126.net/path/cover.jpg?param=600y600",
+      fallback: "https://img.muelsyse.us/art/music/cover.webp",
+      external: true,
+    });
+  }
+});
+
+test("art cover delivery keeps TMDB, Deezer, and mismatched sources on R2", () => {
+  const cases = [
+    ["tmdb", "https://image.tmdb.org/t/p/w780/poster.jpg"],
+    ["deezer_music", "https://cdn-images.dzcdn.net/images/cover/one.jpg"],
+    ["deezer_track", "https://e-cdns-images.dzcdn.net/images/cover/two.jpg"],
+    ["tmdb", "https://img9.doubanio.com/cover.jpg"],
+    ["douban_books", "https://p2.music.126.net/cover.jpg"],
+    ["netease_album", "https://img9.doubanio.com/cover.jpg"],
+  ];
+  for (const [source, coverSourceUrl] of cases) {
+    const delivery = resolveArtCoverDelivery({ source, coverKey: "art/item/cover.jpg", coverSourceUrl });
+    assert.deepEqual(delivery, {
+      primary: "https://img.muelsyse.us/art/item/cover.jpg", fallback: null, external: false,
+    });
+    assert.doesNotMatch(delivery.primary, /image\.tmdb\.org|dzcdn\.net|doubanio\.com|music\.126\.net/);
+  }
 });
 
 test("art cover keys resolve to the public R2 image domain", () => {

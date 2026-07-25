@@ -2,7 +2,7 @@ export const ART_TYPES = ["book", "music", "movie", "series", "anime"];
 export const ART_MUSIC_KINDS = ["album", "single"];
 export const ART_LOCALES = ["zh-CN", "zh-TW", "en", "ja"];
 export const ART_TRANSLATED_TYPES = ["book", "movie"];
-export const ART_SOURCES = ["douban_books", "apple_books", "google_books", "apple_music", "deezer_music", "deezer_track", "tmdb", "legacy"];
+export const ART_SOURCES = ["douban_books", "apple_books", "google_books", "apple_music", "netease_album", "netease_track", "deezer_music", "deezer_track", "tmdb", "legacy"];
 export const ART_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"];
 export const ART_STORED_IMAGE_TYPES = [...ART_IMAGE_TYPES, "image/svg+xml"];
 
@@ -219,6 +219,28 @@ export function normalizeStoredCoverKey(value) {
 
 export function getArtCoverUrl(key) {
   return `${ART_COVER_BASE_URL}/${String(key).replace(/^\/+/, "")}`;
+}
+
+export function resolveArtCoverDelivery(item) {
+  const r2Url = getArtCoverUrl(item.coverKey);
+  const sourceUrl = parseExternalArtCoverUrl(item.source, item.coverSourceUrl);
+  if (!sourceUrl) return { primary: r2Url, fallback: null, external: false };
+  return { primary: sourceUrl, fallback: r2Url, external: true };
+}
+
+function parseExternalArtCoverUrl(source, value) {
+  let url;
+  try { url = new URL(value); } catch { return null; }
+  if (url.protocol !== "https:" || url.username || url.password || url.port) return null;
+
+  const hostname = url.hostname.toLowerCase().replace(/\.$/, "");
+  if (source === "douban_books" && hostname.endsWith(".doubanio.com")) return url.toString();
+  if (["netease_album", "netease_track"].includes(source) && /^p\d+\.music\.126\.net$/.test(hostname)) {
+    url.protocol = "https:";
+    url.hostname = "p1.music.126.net";
+    return url.toString();
+  }
+  return null;
 }
 
 export function normalizeImageType(value) {
@@ -474,7 +496,11 @@ export async function deleteArtItem(db, id) {
 export function localizeArtItems(items, locale) {
   return items.map((item) => {
     const translation = item.translations[locale] ?? item.translations["zh-CN"];
-    return { id: item.id, type: item.type, musicKind: item.musicKind, title: translation.title, creator: translation.creator, extra: translation.extra, cover: item.coverUrl };
+    const cover = resolveArtCoverDelivery(item);
+    return {
+      id: item.id, type: item.type, musicKind: item.musicKind, title: translation.title, creator: translation.creator,
+      extra: translation.extra, cover: cover.primary, coverFallback: cover.fallback,
+    };
   });
 }
 

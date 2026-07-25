@@ -4,12 +4,19 @@ import ArtSection from "../../../components/sections/ArtSection.astro";
 import { getPublicArtItems } from "../../../lib/art";
 import { getLocalizedSite } from "../../../lib/localized-content";
 import { getRuntimeEnv } from "../../../lib/runtime";
+import { listNeteaseRanking } from "../../../../functions/_shared/netease-music.js";
 
 export const prerender = false;
 const site = await getLocalizedSite("zh-CN");
-const items = await getPublicArtItems(getRuntimeEnv().DB, "zh-CN", ["music"]);
+const db = getRuntimeEnv().DB;
+const [items, weekly, total] = await Promise.all([
+  getPublicArtItems(db, "zh-CN", ["music"]),
+  listNeteaseRanking(db, "weekly"),
+  listNeteaseRanking(db, "total"),
+]);
+const ranking = { weekly, total };
 Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=0, must-revalidate");
 ---
 <BaseLayout title={site.labels.music} description={site.page.musicDescription} currentPath="/art/music/">
-  <ArtSection type="music" items={items} />
+  <ArtSection type="music" items={items} ranking={ranking} />
 </BaseLayout>

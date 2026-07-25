@@ -1,4 +1,5 @@
 const DEEZER_URL = "https://api.deezer.com";
+const NETEASE_SEARCH_URL = "https://music.163.com/api/cloudsearch/pc";
 const DOUBAN_BOOK_SEARCH_URL = "https://www.douban.com/search";
 const DOUBAN_BOOK_URL = "https://book.douban.com";
 const GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1/volumes";
@@ -8,7 +9,7 @@ const BOOK_CACHE_SECONDS = 7 * 24 * 60 * 60;
 
 export async function searchArtCandidates({ type, musicKind, query, creator = "", isbn = "", env = {}, fetchImpl = fetch, cache }) {
   if (type === "book") return searchBooks({ query, creator, isbn, env, fetchImpl, cache });
-  if (type === "music") return musicKind === "single" ? searchDeezerTracks({ query, fetchImpl }) : searchMusic({ query, fetchImpl });
+  if (type === "music") return musicKind === "single" ? searchTracks({ query, fetchImpl }) : searchMusic({ query, fetchImpl });
   if (["movie", "series", "anime"].includes(type)) return searchTmdb({ type, query, env, fetchImpl });
   return [];
 }
@@ -86,7 +87,25 @@ export async function searchDeezerMusic({ query, fetchImpl = fetch }) {
 }
 
 export async function searchMusic({ query, fetchImpl = fetch }) {
-  return searchDeezerMusic({ query, fetchImpl });
+  return searchNeteaseAlbums({ query, fetchImpl });
+}
+
+export async function searchTracks({ query, fetchImpl = fetch }) {
+  try {
+    const items = await searchNeteaseTracks({ query, fetchImpl });
+    if (items.length) return items;
+  } catch {}
+  return searchDeezerTracks({ query, fetchImpl });
+}
+
+export async function searchNeteaseAlbums({ query, fetchImpl = fetch }) {
+  const payload = await searchNetease(query, 10, fetchImpl);
+  return (Array.isArray(payload?.result?.albums) ? payload.result.albums : []).map(mapNeteaseAlbum).filter(validCandidate);
+}
+
+export async function searchNeteaseTracks({ query, fetchImpl = fetch }) {
+  const payload = await searchNetease(query, 1, fetchImpl);
+  return (Array.isArray(payload?.result?.songs) ? payload.result.songs : []).map(mapNeteaseTrack).filter(validCandidate);
 }
 
 export async function searchDeezerTracks({ query, fetchImpl = fetch }) {
@@ -140,6 +159,7 @@ function validCandidate(candidate) {
 function providerForUrl(url) {
   const hostname = new URL(url).hostname;
   if (hostname === "api.deezer.com") return "deezer";
+  if (hostname === "music.163.com") return "netease";
   if (["www.douban.com", "search.douban.com", "book.douban.com"].includes(hostname)) return "douban_books";
   if (hostname === "www.googleapis.com") return "google_books";
   if (hostname === "api.themoviedb.org") return "tmdb";
@@ -333,6 +353,29 @@ async function searchDeezerAlbums(query, fetchImpl) {
   return deezerData(await fetchJson(url, fetchImpl));
 }
 
+async function searchNetease(query, type, fetchImpl) {
+  const url = new URL(NETEASE_SEARCH_URL);
+  url.search = new URLSearchParams({ s: query, type: String(type), limit: "30", offset: "0" }).toString();
+  const response = await fetchImpl(url, {
+    headers: {
+      accept: "application/json",
+      referer: "https://music.163.com/",
+      "user-agent": "Mozilla/5.0 (compatible; blog-art-search/1.0)",
+    },
+    signal: AbortSignal.timeout(8_000),
+  });
+  if (!response.ok) throw providerError(response, "netease");
+  const payload = await response.json();
+  if (payload?.code !== 200) {
+    const error = new Error("NetEase search returned an invalid response.");
+    error.status = 502;
+    error.provider = "netease";
+    error.retryAfter = "";
+    throw error;
+  }
+  return payload;
+}
+
 async function searchDeezerArtists(query, fetchImpl) {
   const url = new URL(`${DEEZER_URL}/search/artist`);
   url.search = new URLSearchParams({ q: query }).toString();
@@ -394,4 +437,46 @@ function mapDeezerTrack(entry) {
     originalTitle: entry?.title ?? "", releaseDate: normalizeDate(entry?.release_date), description: album.title ?? "",
     coverUrl: album.cover_xl ?? album.cover_big ?? album.cover_medium ?? album.cover ?? "",
   };
+}
+
+function mapNeteaseAlbum(entry) {
+  const artists = Array.isArray(entry?.artists) ? entry.artists : entry?.artist ? [entry.artist] : [];
+  return {
+    source: "netease_album", sourceId: String(entry?.id ?? ""), title: entry?.name ?? "", creator: artistNames(artists),
+    originalTitle: entry?.name ?? "", releaseDate: neteaseDate(entry?.publishTime),
+    description: positiveNumber(entry?.size) ? `${entry.size} tracks` : "", coverUrl: normalizeNeteaseCover(entry?.picUrl ?? entry?.blurPicUrl),
+  };
+}
+
+function mapNeteaseTrack(entry) {
+  const album = entry?.al ?? entry?.album ?? {};
+  const artists = Array.isArray(entry?.ar) ? entry.ar : Array.isArray(entry?.artists) ? entry.artists : [];
+  return {
+    source: "netease_track", sourceId: String(entry?.id ?? ""), title: entry?.name ?? "", creator: artistNames(artists),
+    originalTitle: entry?.name ?? "", releaseDate: neteaseDate(entry?.publishTime), description: album.name ?? "",
+    coverUrl: normalizeNeteaseCover(album.picUrl ?? album.blurPicUrl),
+  };
+}
+
+function artistNames(artists) {
+  return artists.map((artist) => artist?.name).filter(Boolean).join(" / ");
+}
+
+function neteaseDate(value) {
+  const timestamp = Number(value);
+  if (!Number.isFinite(timestamp) || timestamp === 0) return "";
+  try { return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Shanghai" }).format(new Date(timestamp)); } catch { return ""; }
+}
+
+function normalizeNeteaseCover(value) {
+  if (typeof value !== "string") return "";
+  try {
+    const url = new URL(value);
+    if (!/^p\d+\.music\.126\.net$/i.test(url.hostname)) return "";
+    url.protocol = "https:";
+    url.hostname = "p1.music.126.net";
+    return url.toString();
+  } catch {
+    return "";
+  }
 }

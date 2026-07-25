@@ -17,8 +17,17 @@ const { item } = Astro.props;
         aria-hidden="true"
         class="absolute inset-0 h-full w-full scale-110 object-cover blur-xl opacity-55"
         loading="lazy"
+        data-art-cover-fallback={item.coverFallback ?? undefined}
+        referrerpolicy={item.coverFallback ? "origin" : undefined}
       />
-      <img src={item.cover} alt={item.title} class="relative h-full w-full object-contain" loading="lazy" />
+      <img
+        src={item.cover}
+        alt={item.title}
+        class="relative h-full w-full object-contain"
+        loading="lazy"
+        data-art-cover-fallback={item.coverFallback ?? undefined}
+        referrerpolicy={item.coverFallback ? "origin" : undefined}
+      />
     </div>
   ) : (
     <div class="aspect-[2/3] w-full overflow-hidden rounded-[var(--radius-control)] border border-[var(--border-soft)] bg-[var(--surface-soft)]">
@@ -27,6 +36,8 @@ const { item } = Astro.props;
         alt={item.title}
         class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.025]"
         loading="lazy"
+        data-art-cover-fallback={item.coverFallback ?? undefined}
+        referrerpolicy={item.coverFallback ? "origin" : undefined}
       />
     </div>
   )}
@@ -36,3 +47,21 @@ const { item } = Astro.props;
     {item.extra && item.musicKind !== "single" && <p class="text-xs text-[var(--text-faint)]">{item.extra}</p>}
   </div>
 </article>
+
+<script>
+  function bindArtCoverFallbacks() {
+    document.querySelectorAll<HTMLImageElement>("[data-art-cover-fallback]").forEach((image) => {
+      if (image.dataset.artCoverBound === "true") return;
+      image.dataset.artCoverBound = "true";
+      const useFallback = () => {
+        const fallback = image.dataset.artCoverFallback;
+        delete image.dataset.artCoverFallback;
+        if (fallback) image.src = fallback;
+      };
+      image.addEventListener("error", useFallback, { once: true });
+    });
+  }
+
+  bindArtCoverFallbacks();
+  document.addEventListener("astro:page-load", bindArtCoverFallbacks);
+</script>

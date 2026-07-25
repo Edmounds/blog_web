@@ -1,0 +1,9 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import LinksSection from "../../components/sections/LinksSection.astro";
+
+export const prerender = true;
+---
+<BaseLayout title="Links" description="Friends, collaborators, and sites worth visiting." currentPath="/links/">
+  <LinksSection />
+</BaseLayout>

@@ -1,0 +1,46 @@
+---
+import type { Locale } from "../../lib/i18n";
+import { getLocalizedSite } from "../../lib/localized-content";
+import CommentsSection from "../domain/CommentsSection.astro";
+import FriendLinks from "../links/FriendLinks.astro";
+
+interface Props { locale?: Locale }
+
+const { locale = "zh-CN" } = Astro.props;
+const site = await getLocalizedSite(locale);
+const copy = {
+  "zh-CN": { title: "Links", heading: "Friends", intro: "朋友、协作者和常去的网站。", apply: "申请友链", detail: "请在评论区留下站点名称、简介、网址和头像地址。" },
+  "zh-TW": { title: "Links", heading: "Friends", intro: "朋友、協作者和常去的網站。", apply: "申請友鏈", detail: "請在評論區留下站點名稱、簡介、網址和頭像地址。" },
+  en: { title: "Links", heading: "Friends", intro: "Friends, collaborators, and sites worth visiting.", apply: "Apply", detail: "Leave your site name, description, URL, and avatar URL in the comments." },
+  ja: { title: "Links", heading: "Friends", intro: "友人、協力者、よく訪れるサイト。", apply: "リンク申請", detail: "コメント欄にサイト名、説明、URL、アバターURLを残してください。" },
+}[locale];
+---
+
+<div class="links-shell content-container">
+  <article class="links-page">
+    <header class="links-page__header"><h1>{copy.title}</h1></header>
+    <section class="links-page__section" aria-labelledby="friends-title">
+      <h2 id="friends-title">{copy.heading}</h2>
+      <p>{copy.intro}</p>
+      <FriendLinks />
+    </section>
+    <section class="links-page__section" aria-labelledby="apply-title">
+      <h2 id="apply-title">{copy.apply}</h2>
+      <p>{copy.detail}</p>
+    </section>
+    <div class="links-page__comments">
+      <CommentsSection contentId="links" locale={locale} labels={site.copy} />
+    </div>
+  </article>
+</div>
+
+<style>
+  .links-page { width: 100%; max-width: 70rem; min-height: calc(100vh - 4.5rem); margin-inline: auto; padding-block: clamp(3.5rem, 7vh, 6rem) 6rem; }
+  .links-page__header { margin-bottom: clamp(2.5rem, 5vw, 4rem); padding-bottom: clamp(0.75rem, 1.5vw, 1.25rem); border-bottom: 1px solid var(--border-soft); }
+  .links-page__header h1 { margin: 0; color: transparent; font-size: clamp(2.3rem, 2rem + 1.5vw, 4.3rem); font-weight: 400; line-height: 1.05; -webkit-text-stroke: 1px var(--foreground); paint-order: stroke fill; }
+  .links-page__section { display: grid; gap: 0.8rem; margin-top: 3rem; }
+  .links-page__section h2 { margin: 0; font-size: var(--type-xl); font-weight: 500; }
+  .links-page__section p { margin: 0 0 0.4rem; color: var(--text-muted); line-height: 1.7; }
+  .links-page__comments { --article-title-size: clamp(1.82rem, 1.52rem + 0.9vw, 2.95rem); margin-top: 4rem; }
+  :global(html:lang(zh-CN)) .links-page__comments, :global(html:lang(zh-TW)) .links-page__comments, :global(html:lang(ja)) .links-page__comments { --article-title-size: clamp(1.56rem, 1.36rem + 0.6vw, 2.28rem); }
+</style>

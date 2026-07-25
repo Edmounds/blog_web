@@ -3,7 +3,7 @@ import test from "node:test";
 
 import {
   searchArtCandidates, searchBooks, searchDeezerMusic, searchDeezerTracks, searchDoubanBookByIsbn, searchDoubanBooks, searchGoogleBooks,
-  searchMusic, searchTmdb,
+  searchNeteaseAlbums, searchNeteaseTracks, searchTmdb, searchTracks,
 } from "../functions/_shared/art-search.js";
 import { onRequestGet as searchArt } from "../functions/api/admin/art/search.js";
 
@@ -220,25 +220,79 @@ test("Deezer track search maps songs with artist and album artwork", async () =>
   }]);
 });
 
-test("art candidate search requires a music kind and separates album and track providers", async () => {
+test("NetEase album and track searches map Chinese metadata and HTTPS artwork", async () => {
+  const album = await searchNeteaseAlbums({
+    query: "Abbey Road",
+    fetchImpl: async (url, init) => {
+      assert.match(String(url), /music\.163\.com\/api\/cloudsearch\/pc\?s=Abbey\+Road&type=10&limit=30&offset=0/);
+      assert.equal(init.headers.referer, "https://music.163.com/");
+      return response({ code: 200, result: { albums: [{
+        id: 437968, name: "Abbey Road (Remastered)", artists: [{ name: "The Beatles" }], size: 17,
+        publishTime: -8409600000, picUrl: "http://p2.music.126.net/album.jpg",
+      }] } });
+    },
+  });
+  const track = await searchNeteaseTracks({
+    query: "夜曲",
+    fetchImpl: async (url) => {
+      assert.match(String(url), /music\.163\.com\/api\/cloudsearch\/pc\?s=%E5%A4%9C%E6%9B%B2&type=1&limit=30&offset=0/);
+      return response({ code: 200, result: { songs: [{
+        id: 185811, name: "夜曲", ar: [{ name: "周杰伦" }], al: { name: "十一月的萧邦", picUrl: "https://p3.music.126.net/track.jpg" },
+        publishTime: 1131292800000,
+      }] } });
+    },
+  });
+
+  assert.deepEqual(album, [{
+    source: "netease_album", sourceId: "437968", title: "Abbey Road (Remastered)", creator: "The Beatles",
+    originalTitle: "Abbey Road (Remastered)", releaseDate: "1969-09-26", description: "17 tracks",
+    coverUrl: "https://p1.music.126.net/album.jpg",
+  }]);
+  assert.deepEqual(track, [{
+    source: "netease_track", sourceId: "185811", title: "夜曲", creator: "周杰伦", originalTitle: "夜曲",
+    releaseDate: "2005-11-07", description: "十一月的萧邦", coverUrl: "https://p1.music.126.net/track.jpg",
+  }]);
+});
+
+test("art candidate search requires a music kind and defaults albums and singles to NetEase", async () => {
   const album = await searchArtCandidates({
     type: "music", musicKind: "album", query: "Album",
-    fetchImpl: async (url) => String(url).includes("/search/album") ? response({ data: [] }) : response({ data: [] }),
+    fetchImpl: async (url) => {
+      assert.match(String(url), /type=10/);
+      return response({ code: 200, result: { albums: [{ id: 2, name: "Album", artist: { name: "Artist" }, picUrl: "https://p1.music.126.net/album.jpg" }] } });
+    },
   });
   const single = await searchArtCandidates({
     type: "music", musicKind: "single", query: "Song",
     fetchImpl: async (url) => {
-      assert.match(String(url), /\/search\/track/);
-      return response({ data: [{ id: 1, title: "Song", artist: { name: "Artist" }, album: { cover_big: "https://deezer.test/track.jpg" } }] });
+      assert.match(String(url), /type=1/);
+      return response({ code: 200, result: { songs: [{ id: 1, name: "Song", ar: [{ name: "Artist" }], al: { picUrl: "https://p1.music.126.net/track.jpg" } }] } });
     },
   });
-  assert.deepEqual(album, []);
-  assert.equal(single[0].source, "deezer_track");
+  assert.equal(album[0].source, "netease_album");
+  assert.equal(single[0].source, "netease_track");
 });
 
-test("music search uses only the query for both Deezer searches and picks the most popular released artist", async () => {
+test("single search falls back to Deezer tracks when NetEase fails or has no candidates", async () => {
+  for (const neteaseResponse of [response({ code: 200, result: { songs: [] } }), new Response("down", { status: 503 })]) {
+    const calls = [];
+    const items = await searchTracks({
+      query: "Fallback Song",
+      fetchImpl: async (url) => {
+        const value = String(url); calls.push(value);
+        if (value.startsWith("https://music.163.com/")) return neteaseResponse.clone();
+        return response({ data: [{ id: 9, title: "Fallback Song", artist: { name: "Artist" }, album: { cover_big: "https://deezer.test/track.jpg" } }] });
+      },
+    });
+    assert.equal(items[0].source, "deezer_track");
+    assert.ok(calls[0].startsWith("https://music.163.com/"));
+    assert.match(calls[1], /^https:\/\/api\.deezer\.com\/search\/track/);
+  }
+});
+
+test("Deezer album search uses only the query and picks the most popular released artist", async () => {
   const calls = [];
-  const items = await searchMusic({
+  const items = await searchDeezerMusic({
     query: "Queen",
     creator: "ignored legacy field",
     fetchImpl: async (url) => {
@@ -262,7 +316,7 @@ test("music search uses only the query for both Deezer searches and picks the mo
 });
 
 test("artist albums follow pagination, exclude non-albums, sort by popularity, and precede deduplicated title matches", async () => {
-  const items = await searchMusic({
+  const items = await searchDeezerMusic({
     query: "Artist",
     fetchImpl: async (url) => {
       const value = String(url);
@@ -291,7 +345,7 @@ test("artist albums follow pagination, exclude non-albums, sort by popularity, a
 });
 
 test("music search still returns title matches when no valid artist exists", async () => {
-  const items = await searchMusic({
+  const items = await searchDeezerMusic({
     query: "Unknown",
     fetchImpl: async (url) => String(url).includes("/search/album")
       ? response({ data: [{ id: 5, title: "Unknown Album", record_type: "album", artist: { name: "Known Artist" } }] })
@@ -301,7 +355,7 @@ test("music search still returns title matches when no valid artist exists", asy
 });
 
 test("music search still returns artist albums when the title search is empty", async () => {
-  const items = await searchMusic({
+  const items = await searchDeezerMusic({
     query: "Exact Artist",
     fetchImpl: async (url) => {
       const value = String(url);
@@ -314,7 +368,7 @@ test("music search still returns artist albums when the title search is empty", 
 });
 
 test("music search rejects invalid Deezer payloads", async () => {
-  const items = await searchMusic({ query: "album", fetchImpl: async () => response({ data: "invalid" }) });
+  const items = await searchDeezerMusic({ query: "album", fetchImpl: async () => response({ data: "invalid" }) });
   assert.deepEqual(items, []);
 });
 
@@ -331,7 +385,7 @@ test("TMDB maps movie and TV search without inferring series versus anime", asyn
 
 test("provider errors are surfaced", async () => {
   await assert.rejects(
-    () => searchMusic({ query: "album", fetchImpl: async () => new Response("rate limit", { status: 429, headers: { "retry-after": "30" } }) }),
+    () => searchDeezerMusic({ query: "album", fetchImpl: async () => new Response("rate limit", { status: 429, headers: { "retry-after": "30" } }) }),
     (error) => error.status === 429 && error.provider === "deezer" && error.retryAfter === "30",
   );
 });

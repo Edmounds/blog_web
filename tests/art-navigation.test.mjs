@@ -4,13 +4,15 @@ import test from "node:test";
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("primary navigation uses fixed English labels and Life collection order", () => {
+test("primary navigation uses fixed English labels with Links before Life", () => {
   const header = read("src/components/site/Header.astro");
   assert.match(header, /About/);
   assert.match(header, /Blog/);
   assert.match(header, /Note/);
   assert.match(header, /Project/);
+  assert.match(header, /Links/);
   assert.match(header, /Life/);
+  assert.match(header, /const links = \{ label: "Links"[\s\S]*?<div class="life-menu">/);
   assert.match(header, /Books[\s\S]*Music[\s\S]*Screen/);
 });
 
@@ -18,10 +20,8 @@ test("SPA canvas contains home, about, blog, note, and project", () => {
   const layout = read("src/layouts/SpaLayout.astro");
   assert.match(layout, /width: 500vw/);
   assert.match(layout, /data-path="\/"/);
-  assert.match(layout, /data-path="\/about\/"/);
-  assert.match(layout, /data-path="\/blog\/"/);
-  assert.match(layout, /data-path="\/note\/"/);
-  assert.match(layout, /data-path="\/project\/"/);
+  assert.match(layout, /const routes = \["\/", "\/about\/", "\/blog\/", "\/note\/", "\/project\/"\]/);
+  assert.match(layout, /routes\.slice\(1\)\.map/);
   assert.doesNotMatch(layout, /ArtSection|data-path="\/art\//);
 });
 

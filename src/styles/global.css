@@ -913,20 +913,20 @@ html.dark .ui-prose pre.astro-code span {
 .comments-section {
   min-height: 28rem;
   scroll-margin-top: 6rem;
-  padding-top: clamp(1.75rem, 4vw, 2.75rem);
-  border-top: 1px solid var(--border-soft);
+  padding-top: clamp(1rem, 2vw, 1.32rem);
+  border-top: 1px solid color-mix(in srgb, var(--foreground) 14%, transparent);
 }
 .comments-section__header {
   display: grid;
-  grid-template-columns: auto minmax(2rem, 1fr);
-  gap: 0.45rem 0.9rem;
+  grid-template-columns: auto minmax(1.8rem, 1fr);
+  gap: 0.36rem 0.72rem;
   align-items: end;
-  margin-bottom: clamp(1.75rem, 4vw, 3rem);
+  margin-bottom: clamp(1rem, 0.88rem + 0.35vw, 1.28rem);
 }
 .comments-section__header::after {
   height: 1px;
-  margin-bottom: 0.35rem;
-  background: var(--border-strong);
+  margin-bottom: 0.34rem;
+  background: color-mix(in srgb, var(--foreground) 34%, transparent);
   content: "";
 }
 .comments-section__header h2 {
@@ -941,68 +941,84 @@ html.dark .ui-prose pre.astro-code span {
 .comments-section__header p {
   grid-column: 1 / -1;
   margin: 0;
-  color: var(--text-muted);
-  font-size: var(--type-base);
-  line-height: 1.65;
+  color: color-mix(in srgb, var(--foreground) 66%, transparent);
+  font-size: var(--type-sm);
+  line-height: 1.6;
 }
 .comments-form {
   display: grid;
-  grid-template-rows: auto minmax(10rem, auto) auto auto;
+  grid-template-rows: auto minmax(5.65rem, auto) auto auto;
   overflow: hidden;
-  background: color-mix(in srgb, var(--canvas) 97%, var(--foreground) 3%);
-  border: 1px solid var(--border-soft);
-  border-radius: var(--radius-control);
+  color: color-mix(in srgb, var(--foreground) 72%, transparent);
+  background: color-mix(in srgb, var(--canvas) 86%, var(--foreground) 2%);
+  border: 1px solid color-mix(in srgb, var(--foreground) 14%, transparent);
+  border-radius: 0.5rem;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--canvas) 70%, transparent);
 }
 .comments-field {
   min-width: 0;
 }
-.comments-field--name {
+.comments-form__identity {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  min-height: 3.7rem;
-  padding-inline: clamp(0.8rem, 2vw, 1.15rem);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   border-bottom: 1px solid var(--border-soft);
 }
-.comments-field--name label {
-  color: var(--text-faint);
-  font-size: var(--type-sm);
+.comments-field--identity {
+  display: flex;
+  min-width: 0;
+  min-height: 2.75rem;
+  align-items: center;
+  padding-inline: 0.38rem;
 }
-.comments-field--name input {
+.comments-field--identity + .comments-field--identity {
+  border-left: 1px solid var(--border-soft);
+}
+.comments-field--identity label {
+  flex: 0 0 auto;
+  min-width: 2.4rem;
+  padding: 0.62rem 0.35rem;
+  color: color-mix(in srgb, var(--foreground) 44%, transparent);
+  font-size: var(--type-xs);
+}
+.comments-field--identity input {
   min-width: 0;
   height: 100%;
-  padding-inline: 1rem;
-  color: var(--foreground);
+  flex: 1;
+  padding: 0.5rem 0.35rem;
+  color: color-mix(in srgb, var(--foreground) 68%, transparent);
+  font-size: var(--type-sm);
   background: transparent;
   border: 0;
   outline: 0;
 }
-.comments-field--name span,
 .comments-form__footer > span {
   color: var(--text-faint);
   font-size: var(--type-xs);
   font-variant-numeric: tabular-nums;
 }
 .comments-field--content {
-  margin: clamp(0.65rem, 1.5vw, 1rem);
+  margin: 0.46rem;
 }
 .comments-field textarea {
   width: 100%;
-  min-height: 10rem;
-  padding: 0.3rem;
-  color: var(--foreground);
-  line-height: 1.7;
+  min-height: 5.65rem;
+  padding: 0.5rem;
+  color: color-mix(in srgb, var(--foreground) 72%, transparent);
+  font-size: var(--type-sm);
+  line-height: 1.58;
   resize: vertical;
-  background: transparent;
+  background: color-mix(in srgb, var(--canvas) 97%, var(--foreground) 3%);
   border: 0;
+  border-radius: 0.42rem;
   outline: 0;
 }
 .comments-field textarea::placeholder {
-  color: var(--text-faint);
+  color: color-mix(in srgb, var(--foreground) 34%, transparent);
 }
-.comments-field--name:focus-within,
-.comments-field--content:focus-within {
-  box-shadow: inset 0 0 0 1px var(--border-strong);
+.comments-field--identity:focus-within,
+.comments-field textarea:focus {
+  background: color-mix(in srgb, var(--canvas) 78%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 22%, transparent);
 }
 .comments-sr-only {
   position: absolute;
@@ -1024,26 +1040,68 @@ html.dark .ui-prose pre.astro-code span {
 .comments-form__footer {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 1rem;
-  padding: 0.75rem 1rem 1rem;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0 0.55rem 0.55rem;
+}
+.comments-form__tools,
+.comments-form__actions {
+  display: flex;
+  align-items: center;
+}
+.comments-form__tools {
+  gap: 0.65rem;
+  color: color-mix(in srgb, var(--foreground) 42%, transparent);
+}
+.comments-form__tools > span {
+  display: inline-flex;
+  width: 1.15rem;
+  height: 1.15rem;
+  align-items: center;
+  justify-content: center;
+}
+.comments-form__tools :is(svg) {
+  width: 1.1rem;
+  height: 1.1rem;
+  stroke-width: 1.8;
+}
+.comments-form__markdown {
+  color: color-mix(in srgb, var(--foreground) 72%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.comments-form__markdown span {
+  margin-left: -0.08rem;
+  font-size: 0.58rem;
+}
+.comments-form__actions {
+  gap: 0.5rem;
+}
+.comments-form__actions > span {
+  min-width: 3.25rem;
+  color: var(--text-faint);
+  font-size: var(--type-xs);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 .comments-form__footer button {
   display: inline-flex;
-  min-height: 2.5rem;
+  min-height: 2rem;
   align-items: center;
   justify-content: center;
-  padding-inline: 1.15rem;
-  color: var(--canvas);
-  font-size: var(--type-sm);
-  background: var(--foreground);
-  border: 1px solid var(--foreground);
+  gap: 0.35rem;
+  padding-inline: 0.78rem;
+  color: #ffffff;
+  font-size: var(--type-xs);
+  background: color-mix(in srgb, var(--foreground) 84%, transparent);
+  border: 1px solid color-mix(in srgb, var(--foreground) 84%, transparent);
   border-radius: 999px;
 }
 .comments-form__footer button:hover,
 .comments-form__footer button:focus-visible {
-  color: var(--foreground);
-  background: transparent;
+  color: #ffffff;
+  background: var(--foreground);
 }
 .comments-status {
   min-height: 1.25rem;
@@ -1138,11 +1196,22 @@ html.dark .ui-prose pre.astro-code span {
   .comments-section__header p {
     grid-row: 3;
   }
-  .comments-field--name {
-    grid-template-columns: auto minmax(0, 1fr);
+  .comments-form__identity {
+    grid-template-columns: minmax(0, 1fr);
   }
-  .comments-field--name span {
-    display: none;
+  .comments-field--identity + .comments-field--identity {
+    border-top: 1px solid var(--border-soft);
+    border-left: 0;
+  }
+  .comments-form__footer {
+    align-items: flex-end;
+  }
+  .comments-form__tools {
+    gap: 0.6rem;
+  }
+  .comments-form__actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
   }
 }
 @media (prefers-reduced-motion: reduce) {

@@ -7,6 +7,7 @@ import { getPublicGameItems } from "../../../../lib/games";
 import { type Locale } from "../../../../lib/i18n";
 import { getLocalizedSite } from "../../../../lib/localized-content";
 import { getRuntimeEnv } from "../../../../lib/runtime";
+import { listNeteaseRanking } from "../../../../../functions/_shared/netease-music.js";
 
 export const prerender = false;
 const locale = Astro.params.locale as Locale;
@@ -18,10 +19,18 @@ const site = await getLocalizedSite(locale);
 const title = site.labels[type];
 const description = site.page[`${type}Description`];
 const types: ArtType[] = type === "screen" ? ["movie", "series", "anime"] : type === "game" ? [] : [type];
-const gameItems = type === "game" ? await getPublicGameItems(getRuntimeEnv().DB) : [];
-const artItems = type === "game" ? [] : await getPublicArtItems(getRuntimeEnv().DB, locale, types);
+const db = getRuntimeEnv().DB;
+const gameItems = type === "game" ? await getPublicGameItems(db) : [];
+const [artItems, weekly, total] = type === "game"
+  ? [[], [], []]
+  : await Promise.all([
+      getPublicArtItems(db, locale, types),
+      type === "music" ? listNeteaseRanking(db, "weekly") : Promise.resolve([]),
+      type === "music" ? listNeteaseRanking(db, "total") : Promise.resolve([]),
+    ]);
+const ranking = { weekly, total };
 Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=0, must-revalidate");
 ---
 <BaseLayout title={title} description={description} currentPath={`/${Astro.params.locale}/art/${type}/`} locale={locale}>
-  {type === "game" ? <GameSection items={gameItems} locale={locale} /> : <ArtSection type={type} items={artItems} locale={locale} />}
+  {type === "game" ? <GameSection items={gameItems} locale={locale} /> : <ArtSection type={type} items={artItems} ranking={ranking} locale={locale} />}
 </BaseLayout>

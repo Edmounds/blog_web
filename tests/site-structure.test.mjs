@@ -4,19 +4,43 @@ import test from "node:test";
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("the primary canvas contains the five requested pages in order", () => {
+test("the primary canvas keeps five ordered routes while deferring non-home sections", () => {
   const layout = read("src/layouts/SpaLayout.astro");
   assert.match(layout, /width:\s*500vw/);
-
-  const paths = [...layout.matchAll(/data-path="([^"]+)"/g)].map((match) => match[1]);
-  assert.deepEqual(paths, ["/", "/about/", "/blog/", "/note/", "/project/"]);
+  assert.match(layout, /const routes = \["\/", "\/about\/", "\/blog\/", "\/note\/", "\/project\/"\]/);
+  assert.match(layout, /data-section-url=\{localizePath\(path, locale\)\}/);
+  assert.match(layout, /requestIdleCallback/);
+  assert.match(layout, /fetch\(url,[\s\S]*X-Spa-Fragment/);
+  assert.doesNotMatch(layout, /^import (?:About|Blogs|Notes|Projects)Section/m);
+  assert.match(layout, /initialIndex === 1[\s\S]*import\("\.\.\/components\/sections\/AboutSection\.astro"\)/);
 });
 
-test("navigation labels stay English and Life exposes the four collection routes", () => {
+test("the loading icon gates initial and Life navigation", () => {
+  const layout = read("src/layouts/BaseLayout.astro");
+  const loader = read("src/components/site/LoadingOverlay.astro");
+
+  assert.match(layout, /import LoadingOverlay/);
+  assert.match(layout, /<LoadingOverlay \/>/);
+  assert.match(loader, /loading-icon__ring/);
+  assert.match(loader, /loading-icon-rotate/);
+  assert.match(loader, /loading-icon-pulse/);
+  assert.doesNotMatch(loader, /muelsyse-(?:head|arm|torso|coat|legs|rear-hair)/);
+  assert.doesNotMatch(loader, /water-growth-ring|scientific-staff|skeletal-water-arc|botanical-particles|rhine-life-mark/);
+  assert.doesNotMatch(loader, /loader-character-walk|loader-frame-lift|loader-frame-step/);
+  assert.match(loader, /role="status"/);
+  assert.match(loader, /sessionStorage\.getItem\(FIRST_LOAD_KEY\)/);
+  assert.match(loader, /astro:before-preparation/);
+  assert.match(loader, /LIFE_ROUTE\.test\(event\.to\.pathname\)/);
+  assert.match(loader, /backdrop-filter:\s*blur\(14px\)/);
+  assert.match(loader, /prefers-reduced-motion:\s*reduce/);
+});
+
+test("navigation labels stay English, Links sits before Life, and Life exposes the four collection routes", () => {
   const header = read("src/components/site/Header.astro");
-  for (const label of ["About", "Blog", "Note", "Project", "Life", "Books", "Music", "Screen", "Game"]) {
+  for (const label of ["About", "Blog", "Note", "Project", "Links", "Life", "Books", "Music", "Screen", "Game"]) {
     assert.match(header, new RegExp(`(?:>|label: ")${label}`));
   }
+  assert.match(header, /const links = \{ label: "Links"[\s\S]*?<div class="life-menu">/);
   assert.doesNotMatch(header, />Home</);
   assert.match(header, /\/art\/book\//);
   assert.match(header, /\/art\/music\//);
@@ -44,8 +68,10 @@ test("the transparent header keeps its side controls visible while auto-hiding d
   assert.match(header, /@media\s*\(max-width:\s*30rem\)[\s\S]*?\.site-header__tools\s*\{[^}]*gap:\s*0;/);
   assert.match(header, /@media\s*\(max-width:\s*30rem\)[\s\S]*?\.site-signature\s*\{[^}]*width:\s*min\(100%,\s*8\.75rem\);[^}]*font-size:\s*2\.15rem;/);
   assert.doesNotMatch(header, /backdrop-filter/);
-  assert.match(header, /\.life-menu__items\s*\{[^}]*top:\s*50%;[^}]*left:\s*100%;[^}]*padding-left:\s*0\.75rem;[^}]*transform:\s*translateX\(-0\.25rem\);/s);
-  assert.match(header, /\.life-menu__items\[data-open="true"\][^\{]*\{[^}]*transform:\s*translateX\(0\);/s);
+  assert.match(header, /\.desktop-nav\s*\{[^}]*--desktop-nav-gap:\s*clamp\(0\.75rem,\s*1\.5vw,\s*1\.5rem\);[^}]*gap:\s*var\(--desktop-nav-gap\);/s);
+  assert.match(header, /\.life-menu__items\s*\{[^}]*top:\s*50%;[^}]*left:\s*100%;[^}]*display:\s*flex;[^}]*align-items:\s*center;[^}]*gap:\s*var\(--desktop-nav-gap\);[^}]*width:\s*max-content;[^}]*padding-left:\s*var\(--desktop-nav-gap\);[^}]*transform:\s*translate\(-0\.25rem,\s*-50%\);[^}]*white-space:\s*nowrap;/s);
+  assert.match(header, /\.life-menu__items\[data-open="true"\][^\{]*\{[^}]*transform:\s*translate\(0,\s*-50%\);/s);
+  assert.match(header, /\.mobile-menu details div\s*\{[^}]*display:\s*grid;/s);
 });
 
 test("public content pages stay inside the measured header frame", () => {
@@ -107,8 +133,10 @@ test("top-level writing sections use the compact Astro-star archive layout", () 
   const about = read("src/components/sections/AboutSection.astro");
   assert.match(about, /<div class="about-shell content-container">[\s\S]*?<article class="about-article"/);
   assert.match(about, /\.about-article\s*\{[^}]*max-width:\s*52rem;[^}]*margin-inline:\s*auto;/s);
+  assert.match(about, /<header class="about-article__title">[\s\S]*<h1>About<\/h1>/);
+  assert.match(about, /\.about-article__title h1[^}]*font-family:\s*var\(--font-ui\);[^}]*font-size:\s*clamp\(2\.3rem,\s*2rem \+ 1\.5vw,\s*4\.3rem\);/s);
   assert.match(about, /<Content \/>/);
-  assert.doesNotMatch(about, /about-article__header|profile\.data\.(?:name|motto|city|portrait)/);
+  assert.doesNotMatch(about, /profile\.data\.(?:name|motto|city|portrait)/);
   assert.doesNotMatch(about, /profile\.(?:story|meta|focusCards|experience|homeFeatured)/);
 });
 
@@ -119,12 +147,19 @@ test("section descriptions remain available to page metadata", () => {
   assert.match(read("src/pages/blog/index.astro"), /description="Essays and longer-form writing\."/);
 });
 
+test("the site favicon uses the local profile portrait", () => {
+  const layout = read("src/layouts/BaseLayout.astro");
+  const notFound = read("src/pages/404.astro");
+  assert.match(layout, /rel="icon" type="image\/webp" href="\/images\/content\/about\/profile-8646bdb863b8-w160\.webp\?v=1"/);
+  assert.match(notFound, /rel="icon" type="image\/webp" href="\/images\/content\/about\/profile-8646bdb863b8-w160\.webp\?v=1"/);
+});
+
 test("legacy blogs routes permanently redirect and Series routes are gone", () => {
   assert.match(read("src/pages/blogs/index.astro"), /Astro\.redirect\("\/blog\/", 301\)/);
   assert.match(read("src/pages/\[locale\]/blogs/index.astro"), /Astro\.redirect\([\s\S]*, 301\)/);
   assert.throws(() => read("src/pages/series/index.astro"));
   assert.throws(() => read("src/pages/series/[slug].astro"));
-  assert.throws(() => read("src/pages/links/index.astro"));
+  assert.match(read("src/pages/links/index.astro"), /BaseLayout[\s\S]*LinksSection/);
 });
 
 test("Blog Note and Project content collections and image sync roots are configured", () => {
@@ -158,7 +193,7 @@ test("music administration separates albums and singles while preserving selecta
   assert.match(admin, /musicKind=\$\{selectedMusicKind\}/);
   assert.match(admin, /params\.set\("musicKind", musicKind\)/);
   assert.match(admin, /type !== "music"[\s\S]*type === "book" \? "作者" : "补充关键词"/);
-  assert.match(admin, /type === "music" \? "deezer_music"/);
+  assert.match(admin, /type === "music" \? "netease_album"/);
   assert.match(admin, /已收藏/);
   assert.match(admin, /const collectedCandidates = useMemo/);
   assert.match(admin, /\/api\/admin\/art\/items\?type=\$\{selectedType\}\$\{suffix\}`,[\s\S]*cache: "no-store"/);
@@ -166,15 +201,16 @@ test("music administration separates albums and singles while preserving selecta
   assert.match(admin, /setItems\(\(current\) => \[data\.item,[\s\S]*item\.id !== data\.item\.id/);
   assert.doesNotMatch(admin, /setForm\(blankForm\(type\)\); setCandidates\(\[\]\); await loadItems/);
   assert.doesNotMatch(search, /itunes\.apple\.com|searchAppleMusic|upgradeAppleArtwork/);
-  assert.match(search, /searchDeezerTracks/);
-  assert.match(search, /deezer_track/);
+  assert.match(search, /searchNeteaseAlbums/);
+  assert.match(search, /searchNeteaseTracks/);
+  assert.match(search, /return searchDeezerTracks/);
   assert.doesNotMatch(read("src/lib/cover-api.ts"), /itunes\.apple\.com|ItunesSearchResponse/);
 });
 
-test("music administration paginates ten candidates without clearing search context", () => {
+test("music administration paginates nine candidates without clearing search context", () => {
   const admin = read("src/components/domain/ArtAdmin.tsx");
 
-  assert.match(admin, /const MUSIC_PAGE_SIZE = 10/);
+  assert.match(admin, /const MUSIC_PAGE_SIZE = 9/);
   assert.match(admin, /const \[candidatePage, setCandidatePage\] = useState\(1\)/);
   assert.match(admin, /candidates\.slice\(candidatePageStart, candidatePageStart \+ MUSIC_PAGE_SIZE\)/);
   assert.match(admin, /setCandidates\(data\.items\); setCandidatePage\(1\)/);
@@ -213,6 +249,50 @@ test("public music collection has localized album and single tabs and hides sing
   assert.match(card, /item\.musicKind !== "single"/);
   assert.match(messages, /"musicAlbum": "专辑"/);
   assert.match(messages, /"musicSingle": "单曲"/);
+});
+
+test("public music collection adds Chinese weekly and total ranking tabs after albums and singles", () => {
+  const section = read("src/components/sections/ArtSection.astro");
+  const musicRoute = read("src/pages/art/music/index.astro");
+  const localizedRoute = read("src/pages/[locale]/art/[type]/index.astro");
+  const schema = read("schema/netease_music.sql");
+
+  assert.match(section, /musicAlbum[\s\S]*musicSingle[\s\S]*听歌排行/);
+  assert.match(section, /type: "ranking", label: "听歌排行"/);
+  assert.match(section, /一周排行[\s\S]*总排行/);
+  assert.match(section, /type: "weekly", label: "一周排行"/);
+  assert.match(section, /type: "total", label: "总排行"/);
+  assert.match(section, /aria-selected=\{index === 0/);
+  assert.match(section, /tabindex=\{index === 0 \? 0 : -1\}/);
+  assert.match(section, /data-ranking-tab=\{tab\.type\}/);
+  assert.match(section, /data-ranking-panel=\{tab\.type\}/);
+  assert.match(section, /暂无一周排行/);
+  assert.match(section, /暂无总排行/);
+  assert.match(section, /ArrowLeft/);
+  assert.match(section, /ArrowRight/);
+  assert.match(section, /播放 \{item\.playCount\} 次/);
+  assert.match(section, /target="_blank"/);
+  assert.match(section, /rel="noreferrer"/);
+  assert.match(musicRoute, /listNeteaseRanking\(db, "weekly"\)[\s\S]*listNeteaseRanking\(db, "total"\)/);
+  assert.match(musicRoute, /const ranking = \{ weekly, total \}/);
+  assert.match(localizedRoute, /listNeteaseRanking\(db, "weekly"\)[\s\S]*listNeteaseRanking\(db, "total"\)/);
+  assert.match(localizedRoute, /const ranking = \{ weekly, total \}/);
+  assert.match(schema, /CREATE TABLE IF NOT EXISTS netease_total_ranking/);
+  assert.match(schema, /rank BETWEEN 1 AND 50/);
+  assert.match(schema, /CREATE TABLE IF NOT EXISTS netease_total_ranking_sync_state/);
+});
+
+test("public art cards bind external cover fallback once for foreground and blurred images", () => {
+  const card = read("src/components/cards/ArtCard.astro");
+
+  assert.match(card, /data-art-cover-fallback=\{item\.coverFallback/);
+  assert.match(card, /referrerpolicy=\{item\.coverFallback \? "origin"/);
+  assert.equal((card.match(/data-art-cover-fallback=/g) ?? []).length, 3);
+  assert.match(card, /querySelectorAll<HTMLImageElement>\("\[data-art-cover-fallback\]"\)/);
+  assert.match(card, /image\.dataset\.artCoverBound/);
+  assert.match(card, /delete image\.dataset\.artCoverFallback/);
+  assert.match(card, /addEventListener\("error", useFallback, \{ once: true \}\)/);
+  assert.match(card, /document\.addEventListener\("astro:page-load", bindArtCoverFallbacks\)/);
 });
 
 test("art save operations expose independent progress and nearby live feedback", () => {
@@ -298,7 +378,7 @@ test("the homepage aligns latest content with the profile and lists projects las
   assert.match(home, /href=\{localizePath\(`\/\$\{block\.section\}\/`, locale\)\}/);
 });
 
-test("the homepage keeps the legacy GitHub Bilibili and mail SVG paths around Steam", () => {
+test("the homepage keeps the legacy social icons in the requested order", () => {
   const home = read("src/components/sections/HomeSection.astro");
 
   assert.match(home, /M15 22v-4a4\.8 4\.8 0 0 0-1-3\.5c3 0 6-2 6-5\.5/);
@@ -307,9 +387,10 @@ test("the homepage keeps the legacy GitHub Bilibili and mail SVG paths around St
   assert.doesNotMatch(home, />GH<|>B</);
   assert.match(home, /href="https:\/\/github\.com\/Edmounds"/);
   assert.match(home, /href="https:\/\/space\.bilibili\.com\/397591871"/);
-  assert.match(home, /href="https:\/\/steamcommunity\.com\/profiles\/76561198437201442"/);
   assert.match(home, /href="mailto:i@muelsyse\.us"/);
-  assert.doesNotMatch(home, /music\.163\.com|NetEase/);
+  assert.match(home, /href="https:\/\/steamcommunity\.com\/profiles\/76561198437201442"/);
+  assert.match(home, /href="https:\/\/y\.music\.163\.com\/m\/user\?id=1460343107"/);
+  assert.match(home, /aria-label="GitHub"[\s\S]*aria-label="Bilibili"[\s\S]*aria-label="Email"[\s\S]*aria-label="Steam"[\s\S]*aria-label="NetEase Cloud Music"/);
 });
 
 test("category archive routes are removed in favor of tags", () => {
@@ -326,10 +407,24 @@ test("About renders the profile as a normal Markdown article with the code-rain 
   const about = read("src/components/sections/AboutSection.astro");
   const background = read("src/components/site/RouteBackground.astro");
   assert.match(about, /render\(profile\)/);
-  assert.doesNotMatch(about, /about-article__header|profile\.data\.(?:name|motto|city|portrait)/);
+  assert.match(about, /<header class="about-article__title">[\s\S]*<h1>About<\/h1>/);
+  assert.doesNotMatch(about, /profile\.data\.(?:name|motto|city|portrait)/);
   assert.match(about, /CommentsSection contentId="about\/profile"/);
   assert.doesNotMatch(about, /about-document__toc|href="#about-focus"/);
   assert.match(background, /path === "\/about\/"[\s\S]*\? "rain"/);
+});
+
+test("Links is a localized standalone friend-link page with shared comments", () => {
+  const links = read("src/components/sections/LinksSection.astro");
+  const cards = read("src/components/links/FriendLinks.astro");
+  const background = read("src/components/site/RouteBackground.astro");
+  assert.match(links, /<h1>\{copy\.title\}<\/h1>/);
+  assert.match(links, /<FriendLinks \/>/);
+  assert.match(links, /CommentsSection contentId="links"/);
+  assert.match(cards, /https:\/\/hanlife02\.com/);
+  assert.match(cards, /friend-hanlife02\.webp/);
+  assert.match(background, /path === "\/links\/"[\s\S]*?"constellation"/);
+  assert.match(read("src/pages/[locale]/links/index.astro"), /getStaticPaths/);
 });
 
 test("Project and every Life route use the dynamic constellation canvas", () => {

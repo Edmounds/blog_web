@@ -1,10 +1,6 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
 import HomeSection from "../components/sections/HomeSection.astro";
-import AboutSection from "../components/sections/AboutSection.astro";
-import BlogsSection from "../components/sections/BlogsSection.astro";
-import NotesSection from "../components/sections/NotesSection.astro";
-import ProjectsSection from "../components/sections/ProjectsSection.astro";
 import type { Locale } from "../lib/i18n";
 import { localizePath, stripLocaleFromPath } from "../lib/i18n";
 
@@ -19,6 +15,12 @@ const { initialPath = "/", title, description, locale = "zh-CN" } = Astro.props;
 const routes = ["/", "/about/", "/blog/", "/note/", "/project/"];
 const routePath = stripLocaleFromPath(initialPath).pathname;
 const initialIndex = Math.max(0, routes.indexOf(routePath));
+const sectionLabels = ["Home", "About", "Blog", "Note", "Project"];
+const sections = [null, null, null, null, null] as Array<typeof HomeSection | null>;
+if (initialIndex === 1) sections[1] = (await import("../components/sections/AboutSection.astro")).default;
+if (initialIndex === 2) sections[2] = (await import("../components/sections/BlogsSection.astro")).default;
+if (initialIndex === 3) sections[3] = (await import("../components/sections/NotesSection.astro")).default;
+if (initialIndex === 4) sections[4] = (await import("../components/sections/ProjectsSection.astro")).default;
 ---
 
 <BaseLayout
@@ -38,18 +40,25 @@ const initialIndex = Math.max(0, routes.indexOf(routePath));
         <section data-slide-index="0" data-path="/">
           <HomeSection locale={locale} />
         </section>
-        <section data-slide-index="1" data-path="/about/">
-          <AboutSection locale={locale} />
-        </section>
-        <section data-slide-index="2" data-path="/blog/">
-          <BlogsSection locale={locale} />
-        </section>
-        <section data-slide-index="3" data-path="/note/">
-          <NotesSection locale={locale} />
-        </section>
-        <section data-slide-index="4" data-path="/project/">
-          <ProjectsSection locale={locale} />
-        </section>
+        {routes.slice(1).map((path, offset) => {
+          const index = offset + 1;
+          const Section = sections[index];
+          return (
+          <section
+            data-slide-index={index}
+            data-path={path}
+            data-section-url={localizePath(path, locale)}
+            data-load-state={Section ? "loaded" : "idle"}
+          >
+            {Section ? <Section locale={locale} /> : (
+              <div class="spa-section-loading" role="status">
+                <span aria-hidden="true"></span>
+                <span class="sr-only">正在加载 {sectionLabels[index]}</span>
+              </div>
+            )}
+          </section>
+          );
+        })}
       </div>
     </div>
   </div>
@@ -77,6 +86,30 @@ const initialIndex = Math.max(0, routes.indexOf(routePath));
     width: 100vw;
     transition: opacity 240ms ease;
   }
+  .spa-section-loading {
+    display: grid;
+    min-height: calc(100vh - 4.5rem);
+    place-items: center;
+  }
+  .spa-section-loading > span:first-child {
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid color-mix(in srgb, var(--foreground) 22%, transparent);
+    border-top-color: var(--foreground);
+    border-radius: 50%;
+    animation: spa-section-spin 800ms linear infinite;
+  }
+  .spa-section-error {
+    display: grid;
+    min-height: calc(100vh - 4.5rem);
+    place-items: center;
+    padding: 2rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+  @keyframes spa-section-spin {
+    to { transform: rotate(360deg); }
+  }
   .spa-root:not([data-transitioning="true"])
     .spa-track
     > section:not([data-active="true"]) {
@@ -91,6 +124,9 @@ const initialIndex = Math.max(0, routes.indexOf(routePath));
     .spa-track > section {
       transition: none;
     }
+    .spa-section-loading > span:first-child {
+      animation: none;
+    }
   }
 </style>
 
@@ -103,19 +139,107 @@ const initialIndex = Math.max(0, routes.indexOf(routePath));
   const PRIMARY_ROUTES = ["/", "/about/", "/blog/", "/note/", "/project/"];
 
   function initSpa() {
+    const browserWindow = window;
+    browserWindow.__spaCleanup?.();
     const root = document.querySelector("[data-spa-root]");
-    if (!(root instanceof HTMLElement) || root.dataset.bound === "true") return;
-    root.dataset.bound = "true";
+    if (!(root instanceof HTMLElement)) return;
     const track = root.querySelector("[data-track]");
     const slides = Array.from(root.querySelectorAll("[data-slide-index]"));
     if (!(track instanceof HTMLElement)) return;
 
+    const controller = new AbortController();
+    const { signal } = controller;
     let activeIndex = Number(root.dataset.activeIndex ?? 0);
     let pointerStartX = 0;
     let pointerStartY = 0;
     let wheelDelta = 0;
     let wheelTimer;
     let wheelLocked = false;
+    let idleHandle;
+
+    const copySectionContent = (slide, sourceDocument) => {
+      const source = sourceDocument.querySelector(
+        `[data-spa-root] [data-slide-index="${slide.dataset.slideIndex}"]`,
+      );
+      if (!(source instanceof HTMLElement))
+        throw new Error(`Missing SPA section ${slide.dataset.slideIndex}`);
+      slide.replaceChildren(...Array.from(source.childNodes).map((node) => node.cloneNode(true)));
+      slide.querySelectorAll("script").forEach((script) => {
+        const executable = document.createElement("script");
+        for (const attribute of script.attributes)
+          executable.setAttribute(attribute.name, attribute.value);
+        executable.textContent = script.textContent;
+        script.replaceWith(executable);
+      });
+      slide.dataset.loadState = "loaded";
+    };
+    const readCachedSection = (url, index) => {
+      try {
+        return sessionStorage.getItem(`spa-section:${url}:${index}`);
+      } catch {
+        return null;
+      }
+    };
+    const writeCachedSection = (url, index, html) => {
+      try {
+        sessionStorage.setItem(`spa-section:${url}:${index}`, html);
+      } catch {}
+    };
+    const loadSlide = async (index) => {
+      const slide = slides[index];
+      if (!(slide instanceof HTMLElement) || index === 0) return;
+      if (slide.dataset.loadState === "loaded") return;
+      if (slide.__loadPromise) return slide.__loadPromise;
+      slide.dataset.loadState = "loading";
+      const url = slide.dataset.sectionUrl;
+      if (!url) return;
+      const cachedHtml = readCachedSection(url, index);
+      if (cachedHtml) {
+        copySectionContent(slide, new DOMParser().parseFromString(cachedHtml, "text/html"));
+        document.dispatchEvent(new Event("astro:page-load"));
+        return;
+      }
+      slide.__loadPromise = fetch(url, {
+        headers: { "X-Spa-Fragment": "1" },
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error(`Section request failed: ${response.status}`);
+          return response.text();
+        })
+        .then((html) => {
+          copySectionContent(slide, new DOMParser().parseFromString(html, "text/html"));
+          writeCachedSection(url, index, html);
+          document.dispatchEvent(new Event("astro:page-load"));
+        })
+        .catch((error) => {
+          slide.dataset.loadState = "error";
+          slide.innerHTML = '<div class="spa-section-error" role="alert">页面加载失败，请刷新后重试。</div>';
+          throw error;
+        });
+      return slide.__loadPromise;
+    };
+    const scheduleRemainingSlides = () => {
+      let nextIndex = 1;
+      const loadNext = () => {
+        while (nextIndex < slides.length) {
+          const index = nextIndex;
+          nextIndex += 1;
+          const slide = slides[index];
+          if (slide instanceof HTMLElement && slide.dataset.loadState !== "loaded") {
+            void loadSlide(index).catch(() => {});
+            break;
+          }
+        }
+        if (nextIndex < slides.length) {
+          if ("requestIdleCallback" in window)
+            idleHandle = window.requestIdleCallback(loadNext, { timeout: 1800 });
+          else idleHandle = window.setTimeout(loadNext, 240);
+        }
+      };
+      if ("requestIdleCallback" in window)
+        idleHandle = window.requestIdleCallback(loadNext, { timeout: 1200 });
+      else idleHandle = window.setTimeout(loadNext, 160);
+    };
 
     const stripLocale = (pathname) => {
       const parts = pathname.split("/").filter(Boolean);
@@ -139,8 +263,15 @@ const initialIndex = Math.max(0, routes.indexOf(routePath));
       });
       window.dispatchEvent(new Event("spa:nav-sync"));
     };
-    const setActive = (index, path, push = true) => {
+    const setActive = async (index, path, push = true) => {
       if (index < 0 || index >= slides.length) return;
+      if (index > 0) {
+        try {
+          await loadSlide(index);
+        } catch {
+          return;
+        }
+      }
       root.dataset.transitioning = "true";
       root.dataset.activeIndex = String(index);
       track.style.transform = `translate3d(${-index * 100}vw, 0, 0)`;
@@ -167,7 +298,7 @@ const initialIndex = Math.max(0, routes.indexOf(routePath));
     track.addEventListener("transitionend", (event) => {
       if (event.target === track && event.propertyName === "transform")
         root.dataset.transitioning = "false";
-    });
+    }, { signal });
     document.querySelectorAll("a[data-primary-route]").forEach((link) => {
       link.addEventListener("click", (event) => {
         if (!(link instanceof HTMLAnchorElement)) return;
@@ -175,16 +306,16 @@ const initialIndex = Math.max(0, routes.indexOf(routePath));
         const index = indexForPath(url.pathname);
         if (url.origin !== location.origin || index < 0) return;
         event.preventDefault();
-        setActive(index, url.pathname);
-      });
+        void setActive(index, url.pathname);
+      }, { signal });
     });
-    window.addEventListener("popstate", () =>
-      setActive(indexForPath(location.pathname), location.pathname, false),
-    );
+    window.addEventListener("popstate", () => {
+      void setActive(indexForPath(location.pathname), location.pathname, false);
+    }, { signal });
     root.addEventListener("pointerdown", (event) => {
       pointerStartX = event.clientX;
       pointerStartY = event.clientY;
-    });
+    }, { signal });
     root.addEventListener("pointerup", (event) => {
       const dx = event.clientX - pointerStartX;
       const dy = event.clientY - pointerStartY;
@@ -193,8 +324,8 @@ const initialIndex = Math.max(0, routes.indexOf(routePath));
         slides.length - 1,
         Math.max(0, activeIndex + (dx < 0 ? 1 : -1)),
       );
-      if (next !== activeIndex) setActive(next, localizedRoutes[next]);
-    });
+      if (next !== activeIndex) void setActive(next, localizedRoutes[next]);
+    }, { signal });
     root.addEventListener(
       "wheel",
       (event) => {
@@ -210,7 +341,7 @@ const initialIndex = Math.max(0, routes.indexOf(routePath));
             );
             if (next !== activeIndex) {
               wheelLocked = true;
-              setActive(next, localizedRoutes[next]);
+              void setActive(next, localizedRoutes[next]);
               window.setTimeout(() => {
                 wheelLocked = false;
               }, 700);
@@ -219,10 +350,26 @@ const initialIndex = Math.max(0, routes.indexOf(routePath));
           wheelDelta = 0;
         }, 90);
       },
-      { passive: true },
+      { passive: true, signal },
     );
 
-    setActive(activeIndex, location.pathname, false);
+    browserWindow.__spaCleanup = () => {
+      controller.abort();
+      clearTimeout(wheelTimer);
+      if ("cancelIdleCallback" in window && idleHandle)
+        window.cancelIdleCallback(idleHandle);
+      else if (idleHandle) window.clearTimeout(idleHandle);
+    };
+    document.addEventListener("astro:before-swap", browserWindow.__spaCleanup, {
+      once: true,
+      signal,
+    });
+
+    const activateInitial = async () => {
+      await setActive(activeIndex, location.pathname, false);
+      scheduleRemainingSlides();
+    };
+    void activateInitial();
   }
 
   initSpa();

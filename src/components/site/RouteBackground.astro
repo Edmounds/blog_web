@@ -103,6 +103,8 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
       "/";
     const kind = path.startsWith("/admin")
       ? "plain"
+      : path === "/links/" || path === "/links"
+        ? "constellation"
       : path === "/about/" || path === "/about"
         ? "rain"
         : path === "/project/" ||
@@ -152,6 +154,7 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
   function getBackgroundKind(pathname: string) {
     const path = stripLocale(pathname);
     if (path.startsWith("/admin")) return "plain";
+    if (path === "/links/" || path === "/links") return "constellation";
     if (path === "/about/" || path === "/about") return "rain";
     if (
       path === "/project/" ||

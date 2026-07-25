@@ -1,0 +1,250 @@
+<div
+  class="loading-overlay"
+  data-loading-overlay
+  data-state="idle"
+  data-mode="initial"
+  role="status"
+  aria-live="polite"
+  aria-hidden="true"
+>
+  <div class="loading-overlay__scrim" aria-hidden="true"></div>
+  <div class="loading-overlay__stage" aria-hidden="true">
+    <div class="loading-icon">
+      <span class="loading-icon__ring"></span>
+      <span class="loading-icon__core"></span>
+    </div>
+  </div>
+  <p class="sr-only" data-loading-message>正在加载页面</p>
+</div>
+
+<script is:inline>
+  (() => {
+    const overlay = document.querySelector("[data-loading-overlay]");
+    if (!(overlay instanceof HTMLElement)) return;
+
+    const FIRST_LOAD_KEY = "site-loader-seen";
+    const ENTER_DELAY = 40;
+    const EXIT_DURATION = 420;
+    const MIN_INITIAL_DURATION = 760;
+    const browserWindow = window;
+    let shownAt = 0;
+    let hideTimer = 0;
+    let previousMain = null;
+
+    const message = overlay.querySelector("[data-loading-message]");
+    const setMessage = (value) => {
+      if (message) message.textContent = value;
+    };
+    const updateMainState = (active) => {
+      const main = document.querySelector("main");
+      if (!(main instanceof HTMLElement)) return;
+      if (active) {
+        previousMain = main;
+        main.setAttribute("inert", "");
+        main.setAttribute("aria-hidden", "true");
+      } else if (previousMain) {
+        previousMain.removeAttribute("inert");
+        previousMain.removeAttribute("aria-hidden");
+        previousMain = null;
+      }
+    };
+    const show = (mode = "route", text = "正在加载页面") => {
+      window.clearTimeout(hideTimer);
+      overlay.dataset.mode = mode;
+      overlay.dataset.state = "entering";
+      overlay.setAttribute("aria-hidden", "false");
+      document.documentElement.dataset.loading = "true";
+      updateMainState(true);
+      setMessage(text);
+      shownAt = performance.now();
+      requestAnimationFrame(() => {
+        window.setTimeout(() => {
+          if (overlay.dataset.state === "entering") overlay.dataset.state = "active";
+        }, ENTER_DELAY);
+      });
+    };
+    const hide = ({ minimum = 0 } = {}) => {
+      const elapsed = shownAt ? performance.now() - shownAt : minimum;
+      const wait = Math.max(0, minimum - elapsed);
+      window.clearTimeout(hideTimer);
+      hideTimer = window.setTimeout(() => {
+        overlay.dataset.state = "leaving";
+        hideTimer = window.setTimeout(() => {
+          overlay.dataset.state = "idle";
+          overlay.setAttribute("aria-hidden", "true");
+          document.documentElement.removeAttribute("data-loading");
+          updateMainState(false);
+        }, EXIT_DURATION);
+      }, wait);
+    };
+
+    browserWindow.__siteLoadingOverlay = { show, hide };
+
+    let firstVisit = false;
+    try {
+      firstVisit = sessionStorage.getItem(FIRST_LOAD_KEY) !== "true";
+      if (firstVisit) sessionStorage.setItem(FIRST_LOAD_KEY, "true");
+    } catch {
+      firstVisit = true;
+    }
+    if (firstVisit) {
+      show("initial", "正在准备主页");
+      window.addEventListener(
+        "load",
+        () => hide({ minimum: MIN_INITIAL_DURATION }),
+        { once: true },
+      );
+      window.setTimeout(() => hide({ minimum: MIN_INITIAL_DURATION }), 8000);
+    }
+
+    const handlePageLoad = () => {
+      if (overlay.dataset.state !== "idle" && overlay.dataset.mode === "route")
+        hide({ minimum: 420 });
+    };
+    document.addEventListener("astro:page-load", handlePageLoad);
+    document.addEventListener("astro:before-swap", () => {
+      document.removeEventListener("astro:page-load", handlePageLoad);
+      updateMainState(false);
+    }, { once: true });
+  })();
+</script>
+
+<script>
+  const LIFE_ROUTE = /^\/(?:en\/|ja\/|zh-TW\/)?art\/(?:book|music|screen|game)\/?$/;
+  const loaderWindow = window as typeof window & {
+    __siteLoadingOverlay?: {
+      show: (mode?: "initial" | "route", message?: string) => void;
+      hide: (options?: { minimum?: number }) => void;
+    };
+    __siteLoadingNavigationCleanup?: () => void;
+  };
+
+  function bindLoadingNavigation() {
+    loaderWindow.__siteLoadingNavigationCleanup?.();
+    const navigationController = new AbortController();
+    const navigationSignal = navigationController.signal;
+    document.addEventListener("astro:before-preparation", (event) => {
+      if (!LIFE_ROUTE.test(event.to.pathname)) return;
+      loaderWindow.__siteLoadingOverlay?.show("route", "正在加载 Life");
+      const originalLoader = event.loader;
+      event.loader = async () => {
+        try {
+          await originalLoader();
+        } catch (error) {
+          loaderWindow.__siteLoadingOverlay?.hide();
+          throw error;
+        }
+      };
+    }, { signal: navigationSignal });
+    loaderWindow.__siteLoadingNavigationCleanup = () => navigationController.abort();
+  }
+
+  bindLoadingNavigation();
+  document.addEventListener("astro:page-load", bindLoadingNavigation);
+</script>
+
+<style>
+  .loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 420ms ease, visibility 420ms step-end;
+  }
+
+  .loading-overlay[data-state="entering"],
+  .loading-overlay[data-state="active"],
+  .loading-overlay[data-state="leaving"] {
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity 420ms ease, visibility 0s;
+  }
+
+  .loading-overlay[data-state="entering"],
+  .loading-overlay[data-state="active"] {
+    opacity: 1;
+  }
+
+  .loading-overlay[data-state="leaving"] {
+    opacity: 0;
+  }
+
+  .loading-overlay__scrim {
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--canvas) 90%, transparent);
+    backdrop-filter: blur(14px) saturate(0.82);
+  }
+
+  .loading-overlay[data-mode="initial"] .loading-overlay__scrim {
+    background: var(--canvas);
+    backdrop-filter: none;
+  }
+
+  .loading-overlay__stage {
+    position: relative;
+    width: 4rem;
+    aspect-ratio: 1;
+    transform: scale(0.92);
+    transition: transform 640ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .loading-overlay[data-state="active"] .loading-overlay__stage {
+    transform: scale(1);
+  }
+
+  .loading-icon {
+    position: absolute;
+    inset: 0;
+    animation: loading-icon-rotate 1.25s linear infinite;
+  }
+
+  .loading-icon__ring {
+    position: absolute;
+    inset: 0.35rem;
+    border: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+    border-top-color: currentColor;
+    border-right-color: color-mix(in srgb, currentColor 55%, transparent);
+    border-radius: 50%;
+  }
+
+  .loading-icon__core {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 0.36rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: currentColor;
+    transform: translate(-50%, -50%);
+    animation: loading-icon-pulse 1.25s ease-in-out infinite;
+  }
+
+  @keyframes loading-icon-rotate {
+    to { transform: rotate(1turn); }
+  }
+
+  @keyframes loading-icon-pulse {
+    0%, 100% { opacity: 0.24; }
+    50% { opacity: 0.9; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .loading-overlay,
+    .loading-overlay__stage {
+      transition-duration: 120ms;
+    }
+
+    .loading-icon {
+      animation: none;
+    }
+
+    .loading-icon__core {
+      animation: none;
+      opacity: 0.65;
+    }
+  }
+</style>

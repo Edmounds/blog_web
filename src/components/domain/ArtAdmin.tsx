@@ -65,7 +65,7 @@ const LOCALES: { id: Locale; label: string }[] = [
 const TRANSLATED_TYPES = new Set<ArtType>(["book", "movie"]);
 const emptyTranslation = (): Translation => ({ title: "", creator: "", extra: "" });
 const today = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Shanghai" }).format(new Date());
-const MUSIC_PAGE_SIZE = 10;
+const MUSIC_PAGE_SIZE = 9;
 
 export default function ArtAdmin() {
   const [selected, setSelected] = useState(() => selection("book"));
@@ -321,7 +321,7 @@ function selection(id: AdminType): { id: AdminType; type: ArtType; musicKind: Mu
   return { id, type: id, musicKind: null };
 }
 function blankForm(type: ArtType, musicKind: MusicKind | null = null): FormState {
-  return { type, musicKind, source: musicKind === "single" ? "deezer_track" : type === "music" ? "deezer_music" : ["movie", "series", "anime"].includes(type) ? "tmdb" : "apple_books", sourceId: "", isbn: "", originalTitle: "", releaseDate: "", collectedOn: today(), isVisible: true, coverUrl: "", cover: null, translations: Object.fromEntries(LOCALES.map(({ id }) => [id, emptyTranslation()])) as Record<Locale, Translation> };
+  return { type, musicKind, source: musicKind === "single" ? "netease_track" : type === "music" ? "netease_album" : ["movie", "series", "anime"].includes(type) ? "tmdb" : "apple_books", sourceId: "", isbn: "", originalTitle: "", releaseDate: "", collectedOn: today(), isVisible: true, coverUrl: "", cover: null, translations: Object.fromEntries(LOCALES.map(({ id }) => [id, emptyTranslation()])) as Record<Locale, Translation> };
 }
 function candidateKey(item: Pick<Candidate, "source" | "sourceId">) { return `${item.source}:${item.sourceId}`; }
 function previewUrl(url: string) { return url.startsWith("/") || url.startsWith("https://img.muelsyse.us/") ? url : `/api/admin/art/cover-preview?url=${encodeURIComponent(url)}`; }

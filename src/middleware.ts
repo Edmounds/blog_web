@@ -23,7 +23,7 @@ export const onRequest = defineMiddleware(async ({ request }, next) => {
 
   const response = await next();
   const secured = new Response(response.body, response);
-  secured.headers.set("content-security-policy", "default-src 'self'; img-src 'self' data: https://img.muelsyse.us https://raw.githubusercontent.com https://shared.akamai.steamstatic.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
+  secured.headers.set("content-security-policy", "default-src 'self'; img-src 'self' data: https://img.muelsyse.us https://raw.githubusercontent.com https://shared.akamai.steamstatic.com https://p1.music.126.net https://*.doubanio.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
   secured.headers.set("strict-transport-security", "max-age=31536000; includeSubDomains");
   secured.headers.set("x-content-type-options", "nosniff");
   secured.headers.set("x-frame-options", "DENY");

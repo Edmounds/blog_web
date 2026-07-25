@@ -1,6 +1,7 @@
 import { handle } from "@astrojs/cloudflare/handler";
 
 import { syncSteamGames } from "../functions/_shared/games.js";
+import { syncNeteaseRanking } from "../functions/_shared/netease-music.js";
 
 export default {
   fetch(request: Request, env: Cloudflare.Env, ctx: ExecutionContext) {
@@ -13,5 +14,13 @@ export default {
         message: error instanceof Error ? error.message : "Unknown error",
       });
     }));
+    for (const type of ["weekly", "total"] as const) {
+      ctx.waitUntil(syncNeteaseRanking(env, type).catch((error) => {
+        console.error(`Scheduled NetEase ${type} ranking sync failed`, {
+          code: typeof error?.code === "string" ? error.code : "NETEASE_SYNC_FAILED",
+          message: error instanceof Error ? error.message : "Unknown error",
+        });
+      }));
+    }
   },
 } satisfies ExportedHandler<Cloudflare.Env>;

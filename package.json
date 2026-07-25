@@ -28,12 +28,13 @@
     "test:comments:smoke": "node scripts/smoke-comments.mjs",
     "art:migrate": "node --env-file-if-exists=.env scripts/migrate-art-to-d1.mjs",
     "art:covers:migrate": "node scripts/migrate-art-covers-to-images.mjs",
+    "netease:sync": "node scripts/sync-netease-ranking.mjs",
     "cf:secrets:sync": "node scripts/sync-cloudflare-secrets.mjs",
     "cf:dev": "npx wrangler dev --config dist/server/wrangler.json --persist-to $INIT_CWD/.wrangler/state",
     "deploy:cover-fetcher": "wrangler deploy --config wrangler.art-cover-fetcher.jsonc",
     "deploy": "npm run build && npm run deploy:cover-fetcher && wrangler deploy --config dist/server/wrangler.json",
-    "db:migrate:local": "npx wrangler d1 execute DB --local --file=./schema/post_stats.sql && npx wrangler d1 execute DB --local --file=./schema/comments.sql && npx wrangler d1 execute DB --local --file=./schema/content_ids.sql && npx wrangler d1 execute DB --local --file=./schema/art.sql && node scripts/migrate-art-music-kind.mjs --local && npx wrangler d1 execute DB --local --file=./schema/games.sql",
-    "db:migrate:remote": "npx wrangler d1 execute blog_web --remote --file=./schema/post_stats.sql && npx wrangler d1 execute blog_web --remote --file=./schema/comments.sql && npx wrangler d1 execute blog_web --remote --file=./schema/content_ids.sql && npx wrangler d1 execute blog_web --remote --file=./schema/art.sql && node scripts/migrate-art-music-kind.mjs --remote && npx wrangler d1 execute blog_web --remote --file=./schema/games.sql"
+    "db:migrate:local": "npx wrangler d1 execute DB --local --file=./schema/post_stats.sql && npx wrangler d1 execute DB --local --file=./schema/comments.sql && npx wrangler d1 execute DB --local --file=./schema/content_ids.sql && npx wrangler d1 execute DB --local --file=./schema/art.sql && node scripts/migrate-art-music-kind.mjs --local && npx wrangler d1 execute DB --local --file=./schema/games.sql && npx wrangler d1 execute DB --local --file=./schema/netease_music.sql",
+    "db:migrate:remote": "npx wrangler d1 execute blog_web --remote --file=./schema/post_stats.sql && npx wrangler d1 execute blog_web --remote --file=./schema/comments.sql && npx wrangler d1 execute blog_web --remote --file=./schema/content_ids.sql && npx wrangler d1 execute blog_web --remote --file=./schema/art.sql && node scripts/migrate-art-music-kind.mjs --remote && npx wrangler d1 execute blog_web --remote --file=./schema/games.sql && npx wrangler d1 execute blog_web --remote --file=./schema/netease_music.sql"
   },
   "dependencies": {
     "@astrojs/cloudflare": "14.1.4",

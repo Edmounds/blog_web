@@ -6,6 +6,7 @@ const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf
 
 test("Life ends with Game and localized routes retain locale prefixes", () => {
   const header = read("src/components/site/Header.astro");
+  assert.match(header, /const links = \{ label: "Links"[\s\S]*?<div class="life-menu">/);
   assert.match(header, /Books[\s\S]*Music[\s\S]*Screen[\s\S]*Game/);
   assert.match(header, /localizePath\(item\.href, locale\)/);
   const localized = read("src/pages/[locale]/art/[type]/index.astro");
@@ -18,10 +19,11 @@ test("Game is standalone, absent from the SPA canvas, and sorted by effective pl
   assert.match(read("src/lib/games.ts"), /COALESCE\(custom_playtime_minutes, steam_playtime_minutes\) DESC, title COLLATE NOCASE ASC/);
 });
 
-test("homepage social links use GitHub Bilibili Steam Email order and exact profile", () => {
+test("homepage social links place Steam after Email and NetEase after Steam", () => {
   const home = read("src/components/sections/HomeSection.astro");
-  assert.match(home, /aria-label="GitHub"[\s\S]*aria-label="Bilibili"[\s\S]*aria-label="Steam"[\s\S]*aria-label="Email"/);
+  assert.match(home, /aria-label="GitHub"[\s\S]*aria-label="Bilibili"[\s\S]*aria-label="Email"[\s\S]*aria-label="Steam"[\s\S]*aria-label="NetEase Cloud Music"/);
   assert.match(home, /https:\/\/steamcommunity\.com\/profiles\/76561198437201442/);
+  assert.match(home, /https:\/\/y\.music\.163\.com\/m\/user\?id=1460343107/);
   assert.match(home, /M11\.979 0C5\.678/);
 });
 
@@ -33,6 +35,26 @@ test("CSP adds only the exact Steam image host and cron uses the shared sync fun
   }
   assert.match(read("wrangler.astro.jsonc"), /"crons": \["0 20 \* \* \*"\]/);
   assert.match(read("src/worker.ts"), /handle\(request, env, ctx\)[\s\S]*syncSteamGames/);
+});
+
+test("the daily cron independently syncs both NetEase rankings", () => {
+  const worker = read("src/worker.ts");
+  const envTypes = read("src/env.d.ts");
+  const schema = read("schema/netease_music.sql");
+  const packageJson = read("package.json");
+
+  assert.match(worker, /syncNeteaseRanking/);
+  assert.match(worker, /ctx\.waitUntil\(syncSteamGames[\s\S]*for \(const type of \["weekly", "total"\]/);
+  assert.match(worker, /ctx\.waitUntil\(syncNeteaseRanking\(env, type\)/);
+  assert.match(envTypes, /NETEASE_MUSIC_U\?: string/);
+  assert.match(envTypes, /NETEASE_CSRF\?: string/);
+  assert.match(schema, /CREATE TABLE IF NOT EXISTS netease_weekly_ranking/);
+  assert.match(schema, /CREATE TABLE IF NOT EXISTS netease_total_ranking/);
+  assert.match(packageJson, /schema\/netease_music\.sql/);
+  assert.match(packageJson, /"netease:sync": "node scripts\/sync-netease-ranking\.mjs"/);
+  for (const path of ["src/middleware.ts", "public/_headers", "workers/blog-preferred-proxy.js"]) {
+    assert.match(read(path), /https:\/\/p1\.music\.126\.net/);
+  }
 });
 
 test("game administration refreshes from the completed sync response without cached list data", () => {

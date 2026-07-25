@@ -16,6 +16,8 @@ declare namespace Cloudflare {
     GOOGLE_BOOKS_API_KEY?: string;
     TMDB_API_KEY?: string;
     STEAM_API_KEY?: string;
+    NETEASE_MUSIC_U?: string;
+    NETEASE_CSRF?: string;
     SERVICE_TYPE?: string;
     DEEPLX_BASE_URL?: string;
     DEEPLX_API_KEY?: string;

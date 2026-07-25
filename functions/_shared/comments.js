@@ -4,11 +4,12 @@ export const COMMENT_PAGE_SIZE = 20;
 export const COMMENT_RATE_LIMIT_SECONDS = 60;
 export const MAX_COMMENT_BODY_BYTES = 4_096;
 const ABOUT_COMMENT_CONTENT_ID = "about/profile";
+const LINKS_COMMENT_CONTENT_ID = "links";
 
 export function normalizeCommentContentId(value) {
   if (typeof value !== "string") return undefined;
   const contentId = value.trim().replace(/^\/+|\/+$/g, "");
-  if (contentId === ABOUT_COMMENT_CONTENT_ID) return contentId;
+  if (contentId === ABOUT_COMMENT_CONTENT_ID || contentId === LINKS_COMMENT_CONTENT_ID) return contentId;
   return normalizeContentId(contentId);
 }
 

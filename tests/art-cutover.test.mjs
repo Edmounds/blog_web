@@ -151,9 +151,25 @@ test("the preferred-edge Worker keeps the image CDN in its CSP", async () => {
 
   const csp = response.headers.get("content-security-policy");
   assert.match(csp, /img-src 'self' data: https:\/\/img\.muelsyse\.us/);
+  assert.match(csp, /https:\/\/\*\.doubanio\.com/);
+  assert.match(csp, /https:\/\/p1\.music\.126\.net/);
   assert.match(csp, /default-src 'self'/);
   assert.match(csp, /connect-src 'self'/);
-  assert.doesNotMatch(csp, /img-src[^;]*https:\/\/\*/);
+  assert.doesNotMatch(csp, /img-src[^;]*https:\/\/\*(?:\s|;|$)/);
+  assert.doesNotMatch(csp, /image\.tmdb\.org|cdn-images\.dzcdn\.net|img-src[^;]*\shttps:\s/);
+});
+
+test("all public CSP definitions allow only the selected external art cover hosts", () => {
+  for (const file of ["src/middleware.ts", "public/_headers", "workers/blog-preferred-proxy.js"]) {
+    const source = read(file);
+    assert.match(source, /https:\/\/img\.muelsyse\.us/);
+    assert.match(source, /https:\/\/p1\.music\.126\.net/);
+    assert.match(source, /https:\/\/\*\.doubanio\.com/);
+    assert.doesNotMatch(source, /image\.tmdb\.org|cdn-images\.dzcdn\.net/);
+  }
+
+  const admin = read("src/components/domain/ArtAdmin.tsx");
+  assert.match(admin, /\/api\/admin\/art\/cover-preview\?url=/);
 });
 
 test("the preferred-edge Worker rejects cross-origin write requests", async () => {

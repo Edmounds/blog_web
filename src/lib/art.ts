@@ -1,3 +1,5 @@
+import { resolveArtCoverDelivery } from "../../functions/_shared/art.js";
+
 export type ArtType = "book" | "music" | "movie" | "series" | "anime";
 export type ArtMusicKind = "album" | "single";
 export type ArtLocale = "zh-CN" | "zh-TW" | "en" | "ja";
@@ -35,6 +37,7 @@ export interface ArtItem {
   creator: string;
   extra: string;
   cover: string;
+  coverFallback: string | null;
 }
 
 interface ArtRow {
@@ -110,6 +113,10 @@ function localize(items: ArtRecord[], locale: ArtLocale): ArtItem[] {
   return items.flatMap((item) => {
     const translation = item.translations[locale] ?? item.translations["zh-CN"];
     if (!translation) return [];
-    return [{ id: item.id, type: item.type, musicKind: item.musicKind, title: translation.title, creator: translation.creator, extra: translation.extra, cover: item.coverUrl }];
+    const cover = resolveArtCoverDelivery(item);
+    return [{
+      id: item.id, type: item.type, musicKind: item.musicKind, title: translation.title, creator: translation.creator,
+      extra: translation.extra, cover: cover.primary, coverFallback: cover.fallback,
+    }];
   });
 }

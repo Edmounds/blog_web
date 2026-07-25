@@ -3,14 +3,28 @@ import ArtCard from "../cards/ArtCard.astro";
 import type { ArtItem } from "../../lib/art";
 import { getLocalizedSite } from "../../lib/localized-content";
 import type { Locale } from "../../lib/i18n";
+import { getNeteaseSongUrl } from "../../../functions/_shared/netease-music.js";
+
+interface RankingItem {
+  rank: number;
+  songId: number;
+  title: string;
+  artists: string[];
+  coverUrl: string | null;
+  playCount: number;
+}
 
 export interface Props {
   type: "music" | "book" | "screen";
   items: ArtItem[];
+  ranking?: {
+    weekly: RankingItem[];
+    total: RankingItem[];
+  };
   locale?: Locale;
 }
 
-const { type, items, locale = "zh-CN" } = Astro.props;
+const { type, items, ranking = { weekly: [], total: [] }, locale = "zh-CN" } = Astro.props;
 const site = await getLocalizedSite(locale);
 
 const title = site.labels[type];
@@ -22,6 +36,11 @@ const screenTabs = [
 const musicTabs = [
   { type: "album", label: site.copy.musicAlbum },
   { type: "single", label: site.copy.musicSingle },
+  { type: "ranking", label: "听歌排行" },
+] as const;
+const rankingTabs = [
+  { type: "weekly", label: "一周排行", empty: "暂无一周排行" },
+  { type: "total", label: "总排行", empty: "暂无总排行" },
 ] as const;
 ---
 
@@ -66,6 +85,8 @@ const musicTabs = [
         <button
           type="button"
           role="tab"
+          id={`music-tab-${tab.type}`}
+          aria-controls={tab.type === "ranking" ? "music-panel-ranking" : "music-panel-collection"}
           aria-selected={index === 0 ? "true" : "false"}
           tabindex={index === 0 ? 0 : -1}
           data-music-tab={tab.type}
@@ -83,6 +104,10 @@ const musicTabs = [
   <div
     class="grid min-h-48 grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-3 lg:grid-cols-5"
     data-art-grid
+    data-music-panel={type === "music" ? "collection" : undefined}
+    role={type === "music" ? "tabpanel" : undefined}
+    id={type === "music" ? "music-panel-collection" : undefined}
+    aria-labelledby={type === "music" ? "music-tab-album" : undefined}
   >
     {items.map((item) => (
       <div data-art-type={item.type} data-music-kind={item.musicKind ?? undefined} class={(type === "screen" && item.type !== "movie") || (type === "music" && item.musicKind !== "album") ? "hidden" : undefined}>
@@ -98,7 +123,7 @@ const musicTabs = [
         {site.copy.artEmpty}
       </p>
     ))}
-    {type === "music" && musicTabs.map((tab) => (
+    {type === "music" && musicTabs.filter((tab) => tab.type !== "ranking").map((tab) => (
       <p
         class="col-span-2 hidden min-h-48 items-center text-sm text-[var(--text-muted)] md:col-span-3 lg:col-span-5"
         role="status"
@@ -108,6 +133,85 @@ const musicTabs = [
       </p>
     ))}
   </div>
+
+  {type === "music" && (
+    <div
+      class="hidden min-h-48"
+      data-music-panel="ranking"
+      role="tabpanel"
+      id="music-panel-ranking"
+      aria-labelledby="music-tab-ranking"
+    >
+      <div
+        class="mb-6 inline-flex rounded-[var(--radius-control)] border border-[var(--border-soft)] bg-[var(--canvas)] p-0.5"
+        role="tablist"
+        aria-label="听歌排行类型"
+        data-ranking-tabs
+      >
+        {rankingTabs.map((tab, index) => (
+          <button
+            type="button"
+            role="tab"
+            id={`ranking-tab-${tab.type}`}
+            aria-controls={`ranking-panel-${tab.type}`}
+            aria-selected={index === 0 ? "true" : "false"}
+            tabindex={index === 0 ? 0 : -1}
+            data-ranking-tab={tab.type}
+            class:list={[
+              "min-h-10 min-w-20 rounded-[calc(var(--radius-control)-2px)] px-4 py-2 text-sm transition",
+              index === 0 ? "bg-[var(--foreground)] text-[var(--canvas)]" : "text-[var(--text-muted)]",
+            ]}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {rankingTabs.map((tab, index) => (
+        <div
+          id={`ranking-panel-${tab.type}`}
+          role="tabpanel"
+          aria-labelledby={`ranking-tab-${tab.type}`}
+          class:list={[index !== 0 && "hidden"]}
+          data-ranking-panel={tab.type}
+        >
+          {ranking[tab.type].length > 0 ? (
+            <ol class="divide-y divide-[var(--border-soft)] border-y border-[var(--border-soft)]" aria-label={tab.label}>
+              {ranking[tab.type].map((item) => (
+                <li>
+                  <a
+                    href={getNeteaseSongUrl(item.songId)}
+                    target="_blank"
+                    rel="noreferrer"
+                    class="grid min-h-20 min-w-0 grid-cols-[1.5rem_3rem_minmax(0,1fr)] items-center gap-2 py-3 text-inherit transition-colors hover:text-[var(--accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] sm:grid-cols-[2.5rem_4rem_minmax(0,1fr)_7rem] sm:gap-4"
+                  >
+                    <span class="text-center text-xs tabular-nums text-[var(--text-faint)] sm:text-sm">{item.rank}</span>
+                    <span class="relative block aspect-square overflow-hidden rounded-[var(--radius-control)] bg-[var(--surface-muted)]">
+                      <img
+                        src={item.coverUrl ?? "/images/placeholders/default-cover.webp"}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        class="h-full w-full object-cover"
+                      />
+                    </span>
+                    <span class="min-w-0">
+                      <strong class="block truncate text-sm font-medium text-[var(--foreground)] sm:text-base">{item.title}</strong>
+                      <span class="mt-1 block truncate text-xs text-[var(--text-muted)] sm:text-sm">{item.artists.join(" / ")}</span>
+                      <span class="mt-1 block truncate text-xs tabular-nums text-[var(--text-faint)] sm:hidden">播放 {item.playCount} 次</span>
+                    </span>
+                    <span class="hidden whitespace-nowrap text-right text-sm tabular-nums text-[var(--text-faint)] sm:block">播放 {item.playCount} 次</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p class="flex min-h-48 items-center text-sm text-[var(--text-muted)]" role="status">{tab.empty}</p>
+          )}
+        </div>
+      ))}
+    </div>
+  )}
 </div>
 
 {type === "screen" && (
@@ -173,8 +277,10 @@ const musicTabs = [
         if (root.dataset.bound === "true") return;
         root.dataset.bound = "true";
         const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-music-tab]"));
-        const grid = root.parentElement?.querySelector<HTMLElement>("[data-art-grid]");
-        if (!grid) return;
+        const container = root.parentElement;
+        const grid = container?.querySelector<HTMLElement>("[data-art-grid]");
+        const ranking = container?.querySelector<HTMLElement>("[data-music-panel='ranking']");
+        if (!grid || !ranking) return;
 
         const select = (selected: HTMLButtonElement) => {
           const musicKind = selected.dataset.musicTab;
@@ -187,6 +293,10 @@ const musicTabs = [
             tab.classList.toggle("text-[var(--canvas)]", active);
             tab.classList.toggle("text-[var(--text-muted)]", !active);
           });
+          const rankingSelected = musicKind === "ranking";
+          grid.classList.toggle("hidden", rankingSelected);
+          ranking.classList.toggle("hidden", !rankingSelected);
+          if (rankingSelected) return;
           grid.querySelectorAll<HTMLElement>("[data-music-kind]").forEach((item) => {
             const visible = item.dataset.musicKind === musicKind;
             item.classList.toggle("hidden", !visible);
@@ -207,6 +317,39 @@ const musicTabs = [
             const direction = event.key === "ArrowRight" ? 1 : -1;
             const next = tabs[(index + direction + tabs.length) % tabs.length];
             select(next);
+            next.focus();
+          });
+        });
+
+        const rankingTabsRoot = ranking.querySelector<HTMLElement>("[data-ranking-tabs]");
+        const rankingTabs = Array.from(ranking.querySelectorAll<HTMLButtonElement>("[data-ranking-tab]"));
+        const rankingPanels = Array.from(ranking.querySelectorAll<HTMLElement>("[data-ranking-panel]"));
+        if (!rankingTabsRoot || rankingTabsRoot.dataset.bound === "true") return;
+        rankingTabsRoot.dataset.bound = "true";
+
+        const selectRanking = (selected: HTMLButtonElement) => {
+          const rankingType = selected.dataset.rankingTab;
+          rankingTabs.forEach((tab) => {
+            const active = tab === selected;
+            tab.setAttribute("aria-selected", String(active));
+            tab.tabIndex = active ? 0 : -1;
+            tab.classList.toggle("bg-[var(--foreground)]", active);
+            tab.classList.toggle("text-[var(--canvas)]", active);
+            tab.classList.toggle("text-[var(--text-muted)]", !active);
+          });
+          rankingPanels.forEach((panel) => {
+            panel.classList.toggle("hidden", panel.dataset.rankingPanel !== rankingType);
+          });
+        };
+
+        rankingTabs.forEach((tab, index) => {
+          tab.addEventListener("click", () => selectRanking(tab));
+          tab.addEventListener("keydown", (event) => {
+            if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+            event.preventDefault();
+            const direction = event.key === "ArrowRight" ? 1 : -1;
+            const next = rankingTabs[(index + direction + rankingTabs.length) % rankingTabs.length];
+            selectRanking(next);
             next.focus();
           });
         });

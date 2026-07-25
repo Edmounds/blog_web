@@ -17,6 +17,11 @@ test("About uses one shared comment content ID without enabling other About IDs"
   assert.equal(normalizeCommentContentId("about/other"), undefined);
 });
 
+test("Links uses one shared comment content ID", () => {
+  assert.equal(normalizeCommentContentId("links"), "links");
+  assert.equal(normalizeCommentContentId("/links/"), "links");
+});
+
 test("validateCommentInput trims names and preserves comment line breaks", () => {
   assert.deepEqual(
     validateCommentInput({
