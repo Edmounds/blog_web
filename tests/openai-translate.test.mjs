@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 import { createOpenAITranslateClient } from "../scripts/lib/openai-translate.mjs";
@@ -80,4 +81,12 @@ test("OpenAI-compatible client does not retry permanent 4xx responses", async ()
   });
   await assert.rejects(() => translate({ text: "你好", sourceLang: "ZH", targetLang: "EN" }), /HTTP 400/);
   assert.equal(requests, 1);
+});
+
+test("translation script keeps a DeepLX fallback for complete Markdown documents", async () => {
+  const source = await readFile(new URL("../scripts/translate.mjs", import.meta.url), "utf8");
+  assert.match(source, /SERVICE_TYPE: "deeplx"/);
+  assert.match(source, /collectMarkdownSegments\(source\.content\)/);
+  assert.match(source, /replaceMarkdownSegments\(source\.content, translatedSegments\)/);
+  assert.match(source, /imageLabels\[imageIndex\+\+\]/);
 });

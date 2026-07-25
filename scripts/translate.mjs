@@ -7,6 +7,8 @@ import { stringify as stringifyYaml } from "yaml";
 import { createGoogleTranslateClient } from "./lib/google-translate.mjs";
 import { createTranslationProvider } from "./lib/translation-provider.mjs";
 import {
+  collectMarkdownSegments,
+  replaceMarkdownSegments,
   TRANSLATION_ALGORITHM_VERSION,
   translationFingerprint,
 } from "./lib/translate-content.mjs";
@@ -24,6 +26,18 @@ const JOURNAL_PATH = path.join(ROOT, "src/i18n/translation-journal.jsonl");
 
 const provider = createTranslationProvider();
 const googleTranslate = createGoogleTranslateClient();
+const markdownFallbackProvider = process.env.SERVICE_TYPE?.trim().toLowerCase() === "openai"
+  ? createTranslationProvider({ env: { ...process.env, SERVICE_TYPE: "deeplx" } })
+  : null;
+const translateMarkdownSegment = async ({ text, targetLang }) => {
+  try {
+    return await markdownFallbackProvider.translate({ text, sourceLang: "ZH", targetLang });
+  } catch (error) {
+    // DeepLX may reject text that needs no Traditional Chinese conversion.
+    if (targetLang === "ZH-TW" && error?.status === 400) return text;
+    throw error;
+  }
+};
 const pendingByFingerprint = new Map();
 const activeManifestKeys = new Set();
 const waiters = [];
@@ -76,7 +90,7 @@ const shouldTranslateKey = (key) => !new Set([
   "publishedAt", "year", "order", "archiveYear", "showOnHome", "showInArchive", "showInTimeline", "draft",
 ]).has(key);
 
-const translateText = async ({ locale, targetLang, key, source, manifest, seed, format = "text", preserveFrontmatterKeys = [] }) => {
+const translateText = async ({ locale, targetLang, key, source, manifest, seed, format = "text", preserveFrontmatterKeys = [], translate }) => {
   if (!source.trim()) return source;
   const fingerprintSource = format === "markdown-document" ? `markdown-document-v1\0${source}` : source;
   const fingerprint = translationFingerprint(fingerprintSource);
@@ -86,14 +100,15 @@ const translateText = async ({ locale, targetLang, key, source, manifest, seed, 
   if (cached?.fingerprint === fingerprint && typeof cached.translation === "string") return cached.translation;
 
   const seeded = seed?.[manifestKey];
-  const sharedKey = `${locale}:${format}:${fingerprint}`;
+  const translatorName = translate ? markdownFallbackProvider?.name ?? "fallback" : provider.name;
+  const sharedKey = `${translatorName}:${locale}:${format}:${fingerprint}`;
   const existing = pendingByFingerprint.get(sharedKey);
   const translation = typeof seeded === "string"
     ? seeded
     : await (existing ?? (() => {
         const promise = runLimited(async () => {
           try {
-            return await provider.translate({ text: source, sourceLang: "ZH", targetLang, format, preserveFrontmatterKeys });
+            return await (translate ?? provider.translate)({ text: source, sourceLang: "ZH", targetLang, format, preserveFrontmatterKeys });
           } catch (error) {
             if (format === "markdown-document") throw error;
             console.warn(`${provider.name} unavailable for ${locale}; using Google Translate fallback (${error.message})`);
@@ -111,10 +126,10 @@ const translateText = async ({ locale, targetLang, key, source, manifest, seed, 
   return translation;
 };
 
-const translateValue = async ({ value, keyPath, fieldName, locale, targetLang, manifest, seed }) => {
+const translateValue = async ({ value, keyPath, fieldName, locale, targetLang, manifest, seed, translate }) => {
   if (typeof value === "string") {
     if (!shouldTranslateKey(fieldName)) return value;
-    return translateText({ locale, targetLang, key: keyPath, source: value, manifest, seed });
+    return translateText({ locale, targetLang, key: keyPath, source: value, manifest, seed, translate });
   }
   if (Array.isArray(value)) {
     return Promise.all(value.map((item, index) => translateValue({
@@ -125,6 +140,7 @@ const translateValue = async ({ value, keyPath, fieldName, locale, targetLang, m
       targetLang,
       manifest,
       seed,
+      translate,
     })));
   }
   if (isPlainObject(value)) {
@@ -138,6 +154,7 @@ const translateValue = async ({ value, keyPath, fieldName, locale, targetLang, m
         targetLang,
         manifest,
         seed,
+        translate,
       });
     }));
     return translated;
@@ -177,18 +194,61 @@ const translateDocument = async ({ raw, keyPrefix, locale, targetLang, manifest 
   const sourceDocument = raw.replace(/^\uFEFF/, "");
   const source = matter(sourceDocument);
   const preserveFrontmatterKeys = Object.keys(source.data).filter((key) => !shouldTranslateKey(key));
-  const translation = await translateText({
-    locale,
-    targetLang,
-    key: `${keyPrefix}.document`,
-    source: sourceDocument,
-    manifest,
-    format: "markdown-document",
-    preserveFrontmatterKeys,
-  });
+  let translation;
+  let usedFallback = false;
+  try {
+    translation = await translateText({
+      locale,
+      targetLang,
+      key: `${keyPrefix}.document`,
+      source: sourceDocument,
+      manifest,
+      format: "markdown-document",
+      preserveFrontmatterKeys,
+    });
+  } catch (error) {
+    if (!markdownFallbackProvider) throw error;
+    usedFallback = true;
+    console.warn(`${provider.name} unavailable for ${locale}; using ${markdownFallbackProvider.name} segment fallback (${error.message})`);
+    const translatedData = await translateValue({
+      value: source.data,
+      keyPath: `${keyPrefix}.frontmatter`,
+      fieldName: "frontmatter",
+      locale,
+      targetLang,
+      manifest,
+      translate: translateMarkdownSegment,
+    });
+    const segments = collectMarkdownSegments(source.content);
+    const translatedSegments = await Promise.all(segments.map((text, index) => translateText({
+      locale,
+      targetLang,
+      key: `${keyPrefix}.body[${index}]`,
+      source: text,
+      manifest,
+      format: "markdown-segment",
+      translate: translateMarkdownSegment,
+    })));
+    const imageLabels = [...source.content.matchAll(/!\[([^\]]*)\]\(/g)].map((match) => match[1]);
+    const translatedBody = replaceMarkdownSegments(source.content, translatedSegments);
+    let imageIndex = 0;
+    const preservedBody = translatedBody.replace(/!\[([^\]]*)\]\(/g, () => `![${imageLabels[imageIndex++] ?? ""}](`);
+    const yaml = stringifyYaml(mergeTranslatedData(source.data, translatedData), { lineWidth: 0 }).trimEnd();
+    translation = `---\n${yaml}\n---\n\n${preservedBody}`;
+  }
   const translated = matter(unwrapMarkdownFence(translation));
   if (source.content.trim() && !translated.content.trim()) {
     throw new Error(`Translated document "${keyPrefix}" is missing its Markdown body.`);
+  }
+  if (usedFallback) {
+    const manifestKey = `${locale}:${keyPrefix}.document`;
+    const entry = {
+      fingerprint: translationFingerprint(`markdown-document-v1\0${sourceDocument}`),
+      translation,
+    };
+    manifest.entries[manifestKey] = entry;
+    await checkpointTranslation(manifestKey, entry);
+    manifest.updated += 1;
   }
   return {
     data: mergeTranslatedData(source.data, translated.data),
