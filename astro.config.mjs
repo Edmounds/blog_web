@@ -6,16 +6,16 @@ import react from '@astrojs/react';
 import tailwindcss from "@tailwindcss/vite";
 import cloudflare from "@astrojs/cloudflare";
 import mdx from "@astrojs/mdx";
-import { unified } from "@astrojs/markdown-remark";
+import { satteri } from "@astrojs/markdown-satteri";
 import sitemap from "@astrojs/sitemap";
 import { markdownOptions, markdownPlugins } from "./src/lib/markdown.mjs";
 import { createResponsiveImagePlugin } from "./src/lib/responsive-images.mjs";
 
 const buildId = process.env.PUBLIC_BUILD_ID ?? `local-${Date.now()}`;
 const imageManifest = JSON.parse(await readFile(new URL("./.blog-images-manifest.json", import.meta.url), "utf8"));
-const rehypePlugins = /** @type {any} */ ([
-  ...markdownPlugins.rehypePlugins,
-  [createResponsiveImagePlugin, { manifest: imageManifest }],
+const hastPlugins = /** @type {any} */ ([
+  ...markdownPlugins.hastPlugins,
+  createResponsiveImagePlugin({ manifest: imageManifest }),
 ]);
 
 const deploymentVersion = {
@@ -45,9 +45,10 @@ export default defineConfig({
   markdown: {
     syntaxHighlight: markdownOptions.syntaxHighlight,
     shikiConfig: markdownOptions.shikiConfig,
-    processor: unified({
-      remarkPlugins: markdownPlugins.remarkPlugins,
-      rehypePlugins,
+    processor: satteri({
+      features: markdownOptions.features,
+      mdastPlugins: markdownPlugins.mdastPlugins,
+      hastPlugins,
     }),
   },
   vite: {

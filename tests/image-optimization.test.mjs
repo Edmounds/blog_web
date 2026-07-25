@@ -4,13 +4,17 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 
+import { createSatteriMarkdownProcessor } from "@astrojs/markdown-satteri";
 import sharp from "sharp";
 
 import {
   createResponsiveImage,
   responsiveWidths,
 } from "../scripts/lib/image-optimization.mjs";
-import { createResponsiveImagePlugin } from "../src/lib/responsive-images.mjs";
+import {
+  ARTICLE_IMAGE_SIZES,
+  createResponsiveImagePlugin,
+} from "../src/lib/responsive-images.mjs";
 
 test("responsive widths never upscale and retain the source width", () => {
   assert.deepEqual(responsiveWidths(512), [512]);
@@ -38,16 +42,7 @@ test("responsive image encoding writes AVIF and WebP variants that pass the qual
   for (const variant of asset.variants) assert.ok((await stat(variant.filePath)).size > 0);
 });
 
-test("responsive image plugin renders AVIF then WebP with a WebP fallback", () => {
-  const tree = {
-    type: "root",
-    children: [{
-      type: "element",
-      tagName: "img",
-      properties: { src: "https://img.muelsyse.us/blog/source.webp", alt: "Diagram", title: "Caption" },
-      children: [],
-    }],
-  };
+test("responsive image plugin renders AVIF then WebP with a WebP fallback", async () => {
   const manifest = {
     version: 2,
     assets: {
@@ -69,19 +64,18 @@ test("responsive image plugin renders AVIF then WebP with a WebP fallback", () =
     },
   };
 
-  createResponsiveImagePlugin({ manifest })(tree);
+  const processor = await createSatteriMarkdownProcessor({
+    syntaxHighlight: false,
+    hastPlugins: [createResponsiveImagePlugin({ manifest })],
+  });
+  const rendered = await processor.render(
+    "![Diagram](https://img.muelsyse.us/blog/source.webp \"Caption\")",
+  );
 
-  const picture = tree.children[0];
-  assert.equal(picture.tagName, "picture");
-  assert.equal(picture.children[0].properties.type, "image/avif");
-  assert.equal(picture.children[1].properties.type, "image/webp");
-  assert.equal(picture.children[2].properties.src, "https://img.muelsyse.us/blog/source-w1280.webp");
-  assert.equal(picture.children[2].properties.loading, "lazy");
-  assert.equal(picture.children[2].properties.decoding, "async");
-  assert.equal(picture.children[2].properties.width, 1280);
-  assert.equal(picture.children[2].properties.height, 720);
-  assert.equal(picture.children[2].properties.alt, "Diagram");
-  assert.equal(picture.children[2].properties.title, "Caption");
+  assert.match(rendered.code, /<picture><source type="image\/avif" srcset="https:\/\/img\.muelsyse\.us\/blog\/source-w640\.avif 640w, https:\/\/img\.muelsyse\.us\/blog\/source-w1280\.avif 1280w"/);
+  assert.match(rendered.code, /<source type="image\/webp" srcset="https:\/\/img\.muelsyse\.us\/blog\/source-w640\.webp 640w, https:\/\/img\.muelsyse\.us\/blog\/source-w1280\.webp 1280w"/);
+  assert.match(rendered.code, /<img src="https:\/\/img\.muelsyse\.us\/blog\/source-w1280\.webp" alt="Diagram" title="Caption" width="1280" height="720" loading="lazy" decoding="async">/);
+  assert.match(rendered.code, new RegExp(`sizes="${ARTICLE_IMAGE_SIZES.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`));
 });
 
 test("repository image manifest uses the responsive v2 shape", async () => {

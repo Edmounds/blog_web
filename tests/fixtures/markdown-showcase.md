@@ -45,6 +45,12 @@ $$
 \int_0^1 x^2\,dx = \frac{1}{3}
 $$
 
+:::note{#directive-note .callout data-kind=info}
+Directive **content** stays renderable.
+:::
+
+Before :badge[New]{data-kind=info} after.
+
 ```mermaid
 flowchart LR
   Source --> Render
