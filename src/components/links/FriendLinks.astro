@@ -6,27 +6,50 @@ import Icon from "../ui/Icon.astro";
 const friends = [
   {
     name: "Ethan",
-    description: "Astro-star 作者的个人网站。",
+    description: "Don't stay awake for too long.",
     href: "https://hanlife02.com",
-    avatar: "/images/friend-hanlife02.webp",
+    avatar: "https://hanlife02.com/avatar.svg",
   },
 ] as const;
 ---
 
 <div class="friend-links-grid" aria-label="Friend links">
-  {friends.map((friend) => (
-    <a class="friend-link" href={friend.href} target="_blank" rel="noreferrer">
-      <img class="friend-link__background" src={friend.avatar} alt="" aria-hidden="true" loading="lazy" decoding="async" />
-      <span class="friend-link__avatar" aria-hidden="true">
-        <img src={friend.avatar} alt="" width="56" height="56" loading="lazy" decoding="async" />
-        <span class="friend-link__arrow"><Icon svg={ArrowRight} /></span>
-      </span>
-      <span class="friend-link__copy">
-        <strong>{friend.name}</strong>
-        <span>{friend.description}</span>
-      </span>
-    </a>
-  ))}
+  {
+    friends.map((friend) => (
+      <a
+        class="friend-link"
+        href={friend.href}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <img
+          class="friend-link__background"
+          src={friend.avatar}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          decoding="async"
+        />
+        <span class="friend-link__avatar" aria-hidden="true">
+          <img
+            src={friend.avatar}
+            alt=""
+            width="56"
+            height="56"
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="friend-link__arrow">
+            <Icon svg={ArrowRight} />
+          </span>
+        </span>
+        <span class="friend-link__copy">
+          <strong>{friend.name}</strong>
+          <span>{friend.description}</span>
+        </span>
+      </a>
+    ))
+  }
 </div>
 
 <style>
@@ -52,11 +75,16 @@ const friends = [
     background: color-mix(in srgb, var(--canvas) 78%, transparent);
     border: 1px solid color-mix(in srgb, var(--foreground) 14%, transparent);
     border-radius: var(--radius-control);
-    box-shadow: 0 1px 24px -1px color-mix(in srgb, var(--foreground) 10%, transparent);
+    box-shadow: 0 1px 24px -1px
+      color-mix(in srgb, var(--foreground) 10%, transparent);
     backdrop-filter: blur(20px) saturate(1.2);
-    transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+    transition:
+      background-color 180ms ease,
+      border-color 180ms ease,
+      transform 180ms ease;
   }
-  .friend-link:hover, .friend-link:focus-visible {
+  .friend-link:hover,
+  .friend-link:focus-visible {
     background: color-mix(in srgb, var(--canvas) 68%, transparent);
     border-color: var(--border-strong);
     transform: translateY(-1px);
@@ -83,7 +111,11 @@ const friends = [
     overflow: hidden;
     border-radius: 50%;
   }
-  .friend-link__avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .friend-link__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
   .friend-link__arrow {
     position: absolute;
     inset: 0;
@@ -95,10 +127,38 @@ const friends = [
     opacity: 0;
     transition: opacity 180ms ease;
   }
-  .friend-link__arrow :global(svg) { width: 1.05rem; height: 1.05rem; }
-  .friend-link:hover .friend-link__arrow, .friend-link:focus-visible .friend-link__arrow { opacity: 1; }
-  .friend-link__copy { display: flex; min-width: 0; flex-direction: column; gap: 0.15rem; }
-  .friend-link__copy strong { overflow: hidden; color: var(--foreground); font-size: var(--type-sm); text-overflow: ellipsis; white-space: nowrap; }
-  .friend-link__copy span { overflow: hidden; color: var(--text-muted); font-size: var(--type-xs); text-overflow: ellipsis; white-space: nowrap; }
-  @media (prefers-reduced-motion: reduce) { .friend-link, .friend-link__arrow { transition: none; } }
+  .friend-link__arrow :global(svg) {
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+  .friend-link:hover .friend-link__arrow,
+  .friend-link:focus-visible .friend-link__arrow {
+    opacity: 1;
+  }
+  .friend-link__copy {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .friend-link__copy strong {
+    overflow: hidden;
+    color: var(--foreground);
+    font-size: var(--type-sm);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .friend-link__copy span {
+    overflow: hidden;
+    color: var(--text-muted);
+    font-size: var(--type-xs);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .friend-link,
+    .friend-link__arrow {
+      transition: none;
+    }
+  }
 </style>

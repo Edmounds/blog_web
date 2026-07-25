@@ -419,10 +419,15 @@ test("Links is a localized standalone friend-link page with shared comments", ()
   const cards = read("src/components/links/FriendLinks.astro");
   const background = read("src/components/site/RouteBackground.astro");
   assert.match(links, /<h1>\{copy\.title\}<\/h1>/);
+  assert.match(links, /heading: "友链"/);
   assert.match(links, /<FriendLinks \/>/);
+  assert.match(links, /href="mailto:i@muelsyse\.us"/);
+  assert.match(links, /Name[\s\S]*Lust4ev3r[\s\S]*Desc[\s\S]*Keep it Simple,Stupid/);
+  assert.match(links, /Link[\s\S]*https:\/\/blog\.muelsyse\.us/);
+  assert.match(links, /Avatar[\s\S]*https:\/\/blog\.muelsyse\.us\/images\/content\/about\/profile-8646bdb863b8-w320\.webp/);
+  assert.doesNotMatch(links, /请在评论区留下|Leave your site name[^.]*in the comments/);
   assert.match(links, /CommentsSection contentId="links"/);
   assert.match(cards, /https:\/\/hanlife02\.com/);
-  assert.match(cards, /friend-hanlife02\.webp/);
   assert.match(background, /path === "\/links\/"[\s\S]*?"constellation"/);
   assert.match(read("src/pages/[locale]/links/index.astro"), /getStaticPaths/);
 });

@@ -9,11 +9,22 @@ interface Props { locale?: Locale }
 const { locale = "zh-CN" } = Astro.props;
 const site = await getLocalizedSite(locale);
 const copy = {
-  "zh-CN": { title: "Links", heading: "Friends", intro: "朋友、协作者和常去的网站。", apply: "申请友链", detail: "请在评论区留下站点名称、简介、网址和头像地址。" },
-  "zh-TW": { title: "Links", heading: "Friends", intro: "朋友、協作者和常去的網站。", apply: "申請友鏈", detail: "請在評論區留下站點名稱、簡介、網址和頭像地址。" },
-  en: { title: "Links", heading: "Friends", intro: "Friends, collaborators, and sites worth visiting.", apply: "Apply", detail: "Leave your site name, description, URL, and avatar URL in the comments." },
-  ja: { title: "Links", heading: "Friends", intro: "友人、協力者、よく訪れるサイト。", apply: "リンク申請", detail: "コメント欄にサイト名、説明、URL、アバターURLを残してください。" },
+  "zh-CN": { title: "Links", heading: "友链", intro: "朋友、协作者和常去的网站。", apply: "申请友链", detail: "请按以下格式发送邮件至", ending: "。" },
+  "zh-TW": { title: "Links", heading: "友鏈", intro: "朋友、協作者和常去的網站。", apply: "申請友鏈", detail: "請依照以下格式傳送郵件至", ending: "。" },
+  en: { title: "Links", heading: "Friend Links", intro: "Friends, collaborators, and sites worth visiting.", apply: "Apply", detail: "Email your application in the following format to", ending: "." },
+  ja: { title: "Links", heading: "友人リンク", intro: "友人、協力者、よく訪れるサイト。", apply: "リンク申請", detail: "以下の形式で申請メールを送信してください：", ending: "。" },
 }[locale];
+
+const application: ReadonlyArray<{ label: string; value: string; href?: string }> = [
+  { label: "Name", value: "Lust4ev3r" },
+  { label: "Desc", value: "Keep it Simple,Stupid" },
+  { label: "Link", value: "https://blog.muelsyse.us", href: "https://blog.muelsyse.us" },
+  {
+    label: "Avatar",
+    value: "https://blog.muelsyse.us/images/content/about/profile-8646bdb863b8-w320.webp",
+    href: "https://blog.muelsyse.us/images/content/about/profile-8646bdb863b8-w320.webp",
+  },
+];
 ---
 
 <div class="links-shell content-container">
@@ -26,7 +37,17 @@ const copy = {
     </section>
     <section class="links-page__section" aria-labelledby="apply-title">
       <h2 id="apply-title">{copy.apply}</h2>
-      <p>{copy.detail}</p>
+      <p>{copy.detail} <a href="mailto:i@muelsyse.us">i@muelsyse.us</a>{copy.ending}</p>
+      <dl class="links-application">
+        {application.map((item) => (
+          <div class="links-application__field">
+            <dt>{item.label}</dt>
+            <dd>
+              {item.href ? <a href={item.href} target="_blank" rel="noreferrer">{item.value}</a> : item.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
     </section>
     <div class="links-page__comments">
       <CommentsSection contentId="links" locale={locale} labels={site.copy} />
@@ -41,6 +62,18 @@ const copy = {
   .links-page__section { display: grid; gap: 0.8rem; margin-top: 3rem; }
   .links-page__section h2 { margin: 0; font-size: var(--type-xl); font-weight: 500; }
   .links-page__section p { margin: 0 0 0.4rem; color: var(--text-muted); line-height: 1.7; }
+  .links-page__section p a, .links-application a { color: var(--foreground); text-underline-offset: 0.2em; }
+  .links-application { display: grid; width: min(100%, 42rem); margin: 0.4rem 0 0; overflow: hidden; border: 1px solid var(--border-soft); border-radius: var(--radius-control); }
+  .links-application__field { display: grid; grid-template-columns: 6rem minmax(0, 1fr); }
+  .links-application__field + .links-application__field { border-top: 1px solid var(--border-soft); }
+  .links-application dt, .links-application dd { min-width: 0; margin: 0; padding: 0.8rem 1rem; }
+  .links-application dt { color: var(--text-muted); font-size: var(--type-xs); font-weight: 600; }
+  .links-application dd { overflow-wrap: anywhere; border-left: 1px solid var(--border-soft); font-size: var(--type-sm); }
   .links-page__comments { --article-title-size: clamp(1.82rem, 1.52rem + 0.9vw, 2.95rem); margin-top: 4rem; }
   :global(html:lang(zh-CN)) .links-page__comments, :global(html:lang(zh-TW)) .links-page__comments, :global(html:lang(ja)) .links-page__comments { --article-title-size: clamp(1.56rem, 1.36rem + 0.6vw, 2.28rem); }
+  @media (max-width: 30rem) {
+    .links-application__field { grid-template-columns: 1fr; }
+    .links-application dt { padding-bottom: 0.2rem; }
+    .links-application dd { padding-top: 0.2rem; border-left: 0; }
+  }
 </style>
