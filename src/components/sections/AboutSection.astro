@@ -40,7 +40,7 @@ const { Content } = await render(profile);
 </article>
 
 <style>
-  .about-article { width: auto; max-width: 52rem; min-height: calc(100vh - 4.5rem); padding-block: clamp(4rem, 8vh, 7rem) 6rem; }
+  .about-article { width: 100%; max-width: 52rem; min-height: calc(100vh - 4.5rem); margin-inline: auto; padding-block: clamp(4rem, 8vh, 7rem) 6rem; }
   @media (max-width: 64rem) { .about-article { width: 100%; } }
   .about-article__header { display: grid; grid-template-columns: minmax(0, 1fr) 8rem; gap: 2rem; align-items: end; padding-bottom: 2rem; border-bottom: 1px solid var(--border-soft); }
   .about-article__header h1 { margin: 0; font-size: clamp(2.3rem, 2rem + 1.5vw, 4.3rem); line-height: 1.05; overflow-wrap: anywhere; }
