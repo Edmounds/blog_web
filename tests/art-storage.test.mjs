@@ -3,7 +3,7 @@ import test from "node:test";
 
 import {
   assertResolvedPublicAddress, fetchRemoteImage, getArtCoverUrl, getShanghaiDate, localizeArtItems,
-  parsePublicHttpsUrl, resolveArtCoverDelivery, validateArtItemInput,
+  normalizeImageType, parsePublicHttpsUrl, resolveArtCoverDelivery, validateArtItemInput,
 } from "../functions/_shared/art.js";
 import { onRequestGet as previewCover } from "../functions/api/admin/art/cover-preview.js";
 import { onRequestDelete as deleteCover, onRequestPost as uploadCover } from "../functions/api/admin/art/covers.js";
@@ -219,6 +219,19 @@ test("remote cover fetch enforces redirects, MIME, signatures, and size", async 
   await assert.rejects(() => fetchRemoteImage("https://one.example/fake", async () => new Response("html", { headers: { "content-type": "image/png" } })), Response);
   const oversized = new Uint8Array(10 * 1024 * 1024 + 1);
   await assert.rejects(() => fetchRemoteImage("https://one.example/huge", async () => new Response(oversized, { headers: { "content-type": "image/png" } })), Response);
+});
+
+test("remote cover MIME normalization accepts common JPEG aliases", () => {
+  assert.equal(normalizeImageType("image/jpg; charset=UTF-8"), "image/jpeg");
+  assert.equal(normalizeImageType("image/pjpeg"), "image/jpeg");
+});
+
+test("remote cover fetch uses the image signature when a provider mislabels PNG as JPG", async () => {
+  const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0, 0, 0, 0]);
+  const image = await fetchRemoteImage("https://p1.music.126.net/cover.jpg", async () => new Response(png, {
+    headers: { "content-type": "image/jpg; charset=UTF-8" },
+  }));
+  assert.equal(image.mime, "image/png");
 });
 
 test("admin cover preview serves remote images through the same-origin API", async () => {

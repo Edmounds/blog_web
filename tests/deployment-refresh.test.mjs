@@ -66,6 +66,14 @@ test("public assets are immutable and public pages have security headers", () =>
   assert.match(headers, /X-Frame-Options: DENY/);
 });
 
+test("the public avatar short URL can refresh without an immutable cache", () => {
+  const headers = read("public/_headers");
+  const links = read("src/components/sections/LinksSection.astro");
+
+  assert.match(headers, /\/avatar\.webp\s+Cache-Control: public, max-age=0, must-revalidate/);
+  assert.match(links, /https:\/\/blog\.muelsyse\.us\/avatar\.webp/);
+});
+
 test("the replaceable profile portrait and social card use content-versioned WebP URLs", () => {
   const sourceProfile = read("src/content/about/profile.md");
   const layout = read("src/layouts/BaseLayout.astro");

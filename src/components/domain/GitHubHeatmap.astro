@@ -69,7 +69,8 @@ const legendLevels = [0, 1, 2, 3, 4];
         .then((heatmap) => {
           root.dataset.state = heatmap.state;
           root.style.setProperty("--github-week-count", String(heatmap.weekCount));
-          months.replaceChildren(...heatmap.months.map((month) => {
+          const monthsByWeek = new Map(heatmap.months.map((month) => [month.weekIndex, month]));
+          months.replaceChildren(...monthsByWeek.values().map((month) => {
             const label = document.createElement("span");
             label.className = "github-heatmap__month";
             label.style.gridColumn = String(month.weekIndex + 1);
@@ -112,8 +113,8 @@ const legendLevels = [0, 1, 2, 3, 4];
     text-decoration: none;
   }
   .github-heatmap__summary { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-  .github-heatmap__calendar { display: grid; min-width: 0; gap: 0.22rem; }
-  .github-heatmap__months { display: grid; grid-template-columns: repeat(var(--github-week-count, 53), 1fr); height: 1rem; line-height: 1; }
+  .github-heatmap__calendar { display: grid; min-width: 0; gap: 0.4rem; }
+  .github-heatmap__months { display: grid; grid-template-columns: repeat(var(--github-week-count, 53), 1fr); min-height: 1rem; align-items: start; line-height: 1; }
   .github-heatmap__month { display: block; overflow: visible; color: var(--text-muted); font-size: clamp(0.68rem, 0.62rem + 0.12vw, 0.82rem); font-weight: 600; white-space: nowrap; }
   .github-heatmap__grid { display: grid; grid-template-columns: repeat(var(--github-week-count, 53), 1fr); grid-template-rows: repeat(7, 1fr); gap: clamp(2px, 0.22vw, 3px); width: 100%; aspect-ratio: var(--github-week-count, 53) / 7; margin: 0; padding: 0; list-style: none; }
   .github-heatmap__cell, .github-heatmap__legend-cell { --github-fill: var(--github-empty); background: var(--github-fill); border-radius: 3px; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 5%, transparent); }

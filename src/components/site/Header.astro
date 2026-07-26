@@ -50,7 +50,7 @@ const isActive = (href: string) =>
       data-content-frame-start
       data-primary-route
       data-astro-prefetch="viewport"
-      aria-label="Lust4ev3r home">Lust4ev3r</a
+      aria-label="Last4ev3r home">Last4ev3r</a
     >
 
     <nav
@@ -452,7 +452,10 @@ const isActive = (href: string) =>
     height: 12px;
   }
   .site-header {
-    --desktop-nav-font-size: clamp(18px, 0.9rem + 0.2vw, 22px);
+    --desktop-nav-font-size: clamp(20px, 1.2rem + 0.4vw, 24px);
+    --life-submenu-font-size: clamp(16.3px, 0.82rem + 0.13vw, 20px);
+    --life-submenu-gap: clamp(0.75rem, 1.5vw, 1.5rem);
+    --life-submenu-color: var(--text-faint);
     position: sticky;
     top: 0;
     z-index: 50;
@@ -469,7 +472,7 @@ const isActive = (href: string) =>
   }
   @font-face {
     font-family: "Site Signature";
-    src: url("/fonts/Allura-Lust4ev3r.woff") format("woff");
+    src: url("/fonts/Allura-Last4ev3r.woff") format("woff");
     font-weight: 400;
     font-display: swap;
   }
@@ -532,9 +535,9 @@ const isActive = (href: string) =>
     left: 100%;
     display: flex;
     align-items: center;
-    gap: var(--desktop-nav-gap);
+    gap: var(--life-submenu-gap);
     width: max-content;
-    padding-left: var(--desktop-nav-gap);
+    padding-left: var(--life-submenu-gap);
     visibility: hidden;
     opacity: 0;
     transform: translate(-0.25rem, -50%);
@@ -554,6 +557,8 @@ const isActive = (href: string) =>
   }
   .life-menu__items a {
     padding: 0.2rem 0;
+    color: var(--life-submenu-color);
+    font-size: var(--life-submenu-font-size);
     text-align: left;
   }
   .site-header__tools {
@@ -607,6 +612,23 @@ const isActive = (href: string) =>
   .mobile-menu details div a {
     color: var(--text-muted);
     font-size: var(--type-base);
+  }
+  @media (min-width: 64.0625rem) and (max-width: 78rem) {
+    .life-menu__items {
+      top: 100%;
+      left: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--life-submenu-gap);
+      padding-top: var(--life-submenu-gap);
+      padding-left: 0;
+      transform: translateY(-0.25rem);
+    }
+    .life-menu__items[data-open="true"],
+    .life-menu:hover .life-menu__items,
+    .life-menu:focus-within .life-menu__items {
+      transform: translateY(0);
+    }
   }
   @media (max-width: 64rem) {
     .header-reveal-zone {

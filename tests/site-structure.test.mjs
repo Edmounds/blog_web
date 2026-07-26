@@ -2,17 +2,24 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
+const read = (path) =>
+  readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
 test("the primary canvas keeps five ordered routes while deferring non-home sections", () => {
   const layout = read("src/layouts/SpaLayout.astro");
   assert.match(layout, /width:\s*500vw/);
-  assert.match(layout, /const routes = \["\/", "\/about\/", "\/blog\/", "\/note\/", "\/project\/"\]/);
+  assert.match(
+    layout,
+    /const routes = \["\/", "\/about\/", "\/blog\/", "\/note\/", "\/project\/"\]/,
+  );
   assert.match(layout, /data-section-url=\{localizePath\(path, locale\)\}/);
   assert.match(layout, /requestIdleCallback/);
   assert.match(layout, /fetch\(url,[\s\S]*X-Spa-Fragment/);
   assert.doesNotMatch(layout, /^import (?:About|Blogs|Notes|Projects)Section/m);
-  assert.match(layout, /initialIndex === 1[\s\S]*import\("\.\.\/components\/sections\/AboutSection\.astro"\)/);
+  assert.match(
+    layout,
+    /initialIndex === 1[\s\S]*import\("\.\.\/components\/sections\/AboutSection\.astro"\)/,
+  );
 });
 
 test("the loading icon gates initial and Life navigation", () => {
@@ -24,9 +31,18 @@ test("the loading icon gates initial and Life navigation", () => {
   assert.match(loader, /loading-icon__ring/);
   assert.match(loader, /loading-icon-rotate/);
   assert.match(loader, /loading-icon-pulse/);
-  assert.doesNotMatch(loader, /muelsyse-(?:head|arm|torso|coat|legs|rear-hair)/);
-  assert.doesNotMatch(loader, /water-growth-ring|scientific-staff|skeletal-water-arc|botanical-particles|rhine-life-mark/);
-  assert.doesNotMatch(loader, /loader-character-walk|loader-frame-lift|loader-frame-step/);
+  assert.doesNotMatch(
+    loader,
+    /muelsyse-(?:head|arm|torso|coat|legs|rear-hair)/,
+  );
+  assert.doesNotMatch(
+    loader,
+    /water-growth-ring|scientific-staff|skeletal-water-arc|botanical-particles|rhine-life-mark/,
+  );
+  assert.doesNotMatch(
+    loader,
+    /loader-character-walk|loader-frame-lift|loader-frame-step/,
+  );
   assert.match(loader, /role="status"/);
   assert.match(loader, /sessionStorage\.getItem\(FIRST_LOAD_KEY\)/);
   assert.match(loader, /astro:before-preparation/);
@@ -37,10 +53,24 @@ test("the loading icon gates initial and Life navigation", () => {
 
 test("navigation labels stay English, Links sits before Life, and Life exposes the four collection routes", () => {
   const header = read("src/components/site/Header.astro");
-  for (const label of ["About", "Blog", "Note", "Project", "Links", "Life", "Books", "Music", "Screen", "Game"]) {
+  for (const label of [
+    "About",
+    "Blog",
+    "Note",
+    "Project",
+    "Links",
+    "Life",
+    "Books",
+    "Music",
+    "Screen",
+    "Game",
+  ]) {
     assert.match(header, new RegExp(`(?:>|label: ")${label}`));
   }
-  assert.match(header, /const links = \{ label: "Links"[\s\S]*?<div class="life-menu">/);
+  assert.match(
+    header,
+    /const links = \{ label: "Links"[\s\S]*?<div class="life-menu">/,
+  );
   assert.doesNotMatch(header, />Home</);
   assert.match(header, /\/art\/book\//);
   assert.match(header, /\/art\/music\//);
@@ -51,26 +81,78 @@ test("navigation labels stay English, Links sits before Life, and Life exposes t
 test("the transparent header keeps its side controls visible while auto-hiding desktop navigation", () => {
   const header = read("src/components/site/Header.astro");
   assert.match(header, /data-header-reveal-zone/);
-  assert.match(header, /\.site-header\s*\{[^}]*position:\s*sticky;[^}]*background:\s*transparent;/s);
+  assert.match(
+    header,
+    /\.site-header\s*\{[^}]*position:\s*sticky;[^}]*background:\s*transparent;/s,
+  );
   assert.match(header, /\.site-header__inner\s*\{[^}]*min-height:\s*4\.5rem;/s);
-  assert.match(header, /--desktop-nav-font-size:\s*clamp\(16\.3px,\s*0\.82rem \+ 0\.13vw,\s*20px\);/s);
-  assert.match(header, /\.desktop-nav\s*>\s*a,[\s\S]*?\.life-menu__items a\s*\{[^}]*font-family:\s*var\(--font-ui\);[^}]*font-size:\s*var\(--desktop-nav-font-size\);/s);
-  assert.match(header, /\.mobile-menu\s*\{[^}]*background:\s*var\(--canvas\);/s);
+  assert.match(
+    header,
+    /--desktop-nav-font-size:\s*clamp\(20px,\s*1\.2rem \+ 0\.4vw,\s*24px\);/s,
+  );
+  assert.match(
+    header,
+    /--life-submenu-font-size:\s*clamp\(16\.3px,\s*0\.82rem \+ 0\.13vw,\s*20px\);/s,
+  );
+  assert.match(header, /--life-submenu-color:\s*var\(--text-faint\);/s);
+  assert.match(
+    header,
+    /\.desktop-nav\s*>\s*a,[\s\S]*?\.life-menu__items a\s*\{[^}]*font-family:\s*var\(--font-ui\);[^}]*font-size:\s*var\(--desktop-nav-font-size\);/s,
+  );
+  assert.match(
+    header,
+    /\.mobile-menu\s*\{[^}]*background:\s*var\(--canvas\);/s,
+  );
   assert.match(header, /desktopNav\.dataset\.hidden/);
-  assert.match(header, /window\.addEventListener\("scroll"/);
-  assert.match(header, /revealZone\.addEventListener\("pointerenter"/);
-  assert.match(header, /matchMedia\("\(hover: hover\) and \(pointer: fine\)"\)/);
+  assert.match(header, /window\.addEventListener\(\s*"scroll"/);
+  assert.match(header, /revealZone\.addEventListener\(\s*"pointerenter"/);
+  assert.match(
+    header,
+    /matchMedia\("\(hover: hover\) and \(pointer: fine\)"\)/,
+  );
   assert.match(header, /\.desktop-nav\[data-hidden="true"\]/);
   assert.doesNotMatch(header, /\.site-header\[data-hidden="true"\]/);
-  assert.match(header, /@media\s*\(max-width:\s*64rem\)[\s\S]*?\.site-header__inner\s*\{[^}]*min-height:\s*4rem;/);
-  assert.match(header, /@media\s*\(max-width:\s*64rem\)[\s\S]*?\.site-header\s*\{[^}]*background:\s*var\(--canvas\);[^}]*border-bottom:\s*1px solid var\(--border-soft\);/s);
-  assert.match(header, /@media\s*\(max-width:\s*64rem\)[\s\S]*?\.site-signature\s*\{[^}]*transform:\s*translateY\(-0\.625rem\);/s);
-  assert.match(header, /@media\s*\(max-width:\s*30rem\)[\s\S]*?\.site-header__tools\s*\{[^}]*gap:\s*0;/);
-  assert.match(header, /@media\s*\(max-width:\s*30rem\)[\s\S]*?\.site-signature\s*\{[^}]*width:\s*min\(100%,\s*8\.75rem\);[^}]*font-size:\s*2\.15rem;/);
+  assert.match(
+    header,
+    /@media\s*\(max-width:\s*64rem\)[\s\S]*?\.site-header__inner\s*\{[^}]*min-height:\s*4rem;/,
+  );
+  assert.match(
+    header,
+    /@media\s*\(max-width:\s*64rem\)[\s\S]*?\.site-header\s*\{[^}]*background:\s*var\(--canvas\);[^}]*border-bottom:\s*1px solid var\(--border-soft\);/s,
+  );
+  assert.match(
+    header,
+    /@media\s*\(max-width:\s*64rem\)[\s\S]*?\.site-signature\s*\{[^}]*transform:\s*translateY\(-0\.625rem\);/s,
+  );
+  assert.match(
+    header,
+    /@media\s*\(max-width:\s*30rem\)[\s\S]*?\.site-header__tools\s*\{[^}]*gap:\s*0;/,
+  );
+  assert.match(
+    header,
+    /@media\s*\(max-width:\s*30rem\)[\s\S]*?\.site-signature\s*\{[^}]*width:\s*min\(100%,\s*8\.75rem\);[^}]*font-size:\s*2\.15rem;/,
+  );
   assert.doesNotMatch(header, /backdrop-filter/);
-  assert.match(header, /\.desktop-nav\s*\{[^}]*--desktop-nav-gap:\s*clamp\(0\.75rem,\s*1\.5vw,\s*1\.5rem\);[^}]*gap:\s*var\(--desktop-nav-gap\);/s);
-  assert.match(header, /\.life-menu__items\s*\{[^}]*top:\s*50%;[^}]*left:\s*100%;[^}]*display:\s*flex;[^}]*align-items:\s*center;[^}]*gap:\s*var\(--desktop-nav-gap\);[^}]*width:\s*max-content;[^}]*padding-left:\s*var\(--desktop-nav-gap\);[^}]*transform:\s*translate\(-0\.25rem,\s*-50%\);[^}]*white-space:\s*nowrap;/s);
-  assert.match(header, /\.life-menu__items\[data-open="true"\][^\{]*\{[^}]*transform:\s*translate\(0,\s*-50%\);/s);
+  assert.match(
+    header,
+    /\.desktop-nav\s*\{[^}]*--desktop-nav-gap:\s*clamp\(0\.75rem,\s*1\.5vw,\s*1\.5rem\);[^}]*gap:\s*var\(--desktop-nav-gap\);/s,
+  );
+  assert.match(
+    header,
+    /\.life-menu__items\s*\{[^}]*top:\s*50%;[^}]*left:\s*100%;[^}]*display:\s*flex;[^}]*align-items:\s*center;[^}]*gap:\s*var\(--life-submenu-gap\);[^}]*width:\s*max-content;[^}]*padding-left:\s*var\(--life-submenu-gap\);[^}]*transform:\s*translate\(-0\.25rem,\s*-50%\);[^}]*white-space:\s*nowrap;/s,
+  );
+  assert.match(
+    header,
+    /\.life-menu__items\[data-open="true"\][^\{]*\{[^}]*transform:\s*translate\(0,\s*-50%\);/s,
+  );
+  assert.match(
+    header,
+    /@media\s*\(min-width:\s*64\.0625rem\)\s*and\s*\(max-width:\s*78rem\)[\s\S]*?\.life-menu__items\s*\{[^}]*top:\s*100%;[^}]*left:\s*0;[^}]*flex-direction:\s*column;[^}]*align-items:\s*flex-start;[^}]*padding-top:\s*var\(--life-submenu-gap\);[^}]*padding-left:\s*0;[^}]*transform:\s*translateY\(-0\.25rem\);/s,
+  );
+  assert.match(
+    header,
+    /@media\s*\(min-width:\s*64\.0625rem\)\s*and\s*\(max-width:\s*78rem\)[\s\S]*?\.life-menu__items\[data-open="true"\][^\{]*\{[^}]*transform:\s*translateY\(0\);/s,
+  );
   assert.match(header, /\.mobile-menu details div\s*\{[^}]*display:\s*grid;/s);
 });
 
@@ -79,9 +161,18 @@ test("public content pages stay inside the measured header frame", () => {
   assert.match(global, /--content-frame-inline-start:/);
   assert.match(global, /--content-frame-inline-end:/);
   assert.doesNotMatch(global, /--content-(?:shell-max|rail-left|rail-right):/);
-  assert.match(global, /\.content-container\s*\{[^}]*margin-left:\s*var\(--content-frame-inline-start\);[^}]*margin-right:\s*var\(--content-frame-inline-end\);/s);
-  assert.match(global, /--content-mobile-padding:\s*clamp\(1\.5rem,\s*5vw,\s*3rem\);/);
-  assert.match(global, /@media\s*\(max-width:\s*64rem\)[\s\S]*?\.content-container\s*\{[^}]*margin-inline:\s*0;[^}]*padding-left:\s*max\(var\(--content-mobile-padding\),\s*env\(safe-area-inset-left\)\);[^}]*padding-right:\s*max\(var\(--content-mobile-padding\),\s*env\(safe-area-inset-right\)\);/s);
+  assert.match(
+    global,
+    /\.content-container\s*\{[^}]*margin-left:\s*var\(--content-frame-inline-start\);[^}]*margin-right:\s*var\(--content-frame-inline-end\);/s,
+  );
+  assert.match(
+    global,
+    /--content-mobile-padding:\s*clamp\(1\.5rem,\s*5vw,\s*3rem\);/,
+  );
+  assert.match(
+    global,
+    /@media\s*\(max-width:\s*64rem\)[\s\S]*?\.content-container\s*\{[^}]*margin-inline:\s*0;[^}]*padding-left:\s*max\(var\(--content-mobile-padding\),\s*env\(safe-area-inset-left\)\);[^}]*padding-right:\s*max\(var\(--content-mobile-padding\),\s*env\(safe-area-inset-right\)\);/s,
+  );
 
   for (const path of [
     "src/components/sections/HomeSection.astro",
@@ -109,10 +200,16 @@ test("public content pages stay inside the measured header frame", () => {
 test("top-level writing sections use the compact Astro-star archive layout", () => {
   const content = read("src/components/sections/ContentSection.astro");
   assert.match(content, /<h1>All \{sectionLabel\}<\/h1>/);
-  assert.match(content, /font-size:\s*clamp\(2\.3rem,\s*2rem \+ 1\.5vw,\s*4\.3rem\)/);
+  assert.match(
+    content,
+    /font-size:\s*clamp\(2\.3rem,\s*2rem \+ 1\.5vw,\s*4\.3rem\)/,
+  );
   assert.match(content, /ArchiveActivityTimeline/);
   assert.match(content, /ArchiveTableOfContents/);
-  assert.match(content, /padding-bottom:\s*clamp\(0\.75rem,\s*1\.5vw,\s*1\.25rem\)/);
+  assert.match(
+    content,
+    /padding-bottom:\s*clamp\(0\.75rem,\s*1\.5vw,\s*1\.25rem\)/,
+  );
   assert.match(content, /margin-bottom:\s*0;/);
 
   const activity = read("src/components/domain/ArchiveActivityTimeline.astro");
@@ -120,46 +217,97 @@ test("top-level writing sections use the compact Astro-star archive layout", () 
   assert.match(activity, /height:\s*6\.75rem;/);
   assert.match(activity, /margin-block:\s*0 2rem;/);
   assert.match(activity, /top:\s*5\.15rem;/);
-  assert.match(activity, /@media\s*\(max-width:\s*64rem\)[\s\S]*?\.archive-activity__year\s*\{[^}]*display:\s*none;/s);
-  assert.doesNotMatch(content, /View categories|content-listing__categories|Essays and longer-form writing|Short observations and working notes|Selected work and experiments/);
+  assert.match(
+    activity,
+    /@media\s*\(max-width:\s*64rem\)[\s\S]*?\.archive-activity__year\s*\{[^}]*display:\s*none;/s,
+  );
+  assert.doesNotMatch(
+    content,
+    /View categories|content-listing__categories|Essays and longer-form writing|Short observations and working notes|Selected work and experiments/,
+  );
 
   const art = read("src/components/sections/ArtSection.astro");
   assert.match(art, /<h1 class="ui-page-title">\{title\}<\/h1>/);
   assert.doesNotMatch(art, /<p class="ui-lead">|const description\s*=/);
   assert.match(art, /type === "screen"[\s\S]*data-screen-tabs/);
-  assert.match(art, /class="grid min-h-48 grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-3 lg:grid-cols-5"/);
-  assert.match(art, /class="col-span-2 hidden min-h-48 items-center text-sm text-\[var\(--text-muted\)\] md:col-span-3 lg:col-span-5"/);
+  assert.match(
+    art,
+    /class="grid min-h-48 grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-3 lg:grid-cols-5"/,
+  );
+  assert.match(
+    art,
+    /class="col-span-2 hidden min-h-48 items-center text-sm text-\[var\(--text-muted\)\] md:col-span-3 lg:col-span-5"/,
+  );
 
   const about = read("src/components/sections/AboutSection.astro");
-  assert.match(about, /<div class="about-shell content-container">[\s\S]*?<article class="about-article"/);
-  assert.match(about, /\.about-article\s*\{[^}]*max-width:\s*52rem;[^}]*margin-inline:\s*auto;/s);
-  assert.match(about, /<header class="about-article__title">[\s\S]*<h1>About<\/h1>/);
-  assert.match(about, /\.about-article__title h1[^}]*font-family:\s*var\(--font-ui\);[^}]*font-size:\s*clamp\(2\.3rem,\s*2rem \+ 1\.5vw,\s*4\.3rem\);/s);
+  assert.match(
+    about,
+    /<div class="about-shell content-container">[\s\S]*?<article class="about-article"/,
+  );
+  assert.match(
+    about,
+    /\.about-article\s*\{[^}]*max-width:\s*52rem;[^}]*margin-inline:\s*auto;/s,
+  );
+  assert.match(
+    about,
+    /<header class="about-article__title">[\s\S]*<h1>About<\/h1>/,
+  );
+  assert.match(
+    about,
+    /\.about-article__title h1[^}]*font-family:\s*var\(--font-ui\);[^}]*font-size:\s*clamp\(2\.3rem,\s*2rem \+ 1\.5vw,\s*4\.3rem\);/s,
+  );
   assert.match(about, /<Content \/>/);
   assert.doesNotMatch(about, /profile\.data\.(?:name|motto|city|portrait)/);
-  assert.doesNotMatch(about, /profile\.(?:story|meta|focusCards|experience|homeFeatured)/);
+  assert.doesNotMatch(
+    about,
+    /profile\.(?:story|meta|focusCards|experience|homeFeatured)/,
+  );
 });
 
 test("section descriptions remain available to page metadata", () => {
   const layout = read("src/layouts/BaseLayout.astro");
-  assert.match(layout, /<meta name="description" content=\{resolvedDescription\}/);
-  assert.match(read("src/pages/art/book/index.astro"), /description=\{site\.page\.bookDescription\}/);
-  assert.match(read("src/pages/blog/index.astro"), /description="Essays and longer-form writing\."/);
+  assert.match(
+    layout,
+    /<meta name="description" content=\{resolvedDescription\}/,
+  );
+  assert.match(
+    read("src/pages/art/book/index.astro"),
+    /description=\{site\.page\.bookDescription\}/,
+  );
+  assert.match(
+    read("src/pages/blog/index.astro"),
+    /description="Essays and longer-form writing\."/,
+  );
 });
 
 test("the site favicon uses the local profile portrait", () => {
   const layout = read("src/layouts/BaseLayout.astro");
   const notFound = read("src/pages/404.astro");
-  assert.match(layout, /rel="icon" type="image\/webp" href="\/images\/content\/about\/profile-8646bdb863b8-w160\.webp\?v=1"/);
-  assert.match(notFound, /rel="icon" type="image\/webp" href="\/images\/content\/about\/profile-8646bdb863b8-w160\.webp\?v=1"/);
+  assert.match(
+    layout,
+    /rel="icon" type="image\/webp" href="\/images\/content\/about\/profile-8646bdb863b8-w160\.webp\?v=1"/,
+  );
+  assert.match(
+    notFound,
+    /rel="icon" type="image\/webp" href="\/images\/content\/about\/profile-8646bdb863b8-w160\.webp\?v=1"/,
+  );
 });
 
 test("legacy blogs routes permanently redirect and Series routes are gone", () => {
-  assert.match(read("src/pages/blogs/index.astro"), /Astro\.redirect\("\/blog\/", 301\)/);
-  assert.match(read("src/pages/\[locale\]/blogs/index.astro"), /Astro\.redirect\([\s\S]*, 301\)/);
+  assert.match(
+    read("src/pages/blogs/index.astro"),
+    /Astro\.redirect\("\/blog\/", 301\)/,
+  );
+  assert.match(
+    read("src/pages/\[locale\]/blogs/index.astro"),
+    /Astro\.redirect\([\s\S]*, 301\)/,
+  );
   assert.throws(() => read("src/pages/series/index.astro"));
   assert.throws(() => read("src/pages/series/[slug].astro"));
-  assert.match(read("src/pages/links/index.astro"), /BaseLayout[\s\S]*LinksSection/);
+  assert.match(
+    read("src/pages/links/index.astro"),
+    /BaseLayout[\s\S]*LinksSection/,
+  );
 });
 
 test("Blog Note and Project content collections and image sync roots are configured", () => {
@@ -169,7 +317,10 @@ test("Blog Note and Project content collections and image sync roots are configu
   assert.match(config, /const project = defineCollection/);
 
   const images = read("scripts/lib/blog-images.mjs");
-  assert.match(images, /CONTENT_GROUPS\s*=\s*\["blog",\s*"note",\s*"project"\]/);
+  assert.match(
+    images,
+    /CONTENT_GROUPS\s*=\s*\["blog",\s*"note",\s*"project"\]/,
+  );
 });
 
 test("art covers render from the public image CDN and local uploads avoid blob previews", () => {
@@ -192,27 +343,54 @@ test("music administration separates albums and singles while preserving selecta
   assert.match(admin, /type MusicKind = "album" \| "single"/);
   assert.match(admin, /musicKind=\$\{selectedMusicKind\}/);
   assert.match(admin, /params\.set\("musicKind", musicKind\)/);
-  assert.match(admin, /type !== "music"[\s\S]*type === "book" \? "作者" : "补充关键词"/);
+  assert.match(
+    admin,
+    /type !== "music"[\s\S]*type === "book" \? "作者" : "补充关键词"/,
+  );
   assert.match(admin, /type === "music" \? "netease_album"/);
   assert.match(admin, /已收藏/);
   assert.match(admin, /const collectedCandidates = useMemo/);
-  assert.match(admin, /\/api\/admin\/art\/items\?type=\$\{selectedType\}\$\{suffix\}`,[\s\S]*cache: "no-store"/);
-  assert.match(admin, /setItems\(ensuredItem \? \[ensuredItem,[\s\S]*item\.id !== ensuredItem\.id/);
-  assert.match(admin, /setItems\(\(current\) => \[data\.item,[\s\S]*item\.id !== data\.item\.id/);
-  assert.doesNotMatch(admin, /setForm\(blankForm\(type\)\); setCandidates\(\[\]\); await loadItems/);
-  assert.doesNotMatch(search, /itunes\.apple\.com|searchAppleMusic|upgradeAppleArtwork/);
+  assert.match(
+    admin,
+    /\/api\/admin\/art\/items\?type=\$\{selectedType\}\$\{suffix\}`,[\s\S]*cache: "no-store"/,
+  );
+  assert.match(
+    admin,
+    /setItems\(ensuredItem \? \[ensuredItem,[\s\S]*item\.id !== ensuredItem\.id/,
+  );
+  assert.match(
+    admin,
+    /setItems\(\(current\) => \[data\.item,[\s\S]*item\.id !== data\.item\.id/,
+  );
+  assert.doesNotMatch(
+    admin,
+    /setForm\(blankForm\(type\)\); setCandidates\(\[\]\); await loadItems/,
+  );
+  assert.doesNotMatch(
+    search,
+    /itunes\.apple\.com|searchAppleMusic|upgradeAppleArtwork/,
+  );
   assert.match(search, /searchNeteaseAlbums/);
   assert.match(search, /searchNeteaseTracks/);
   assert.match(search, /return searchDeezerTracks/);
-  assert.doesNotMatch(read("src/lib/cover-api.ts"), /itunes\.apple\.com|ItunesSearchResponse/);
+  assert.doesNotMatch(
+    read("src/lib/cover-api.ts"),
+    /itunes\.apple\.com|ItunesSearchResponse/,
+  );
 });
 
 test("music administration paginates nine candidates without clearing search context", () => {
   const admin = read("src/components/domain/ArtAdmin.tsx");
 
   assert.match(admin, /const MUSIC_PAGE_SIZE = 9/);
-  assert.match(admin, /const \[candidatePage, setCandidatePage\] = useState\(1\)/);
-  assert.match(admin, /candidates\.slice\(candidatePageStart, candidatePageStart \+ MUSIC_PAGE_SIZE\)/);
+  assert.match(
+    admin,
+    /const \[candidatePage, setCandidatePage\] = useState\(1\)/,
+  );
+  assert.match(
+    admin,
+    /candidates\.slice\(candidatePageStart, candidatePageStart \+ MUSIC_PAGE_SIZE\)/,
+  );
   assert.match(admin, /setCandidates\(data\.items\); setCandidatePage\(1\)/);
   assert.match(admin, /changeType[\s\S]*setCandidatePage\(1\)/);
   assert.match(admin, /第 \{candidatePage\} \/ \{candidatePageCount\} 页/);
@@ -273,13 +451,22 @@ test("public music collection adds Chinese weekly and total ranking tabs after a
   assert.match(section, /播放 \{item\.playCount\} 次/);
   assert.match(section, /target="_blank"/);
   assert.match(section, /rel="noreferrer"/);
-  assert.match(musicRoute, /listNeteaseRanking\(db, "weekly"\)[\s\S]*listNeteaseRanking\(db, "total"\)/);
+  assert.match(
+    musicRoute,
+    /listNeteaseRanking\(db, "weekly"\)[\s\S]*listNeteaseRanking\(db, "total"\)/,
+  );
   assert.match(musicRoute, /const ranking = \{ weekly, total \}/);
-  assert.match(localizedRoute, /listNeteaseRanking\(db, "weekly"\)[\s\S]*listNeteaseRanking\(db, "total"\)/);
+  assert.match(
+    localizedRoute,
+    /listNeteaseRanking\(db, "weekly"\)[\s\S]*listNeteaseRanking\(db, "total"\)/,
+  );
   assert.match(localizedRoute, /const ranking = \{ weekly, total \}/);
   assert.match(schema, /CREATE TABLE IF NOT EXISTS netease_total_ranking/);
   assert.match(schema, /rank BETWEEN 1 AND 50/);
-  assert.match(schema, /CREATE TABLE IF NOT EXISTS netease_total_ranking_sync_state/);
+  assert.match(
+    schema,
+    /CREATE TABLE IF NOT EXISTS netease_total_ranking_sync_state/,
+  );
 });
 
 test("public art cards bind external cover fallback once for foreground and blurred images", () => {
@@ -288,36 +475,69 @@ test("public art cards bind external cover fallback once for foreground and blur
   assert.match(card, /data-art-cover-fallback=\{item\.coverFallback/);
   assert.match(card, /referrerpolicy=\{item\.coverFallback \? "origin"/);
   assert.equal((card.match(/data-art-cover-fallback=/g) ?? []).length, 3);
-  assert.match(card, /querySelectorAll<HTMLImageElement>\("\[data-art-cover-fallback\]"\)/);
+  assert.match(
+    card,
+    /querySelectorAll<HTMLImageElement>\("\[data-art-cover-fallback\]"\)/,
+  );
   assert.match(card, /image\.dataset\.artCoverBound/);
   assert.match(card, /delete image\.dataset\.artCoverFallback/);
-  assert.match(card, /addEventListener\("error", useFallback, \{ once: true \}\)/);
-  assert.match(card, /document\.addEventListener\("astro:page-load", bindArtCoverFallbacks\)/);
+  assert.match(
+    card,
+    /addEventListener\("error", useFallback, \{ once: true \}\)/,
+  );
+  assert.match(
+    card,
+    /document\.addEventListener\("astro:page-load", bindArtCoverFallbacks\)/,
+  );
 });
 
 test("art save operations expose independent progress and nearby live feedback", () => {
   const admin = read("src/components/domain/ArtAdmin.tsx");
 
-  for (const state of ["isSearching", "isSaving", "isTranslating", "isLoadingItems", "isUploading"]) {
+  for (const state of [
+    "isSearching",
+    "isSaving",
+    "isTranslating",
+    "isLoadingItems",
+    "isUploading",
+  ]) {
     assert.match(admin, new RegExp(`const \\[${state}, set`));
   }
   assert.match(admin, /const \[saveMessage, setSaveMessage\] = useState\(""\)/);
   assert.match(admin, /aria-live="polite"/);
   assert.match(admin, /已添加“\$\{savedTitle\}”/);
-  assert.match(admin, /disabled=\{!canSave \|\| isSaving \|\| isTranslating \|\| isUploading\}/);
-  assert.match(admin, /setItems\(\(current\) => \[data\.item,[\s\S]*item\.id !== data\.item\.id/);
+  assert.match(
+    admin,
+    /disabled=\{!canSave \|\| isSaving \|\| isTranslating \|\| isUploading\}/,
+  );
+  assert.match(
+    admin,
+    /setItems\(\(current\) => \[data\.item,[\s\S]*item\.id !== data\.item\.id/,
+  );
 });
 
 test("only books and movies expose art translation controls or request translated drafts", () => {
   const admin = read("src/components/domain/ArtAdmin.tsx");
   const translateApi = read("functions/api/admin/art/translate.js");
 
-  assert.match(admin, /const TRANSLATED_TYPES = new Set<ArtType>\(\["book", "movie"\]\)/);
-  assert.match(admin, /TRANSLATED_TYPES\.has\(type\)[\s\S]*aria-label="翻译语言"/);
+  assert.match(
+    admin,
+    /const TRANSLATED_TYPES = new Set<ArtType>\(\["book", "movie"\]\)/,
+  );
+  assert.match(
+    admin,
+    /TRANSLATED_TYPES\.has\(type\)[\s\S]*aria-label="翻译语言"/,
+  );
   assert.match(admin, /TRANSLATED_TYPES\.has\(type\)[\s\S]*生成翻译草稿/);
-  assert.doesNotMatch(admin, /selectCandidate[\s\S]*if \(TRANSLATED_TYPES\.has\(type\)\) await translate/);
+  assert.doesNotMatch(
+    admin,
+    /selectCandidate[\s\S]*if \(TRANSLATED_TYPES\.has\(type\)\) await translate/,
+  );
   assert.match(admin, /JSON\.stringify\(\{ type, \.\.\.source \}\)/);
-  assert.match(admin, /translations: translationsForType\(form\.type, form\.translations\)/);
+  assert.match(
+    admin,
+    /translations: translationsForType\(form\.type, form\.translations\)/,
+  );
   assert.match(translateApi, /TRANSLATED_TYPES\.has\(type\)/);
 });
 
@@ -330,7 +550,10 @@ test("dynamic art pages revalidate on every visit", () => {
     "src/pages/[locale]/art/[type]/index.astro",
   ];
   for (const route of routes) {
-    assert.match(read(route), /Cache-Control", "public, max-age=0, s-maxage=0, must-revalidate"/);
+    assert.match(
+      read(route),
+      /Cache-Control", "public, max-age=0, s-maxage=0, must-revalidate"/,
+    );
     assert.doesNotMatch(read(route), /stale-while-revalidate/);
   }
 });
@@ -338,8 +561,14 @@ test("dynamic art pages revalidate on every visit", () => {
 test("localized RSS routes and the WakaTime proxy support both server-side key names", () => {
   assert.match(read("src/pages/rss.xml.ts"), /createRssResponse/);
   assert.match(read("src/pages/[locale]/rss.xml.ts"), /createRssResponse/);
-  assert.match(read("src/pages/api/wakatime-badge.svg.ts"), /resolveWakaTimeApiKey/);
-  assert.match(read("src/pages/api/wakatime-status.svg.ts"), /resolveWakaTimeApiKey/);
+  assert.match(
+    read("src/pages/api/wakatime-badge.svg.ts"),
+    /resolveWakaTimeApiKey/,
+  );
+  assert.match(
+    read("src/pages/api/wakatime-status.svg.ts"),
+    /resolveWakaTimeApiKey/,
+  );
 
   const envTypes = read("src/env.d.ts");
   assert.match(envTypes, /WAKA_TIME_API_KEY\?: string/);
@@ -360,7 +589,10 @@ test("the homepage renders a compact WakaTime label and native GitHub heatmap", 
   assert.match(badge, />Codetime .*<\/text>/);
   assert.doesNotMatch(badge, /<circle|<path|<rect/);
   assert.match(home, /html\.dark[^}]*codetime-badge[^}]*filter:\s*invert\(1\)/);
-  assert.match(home, /profile-card__intro[\s\S]*profile-card__location[\s\S]*profile-metrics/);
+  assert.match(
+    home,
+    /profile-card__intro[\s\S]*profile-card__location[\s\S]*profile-metrics/,
+  );
   assert.match(heatmap, /\/api\/github-contributions\.json/);
   assert.match(heatmap, /data-github-grid/);
   assert.match(heatmap, /data-github-months/);
@@ -374,8 +606,14 @@ test("the homepage aligns latest content with the profile and lists projects las
   assert.match(home, /getPublishedContent\("project", locale\)/);
   assert.match(home, /Latest Blogs[\s\S]*Latest Notes[\s\S]*Latest Projects/);
   assert.match(home, /\.home-shell\s*\{[^}]*align-items:\s*start;/s);
-  assert.match(home, /\.latest-content\s*>\s*section:first-child\s*\{[^}]*padding-top:\s*0;/s);
-  assert.match(home, /href=\{localizePath\(`\/\$\{block\.section\}\/`, locale\)\}/);
+  assert.match(
+    home,
+    /\.latest-content\s*>\s*section:first-child\s*\{[^}]*padding-top:\s*0;/s,
+  );
+  assert.match(
+    home,
+    /href=\{localizePath\(`\/\$\{block\.section\}\/`, locale\)\}/,
+  );
 });
 
 test("the homepage keeps the legacy social icons in the requested order", () => {
@@ -388,16 +626,27 @@ test("the homepage keeps the legacy social icons in the requested order", () => 
   assert.match(home, /href="https:\/\/github\.com\/Edmounds"/);
   assert.match(home, /href="https:\/\/space\.bilibili\.com\/397591871"/);
   assert.match(home, /href="mailto:i@muelsyse\.us"/);
-  assert.match(home, /href="https:\/\/steamcommunity\.com\/profiles\/76561198437201442"/);
-  assert.match(home, /href="https:\/\/y\.music\.163\.com\/m\/user\?id=1460343107"/);
-  assert.match(home, /aria-label="GitHub"[\s\S]*aria-label="Bilibili"[\s\S]*aria-label="Email"[\s\S]*aria-label="Steam"[\s\S]*aria-label="NetEase Cloud Music"/);
+  assert.match(
+    home,
+    /href="https:\/\/steamcommunity\.com\/profiles\/76561198437201442"/,
+  );
+  assert.match(
+    home,
+    /href="https:\/\/y\.music\.163\.com\/m\/user\?id=1460343107"/,
+  );
+  assert.match(
+    home,
+    /aria-label="GitHub"[\s\S]*aria-label="Bilibili"[\s\S]*aria-label="Email"[\s\S]*aria-label="Steam"[\s\S]*aria-label="NetEase Cloud Music"/,
+  );
 });
 
 test("category archive routes are removed in favor of tags", () => {
   assert.throws(() => read("src/pages/[section]-archive.astro"));
   assert.throws(() => read("src/pages/[section]-archive/[archiveSlug].astro"));
   assert.throws(() => read("src/pages/[locale]/[section]-archive.astro"));
-  assert.throws(() => read("src/pages/[locale]/[section]-archive/[archiveSlug].astro"));
+  assert.throws(() =>
+    read("src/pages/[locale]/[section]-archive/[archiveSlug].astro"),
+  );
 
   const content = read("src/components/sections/ContentSection.astro");
   assert.doesNotMatch(content, /View categories|category archive/);
@@ -407,14 +656,17 @@ test("About renders the profile as a normal Markdown article with the code-rain 
   const about = read("src/components/sections/AboutSection.astro");
   const background = read("src/components/site/RouteBackground.astro");
   assert.match(about, /render\(profile\)/);
-  assert.match(about, /<header class="about-article__title">[\s\S]*<h1>About<\/h1>/);
+  assert.match(
+    about,
+    /<header class="about-article__title">[\s\S]*<h1>About<\/h1>/,
+  );
   assert.doesNotMatch(about, /profile\.data\.(?:name|motto|city|portrait)/);
   assert.match(about, /CommentsSection contentId="about\/profile"/);
   assert.doesNotMatch(about, /about-document__toc|href="#about-focus"/);
   assert.match(background, /path === "\/about\/"[\s\S]*\? "rain"/);
 });
 
-test("Links is a localized standalone friend-link page with shared comments", () => {
+test("Links is a localized standalone friend-link page without comments", () => {
   const links = read("src/components/sections/LinksSection.astro");
   const cards = read("src/components/links/FriendLinks.astro");
   const background = read("src/components/site/RouteBackground.astro");
@@ -422,24 +674,51 @@ test("Links is a localized standalone friend-link page with shared comments", ()
   assert.match(links, /heading: "友链"/);
   assert.match(links, /<FriendLinks \/>/);
   assert.match(links, /href="mailto:i@muelsyse\.us"/);
-  assert.match(links, /Name[\s\S]*Lust4ev3r[\s\S]*Desc[\s\S]*Keep it Simple,Stupid/);
+  assert.match(
+    links,
+    /Name[\s\S]*Last4ev3r[\s\S]*Desc[\s\S]*Keep it Simple,Stupid/,
+  );
   assert.match(links, /Link[\s\S]*https:\/\/blog\.muelsyse\.us/);
-  assert.match(links, /Avatar[\s\S]*https:\/\/blog\.muelsyse\.us\/images\/content\/about\/profile-8646bdb863b8-w320\.webp/);
-  assert.doesNotMatch(links, /请在评论区留下|Leave your site name[^.]*in the comments/);
-  assert.match(links, /CommentsSection contentId="links"/);
+  assert.match(
+    links,
+    /Avatar[\s\S]*https:\/\/blog\.muelsyse\.us\/avatar\.webp/,
+  );
+  assert.doesNotMatch(
+    links,
+    /copy\.intro|朋友、协作者和常去的网站|Friends, collaborators, and sites worth visiting/,
+  );
+  assert.doesNotMatch(
+    links,
+    /请在评论区留下|Leave your site name[^.]*in the comments/,
+  );
+  assert.doesNotMatch(links, /CommentsSection|links-page__comments/);
   assert.match(cards, /https:\/\/hanlife02\.com/);
+  assert.match(cards, /\/api\/friend-avatar\?v=1&url=/);
+  assert.match(cards, /encodeURIComponent\(url\)/);
   assert.match(background, /path === "\/links\/"[\s\S]*?"constellation"/);
   assert.match(read("src/pages/[locale]/links/index.astro"), /getStaticPaths/);
 });
 
 test("Project and every Life route use the dynamic constellation canvas", () => {
   const background = read("src/components/site/RouteBackground.astro");
-  assert.match(background, /<canvas[\s\S]*data-background-kind="constellation"/);
-  assert.match(background, /path === "\/project\/" \|\|[\s\S]*?path\.startsWith\("\/project\/"\)/);
-  assert.match(background, /path === "\/art" \|\|[\s\S]*?path\.startsWith\("\/art\/"\)/);
+  assert.match(
+    background,
+    /<canvas[\s\S]*data-background-kind="constellation"/,
+  );
+  assert.match(
+    background,
+    /path === "\/project\/" \|\|[\s\S]*?path\.startsWith\("\/project\/"\)/,
+  );
+  assert.match(
+    background,
+    /path === "\/art" \|\|[\s\S]*?path\.startsWith\("\/art\/"\)/,
+  );
   assert.match(background, /requestAnimationFrame\(tick\)/);
   assert.match(background, /prefers-reduced-motion: reduce/);
-  assert.doesNotMatch(background, /route-background__constellation line|route-background__constellation circle/);
+  assert.doesNotMatch(
+    background,
+    /route-background__constellation line|route-background__constellation circle/,
+  );
 });
 
 test("Project detail supports project and documentation links", () => {
@@ -452,17 +731,34 @@ test("writing detail pages keep interactions while moving the table of contents 
   const detail = read("src/components/domain/ContentDetail.astro");
   const toc = read("src/components/domain/TableOfContents.astro");
 
-  assert.match(detail, /article-page__content[\s\S]*article-prose[\s\S]*article-page__toc/);
-  assert.match(detail, /--article-title-size:\s*clamp\(1\.82rem,\s*1\.52rem \+ 0\.9vw,\s*2\.95rem\)/);
-  assert.match(detail, /\.article-page__header h1[\s\S]*?font-size:\s*var\(--article-title-size\)/);
-  assert.match(detail, /html:lang\(zh-CN\)[\s\S]*?--article-title-size:\s*clamp\(1\.56rem,\s*1\.36rem \+ 0\.6vw,\s*2\.28rem\)/);
+  assert.match(
+    detail,
+    /article-page__content[\s\S]*article-prose[\s\S]*article-page__toc/,
+  );
+  assert.match(
+    detail,
+    /--article-title-size:\s*clamp\(1\.82rem,\s*1\.52rem \+ 0\.9vw,\s*2\.95rem\)/,
+  );
+  assert.match(
+    detail,
+    /\.article-page__header h1[\s\S]*?font-size:\s*var\(--article-title-size\)/,
+  );
+  assert.match(
+    detail,
+    /html:lang\(zh-CN\)[\s\S]*?--article-title-size:\s*clamp\(1\.56rem,\s*1\.36rem \+ 0\.6vw,\s*2\.28rem\)/,
+  );
   assert.doesNotMatch(detail, /<main class="article-page__main">/);
   assert.match(detail, /PostEngagement/);
   assert.match(detail, /CommentsSection/);
   assert.match(detail, /showTitle=\{false\}/);
   assert.match(detail, /gap:\s*clamp\(1\.5rem,\s*3\.5vw,\s*3\.5rem\);/);
-  assert.doesNotMatch(detail, /article-page__floating-actions|article-page__toc-mobile|data-scroll-top/);
+  assert.doesNotMatch(
+    detail,
+    /article-page__floating-actions|article-page__toc-mobile|data-scroll-top/,
+  );
   assert.match(toc, /data-toc-progress/);
   assert.match(toc, /data-toc-link/);
+  assert.doesNotMatch(toc, /labels\.introduction|Introduction|slug:\s*""/);
+  assert.doesNotMatch(detail, /data-article-introduction|labels\.introduction/);
   assert.doesNotMatch(toc, /data-toc-expand|toc-children/);
 });

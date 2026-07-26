@@ -13,6 +13,7 @@ declare namespace Cloudflare {
     DB: D1Database;
     ART_COVERS: R2Bucket;
     ART_COVER_FETCHER?: Fetcher;
+    IMAGES?: ImagesBinding;
     GOOGLE_BOOKS_API_KEY?: string;
     TMDB_API_KEY?: string;
     STEAM_API_KEY?: string;

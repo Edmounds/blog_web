@@ -246,6 +246,7 @@ function parseExternalArtCoverUrl(source, value) {
 export function normalizeImageType(value) {
   if (typeof value !== "string") return undefined;
   const mime = value.split(";", 1)[0].trim().toLowerCase();
+  if (mime === "image/jpg" || mime === "image/pjpeg") return "image/jpeg";
   return IMAGE_TYPE_SET.has(mime) ? mime : undefined;
 }
 
@@ -350,8 +351,9 @@ export async function fetchRemoteImage(rawUrl, fetchImpl = fetch, maxRedirects =
     if (length > MAX_ART_IMAGE_BYTES) throw error(413, "COVER_TOO_LARGE", "封面不能超过 10 MB。");
     const bytes = new Uint8Array(await readLimitedBody(response.body, MAX_ART_IMAGE_BYTES));
     if (bytes.byteLength === 0 || bytes.byteLength > MAX_ART_IMAGE_BYTES) throw error(413, "COVER_TOO_LARGE", "封面不能超过 10 MB。");
-    if (!matchesImageSignature(bytes, mime)) throw error(400, "INVALID_COVER_CONTENT", "封面内容与图片格式不符。");
-    return { bytes, mime };
+    const detectedMime = detectImageType(bytes);
+    if (!detectedMime) throw error(400, "INVALID_COVER_CONTENT", "封面内容与图片格式不符。");
+    return { bytes, mime: detectedMime };
   }
   throw error(400, "COVER_FETCH_FAILED", "无法下载封面图片。");
 }
@@ -521,6 +523,10 @@ function matchesImageSignature(bytes, mime) {
   if (mime === "image/webp") return ascii(bytes, 0, 4) === "RIFF" && ascii(bytes, 8, 12) === "WEBP";
   if (mime === "image/avif") return ascii(bytes, 4, 8) === "ftyp" && ["avif", "avis"].includes(ascii(bytes, 8, 12));
   return false;
+}
+
+function detectImageType(bytes) {
+  return ART_IMAGE_TYPES.find((mime) => matchesImageSignature(bytes, mime));
 }
 
 function ascii(bytes, start, end) {

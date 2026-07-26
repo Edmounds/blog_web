@@ -1,4 +1,4 @@
-const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/avif"]);
+const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/avif", "image/svg+xml"]);
 const MAX_BYTES = 10 * 1024 * 1024;
 
 export default {
@@ -17,12 +17,18 @@ export default {
       if (location) headers.set("location", new URL(location, url).toString());
       return new Response(null, { status: response.status, headers });
     }
-    const mime = response.headers.get("content-type")?.split(";", 1)[0]?.trim().toLowerCase();
+    const mime = normalizeImageType(response.headers.get("content-type"));
     const length = Number(response.headers.get("content-length") ?? 0);
     if (!response.ok || !mime || !ALLOWED_TYPES.has(mime) || length > MAX_BYTES) return new Response("Invalid image response", { status: 400 });
-    return new Response(limitBody(response.body, MAX_BYTES), { status: response.status, headers: { "content-type": mime, ...(length ? { "content-length": String(length) } : {}) } });
+    return new Response(limitBody(response.body, MAX_BYTES), { status: response.status, headers: { "content-type": response.headers.get("content-type") ?? mime, ...(length ? { "content-length": String(length) } : {}) } });
   },
 };
+
+function normalizeImageType(value) {
+  const mime = value?.split(";", 1)[0]?.trim().toLowerCase();
+  if (mime === "image/jpg" || mime === "image/pjpeg") return "image/jpeg";
+  return mime;
+}
 
 function targetUrl(request) {
   const boundTarget = request.headers.get("x-art-cover-url");

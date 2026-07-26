@@ -48,6 +48,14 @@ test("GitHub contribution skeletons keep a stable seven-row calendar", () => {
   assert.ok(heatmap.days.every((day) => day.count === 0));
 });
 
+test("GitHub contribution month labels never share a calendar column", () => {
+  const heatmap = createGitHubContributionHeatmapSkeleton(new Date("2026-07-26T00:00:00Z"));
+  const weekIndexes = heatmap.months.map((month) => month.weekIndex);
+
+  assert.equal(new Set(weekIndexes).size, weekIndexes.length);
+  assert.deepEqual(heatmap.months[0], { label: "Aug", weekIndex: 0 });
+});
+
 test("GitHub contribution fetching rejects invalid usernames without a request", async () => {
   const heatmap = await getGitHubContributionHeatmap("bad/name", {
     fetchImpl: async () => assert.fail("invalid usernames must not be requested"),

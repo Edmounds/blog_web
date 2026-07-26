@@ -4,12 +4,6 @@ import type { Locale } from "../../lib/i18n";
 interface Props { contentId: string; locale?: Locale; labels?: Record<string, string>; }
 const { contentId, locale = "zh-CN", labels = {} } = Astro.props;
 const copy = { comments: "评论", commentName: "昵称", commentContent: "欢迎评论", commentSubmit: "提交", commentSubmitting: "提交中", commentLoading: "正在加载评论", commentReload: "重新加载", commentEmpty: "还没有评论，来留下第一条吧。", commentLoadMore: "加载更多", commentLoadingMore: "加载中", commentNameInvalid: "昵称需为 1 至 20 个字符。", commentContentInvalid: "评论需为 1 至 500 个字符。", commentPublished: "评论已发布。", commentLoadFailed: "暂时无法加载评论，请稍后重试。", commentSubmitFailed: "评论发布失败，请稍后重试。", ...labels };
-const descriptions: Record<Locale, string> = {
-  "zh-CN": "欢迎在这里留下笔记、问题与后续讨论。",
-  "zh-TW": "歡迎在這裡留下筆記、問題與後續討論。",
-  en: "Notes, questions, and follow-ups are welcome here.",
-  ja: "メモ、質問、続きの議論を歓迎します。",
-};
 const fieldLabels: Record<Locale, { name: string; content: string; submit: string; count: (value: number) => string }> = {
   "zh-CN": { name: "昵称", content: "欢迎评论", submit: "提交", count: (value) => `${value} 字` },
   "zh-TW": { name: "暱稱", content: "歡迎評論", submit: "提交", count: (value) => `${value} 字` },
@@ -22,7 +16,6 @@ const fields = fieldLabels[locale];
 <section id="comments" class="comments-section" aria-labelledby="comments-title" data-comments data-content-id={contentId} data-copy={JSON.stringify(copy)}>
   <header class="comments-section__header">
     <h2 id="comments-title">{copy.comments}</h2>
-    <p>{descriptions[locale]}</p>
   </header>
   <form class="comments-form" data-comment-form>
     <div class="comments-form__identity">

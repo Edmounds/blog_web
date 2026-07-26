@@ -162,7 +162,10 @@ export function createGitHubContributionHeatmap(
 
     if (!isBlank && !labeledMonths.has(monthKey) && (date.getUTCDate() <= 7 || date.getTime() === rangeStartDate.getTime())) {
       labeledMonths.add(monthKey);
-      months.push({ label: monthFormatter.format(date), weekIndex });
+      const label = { label: monthFormatter.format(date), weekIndex };
+      const existingIndex = months.findIndex((month) => month.weekIndex === weekIndex);
+      if (existingIndex >= 0) months[existingIndex] = label;
+      else months.push(label);
     }
     total += count;
     days.push({

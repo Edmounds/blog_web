@@ -32,6 +32,7 @@ npm run dev
 
 ```bash
 npm test
+npm run content:prepare
 npm run check:encoding
 npm run check:content-ids
 npm run check
@@ -48,7 +49,7 @@ npm run build
 
 Blog、Note、Project 公共 frontmatter 为 `title`、`description`、`createdAt`、`updatedAt`、`published`、`order`、`tags`；Project 可额外使用 `projectUrl` 和 `docUrl`。文章 URL 和内容互动 ID 均直接使用文件名，例如 `first-note.md` 对应 `/blog/first-note/` 和 `blog/first-note`。
 
-含中文的 Markdown 使用 UTF-8 BOM。`npm run translate` 会递归处理 `.md` 与 `.mdx`，保留目录和不可翻译字段。
+含中文的 Markdown 使用 UTF-8 BOM。`npm run content:prepare` 会为新增中文文章补充 BOM，并根据已发布的 Blog、Note、Project 自动更新互动内容 ID；`npm run dev` 和 `npm run build` 会自动先执行它。`npm run translate` 会递归处理 `.md` 与 `.mdx`，保留目录和不可翻译字段。
 
 ## D1、R2 与迁移
 

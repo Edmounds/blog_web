@@ -7,7 +7,13 @@ import Header from "../components/site/Header.astro";
 import LoadingOverlay from "../components/site/LoadingOverlay.astro";
 import RouteBackground from "../components/site/RouteBackground.astro";
 import { getSiteSettings } from "../lib/content";
-import { defaultLocale, getAlternatePaths, getLocaleDefinition, localizePath, type Locale } from "../lib/i18n";
+import {
+  defaultLocale,
+  getAlternatePaths,
+  getLocaleDefinition,
+  localizePath,
+  type Locale,
+} from "../lib/i18n";
 import { getLocalizedSite } from "../lib/localized-content";
 
 interface Props {
@@ -34,20 +40,34 @@ const {
   hasMath = false,
 } = Astro.props;
 const localizedSite = await getLocalizedSite(locale);
-const site = locale === defaultLocale ? { ...(await getSiteSettings()), ...localizedSite } : localizedSite;
+const site =
+  locale === defaultLocale
+    ? { ...(await getSiteSettings()), ...localizedSite }
+    : localizedSite;
 const localeDefinition = getLocaleDefinition(locale);
 const alternatePaths = getAlternatePaths(currentPath);
 const resolvedTitle = title.trim();
 const resolvedDescription = description ?? site.seo.defaultDescription;
-const canonicalUrl = new URL(localizePath(currentPath, locale), "https://blog.muelsyse.us").toString();
-const rssPath = locale === defaultLocale ? "/rss.xml" : `/${localeDefinition.path}/rss.xml`;
+const canonicalUrl = new URL(
+  localizePath(currentPath, locale),
+  "https://blog.muelsyse.us",
+).toString();
+const rssPath =
+  locale === defaultLocale ? "/rss.xml" : `/${localeDefinition.path}/rss.xml`;
 const socialImage = new URL(imageUrl, "https://blog.muelsyse.us").toString();
 const buildId = import.meta.env.PUBLIC_BUILD_ID;
-if (!Astro.response.headers.has("Cache-Control")) Astro.response.headers.set("Cache-Control", "no-cache");
+if (!Astro.response.headers.has("Cache-Control"))
+  Astro.response.headers.set("Cache-Control", "no-cache");
 ---
 
 <!doctype html>
-<html lang={localeDefinition.htmlLang} dir={localeDefinition.dir} class="light" data-theme-mode="system" data-build-id={buildId}>
+<html
+  lang={localeDefinition.htmlLang}
+  dir={localeDefinition.dir}
+  class="light"
+  data-theme-mode="system"
+  data-build-id={buildId}
+>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -55,14 +75,44 @@ if (!Astro.response.headers.has("Cache-Control")) Astro.response.headers.set("Ca
     <meta name="theme-color" content="#ffffff" />
     <meta name="color-scheme" content="light dark" />
     <meta name="generator" content={Astro.generator} />
-    <link rel="icon" type="image/webp" href="/images/content/about/profile-8646bdb863b8-w160.webp?v=1" />
-    <link rel="preload" href="/fonts/Biotif-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <link
+      rel="icon"
+      type="image/webp"
+      href="/images/content/about/profile-8646bdb863b8-w160.webp?v=1"
+    />
+    <link
+      rel="preload"
+      href="/fonts/Biotif-Regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
     <link rel="stylesheet" href="/anthropic-fonts.css" />
     {hasMath && <link rel="stylesheet" href="/katex.min.css" />}
     <link rel="canonical" href={canonicalUrl} />
-    {alternatePaths.map((alternate) => <link rel="alternate" hreflang={alternate.htmlLang} href={new URL(alternate.href, "https://blog.muelsyse.us").toString()} />)}
-    <link rel="alternate" hreflang="x-default" href={new URL(localizePath(currentPath, defaultLocale), "https://blog.muelsyse.us").toString()} />
-    <link rel="alternate" type="application/rss+xml" title="chasen RSS" href={new URL(rssPath, "https://blog.muelsyse.us").toString()} />
+    {
+      alternatePaths.map((alternate) => (
+        <link
+          rel="alternate"
+          hreflang={alternate.htmlLang}
+          href={new URL(alternate.href, "https://blog.muelsyse.us").toString()}
+        />
+      ))
+    }
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={new URL(
+        localizePath(currentPath, defaultLocale),
+        "https://blog.muelsyse.us",
+      ).toString()}
+    />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="chasen RSS"
+      href={new URL(rssPath, "https://blog.muelsyse.us").toString()}
+    />
     <meta property="og:site_name" content="chasen" />
     <meta property="og:title" content={resolvedTitle} />
     <meta property="og:description" content={resolvedDescription} />
@@ -80,20 +130,36 @@ if (!Astro.response.headers.has("Cache-Control")) Astro.response.headers.set("Ca
       (() => {
         const mode = localStorage.getItem("blog-theme");
         const prefersDark = matchMedia("(prefers-color-scheme: dark)").matches;
-        const theme = mode === "dark" || mode === "light" ? mode : prefersDark ? "dark" : "light";
+        const theme =
+          mode === "dark" || mode === "light"
+            ? mode
+            : prefersDark
+              ? "dark"
+              : "light";
         document.documentElement.classList.toggle("dark", theme === "dark");
         document.documentElement.classList.toggle("light", theme === "light");
         document.documentElement.dataset.theme = theme;
-        document.documentElement.dataset.themeMode = mode === "dark" || mode === "light" ? mode : "system";
+        document.documentElement.dataset.themeMode =
+          mode === "dark" || mode === "light" ? mode : "system";
       })();
     </script>
   </head>
   <body>
     <RouteBackground currentPath={currentPath} />
     <div class="relative z-10 flex min-h-screen flex-col">
-      <Header currentPath={currentPath} locale={locale} languageLabel={site.copy.languageSelect} />
-      <main transition:name="page-content" class={`flex-1 ${mainClass}`.trim()}><slot /></main>
-      {showFooter && <Footer brand="lust4ev3r" copyright={site.copy.copyright} />}
+      <Header
+        currentPath={currentPath}
+        locale={locale}
+        languageLabel={site.copy.languageSelect}
+      />
+      <main transition:name="page-content" class={`flex-1 ${mainClass}`.trim()}>
+        <slot />
+      </main>
+      {
+        showFooter && (
+          <Footer brand="Last4ev3r" copyright={site.copy.copyright} />
+        )
+      }
     </div>
     <LoadingOverlay />
 
@@ -108,14 +174,27 @@ if (!Astro.response.headers.has("Cache-Control")) Astro.response.headers.set("Ca
       document.addEventListener("astro:before-preparation", (event) => {
         const from = PRIMARY_ROUTES.indexOf(stripLocale(event.from.pathname));
         const to = PRIMARY_ROUTES.indexOf(stripLocale(event.to.pathname));
-        const direction = from >= 0 && to >= 0 ? (to < from ? "backward" : "forward") : event.navigationType === "traverse" && event.direction === "backward" ? "backward" : "forward";
+        const direction =
+          from >= 0 && to >= 0
+            ? to < from
+              ? "backward"
+              : "forward"
+            : event.navigationType === "traverse" &&
+                event.direction === "backward"
+              ? "backward"
+              : "forward";
         document.documentElement.dataset.transitionDirection = direction;
       });
 
-      if (import.meta.env.PROD && !window.location.pathname.startsWith("/admin/")) {
+      if (
+        import.meta.env.PROD &&
+        !window.location.pathname.startsWith("/admin/")
+      ) {
         const DEPLOYMENT_CHECK_INTERVAL_MS = 60_000;
         const DEPLOYMENT_REFRESH_KEY = "blog-deployment-refresh";
-        const browserWindow = window as typeof window & { __deploymentRefreshCleanup?: () => void };
+        const browserWindow = window as typeof window & {
+          __deploymentRefreshCleanup?: () => void;
+        };
         const currentBuildId = document.documentElement.dataset.buildId;
         let checkInFlight = false;
 
@@ -128,17 +207,26 @@ if (!Astro.response.headers.has("Cache-Control")) Astro.response.headers.set("Ca
           if (document.visibilityState !== "visible" || checkInFlight) return;
           checkInFlight = true;
           try {
-            const response = await fetch(`/version.json?t=${Date.now()}`, { cache: "no-store" });
-            const deployment = response.ok ? await response.json() as { buildId?: string } : {};
+            const response = await fetch(`/version.json?t=${Date.now()}`, {
+              cache: "no-store",
+            });
+            const deployment = response.ok
+              ? ((await response.json()) as { buildId?: string })
+              : {};
             if (
-              deployment.buildId
-              && deployment.buildId !== currentBuildId
-              && sessionStorage.getItem(DEPLOYMENT_REFRESH_KEY) !== deployment.buildId
+              deployment.buildId &&
+              deployment.buildId !== currentBuildId &&
+              sessionStorage.getItem(DEPLOYMENT_REFRESH_KEY) !==
+                deployment.buildId
             ) {
-              sessionStorage.setItem(DEPLOYMENT_REFRESH_KEY, deployment.buildId);
+              sessionStorage.setItem(
+                DEPLOYMENT_REFRESH_KEY,
+                deployment.buildId,
+              );
               window.location.reload();
             }
-          } catch {} finally {
+          } catch {
+          } finally {
             checkInFlight = false;
           }
         };
@@ -146,7 +234,10 @@ if (!Astro.response.headers.has("Cache-Control")) Astro.response.headers.set("Ca
           if (document.visibilityState === "visible") void checkForDeployment();
         };
         const onFocus = () => void checkForDeployment();
-        const intervalId = window.setInterval(() => void checkForDeployment(), DEPLOYMENT_CHECK_INTERVAL_MS);
+        const intervalId = window.setInterval(
+          () => void checkForDeployment(),
+          DEPLOYMENT_CHECK_INTERVAL_MS,
+        );
 
         document.addEventListener("visibilitychange", onVisibilityChange);
         window.addEventListener("focus", onFocus);

@@ -1,28 +1,59 @@
 ---
 import type { Locale } from "../../lib/i18n";
-import { getLocalizedSite } from "../../lib/localized-content";
-import CommentsSection from "../domain/CommentsSection.astro";
 import FriendLinks from "../links/FriendLinks.astro";
 
-interface Props { locale?: Locale }
+interface Props {
+  locale?: Locale;
+}
 
 const { locale = "zh-CN" } = Astro.props;
-const site = await getLocalizedSite(locale);
 const copy = {
-  "zh-CN": { title: "Links", heading: "友链", intro: "朋友、协作者和常去的网站。", apply: "申请友链", detail: "请按以下格式发送邮件至", ending: "。" },
-  "zh-TW": { title: "Links", heading: "友鏈", intro: "朋友、協作者和常去的網站。", apply: "申請友鏈", detail: "請依照以下格式傳送郵件至", ending: "。" },
-  en: { title: "Links", heading: "Friend Links", intro: "Friends, collaborators, and sites worth visiting.", apply: "Apply", detail: "Email your application in the following format to", ending: "." },
-  ja: { title: "Links", heading: "友人リンク", intro: "友人、協力者、よく訪れるサイト。", apply: "リンク申請", detail: "以下の形式で申請メールを送信してください：", ending: "。" },
+  "zh-CN": {
+    title: "Links",
+    heading: "友链",
+    apply: "申请友链",
+    detail: "请按以下格式发送邮件至",
+    ending: "。",
+  },
+  "zh-TW": {
+    title: "Links",
+    heading: "友鏈",
+    apply: "申請友鏈",
+    detail: "請依照以下格式傳送郵件至",
+    ending: "。",
+  },
+  en: {
+    title: "Links",
+    heading: "Friend Links",
+    apply: "Apply",
+    detail: "Email your application in the following format to",
+    ending: ".",
+  },
+  ja: {
+    title: "Links",
+    heading: "友人リンク",
+    apply: "リンク申請",
+    detail: "以下の形式で申請メールを送信してください：",
+    ending: "。",
+  },
 }[locale];
 
-const application: ReadonlyArray<{ label: string; value: string; href?: string }> = [
-  { label: "Name", value: "Lust4ev3r" },
+const application: ReadonlyArray<{
+  label: string;
+  value: string;
+  href?: string;
+}> = [
+  { label: "Name", value: "Last4ev3r" },
   { label: "Desc", value: "Keep it Simple,Stupid" },
-  { label: "Link", value: "https://blog.muelsyse.us", href: "https://blog.muelsyse.us" },
+  {
+    label: "Link",
+    value: "https://blog.muelsyse.us",
+    href: "https://blog.muelsyse.us",
+  },
   {
     label: "Avatar",
-    value: "https://blog.muelsyse.us/images/content/about/profile-8646bdb863b8-w320.webp",
-    href: "https://blog.muelsyse.us/images/content/about/profile-8646bdb863b8-w320.webp",
+    value: "https://blog.muelsyse.us/avatar.webp",
+    href: "https://blog.muelsyse.us/avatar.webp",
   },
 ];
 ---
@@ -32,48 +63,119 @@ const application: ReadonlyArray<{ label: string; value: string; href?: string }
     <header class="links-page__header"><h1>{copy.title}</h1></header>
     <section class="links-page__section" aria-labelledby="friends-title">
       <h2 id="friends-title">{copy.heading}</h2>
-      <p>{copy.intro}</p>
       <FriendLinks />
     </section>
     <section class="links-page__section" aria-labelledby="apply-title">
       <h2 id="apply-title">{copy.apply}</h2>
-      <p>{copy.detail} <a href="mailto:i@muelsyse.us">i@muelsyse.us</a>{copy.ending}</p>
+      <p>
+        {copy.detail}
+        <a href="mailto:i@muelsyse.us">i@muelsyse.us</a>{copy.ending}
+      </p>
       <dl class="links-application">
-        {application.map((item) => (
-          <div class="links-application__field">
-            <dt>{item.label}</dt>
-            <dd>
-              {item.href ? <a href={item.href} target="_blank" rel="noreferrer">{item.value}</a> : item.value}
-            </dd>
-          </div>
-        ))}
+        {
+          application.map((item) => (
+            <div class="links-application__field">
+              <dt>{item.label}</dt>
+              <dd>
+                {item.href ? (
+                  <a href={item.href} target="_blank" rel="noreferrer">
+                    {item.value}
+                  </a>
+                ) : (
+                  item.value
+                )}
+              </dd>
+            </div>
+          ))
+        }
       </dl>
     </section>
-    <div class="links-page__comments">
-      <CommentsSection contentId="links" locale={locale} labels={site.copy} />
-    </div>
   </article>
 </div>
 
 <style>
-  .links-page { width: 100%; max-width: 70rem; min-height: calc(100vh - 4.5rem); margin-inline: auto; padding-block: clamp(3.5rem, 7vh, 6rem) 6rem; }
-  .links-page__header { margin-bottom: clamp(2.5rem, 5vw, 4rem); padding-bottom: clamp(0.75rem, 1.5vw, 1.25rem); border-bottom: 1px solid var(--border-soft); }
-  .links-page__header h1 { margin: 0; color: transparent; font-size: clamp(2.3rem, 2rem + 1.5vw, 4.3rem); font-weight: 400; line-height: 1.05; -webkit-text-stroke: 1px var(--foreground); paint-order: stroke fill; }
-  .links-page__section { display: grid; gap: 0.8rem; margin-top: 3rem; }
-  .links-page__section h2 { margin: 0; font-size: var(--type-xl); font-weight: 500; }
-  .links-page__section p { margin: 0 0 0.4rem; color: var(--text-muted); line-height: 1.7; }
-  .links-page__section p a, .links-application a { color: var(--foreground); text-underline-offset: 0.2em; }
-  .links-application { display: grid; width: min(100%, 42rem); margin: 0.4rem 0 0; overflow: hidden; border: 1px solid var(--border-soft); border-radius: var(--radius-control); }
-  .links-application__field { display: grid; grid-template-columns: 6rem minmax(0, 1fr); }
-  .links-application__field + .links-application__field { border-top: 1px solid var(--border-soft); }
-  .links-application dt, .links-application dd { min-width: 0; margin: 0; padding: 0.8rem 1rem; }
-  .links-application dt { color: var(--text-muted); font-size: var(--type-xs); font-weight: 600; }
-  .links-application dd { overflow-wrap: anywhere; border-left: 1px solid var(--border-soft); font-size: var(--type-sm); }
-  .links-page__comments { --article-title-size: clamp(1.82rem, 1.52rem + 0.9vw, 2.95rem); margin-top: 4rem; }
-  :global(html:lang(zh-CN)) .links-page__comments, :global(html:lang(zh-TW)) .links-page__comments, :global(html:lang(ja)) .links-page__comments { --article-title-size: clamp(1.56rem, 1.36rem + 0.6vw, 2.28rem); }
+  .links-page {
+    width: 100%;
+    max-width: 70rem;
+    min-height: calc(100vh - 4.5rem);
+    margin-inline: auto;
+    padding-block: clamp(3.5rem, 7vh, 6rem) 6rem;
+  }
+  .links-page__header {
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+    padding-bottom: clamp(0.75rem, 1.5vw, 1.25rem);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .links-page__header h1 {
+    margin: 0;
+    color: transparent;
+    font-size: clamp(2.3rem, 2rem + 1.5vw, 4.3rem);
+    font-weight: 400;
+    line-height: 1.05;
+    -webkit-text-stroke: 1px var(--foreground);
+    paint-order: stroke fill;
+  }
+  .links-page__section {
+    display: grid;
+    gap: 0.8rem;
+    margin-top: 3rem;
+  }
+  .links-page__section h2 {
+    margin: 0;
+    font-size: var(--type-xl);
+    font-weight: 500;
+  }
+  .links-page__section p {
+    margin: 0 0 0.4rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+  .links-page__section p a,
+  .links-application a {
+    color: var(--foreground);
+    text-underline-offset: 0.2em;
+  }
+  .links-application {
+    display: grid;
+    width: min(100%, 42rem);
+    margin: 0.4rem 0 0;
+    overflow: hidden;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-control);
+  }
+  .links-application__field {
+    display: grid;
+    grid-template-columns: 6rem minmax(0, 1fr);
+  }
+  .links-application__field + .links-application__field {
+    border-top: 1px solid var(--border-soft);
+  }
+  .links-application dt,
+  .links-application dd {
+    min-width: 0;
+    margin: 0;
+    padding: 0.8rem 1rem;
+  }
+  .links-application dt {
+    color: var(--text-muted);
+    font-size: var(--type-xs);
+    font-weight: 600;
+  }
+  .links-application dd {
+    overflow-wrap: anywhere;
+    border-left: 1px solid var(--border-soft);
+    font-size: var(--type-sm);
+  }
   @media (max-width: 30rem) {
-    .links-application__field { grid-template-columns: 1fr; }
-    .links-application dt { padding-bottom: 0.2rem; }
-    .links-application dd { padding-top: 0.2rem; border-left: 0; }
+    .links-application__field {
+      grid-template-columns: 1fr;
+    }
+    .links-application dt {
+      padding-bottom: 0.2rem;
+    }
+    .links-application dd {
+      padding-top: 0.2rem;
+      border-left: 0;
+    }
   }
 </style>

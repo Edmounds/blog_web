@@ -51,7 +51,7 @@ const summarize = (entry: ContentEntry, section: ContentSection, locale: Locale)
     slug,
     title: entry.data.title,
     description: entry.data.description,
-    tags: entry.data.tags,
+    tags: entry.data.tags ?? [],
     createdAt: entry.data.createdAt,
     updatedAt: entry.data.updatedAt,
     readingTime: readingTimeForBody(entry.body, locale),

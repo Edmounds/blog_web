@@ -27,7 +27,7 @@ test("SPA canvas contains home, about, blog, note, and project", () => {
 
 test("Life pages prefetch primary canvas routes and canvas entries are prerendered", () => {
   const header = read("src/components/site/Header.astro");
-  assert.match(header, /data-primary-route data-astro-prefetch="viewport"/);
+  assert.match(header, /data-primary-route\s+data-astro-prefetch="viewport"/);
 
   for (const route of ["blog", "note", "project"]) {
     assert.match(read(`src/pages/${route}/index.astro`), /export const prerender = true/);

@@ -86,6 +86,25 @@ test("cover-fetcher supplies Douban's required image referer", () => {
   assert.match(source, /headers\.set\("referer", "https:\/\/book\.douban\.com\/"\)/);
 });
 
+test("cover-fetcher normalizes common JPEG MIME aliases", () => {
+  const source = read("workers/art-cover-fetcher.js");
+  assert.match(source, /mime === "image\/jpg" \|\| mime === "image\/pjpeg"/);
+  assert.match(source, /return "image\/jpeg"/);
+  assert.match(source, /response\.headers\.get\("content-type"\) \?\? mime/);
+});
+
+test("the shared remote image fetcher accepts SVG only for the sanitized friend-avatar path", () => {
+  const fetcher = read("workers/art-cover-fetcher.js");
+  const avatar = read("functions/api/friend-avatar.js");
+  const appConfig = read("wrangler.astro.jsonc");
+
+  assert.match(fetcher, /image\/svg\+xml/);
+  assert.match(avatar, /@cf-wasm\/resvg\/edge-light/);
+  assert.match(avatar, /format: "image\/webp"/);
+  assert.match(avatar, /max-age=86400/);
+  assert.match(appConfig, /"images"[\s\S]*"binding": "IMAGES"/);
+});
+
 test("the existing preferred-edge Worker keeps the public route and calls SSR through a service binding", () => {
   const appConfig = read("wrangler.astro.jsonc");
   const proxyConfig = read("wrangler.preferred-proxy.jsonc");

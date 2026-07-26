@@ -52,3 +52,9 @@ test("content slugs always come from Markdown file names", async () => {
   assert.doesNotMatch(ids, /routeSlug/);
   assert.match(ids, /path\.basename\(file\)/);
 });
+
+test("localized writing entries default missing tags to an empty list", async () => {
+  const content = await read("src/lib/content.ts");
+
+  assert.match(content, /tags:\s*entry\.data\.tags\s*\?\?\s*\[\]/);
+});

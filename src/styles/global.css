@@ -938,13 +938,6 @@ html.dark .ui-prose pre.astro-code span {
   -webkit-text-stroke: 1px var(--foreground);
   paint-order: stroke fill;
 }
-.comments-section__header p {
-  grid-column: 1 / -1;
-  margin: 0;
-  color: color-mix(in srgb, var(--foreground) 66%, transparent);
-  font-size: var(--type-sm);
-  line-height: 1.6;
-}
 .comments-form {
   display: grid;
   grid-template-rows: auto minmax(5.65rem, auto) auto auto;
@@ -1055,7 +1048,7 @@ html.dark .ui-prose pre.astro-code span {
   justify-content: center;
   gap: 0.35rem;
   padding-inline: 0.78rem;
-  color: #ffffff;
+  color: var(--canvas);
   font-size: var(--type-xs);
   background: color-mix(in srgb, var(--foreground) 84%, transparent);
   border: 1px solid color-mix(in srgb, var(--foreground) 84%, transparent);
@@ -1063,7 +1056,7 @@ html.dark .ui-prose pre.astro-code span {
 }
 .comments-form__footer button:hover,
 .comments-form__footer button:focus-visible {
-  color: #ffffff;
+  color: var(--canvas);
   background: var(--foreground);
 }
 .comments-status {
@@ -1155,9 +1148,6 @@ html.dark .ui-prose pre.astro-code span {
   .comments-section__header::after {
     grid-row: 2;
     width: 2.5rem;
-  }
-  .comments-section__header p {
-    grid-row: 3;
   }
   .comments-form__footer {
     align-items: flex-end;

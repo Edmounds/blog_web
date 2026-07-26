@@ -2,20 +2,17 @@
 interface Heading { depth: number; slug: string; text: string; }
 interface Props {
   headings: Heading[];
-  labels?: { title: string; introduction: string; collapse?: string; expand?: string };
+  labels?: { title: string };
   showTitle?: boolean;
 }
 
 const {
   headings,
-  labels = { title: "On this page", introduction: "Introduction" },
+  labels = { title: "On this page" },
   showTitle = true,
 } = Astro.props;
 const minimumDepth = Math.min(2, ...headings.map((heading) => heading.depth));
-const items = [
-  { depth: 1, slug: "", text: labels.introduction },
-  ...headings.map((heading) => ({ ...heading, depth: Math.min(6, Math.max(1, heading.depth - minimumDepth + 1)) })),
-];
+const items = headings.map((heading) => ({ ...heading, depth: Math.min(6, Math.max(1, heading.depth - minimumDepth + 1)) }));
 ---
 
 <section class="toc-desktop" data-toc>
@@ -25,7 +22,7 @@ const items = [
     <nav class="toc-nav" aria-label={labels.title}>
       {items.map((item) => (
         <a
-          href={item.slug ? `#${item.slug}` : "#"}
+          href={`#${item.slug}`}
           class={`toc-link toc-link--depth-${item.depth}`}
           style={`--toc-depth: ${item.depth - 1};`}
           data-toc-link={item.slug}
@@ -44,7 +41,7 @@ const items = [
       const listFrame = root.querySelector<HTMLElement>(".toc-list-frame");
       const headings = links.map((link) => {
         const slug = link.dataset.tocLink ?? "";
-        return { link, heading: slug ? document.getElementById(slug) : document.querySelector<HTMLElement>("[data-article-introduction]") };
+        return { link, heading: document.getElementById(slug) };
       }).filter((entry): entry is { link: HTMLAnchorElement; heading: HTMLElement } => Boolean(entry.heading));
 
       const update = () => {

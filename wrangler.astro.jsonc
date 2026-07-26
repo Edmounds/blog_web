@@ -24,6 +24,9 @@
   "cache": {
     "enabled": true
   },
+  "images": {
+    "binding": "IMAGES"
+  },
   "assets": {
     "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",

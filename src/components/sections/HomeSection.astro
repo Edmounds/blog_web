@@ -4,9 +4,14 @@ import { getLocalizedAbout } from "../../lib/localized-content";
 import { localizePath, type Locale } from "../../lib/i18n";
 import GitHubHeatmap from "../domain/GitHubHeatmap.astro";
 
-interface Props { locale?: Locale }
+interface Props {
+  locale?: Locale;
+}
 const { locale = "zh-CN" } = Astro.props;
-const about = locale === "zh-CN" ? await getAboutProfile() : await getLocalizedAbout(locale);
+const about =
+  locale === "zh-CN"
+    ? await getAboutProfile()
+    : await getLocalizedAbout(locale);
 const profile = about.data;
 const [blogs, notes, projects] = await Promise.all([
   getPublishedContent("blog", locale),
@@ -24,7 +29,11 @@ const groupLatestByYear = (items: typeof blogs) => {
 const latestBlocks = [
   { title: "Latest Blogs", section: "blog", items: groupLatestByYear(blogs) },
   { title: "Latest Notes", section: "note", items: groupLatestByYear(notes) },
-  { title: "Latest Projects", section: "project", items: groupLatestByYear(projects) },
+  {
+    title: "Latest Projects",
+    section: "project",
+    items: groupLatestByYear(projects),
+  },
 ];
 ---
 
@@ -56,31 +65,75 @@ const latestBlocks = [
     </div>
     <h1>{profile.name}</h1>
     <nav aria-label="Social links">
-      <a href="https://github.com/Edmounds" target="_blank" rel="noreferrer" aria-label="GitHub">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-          <path d="M9 18c-4.51 2-5-2-7-2" />
+      <a
+        href="https://github.com/Edmounds"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="GitHub"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path
+            d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"
+          ></path>
+          <path d="M9 18c-4.51 2-5-2-7-2"></path>
         </svg>
       </a>
-      <a href="https://space.bilibili.com/397591871" target="_blank" rel="noreferrer" aria-label="Bilibili">
+      <a
+        href="https://space.bilibili.com/397591871"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Bilibili"
+      >
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M17.813 4.653a.85.85 0 0 1 .15.15l1.637 1.865c.1.116.195.234.287.355l.129.176.082.133V17.5a2.5 2.5 0 0 1-2.5 2.5H6.5A2.5 2.5 0 0 1 4 17.5V7.332l.081-.133.129-.176a3.01 3.01 0 0 1 .287-.355l1.637-1.865a.91.91 0 0 1 .15-.15l.215-.164.21-.133.228-.105.235-.078.24-.047.245-.02.25-.003.245.02.24.047.235.078.228.105.21.133.215.164.673.473.674-.473.215-.164.21-.133.228-.105.235-.078.24-.047.245-.02.25-.003.245.02.24.047.235.078.228.105.21.133.215.164.673.473.674-.473zM7.5 9.332a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1zm9 0a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1z" />
+          <path
+            d="M17.813 4.653a.85.85 0 0 1 .15.15l1.637 1.865c.1.116.195.234.287.355l.129.176.082.133V17.5a2.5 2.5 0 0 1-2.5 2.5H6.5A2.5 2.5 0 0 1 4 17.5V7.332l.081-.133.129-.176a3.01 3.01 0 0 1 .287-.355l1.637-1.865a.91.91 0 0 1 .15-.15l.215-.164.21-.133.228-.105.235-.078.24-.047.245-.02.25-.003.245.02.24.047.235.078.228.105.21.133.215.164.673.473.674-.473.215-.164.21-.133.228-.105.235-.078.24-.047.245-.02.25-.003.245.02.24.047.235.078.228.105.21.133.215.164.673.473.674-.473zM7.5 9.332a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1zm9 0a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1z"
+          ></path>
         </svg>
       </a>
       <a href="mailto:i@muelsyse.us" aria-label="Email">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect width="20" height="16" x="2" y="4" rx="2" />
-          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
         </svg>
       </a>
-      <a href="https://steamcommunity.com/profiles/76561198437201442" target="_blank" rel="noreferrer" aria-label="Steam">
+      <a
+        href="https://steamcommunity.com/profiles/76561198437201442"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Steam"
+      >
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658a3.4 3.4 0 0 1 1.912-.59q.094.001.188.006l2.861-4.142V8.91a4.53 4.53 0 0 1 4.524-4.524c2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911.004.159a3.39 3.39 0 0 1-3.39 3.396 3.41 3.41 0 0 1-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0M7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25a2.551 2.551 0 0 0 3.337-3.324a2.547 2.547 0 0 0-3.255-1.413l1.523.63a1.878 1.878 0 0 1-1.445 3.467zm11.415-9.303a3.02 3.02 0 0 0-3.015-3.015a3.015 3.015 0 1 0 3.015 3.015m-5.273-.005a2.264 2.264 0 1 1 4.531 0a2.267 2.267 0 0 1-2.266 2.265a2.264 2.264 0 0 1-2.265-2.265" />
+          <path
+            d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658a3.4 3.4 0 0 1 1.912-.59q.094.001.188.006l2.861-4.142V8.91a4.53 4.53 0 0 1 4.524-4.524c2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911.004.159a3.39 3.39 0 0 1-3.39 3.396 3.41 3.41 0 0 1-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0M7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25a2.551 2.551 0 0 0 3.337-3.324a2.547 2.547 0 0 0-3.255-1.413l1.523.63a1.878 1.878 0 0 1-1.445 3.467zm11.415-9.303a3.02 3.02 0 0 0-3.015-3.015a3.015 3.015 0 1 0 3.015 3.015m-5.273-.005a2.264 2.264 0 1 1 4.531 0a2.267 2.267 0 0 1-2.266 2.265a2.264 2.264 0 0 1-2.265-2.265"
+          ></path>
         </svg>
       </a>
-      <a href="https://y.music.163.com/m/user?id=1460343107" target="_blank" rel="noreferrer" aria-label="NetEase Cloud Music">
+      <a
+        href="https://y.music.163.com/m/user?id=1460343107"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="NetEase Cloud Music"
+      >
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M13.046 9.388a3.919 3.919 0 0 0-.66.19c-.809.312-1.447.991-1.666 1.775a2.269 2.269 0 0 0-.074.81c.048.546.333 1.05.764 1.35a1.483 1.483 0 0 0 2.01-.286c.406-.531.355-1.183.24-1.636-.098-.387-.22-.816-.345-1.249a64.76 64.76 0 0 1-.269-.954zm-.82 10.07c-3.984 0-7.224-3.24-7.224-7.223 0-.98.226-3.02 1.884-4.822A7.188 7.188 0 0 1 9.502 5.6a.792.792 0 1 1 .587 1.472 5.619 5.619 0 0 0-2.795 2.462 5.538 5.538 0 0 0-.707 2.7 5.645 5.645 0 0 0 5.638 5.638c1.844 0 3.627-.953 4.542-2.428 1.042-1.68.772-3.931-.627-5.238a3.299 3.299 0 0 0-1.437-.777c.172.589.334 1.18.494 1.772.284 1.12.1 2.181-.519 2.989-.39.51-.956.888-1.592 1.064a3.038 3.038 0 0 1-2.58-.44 3.45 3.45 0 0 1-1.44-2.514c-.04-.467.002-.93.128-1.376.35-1.256 1.356-2.339 2.622-2.826a5.5 5.5 0 0 1 .823-.246l-.134-.505c-.37-1.371.25-2.579 1.547-3.007.329-.109.68-.145 1.025-.105.792.09 1.476.592 1.709 1.023.258.507-.096 1.153-.706 1.153a.788.788 0 0 1-.54-.213c-.088-.08-.163-.174-.259-.247a.825.825 0 0 0-.632-.166.807.807 0 0 0-.634.551c-.056.191-.031.406.02.595.07.256.159.597.217.82 1.11.098 2.162.54 2.97 1.296 1.974 1.844 2.35 4.886.892 7.233-1.197 1.93-3.509 3.177-5.889 3.177zM0 12c0 6.627 5.373 12 12 12s12-5.373 12-12S18.627 0 12 0 0 5.373 0 12Z" />
+          <path
+            d="M13.046 9.388a3.919 3.919 0 0 0-.66.19c-.809.312-1.447.991-1.666 1.775a2.269 2.269 0 0 0-.074.81c.048.546.333 1.05.764 1.35a1.483 1.483 0 0 0 2.01-.286c.406-.531.355-1.183.24-1.636-.098-.387-.22-.816-.345-1.249a64.76 64.76 0 0 1-.269-.954zm-.82 10.07c-3.984 0-7.224-3.24-7.224-7.223 0-.98.226-3.02 1.884-4.822A7.188 7.188 0 0 1 9.502 5.6a.792.792 0 1 1 .587 1.472 5.619 5.619 0 0 0-2.795 2.462 5.538 5.538 0 0 0-.707 2.7 5.645 5.645 0 0 0 5.638 5.638c1.844 0 3.627-.953 4.542-2.428 1.042-1.68.772-3.931-.627-5.238a3.299 3.299 0 0 0-1.437-.777c.172.589.334 1.18.494 1.772.284 1.12.1 2.181-.519 2.989-.39.51-.956.888-1.592 1.064a3.038 3.038 0 0 1-2.58-.44 3.45 3.45 0 0 1-1.44-2.514c-.04-.467.002-.93.128-1.376.35-1.256 1.356-2.339 2.622-2.826a5.5 5.5 0 0 1 .823-.246l-.134-.505c-.37-1.371.25-2.579 1.547-3.007.329-.109.68-.145 1.025-.105.792.09 1.476.592 1.709 1.023.258.507-.096 1.153-.706 1.153a.788.788 0 0 1-.54-.213c-.088-.08-.163-.174-.259-.247a.825.825 0 0 0-.632-.166.807.807 0 0 0-.634.551c-.056.191-.031.406.02.595.07.256.159.597.217.82 1.11.098 2.162.54 2.97 1.296 1.974 1.844 2.35 4.886.892 7.233-1.197 1.93-3.509 3.177-5.889 3.177zM0 12c0 6.627 5.373 12 12 12s12-5.373 12-12S18.627 0 12 0 0 5.373 0 12Z"
+          ></path>
         </svg>
       </a>
     </nav>
@@ -90,80 +143,273 @@ const latestBlocks = [
       <span>{profile.city}</span>
     </p>
     <div class="profile-metrics">
-      <img class="codetime-badge" src="/api/wakatime-badge.svg" alt="Total coding time" width="240" height="28" data-wakatime-image hidden />
+      <img
+        class="codetime-badge"
+        src="/api/wakatime-badge.svg"
+        alt="Total coding time"
+        width="240"
+        height="28"
+        data-wakatime-image
+        hidden
+      />
       <GitHubHeatmap />
     </div>
   </div>
 
   <div class="latest-content">
-    {latestBlocks.map((block) => (
-      <section>
-        <h2><a href={localizePath(`/${block.section}/`, locale)} data-primary-route>{block.title}</a></h2>
-        {block.items.length === 0 ? <p class="latest-empty">No {block.section}s published yet.</p> : block.items.map(([year, items]) => (
-          <div class="latest-year">
-            <h3>{year}</h3>
-            <ol>
-              {items.map((item) => (
-                <li>
-                  <time>{new Intl.DateTimeFormat(locale, { month: "short", day: "numeric" }).format(item.createdAt)}</time>
-                  <a href={localizePath(`/${block.section}/${item.slug}/`, locale)}><span>{item.title}</span><span aria-hidden="true">-&gt;</span></a>
-                </li>
-              ))}
-            </ol>
-          </div>
-        ))}
-      </section>
-    ))}
+    {
+      latestBlocks.map((block) => (
+        <section>
+          <h2>
+            <a
+              href={localizePath(`/${block.section}/`, locale)}
+              data-primary-route
+            >
+              {block.title}
+            </a>
+          </h2>
+          {block.items.length === 0 ? (
+            <p class="latest-empty">No {block.section}s published yet.</p>
+          ) : (
+            block.items.map(([year, items]) => (
+              <div class="latest-year">
+                <h3>{year}</h3>
+                <ol>
+                  {items.map((item) => (
+                    <li>
+                      <time>
+                        {new Intl.DateTimeFormat(locale, {
+                          month: "short",
+                          day: "numeric",
+                        }).format(item.createdAt)}
+                      </time>
+                      <a
+                        href={localizePath(
+                          `/${block.section}/${item.slug}/`,
+                          locale,
+                        )}
+                      >
+                        <span>{item.title}</span>
+                        <span aria-hidden="true">-&gt;</span>
+                      </a>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            ))
+          )}
+        </section>
+      ))
+    }
   </div>
 </section>
 
 <script>
   function revealWakatime() {
-    document.querySelectorAll('[data-wakatime-image]').forEach((image) => {
-      if (!(image instanceof HTMLImageElement) || image.dataset.bound === "true") return;
+    document.querySelectorAll("[data-wakatime-image]").forEach((image) => {
+      if (
+        !(image instanceof HTMLImageElement) ||
+        image.dataset.bound === "true"
+      )
+        return;
       image.dataset.bound = "true";
       image.addEventListener("load", () => {
         if (image.naturalWidth > 1) image.hidden = false;
       });
-      image.addEventListener("error", () => { image.hidden = true; });
+      image.addEventListener("error", () => {
+        image.hidden = true;
+      });
       if (image.complete && image.naturalWidth > 1) image.hidden = false;
     });
   }
   revealWakatime();
   document.addEventListener("astro:page-load", revealWakatime);
-
 </script>
 
 <style>
-  .home-shell { display: grid; grid-template-columns: minmax(18rem, 0.8fr) minmax(28rem, 1.2fr); gap: clamp(3rem, 8vw, 9rem); align-items: start; min-height: calc(100vh - 4.5rem); padding-block: clamp(3rem, 7vh, 6rem); }
-  .profile-card { display: flex; width: min(100%, 38rem); flex-direction: column; align-items: center; justify-self: center; text-align: center; }
-  .profile-avatar-wrap { position: relative; width: clamp(6.5rem, 10vw, 9rem); aspect-ratio: 1; }
-  .profile-avatar-wrap picture { display: contents; }
-  .profile-avatar { display: block; width: 100%; height: 100%; object-fit: cover; border: 1px solid var(--border-soft); border-radius: 50%; }
-  .profile-card h1 { margin: 1.25rem 0 0.7rem; font-size: clamp(1.8rem, 4vw, 4rem); line-height: 1; }
-  .profile-card nav { display: flex; gap: 0.45rem; }
-  .profile-card nav a { display: inline-flex; width: 2.5rem; height: 2.5rem; align-items: center; justify-content: center; color: var(--text-muted); text-decoration: none; }
-  .profile-card nav svg { width: 1.3rem; height: 1.3rem; }
-  .codetime-badge { display: block; width: min(100%, 15rem); height: auto; margin-inline: auto; }
-  :global(html.dark) .codetime-badge { filter: invert(1) grayscale(1); }
-  .profile-card__intro { margin: 1rem 0 0; color: var(--text-muted); line-height: 1.7; }
-  .profile-card__location { display: grid; gap: 0.2rem; margin: 0.5rem 0 0; color: var(--text-faint); font-size: var(--type-sm); }
-  .profile-metrics { display: grid; width: min(100%, 38rem); gap: 2.25rem; margin-top: 1rem; }
-  .latest-content { display: grid; gap: 1rem; }
-  .latest-content > section { padding: 0.75rem; }
-  .latest-content > section:first-child { padding-top: 0; }
-  .latest-content h2 { margin: 0 0 0.6rem; font-size: clamp(2rem, 4vw, 4rem); line-height: 1; }
-  .latest-content h2 a { color: transparent; text-decoration: none; -webkit-text-stroke: 1px var(--foreground); }
-  .latest-year { display: grid; grid-template-columns: 5rem minmax(0, 1fr); gap: 1.4rem; }
-  .latest-year h3 { margin: 0.75rem 0 0; color: transparent; font-size: var(--type-lg); -webkit-text-stroke: 1px var(--foreground); }
-  .latest-year ol { margin: 0; padding: 0; list-style: none; }
-  .latest-year li { position: relative; display: grid; grid-template-columns: 5rem minmax(0, 1fr); gap: 0.8rem; padding: 0.75rem 0 0.75rem 1.2rem; border-left: 1px solid var(--border-strong); }
-  .latest-year li::before { position: absolute; top: 1.15rem; left: -0.25rem; width: 0.45rem; height: 0.45rem; background: var(--canvas); border: 1px solid var(--foreground); border-radius: 50%; content: ""; }
-  .latest-year time { color: var(--text-faint); font-size: var(--type-xs); }
-  .latest-year a { display: flex; min-width: 0; justify-content: space-between; gap: 1rem; color: var(--foreground); text-decoration: none; }
-  .latest-year a span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .latest-empty { color: var(--text-faint); }
-  @media (min-width: 64.0625rem) { .profile-card h1 { font-size: clamp(1.08rem, 2.4vw, 2.4rem); } }
-  @media (max-width: 78rem) { .home-shell { grid-template-columns: 1fr; min-height: auto; } .latest-content { width: min(100%, 44rem); margin-inline: auto; } }
-  @media (max-width: 32rem) { .latest-year { grid-template-columns: 1fr; gap: 0; } .latest-year li { grid-template-columns: 1fr; } }
+  .home-shell {
+    display: grid;
+    grid-template-columns: minmax(18rem, 0.8fr) minmax(28rem, 1.2fr);
+    gap: clamp(3rem, 8vw, 9rem);
+    align-items: start;
+    min-height: calc(100vh - 4.5rem);
+    padding-block: clamp(3rem, 7vh, 6rem);
+  }
+  .profile-card {
+    display: flex;
+    width: min(100%, 38rem);
+    flex-direction: column;
+    align-items: center;
+    justify-self: center;
+    text-align: center;
+  }
+  .profile-avatar-wrap {
+    position: relative;
+    width: clamp(6.5rem, 10vw, 9rem);
+    aspect-ratio: 1;
+  }
+  .profile-avatar-wrap picture {
+    display: contents;
+  }
+  .profile-avatar {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 1px solid var(--border-soft);
+    border-radius: 50%;
+  }
+  .profile-card h1 {
+    margin: 1.25rem 0 0.7rem;
+    font-size: clamp(1.8rem, 4vw, 4rem);
+    line-height: 1;
+  }
+  .profile-card nav {
+    display: flex;
+    gap: 0.45rem;
+  }
+  .profile-card nav a {
+    display: inline-flex;
+    width: 2.5rem;
+    height: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+  .profile-card nav svg {
+    width: 1.3rem;
+    height: 1.3rem;
+  }
+  .codetime-badge {
+    display: block;
+    width: min(100%, 15rem);
+    height: auto;
+    margin-inline: auto;
+  }
+  :global(html.dark) .codetime-badge {
+    filter: invert(1) grayscale(1);
+  }
+  .profile-card__intro {
+    margin: 1rem 0 0;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+  .profile-card__location {
+    display: grid;
+    gap: 0.2rem;
+    margin: 0.5rem 0 0;
+    color: var(--text-faint);
+    font-size: var(--type-sm);
+  }
+  .profile-metrics {
+    display: grid;
+    width: min(100%, 38rem);
+    gap: 2.25rem;
+    margin-top: 1rem;
+  }
+  .latest-content {
+    display: grid;
+    gap: 1rem;
+  }
+  .latest-content > section {
+    padding: 0.75rem;
+  }
+  .latest-content > section:first-child {
+    padding-top: 0;
+  }
+  .latest-content h2 {
+    margin: 0 0 0.6rem;
+    font-size: clamp(2rem, 4vw, 4rem);
+    line-height: 1;
+  }
+  .latest-content h2 a {
+    color: transparent;
+    text-decoration: none;
+    -webkit-text-stroke: 1px var(--foreground);
+  }
+  .latest-year {
+    display: grid;
+    grid-template-columns: 5rem minmax(0, 1fr);
+    gap: 1.4rem;
+  }
+  .latest-year h3 {
+    margin: 0.75rem 0 0;
+    color: transparent;
+    font-size: var(--type-lg);
+    -webkit-text-stroke: 1px var(--foreground);
+  }
+  .latest-year ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .latest-year li {
+    position: relative;
+    display: grid;
+    grid-template-columns: 5rem minmax(0, 1fr);
+    gap: 0.8rem;
+    padding: 0.75rem 0 0.75rem 1.2rem;
+    border-left: 1px solid var(--border-strong);
+  }
+  .latest-year li::before {
+    position: absolute;
+    top: 1.15rem;
+    left: -0.25rem;
+    width: 0.45rem;
+    height: 0.45rem;
+    background: var(--canvas);
+    border: 1px solid var(--foreground);
+    border-radius: 50%;
+    content: "";
+  }
+  .latest-year time {
+    color: var(--text-faint);
+    font-size: var(--type-xs);
+  }
+  .latest-year a {
+    display: flex;
+    min-width: 0;
+    justify-content: space-between;
+    gap: 1rem;
+    color: var(--foreground);
+    text-decoration: none;
+  }
+  .latest-year a span:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .latest-empty {
+    color: var(--text-faint);
+  }
+  @media (min-width: 64.0625rem) {
+    .profile-card h1 {
+      font-size: clamp(1.08rem, 2.4vw, 2.4rem);
+    }
+  }
+  @media (min-width: 78.0625rem) {
+    .latest-content {
+      margin-top: 1.5rem;
+    }
+  }
+  @media (max-width: 78rem) {
+    .home-shell {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+    .latest-content {
+      width: min(100%, 44rem);
+      margin-inline: auto;
+    }
+  }
+  @media (max-width: 32rem) {
+    .latest-year {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .latest-year li {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
