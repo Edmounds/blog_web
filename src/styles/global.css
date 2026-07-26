@@ -996,6 +996,7 @@ html.dark .ui-prose pre.astro-code span {
   border: 0;
   border-radius: 0.42rem;
   outline: 0;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 22%, transparent);
 }
 .comments-field textarea::placeholder {
   color: color-mix(in srgb, var(--foreground) 34%, transparent);
@@ -1003,7 +1004,6 @@ html.dark .ui-prose pre.astro-code span {
 .comments-field--identity:focus-within,
 .comments-field textarea:focus {
   background: color-mix(in srgb, var(--canvas) 78%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 22%, transparent);
 }
 .comments-sr-only {
   position: absolute;
