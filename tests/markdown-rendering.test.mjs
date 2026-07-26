@@ -25,6 +25,12 @@ test("the Markdown fixture renders heading hierarchy and GFM structures", () => 
   assert.match(html, /<a href="https:\/\/example\.com">link<\/a>/);
 });
 
+test("single Markdown line breaks remain visible in rendered prose", async () => {
+  const result = await processor.render("第一行\n第二行\n第三行");
+
+  assert.match(result.code, /<p>第一行<br>\s*第二行<br>\s*第三行<\/p>/);
+});
+
 test("Shiki highlights common fenced languages and leaves Mermaid as source", () => {
   for (const language of ["js", "python", "bash"]) {
     assert.match(html, new RegExp(`data-language="${language}"`));

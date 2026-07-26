@@ -105,6 +105,10 @@ test("the transparent header keeps its side controls visible while auto-hiding d
   );
   assert.match(header, /desktopNav\.dataset\.hidden/);
   assert.match(header, /window\.addEventListener\(\s*"scroll"/);
+  assert.match(header, /let previousScrollY = window\.scrollY;/);
+  assert.match(header, /currentScrollY > previousScrollY[\s\S]*?setHidden\(true\)/);
+  assert.match(header, /currentScrollY < previousScrollY[\s\S]*?setHidden\(false\)/);
+  assert.match(header, /previousScrollY = currentScrollY;/);
   assert.match(header, /revealZone\.addEventListener\(\s*"pointerenter"/);
   assert.match(
     header,

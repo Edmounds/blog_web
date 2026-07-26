@@ -9,7 +9,6 @@ const contentSchema = z.object({
   updatedAt: z.coerce.date().optional(),
   published: z.boolean().default(true),
   tags: z.array(z.string()).default([]),
-  order: z.number().optional(),
 });
 
 const blog = defineCollection({ loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/blog" }), schema: contentSchema });
@@ -33,7 +32,7 @@ const translations = defineCollection({
   schema: z.looseObject({
     title: z.string().optional(), description: z.string().optional(),
     createdAt: z.coerce.date().optional(), updatedAt: z.coerce.date().optional(), published: z.boolean().optional(),
-    tags: z.array(z.string()).optional(), order: z.number().optional(), projectUrl: z.string().optional(), docUrl: z.string().optional(),
+    tags: z.array(z.string()).optional(), projectUrl: z.string().optional(), docUrl: z.string().optional(),
     name: z.string().optional(), city: z.string().optional(), major: z.string().optional(), motto: z.string().optional(), portrait: z.string().optional(),
   }),
 });

@@ -51,6 +51,8 @@ test("content slugs always come from Markdown file names", async () => {
   assert.match(content, /entry\.id\.split\("\/"\)\.pop/);
   assert.doesNotMatch(ids, /routeSlug/);
   assert.match(ids, /path\.basename\(file\)/);
+  assert.match(ids, /ASTRO_CONTENT_IDS/);
+  assert.match(ids, /FUNCTION_CONTENT_IDS/);
 });
 
 test("localized writing entries default missing tags to an empty list", async () => {

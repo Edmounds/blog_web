@@ -14,19 +14,25 @@ test("content preparation adds BOM and regenerates published content IDs", async
       await mkdir(path.join(root, "src/content", group), { recursive: true });
     }
     await mkdir(path.join(root, "functions/_shared"), { recursive: true });
+    await mkdir(path.join(root, "src/lib"), { recursive: true });
     await writeFile(path.join(root, "src/content/blog/new-post.md"), "---\ntitle: 新文章\npublished: true\n---\n\n正文\n", "utf8");
     await writeFile(path.join(root, "src/content/note/draft.md"), "---\ntitle: Draft\npublished: false\n---\n", "utf8");
     await writeFile(path.join(root, "functions/_shared/post-slugs.js"), "export const CONTENT_IDS = [];\n", "utf8");
+    await writeFile(path.join(root, "src/lib/post-slugs.ts"), "export const CONTENT_IDS = [] as const;\n", "utf8");
 
     const result = await prepareContent(root);
     const article = await readFile(path.join(root, "src/content/blog/new-post.md"));
-    const contentIds = await readFile(path.join(root, "functions/_shared/post-slugs.js"), "utf8");
+    const functionContentIds = await readFile(path.join(root, "functions/_shared/post-slugs.js"), "utf8");
+    const astroContentIds = await readFile(path.join(root, "src/lib/post-slugs.ts"), "utf8");
 
     assert.deepEqual([...article.subarray(0, 3)], [0xef, 0xbb, 0xbf]);
     assert.deepEqual(result.contentIds, ["blog/new-post"]);
     assert.equal(result.bomAdded, 1);
-    assert.match(contentIds, /"blog\/new-post"/);
-    assert.doesNotMatch(contentIds, /draft/);
+    assert.match(functionContentIds, /"blog\/new-post"/);
+    assert.match(astroContentIds, /"blog\/new-post"/);
+    assert.match(astroContentIds, /as const/);
+    assert.doesNotMatch(functionContentIds, /draft/);
+    assert.doesNotMatch(astroContentIds, /draft/);
   } finally {
     await rm(root, { recursive: true, force: true });
   }

@@ -17,6 +17,7 @@ import { readFileSync } from "node:fs";
 
 test("normalizeContentId accepts a published content ID", () => {
   assert.equal(normalizeContentId("blog/first-note"), "blog/first-note");
+  assert.equal(normalizeContentId("note/arknights-p3r"), "note/arknights-p3r");
   assert.equal(normalizeContentId("about/profile"), undefined);
 });
 

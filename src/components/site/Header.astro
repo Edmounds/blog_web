@@ -198,6 +198,7 @@ const isActive = (href: string) =>
 
     let pointerInsideNav = false;
     let pointerInsideRevealZone = false;
+    let previousScrollY = window.scrollY;
     let frameId = 0;
 
     const clearContentFrame = () => {
@@ -395,15 +396,18 @@ const isActive = (href: string) =>
     window.addEventListener(
       "scroll",
       () => {
+        const currentScrollY = window.scrollY;
         if (
-          window.scrollY <= header.offsetHeight ||
+          currentScrollY <= header.offsetHeight ||
           lifeIsOpen() ||
           pointerInsideNav ||
           pointerInsideRevealZone ||
           navHasFocus()
         )
           setHidden(false);
-        else setHidden(true);
+        else if (currentScrollY > previousScrollY) setHidden(true);
+        else if (currentScrollY < previousScrollY) setHidden(false);
+        previousScrollY = currentScrollY;
       },
       { passive: true, signal },
     );

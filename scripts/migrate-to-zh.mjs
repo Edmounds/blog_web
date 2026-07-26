@@ -24,7 +24,7 @@ try {
 
 const shouldTranslateKey = (key) => !new Set([
   "slug", "categorySlug", "cover", "portrait", "href", "icon", "id", "side",
-  "publishedAt", "year", "order", "archiveYear", "showOnHome", "showInArchive", "showInTimeline", "draft",
+  "publishedAt", "year", "archiveYear", "showOnHome", "showInArchive", "showInTimeline", "draft",
 ]).has(key);
 
 const translateValue = async (value, keyPath, fieldName) => {

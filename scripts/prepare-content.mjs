@@ -55,16 +55,28 @@ export const prepareContent = async (rootDir = process.cwd()) => {
   }
 
   contentIds.sort();
-  const outputPath = path.join(rootDir, "functions/_shared/post-slugs.js");
-  const output = `export const CONTENT_IDS = [\n${contentIds.map((id) => `  ${JSON.stringify(id)},`).join("\n")}\n];\n`;
+  const outputPaths = [
+    {
+      path: path.join(rootDir, "functions/_shared/post-slugs.js"),
+      output: `export const CONTENT_IDS = [\n${contentIds.map((id) => `  ${JSON.stringify(id)},`).join("\n")}\n];\n`,
+    },
+    {
+      path: path.join(rootDir, "src/lib/post-slugs.ts"),
+      output: `export const CONTENT_IDS = [\n${contentIds.map((id) => `  ${JSON.stringify(id)},`).join("\n")}\n] as const;\n`,
+    },
+  ];
   let idsUpdated = false;
-  try {
-    idsUpdated = await readFile(outputPath, "utf8") !== output;
-  } catch (error) {
-    if (error?.code !== "ENOENT") throw error;
-    idsUpdated = true;
+  for (const target of outputPaths) {
+    let targetUpdated = false;
+    try {
+      targetUpdated = await readFile(target.path, "utf8") !== target.output;
+    } catch (error) {
+      if (error?.code !== "ENOENT") throw error;
+      targetUpdated = true;
+    }
+    if (targetUpdated) await writeFile(target.path, target.output, "utf8");
+    idsUpdated ||= targetUpdated;
   }
-  if (idsUpdated) await writeFile(outputPath, output, "utf8");
 
   return { bomAdded, contentIds, idsUpdated };
 };

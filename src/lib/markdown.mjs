@@ -13,6 +13,20 @@ const renderMath = (value, displayMode) => (
   }), { fragment: true }).children[0]
 );
 
+const createSoftBreakPlugin = () => ({
+  name: "preserve-soft-breaks",
+  text(node, ctx) {
+    if (!node.value.includes("\n")) return;
+
+    const replacement = node.value.split("\n").flatMap((value, index) => [
+      ...(index > 0 ? [{ type: "break" }] : []),
+      ...(value ? [{ type: "text", value }] : []),
+    ]);
+    ctx.insertBefore(node, replacement);
+    ctx.removeNode(node);
+  },
+});
+
 const createDirectivePlugin = () => ({
   name: "render-directives",
   containerDirective(node, ctx) {
@@ -74,7 +88,7 @@ const createKatexPlugin = () => ({
 });
 
 export const markdownPlugins = {
-  mdastPlugins: [createDirectivePlugin, createMathPlugin],
+  mdastPlugins: [createSoftBreakPlugin, createDirectivePlugin, createMathPlugin],
   hastPlugins: [createKatexPlugin],
 };
 

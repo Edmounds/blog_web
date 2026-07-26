@@ -87,7 +87,7 @@ const isPlainObject = (value) => value && typeof value === "object" && !Array.is
 const shouldTranslateKey = (key) => !new Set([
   "slug", "categorySlug", "cover", "portrait", "name", "href", "icon", "id", "type", "side",
   "projectUrl", "docUrl", "image", "createdAt", "updatedAt", "published",
-  "publishedAt", "year", "order", "archiveYear", "showOnHome", "showInArchive", "showInTimeline", "draft",
+  "publishedAt", "year", "archiveYear", "showOnHome", "showInArchive", "showInTimeline", "draft",
 ]).has(key);
 
 const translateText = async ({ locale, targetLang, key, source, manifest, seed, format = "text", preserveFrontmatterKeys = [], translate }) => {

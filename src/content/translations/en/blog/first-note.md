@@ -1,15 +1,15 @@
 ﻿---
-title: Hello
+title: How are you?
 description: My first blog post.
 createdAt: 2026-01-28T00:00:00.000Z
+updatedAt: 2026-07-24T00:00:00.000Z
 published: true
-order: 1
 tags:
-  - Essay
+  - belles-lettres
 ---
 
 # Hello World
-Hello, welcome to my blog.
+Hello and welcome to my blog.
 
-## Writing Something Simple
-This is the first article I've left here, and also a simple beginning.
+## Write something briefly
+This is the first post I've left here, and it's a simple start.

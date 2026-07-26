@@ -28,10 +28,8 @@ const slugFromEntry = (entry: { id: string; slug?: string }) =>
 
 export const getContentId = (section: ContentSection, slug: string) => `${section}/${slug}`;
 
-const compareEntries = (a: ContentEntry, b: ContentEntry) => {
-  const order = (a.data.order ?? Number.MAX_SAFE_INTEGER) - (b.data.order ?? Number.MAX_SAFE_INTEGER);
-  return order || b.data.createdAt.getTime() - a.data.createdAt.getTime();
-};
+const compareEntries = (a: ContentEntry, b: ContentEntry) =>
+  b.data.createdAt.getTime() - a.data.createdAt.getTime();
 
 export const readingTimeForBody = (body = "", locale: Locale = defaultLocale) => {
   const text = body.replace(/```[\s\S]*?```/g, " ").replace(/<[^>]+>/g, " ");
