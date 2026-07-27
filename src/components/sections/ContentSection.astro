@@ -19,8 +19,8 @@ const empty = `No ${sectionLabel.toLowerCase()} published yet.`;
 const years = sections.map((group) => group.year);
 ---
 
-<div class="content-listing content-container">
-  <div class="content-listing__layout">
+<div class="content-listing detail-layout-outer">
+  <div class="content-listing__layout detail-layout-inner">
     <main class="content-listing__main">
       <header class="content-listing__header">
         <h1>All {sectionLabel}</h1>
@@ -63,9 +63,12 @@ const years = sections.map((group) => group.year);
   }
   .content-listing__layout {
     display: grid;
-    grid-template-columns: minmax(0, 70rem) minmax(8rem, 12rem);
+    grid-template-columns: minmax(0, var(--detail-layout-main-width)) minmax(
+        var(--detail-layout-toc-min-width),
+        var(--detail-layout-toc-max-width)
+      );
     justify-content: center;
-    gap: clamp(3rem, 7vw, 7rem);
+    gap: var(--detail-layout-column-gap);
   }
   .content-listing__main { min-width: 0; }
   .content-listing__header {

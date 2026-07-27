@@ -58,8 +58,8 @@ const application: ReadonlyArray<{
 ];
 ---
 
-<div class="links-shell content-container">
-  <article class="links-page">
+<div class="links-shell detail-layout-outer">
+  <article class="links-page detail-layout-inner">
     <header class="links-page__header"><h1>{copy.title}</h1></header>
     <section class="links-page__section" aria-labelledby="friends-title">
       <h2 id="friends-title">{copy.heading}</h2>
@@ -96,9 +96,7 @@ const application: ReadonlyArray<{
 <style>
   .links-page {
     width: 100%;
-    max-width: 70rem;
     min-height: calc(100vh - 4.5rem);
-    margin-inline: auto;
     padding-block: clamp(3.5rem, 7vh, 6rem) 6rem;
   }
   .links-page__header {

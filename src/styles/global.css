@@ -132,6 +132,15 @@ html.dark {
   --content-frame-inline-end: var(--content-frame-inline-start);
   --section-gap: clamp(2.5rem, 5vw, 5rem);
   --content-measure: 46rem;
+  --detail-layout-left-gap: clamp(2rem, 3vw, 4rem);
+  --detail-layout-main-width: var(--content-measure);
+  --detail-layout-toc-min-width: 13rem;
+  --detail-layout-toc-max-width: 17rem;
+  --detail-layout-column-gap: clamp(1.5rem, 3.5vw, 3.5rem);
+  --detail-layout-max-width: calc(
+    var(--detail-layout-main-width) + var(--detail-layout-toc-max-width) +
+      var(--detail-layout-column-gap)
+  );
   --radius-control: 0.5rem;
   --radius-panel: 1rem;
   --radius: var(--radius-control);
@@ -193,7 +202,8 @@ samp {
   padding-right: max(var(--content-padding), env(safe-area-inset-right));
 }
 
-.content-container {
+.content-container,
+.detail-layout-outer {
   width: auto;
   max-width: none;
   margin-left: var(--content-frame-inline-start);
@@ -202,8 +212,21 @@ samp {
   padding-right: max(var(--content-padding), env(safe-area-inset-right));
 }
 
+.detail-layout-outer {
+  margin-left: calc(
+    var(--content-frame-inline-start) + var(--detail-layout-left-gap)
+  );
+}
+
+.detail-layout-inner {
+  width: 100%;
+  max-width: var(--detail-layout-max-width);
+  margin-inline: auto;
+}
+
 @media (max-width: 64rem) {
-  .content-container {
+  .content-container,
+  .detail-layout-outer {
     width: 100%;
     margin-inline: 0;
     padding-left: max(var(--content-mobile-padding), env(safe-area-inset-left));

@@ -69,8 +69,8 @@ const articleJsonLd = JSON.stringify({
     type="application/ld+json"
     set:html={articleJsonLd}
   />
-  <article class="article-page content-container" data-article-page>
-    <div class="article-page__content">
+  <article class="article-page detail-layout-outer" data-article-page>
+    <div class="article-page__content detail-layout-inner">
       <div class="article-page__main">
         <a
           class="article-page__back"
@@ -185,12 +185,7 @@ const articleJsonLd = JSON.stringify({
 
 <style>
   .article-page {
-    --article-content-width: 46rem;
     --article-title-size: clamp(1.82rem, 1.52rem + 0.9vw, 2.95rem);
-    --article-left-gap: clamp(2rem, 3vw, 4rem);
-    margin-left: calc(
-      var(--content-frame-inline-start) + var(--article-left-gap)
-    );
     padding-block: clamp(2.5rem, 6vw, 5rem) 6rem;
   }
   :global(html:lang(zh-CN)) .article-page,
@@ -200,12 +195,12 @@ const articleJsonLd = JSON.stringify({
   }
   .article-page__content {
     display: grid;
-    grid-template-columns: minmax(0, var(--article-content-width)) minmax(
-        13rem,
-        17rem
+    grid-template-columns: minmax(0, var(--detail-layout-main-width)) minmax(
+        var(--detail-layout-toc-min-width),
+        var(--detail-layout-toc-max-width)
       );
     justify-content: center;
-    gap: clamp(1.5rem, 3.5vw, 3.5rem);
+    gap: var(--detail-layout-column-gap);
   }
   .article-page__main {
     min-width: 0;
@@ -322,11 +317,6 @@ const articleJsonLd = JSON.stringify({
     display: block;
     margin-top: 0.4rem;
     font-size: var(--type-lg);
-  }
-  @media (max-width: 64rem) {
-    .article-page {
-      margin-left: 0;
-    }
   }
   @media (max-width: 56.25rem) {
     .article-page__content {

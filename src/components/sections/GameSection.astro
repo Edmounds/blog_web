@@ -14,15 +14,17 @@ const formatPlaytime = (minutes: number) => {
 };
 ---
 
-<div class="content-container py-12 md:py-20">
-  <div class="mb-8 border-b border-[var(--border-soft)] pb-8 md:mb-12">
-    <h1 class="ui-page-title">{site.labels.game}</h1>
-  </div>
-  {items.length > 0 ? (
-    <div class="grid grid-cols-2 gap-x-4 gap-y-9 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-      {items.map((item) => <GameCard item={item} playtime={formatPlaytime(item.playtimeMinutes)} />)}
+<div class="detail-layout-outer py-12 md:py-20">
+  <div class="detail-layout-inner">
+    <div class="mb-8 border-b border-[var(--border-soft)] pb-8 md:mb-12">
+      <h1 class="ui-page-title">{site.labels.game}</h1>
     </div>
-  ) : (
-    <p class="flex min-h-48 items-center text-sm text-[var(--text-muted)]" role="status">{site.copy.gameEmpty}</p>
-  )}
+    {items.length > 0 ? (
+      <div class="grid grid-cols-2 gap-x-4 gap-y-9 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+        {items.map((item) => <GameCard item={item} playtime={formatPlaytime(item.playtimeMinutes)} />)}
+      </div>
+    ) : (
+      <p class="flex min-h-48 items-center text-sm text-[var(--text-muted)]" role="status">{site.copy.gameEmpty}</p>
+    )}
+  </div>
 </div>

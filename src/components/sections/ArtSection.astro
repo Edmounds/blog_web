@@ -44,7 +44,8 @@ const rankingTabs = [
 ] as const;
 ---
 
-<div class="content-container py-12 md:py-20">
+<div class="detail-layout-outer py-12 md:py-20">
+  <div class="detail-layout-inner">
   <div class="mb-8 border-b border-[var(--border-soft)] pb-8 md:mb-12">
     <h1 class="ui-page-title">{title}</h1>
   </div>
@@ -212,6 +213,7 @@ const rankingTabs = [
       ))}
     </div>
   )}
+  </div>
 </div>
 
 {type === "screen" && (
