@@ -53,3 +53,14 @@ test("content preparation rejects published filenames that cannot be engagement 
     await rm(root, { recursive: true, force: true });
   }
 });
+
+test("content ID validation reads the generated TypeScript list on Node 22", async () => {
+  const script = await readFile(
+    new URL("../scripts/check-content-ids.mjs", import.meta.url),
+    "utf8",
+  );
+
+  assert.doesNotMatch(script, /from "\.\.\/src\/lib\/post-slugs\.ts"/);
+  assert.match(script, /readFile\(file, "utf8"\)/);
+  assert.match(script, /JSON\.parse\(match\[1\]\.replace/);
+});

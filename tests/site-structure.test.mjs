@@ -15,6 +15,9 @@ test("the primary canvas keeps five ordered routes while deferring non-home sect
   assert.match(layout, /data-section-url=\{localizePath\(path, locale\)\}/);
   assert.match(layout, /requestIdleCallback/);
   assert.match(layout, /fetch\(url,[\s\S]*X-Spa-Fragment/);
+  assert.match(layout, /cache:\s*"no-store"/);
+  assert.doesNotMatch(layout, /sessionStorage\.(?:getItem|setItem)\(`spa-section:/);
+  assert.doesNotMatch(layout, /dispatchEvent\(new Event\("astro:page-load"\)\)/);
   assert.doesNotMatch(layout, /^import (?:About|Blogs|Notes|Projects)Section/m);
   assert.match(
     layout,
