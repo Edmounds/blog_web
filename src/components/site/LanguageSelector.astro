@@ -23,7 +23,7 @@ const { locale, currentPath, label = "选择语言" } = Astro.props;
     aria-expanded="false"
     data-language-trigger
   >
-    <span class="size-5"><Icon svg={Globe2} /></span>
+    <span class="inline-flex size-5 [&>svg]:size-full"><Icon svg={Globe2} /></span>
   </button>
   <div
     class="absolute right-0 z-50 mt-2 hidden max-h-80 w-52 overflow-y-auto rounded-[var(--radius-control)] border border-[var(--border-strong)] bg-[var(--surface-panel)] p-1 shadow-[var(--shadow-soft)] backdrop-blur-md"
