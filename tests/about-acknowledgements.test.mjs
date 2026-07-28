@@ -25,8 +25,10 @@ test("About acknowledgements credit Cloudflare, TMDB, and Steam in order", () =>
     assert.ok(tmdb > cloudflare, `${path} must place TMDB after Cloudflare`);
     assert.ok(steam > tmdb, `${path} must place Steam last`);
     for (const logo of ["cloudflare", "tmdb", "steam"]) {
-      assert.match(profile, new RegExp(`\\[!\\[[^\\]]+\\]\\(\\/images\\/${logo}-logo\\.svg\\?v=20260728\\)\\]\\(`));
+      assert.match(profile, new RegExp(`<img[^>]+src="/images/${logo}-logo\\.svg\\?v=20260728"`));
     }
+    assert.equal((profile.match(/loading="eager"/g) ?? []).length, 3);
+    assert.equal((profile.match(/width="(?:240|300)" height="64"/g) ?? []).length, 3);
   }
 });
 
@@ -39,9 +41,9 @@ test("About acknowledgement logos are local, accessible, and displayed as large 
   }
 
   const about = read("src/components/sections/AboutSection.astro");
-  assert.match(about, /img\[src\*="-logo\.svg"\]/);
+  assert.match(about, /\.acknowledgement-logo/);
   assert.match(about, /max-height:\s*4rem/);
-  assert.match(about, /p:has\(> a > img\[src\*="-logo\.svg"\]\)/);
+  assert.doesNotMatch(about, /:has\(/);
 });
 
 test("translation cache preserves the reviewed localized acknowledgements", () => {

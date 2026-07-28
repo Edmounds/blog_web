@@ -151,15 +151,6 @@ if (!Astro.response.headers.has("Cache-Control"))
         document.documentElement.dataset.theme = theme;
         document.documentElement.dataset.themeMode =
           mode === "dark" || mode === "light" ? mode : "system";
-        if (matchMedia("(min-width: 64.0625rem)").matches) {
-          const shellMax = Math.min(window.innerWidth * 0.92, 1800);
-          const shellLeft = (window.innerWidth - shellMax) / 2;
-          const padding = Math.min(Math.max(window.innerWidth * 0.018, 13.6), 22.4);
-          document.documentElement.style.setProperty(
-            "--content-frame-inline-start",
-            `${shellLeft + padding + Math.min(Math.max(window.innerWidth * 0.19, 168), 280)}px`,
-          );
-        }
       })();
     </script>
   </head>

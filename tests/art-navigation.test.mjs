@@ -30,7 +30,7 @@ test("SPA owns primary route preloading and canvas entries are prerendered", () 
   const spa = read("src/layouts/SpaLayout.astro");
   assert.match(header, /data-primary-route/);
   assert.doesNotMatch(header, /data-astro-prefetch="viewport"/);
-  assert.match(spa, /pointerenter[\s\S]*loadSlide/);
+  assert.match(spa, /const preloadFromLink[\s\S]*loadSlide[\s\S]*pointerenter/);
 
   for (const route of ["blog", "note", "project"]) {
     assert.match(read(`src/pages/${route}/index.astro`), /export const prerender = true/);

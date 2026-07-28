@@ -8,8 +8,8 @@ portrait: /images/content/about/profile-8646bdb863b8-w320.webp
 
 ## 關於網站
 這裡是我安靜的個人空間——寫文章、記筆記、分享專案、記錄看過的書和電影。
-這裡不是社群媒體，沒有通知和按讚焦慮，只有文字、照片和一些紀錄。
-不喜歡社交軟體那種高強度地影響和侵入個人生活
+這裡不是社群媒體，沒有通知和按讚焦慮，只有文字、照片和一些記錄。
+不喜歡社交軟體那種對個人生活高強度的影響和侵入
 
 
 ## 關於我
@@ -23,14 +23,14 @@ portrait: /images/content/about/profile-8646bdb863b8-w320.webp
 
 本站基於 [Astro-star](https://github.com/hanlife02/Astro-star) 修改與重建
 
-本站基於 [Cloudflare](https://www.cloudflare.com/) 的雲端服務建構與運行
+本站基於 [Cloudflare](https://www.cloudflare.com/) 的雲端服務建構與運作
 
-[![Cloudflare](/images/cloudflare-logo.svg?v=20260728)](https://www.cloudflare.com/)
+<a class="acknowledgement-logo" href="https://www.cloudflare.com/"><img src="/images/cloudflare-logo.svg?v=20260728" alt="Cloudflare" width="300" height="64" loading="eager" decoding="async"></a>
 
 影視資料由 [The Movie Database（TMDB）](https://www.themoviedb.org/) 提供，本網站使用 TMDB API
 
-[![The Movie Database](/images/tmdb-logo.svg?v=20260728)](https://www.themoviedb.org/)
+<a class="acknowledgement-logo" href="https://www.themoviedb.org/"><img src="/images/tmdb-logo.svg?v=20260728" alt="The Movie Database" width="300" height="64" loading="eager" decoding="async"></a>
 
 本網站使用 [Steam Web API](https://steamcommunity.com/dev)
 
-[![Steam](/images/steam-logo.svg?v=20260728)](https://steamcommunity.com/dev)
+<a class="acknowledgement-logo" href="https://steamcommunity.com/dev"><img src="/images/steam-logo.svg?v=20260728" alt="Steam" width="240" height="64" loading="eager" decoding="async"></a>

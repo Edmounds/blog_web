@@ -353,11 +353,10 @@ if (initialIndex === 4) sections[4] = (await import("../components/sections/Proj
       { passive: true, signal },
     );
     document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "visible" && backgroundQueue.length > 0)
-        runWhenIdle(() => {
-          const index = backgroundQueue.shift();
-          if (index) void loadSlide(index).catch(() => {});
-        }, 800);
+      if (document.visibilityState === "visible" && backgroundQueue.length > 0) {
+        clearTimeout(backgroundTimer);
+        scheduleRemainingSlides();
+      }
     }, { signal });
 
     browserWindow.__spaCleanup = () => {

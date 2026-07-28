@@ -33,6 +33,7 @@
     let shownAt = 0;
     let hideTimer = 0;
     let previousMain = null;
+    let initialFinished = false;
 
     const message = overlay.querySelector("[data-loading-message]");
     const setMessage = (value) => {
@@ -95,6 +96,11 @@
     }
     if (firstVisit) {
       show("initial", "正在准备主页");
+      const finishInitial = () => {
+        if (initialFinished) return;
+        initialFinished = true;
+        hide({ minimum: INITIAL_MIN_MS, fade: INITIAL_FADE_MS });
+      };
       const twoFrames = new Promise((resolve) => requestAnimationFrame(() => {
         requestAnimationFrame(resolve);
       }));
@@ -113,12 +119,9 @@
           ])
         : Promise.resolve();
       Promise.all([twoFrames, decodePriorityImage]).then(() => {
-        hide({ minimum: INITIAL_MIN_MS, fade: INITIAL_FADE_MS });
+        finishInitial();
       });
-      window.setTimeout(
-        () => hide({ minimum: INITIAL_MIN_MS, fade: INITIAL_FADE_MS }),
-        INITIAL_MAX_MS,
-      );
+      window.setTimeout(finishInitial, INITIAL_MAX_MS);
     }
 
     const handlePageLoad = () => {

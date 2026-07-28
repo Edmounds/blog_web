@@ -125,6 +125,16 @@ export const readImageManifest = async (manifestPath) => {
     if (manifest.version === 1 && Array.isArray(manifest.keys)) {
       return { ...emptyManifest(), keys: manifest.keys.filter((key) => typeof key === "string" && key.startsWith("blog/")) };
     }
+    if (manifest.version === 2 && manifest.assets && Array.isArray(manifest.keys) && Array.isArray(manifest.pendingDeletion)) {
+      return {
+        ...manifest,
+        version: MANIFEST_VERSION,
+        assets: Object.fromEntries(Object.entries(manifest.assets).map(([url, asset]) => [
+          url,
+          { ...asset, kind: asset.sources ? "responsive" : "passthrough" },
+        ])),
+      };
+    }
     if (manifest.version !== MANIFEST_VERSION || !manifest.assets || !Array.isArray(manifest.keys) || !Array.isArray(manifest.pendingDeletion)) {
       throw new Error(`${manifestPath} has an unsupported format`);
     }

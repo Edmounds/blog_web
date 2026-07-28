@@ -13,6 +13,7 @@ test("initial loading overlay exits after useful content is paintable", () => {
   assert.match(overlay, /IMAGE_DECODE_MAX_MS\s*=\s*800/);
   assert.match(overlay, /requestAnimationFrame[\s\S]*requestAnimationFrame/);
   assert.match(overlay, /fetchpriority="high"/);
+  assert.match(overlay, /if \(initialFinished\) return/);
   assert.doesNotMatch(overlay, /addEventListener\(\s*["']load["'][\s\S]*hideInitial/);
 });
 
@@ -38,8 +39,10 @@ test("header and fonts reserve stable first-paint geometry", () => {
   assert.match(base, /Allura-Last4ev3r\.woff/);
   assert.doesNotMatch(base, /anthropic-fonts\.css/);
   assert.match(global, /@font-face[\s\S]*font-family:\s*"Biotif"/);
-  assert.match(global, /--signature-track-width:\s*clamp\(10\.5rem,\s*19vw,\s*17\.5rem\)/);
-  assert.doesNotMatch(header, /measureText|document\.fonts\.ready/);
+  assert.match(header, /measureText/);
+  assert.match(header, /actualBoundingBoxRight/);
+  assert.match(header, /document\.fonts\.ready/);
+  assert.match(header, /ResizeObserver/);
 });
 
 test("homepage remote widgets defer work until after first paint", () => {

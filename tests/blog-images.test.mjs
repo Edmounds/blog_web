@@ -6,7 +6,7 @@ import test from "node:test";
 
 import sharp from "sharp";
 
-import { cleanupBlogImages, syncBlogImages } from "../scripts/lib/blog-images.mjs";
+import { cleanupBlogImages, readImageManifest, syncBlogImages } from "../scripts/lib/blog-images.mjs";
 
 const bom = "\uFEFF";
 
@@ -163,6 +163,31 @@ test("cleanup deletes only pending manifest-owned keys", async () => {
   assert.deepEqual(deleted, [{ bucket: "blog-images", key: staleKey }]);
   assert.deepEqual(verified, deleted);
   assert.deepEqual(await readManifest(root), { version: 3, assets: {}, keys: [activeKey], pendingDeletion: [] });
+});
+
+test("reads v2 responsive manifests into the v3 discriminated shape", async () => {
+  const { root } = await createFixture();
+  const sourceUrl = "https://img.muelsyse.us/blog/source.webp";
+  await writeManifest(root, {
+    version: 2,
+    assets: {
+      [sourceUrl]: {
+        width: 96,
+        height: 64,
+        fallback: sourceUrl,
+        sources: { avif: [], webp: [] },
+      },
+    },
+    keys: [],
+    pendingDeletion: [],
+  });
+
+  const manifest = await readImageManifest(path.join(root, ".blog-images-manifest.json"));
+  assert.equal(manifest.version, 3);
+  assert.equal(manifest.assets[sourceUrl].kind, "responsive");
+  const result = await syncBlogImages({ root, upload: async () => {} });
+  assert.equal(result.scannedFiles, 0);
+  assert.equal((await readManifest(root)).version, 3);
 });
 
 test("sync keeps responsive variants for still-referenced Obsidian URLs", async () => {
