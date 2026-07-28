@@ -1,4 +1,4 @@
-import { CONTENT_IDS } from "./post-slugs";
+import { CONTENT_IDS } from "./post-slugs.ts";
 
 const CONTENT_ID_PATTERN = /^(blog|note|project)\/[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const VIEW_WINDOW_SECONDS = 6 * 60 * 60;
@@ -195,6 +195,10 @@ export function scheduleViewEventPrune(
     nextViewPruneAt = 0;
     return false;
   }
+}
+
+export function resetViewPruneScheduleForTests(): void {
+  nextViewPruneAt = 0;
 }
 
 async function pruneOldViewEvents(db: D1Database): Promise<void> {

@@ -29,4 +29,7 @@ pnpm-debug.log*
 .idea/
 
 tmp/
+src/content/.obsidian/plugins/
+src/content/.obsidian/community-plugins.json
+scripts/__pycache__/
 8c489a39e6257edc869f3a9e50df479b1775cf9f7a8f79071b01cf7796fdfb0c

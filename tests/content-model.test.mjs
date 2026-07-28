@@ -36,13 +36,6 @@ test("all writing sections render as localized Astro-star timeline archives", as
   assert.match(activity, /\.archive-activity__year[^{]*\{[^}]*white-space:\s*nowrap;/s);
 });
 
-test("the current blog entry uses only tags for classification metadata", async () => {
-  const post = await read("src/content/blog/first-note.md");
-
-  assert.doesNotMatch(post, /^\s*(?:#\s*)?(?:routeSlug|image|cover|category|type):/m);
-  assert.match(post, /^tags:\s*$/m);
-});
-
 test("content slugs always come from Markdown file names", async () => {
   const content = await read("src/lib/content.ts");
   const ids = await read("scripts/check-content-ids.mjs");
@@ -51,8 +44,8 @@ test("content slugs always come from Markdown file names", async () => {
   assert.match(content, /entry\.id\.split\("\/"\)\.pop/);
   assert.doesNotMatch(ids, /routeSlug/);
   assert.match(ids, /path\.basename\(file\)/);
-  assert.match(ids, /ASTRO_CONTENT_IDS/);
-  assert.match(ids, /FUNCTION_CONTENT_IDS/);
+  assert.doesNotMatch(ids, /functions\/_shared\/post-slugs\.js/);
+  assert.match(ids, /src\/lib\/post-slugs\.ts/);
 });
 
 test("localized writing entries default missing tags to an empty list", async () => {

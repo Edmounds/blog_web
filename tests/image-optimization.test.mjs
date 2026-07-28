@@ -78,6 +78,22 @@ test("responsive image plugin renders AVIF then WebP with a WebP fallback", asyn
   assert.match(rendered.code, new RegExp(`sizes="${ARTICLE_IMAGE_SIZES.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`));
 });
 
+test("remote images stay unchanged and receive native lazy-loading attributes", async () => {
+  const processor = await createSatteriMarkdownProcessor({
+    syntaxHighlight: false,
+    hastPlugins: [createResponsiveImagePlugin({ manifest: { assets: {} } })],
+  });
+  const rendered = await processor.render(
+    "![Screenshot](https://img.muelsyse.us/bed/20260728123332461.png)",
+  );
+
+  assert.doesNotMatch(rendered.code, /<picture>/);
+  assert.match(
+    rendered.code,
+    /<img src="https:\/\/img\.muelsyse\.us\/bed\/20260728123332461\.png" alt="Screenshot" loading="lazy" decoding="async">/,
+  );
+});
+
 test("repository image manifest uses the responsive v2 shape", async () => {
   const manifest = JSON.parse(await readFile(new URL("../.blog-images-manifest.json", import.meta.url), "utf8"));
   assert.equal(manifest.version, 2);

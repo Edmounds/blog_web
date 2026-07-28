@@ -3,7 +3,7 @@ import { test } from "node:test";
 
 import { generateKeyPair, exportJWK, SignJWT } from "jose";
 
-import { getAccessConfig, getAccessToken, verifyAccess } from "../functions/_shared/access.js";
+import { getAccessConfig, getAccessToken, verifyAccess } from "../src/server/access.js";
 
 test("getAccessConfig normalizes the team domain and requires an audience", () => {
   assert.deepEqual(

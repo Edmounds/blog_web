@@ -7,7 +7,7 @@ import {
   parseNeteaseRanking,
   syncNeteaseRanking,
   syncNeteaseRankings,
-} from "../functions/_shared/netease-music.js";
+} from "../src/server/netease-music.js";
 
 test("NetEase weekly ranking keeps the first 20 songs in API order", () => {
   const ranking = parseNeteaseRanking(payload({ weekCount: 24 }), "weekly", new Date("2026-07-26T00:00:00.000Z"));

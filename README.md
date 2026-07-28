@@ -11,7 +11,7 @@
 - 管理后台：评论 `/admin/comments/`、收藏 `/admin/art/`
 - RSS：`/rss.xml` 及三个语言前缀下的 `/rss.xml`
 
-`Astro-star/` 是只读模板参考，不参与站点构建，也不发布模板示例内容。移植部分的 Apache-2.0 许可证和来源说明见根目录 `LICENSE-ASTRO-STAR` 与 `NOTICE`。
+移植部分的 Apache-2.0 许可证和来源说明见根目录 `LICENSE-ASTRO-STAR` 与 `NOTICE`。
 
 ## 致谢与许可
 
@@ -62,37 +62,18 @@ npm run db:migrate:remote
 
 `schema/content_ids.sql` 会幂等地把旧 Blog 裸 slug 迁移为 `blog/<slug>`。URL 收藏封面由独立的 `blog-art-cover-fetcher` Worker 获取，并同时检查 IPv4/IPv6 DNS 结果；先执行 `wrangler deploy --config wrangler.art-cover-fetcher.jsonc`。
 
-首次切换收藏数据时，使用归档的旧封面目录执行一次迁移：
+博客、笔记和项目正文使用 Obsidian 图床插件直接上传至 `blog-images` R2，Markdown 始终保存原始 `https://img.muelsyse.us/bed/...` 在线地址。开发和构建会为首次出现的栅格图生成同目录的 AVIF/WebP 多分辨率版本，并把映射写入 manifest；Markdown URL 不变，渲染时自动输出响应式 `<picture>`。AVIF 对象使用 `.avif.webp` 存储键，但响应 MIME 仍为 `image/avif`，用于避开图床域名针对 `.avif` 后缀的错误拦截。Life 收藏封面与数据只通过 D1/R2 和 `/admin/art/` 管理。
 
-```bash
-LEGACY_ART_COVERS_DIR=/absolute/path/to/legacy-art-covers node --env-file-if-exists=.env scripts/migrate-art-to-d1.mjs --remote
-```
-
-博客、笔记和项目正文图片由 `npm run images:sync` 同步至 `blog-images` R2，历史 Blog 对象仍使用 `blog/<sha256>.<ext>`。Life 收藏封面与数据只通过 D1/R2 和 `/admin/art/` 管理。
-
-受控图片使用 AVIF 优先、WebP 回退。正文栅格图生成不放大的 `640 / 1280 / 1920 / 原图宽度` 版本，编码目标优先为 `SSIM >= 0.985`，必要时放宽至 `0.975`。常用命令：
+历史 `blog/` 图片也通过同一套 manifest 渲染。旧的本地绝对路径仍会先上传并改写为在线地址；已有在线地址不会被改写。常用命令：
 
 ```bash
 npm run images:optimize   # 生成头像与 404 的本地 AVIF/WebP
-npm run images:sync       # 上传 Typora 本地图片并改写 Markdown
-npm run images:migrate    # 迁移已有、由 manifest 管理的 R2 栅格图
+npm run images:sync       # 同步本地旧图，并为新的在线图生成响应式版本
 npm run images:verify     # 校验尺寸、质量、引用与 manifest 所有权
 npm run images:verify -- --remote  # 额外校验 R2 对象和 MIME
 ```
 
-同步与迁移只把旧对象加入 `pendingDeletion`，不会立即删除。现代格式部署通过生产检查后，才执行 `npm run images:cleanup -- --confirmed-production`；清理会逐个删除并通过 R2 直读确认对象确实不存在。PNG/JPEG 源文件在首次现代格式部署中保留，避免上线验证失败时失去回滚资源。
-
-从旧 `blog-art-covers` 桶迁移已有封面时，先复制并逐个校验哈希：
-
-```bash
-npm run art:covers:migrate -- --remote
-```
-
-确认站点已部署并且所有图床 URL 正常后，再删除旧对象副本：
-
-```bash
-npm run art:covers:migrate -- --remote --delete-source
-```
+原始在线图片继续保留，既作为 Markdown 中的稳定地址，也作为响应式图片的回退来源。manifest 只跟踪生成的响应式对象；待删除对象仍需在生产验证后通过 `npm run images:cleanup -- --confirmed-production` 清理。
 
 ## 环境变量
 
@@ -102,7 +83,7 @@ npm run art:covers:migrate -- --remote --delete-source
 - `CF_ACCESS_TEAM_DOMAIN`、`CF_ACCESS_AUD`
 - `GOOGLE_BOOKS_API_KEY`、`TMDB_API_KEY`
 - `NETEASE_MUSIC_U`、`NETEASE_CSRF`
-- `WAKA_TIME_API_KEY`（推荐名称；`WAKATIME_API_KEY` 仅保留兼容）
+- `WAKA_TIME_API_KEY`
 - 翻译服务所需的 `SERVICE_TYPE`、`DEEPLX_*` 或 `OPENAI_BASE_URL`、`API_KEY`、`MODEL`
 
 第一次创建 `new-blog-ssr` Worker 后，运行 `npm run cf:secrets:sync` 将本地 `.env` 中的变量批量上传为 Worker Secrets。脚本只把变量值通过标准输入交给 Wrangler，不会输出变量值或创建包含密钥的临时文件；也不会删除仅存在于 Cloudflare 的 Secret。`wrangler.astro.jsonc` 启用了 `keep_vars`，后续代码部署不会清除控制台中已配置的 secrets/vars。
@@ -130,4 +111,4 @@ npm run cf:dev
 
 Cloudflare Access 必须同时保护 `blog.muelsyse.us/admin/*` 和 `blog.muelsyse.us/api/admin/*`。本地部署运行 `npm run deploy`；GitHub Actions 使用 Node 22，并需要 `CLOUDFLARE_API_TOKEN` 与 `CLOUDFLARE_ACCOUNT_ID`。`npm run deploy` 只更新 `new-blog-ssr`；生产域名路由继续由 `blog-preferred-proxy` 持有，它通过 `ORIGIN` service binding 调用该 Astro SSR Worker，因此代理 Worker 只需在其配置或代码变化时单独执行 `npx wrangler deploy --config wrangler.preferred-proxy.jsonc`。不要让两个 Worker 同时声明 `blog.muelsyse.us/*`。
 
-仓库保留的 `functions/` 目录只用于旧 Pages 兼容测试，不参与当前 SSR Worker 部署；实际运行路由在 `src/pages/`。
+生产 API 路由位于 `src/pages/`，可复用的 Worker 服务端逻辑位于 `src/server/`。

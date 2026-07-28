@@ -5,7 +5,7 @@ import {
   listAdminComments,
   listPublicComments,
   setCommentHidden,
-} from "../functions/_shared/comments.js";
+} from "../src/lib/comments.ts";
 
 const platform = await getPlatformProxy({
   configPath: "./wrangler.smoke.jsonc",

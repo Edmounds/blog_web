@@ -1,6 +1,4 @@
-import { jwtVerify, createRemoteJWKSet, type JWTPayload } from "jose";
-
-import { CONTENT_IDS } from "./post-slugs";
+import { CONTENT_IDS } from "./post-slugs.ts";
 
 export const COMMENT_PAGE_SIZE = 20;
 export const COMMENT_RATE_LIMIT_SECONDS = 60;
@@ -15,6 +13,14 @@ const CHINA_REGIONS: Record<string, string> = {
   JL: "吉林", JS: "江苏", JX: "江西", LN: "辽宁", MO: "中国澳门", NM: "内蒙古", NX: "宁夏",
   QH: "青海", SC: "四川", SD: "山东", SH: "上海", SN: "陕西", SX: "山西", TJ: "天津",
   TW: "中国台湾", XJ: "新疆", XZ: "西藏", YN: "云南", ZJ: "浙江",
+};
+const CHINA_REGION_NAMES: Record<string, string> = {
+  anhui: "安徽", beijing: "北京", chongqing: "重庆", fujian: "福建", gansu: "甘肃", guangdong: "广东",
+  guangxi: "广西", guizhou: "贵州", hainan: "海南", hebei: "河北", heilongjiang: "黑龙江", henan: "河南",
+  hubei: "湖北", hunan: "湖南", jiangsu: "江苏", jiangxi: "江西", jilin: "吉林", liaoning: "辽宁",
+  "inner mongolia": "内蒙古", ningxia: "宁夏", qinghai: "青海", shaanxi: "陕西", shandong: "山东",
+  shanghai: "上海", shanxi: "山西", sichuan: "四川", tianjin: "天津", tibet: "西藏", xinjiang: "新疆",
+  yunnan: "云南", zhejiang: "浙江",
 };
 const COUNTRY_LABELS: Record<string, string> = {
   AU: "澳大利亚", CA: "加拿大", CN: "中国", DE: "德国", FR: "法国", GB: "英国", HK: "中国香港",
@@ -103,7 +109,11 @@ export function inferRegion(cf: IncomingRequestCfProperties | undefined): string
   if (!cf) return "未知地区";
   const country = typeof cf.country === "string" ? cf.country.toUpperCase() : "";
   const regionCode = typeof cf.regionCode === "string" ? cf.regionCode.toUpperCase() : "";
-  if (country === "CN") return CHINA_REGIONS[regionCode] ?? "未知地区";
+  if (country === "CN") {
+    if (CHINA_REGIONS[regionCode]) return CHINA_REGIONS[regionCode];
+    const region = typeof cf.region === "string" ? cf.region.trim().toLowerCase() : "";
+    return CHINA_REGION_NAMES[region] ?? "未知地区";
+  }
   return COUNTRY_LABELS[country] ?? "未知地区";
 }
 
@@ -132,8 +142,8 @@ export async function createComment(
   request: Request,
   input: { contentId: string; name: string; content: string },
   salt: string,
-  cf: IncomingRequestCfProperties | undefined,
   now = new Date(),
+  cf?: IncomingRequestCfProperties,
 ): Promise<{ ok: true; comment: PublicComment } | { ok: false; retryAfter: number }> {
   const visitorHash = await hashClientAddress(request, salt);
   const nowSeconds = Math.floor(now.getTime() / 1000);
@@ -181,30 +191,6 @@ export async function setCommentHidden(db: D1Database, id: number, hidden: boole
   if (Number(result.meta.changes ?? 0) === 0) return undefined;
   const row = await db.prepare("SELECT * FROM comments WHERE id = ?").bind(id).first<CommentRow>();
   return row ? toAdminComment(row) : undefined;
-}
-
-const jwksByUrl = new Map<string, ReturnType<typeof createRemoteJWKSet>>();
-
-export async function verifyAccess(request: Request, env: Record<string, unknown>): Promise<JWTPayload | undefined> {
-  const domain = typeof env.CF_ACCESS_TEAM_DOMAIN === "string" ? env.CF_ACCESS_TEAM_DOMAIN.trim().replace(/\/+$/, "") : "";
-  const audience = typeof env.CF_ACCESS_AUD === "string" ? env.CF_ACCESS_AUD.trim() : "";
-  const token = request.headers.get("cf-access-jwt-assertion")?.trim();
-  if (!domain || !audience || !token) return undefined;
-
-  try {
-    const url = new URL(domain.startsWith("https://") ? domain : `https://${domain}`);
-    if (url.protocol !== "https:" || !url.hostname.endsWith(".cloudflareaccess.com") || url.pathname !== "/") return undefined;
-    const issuer = url.origin;
-    const jwksUrl = `${issuer}/cdn-cgi/access/certs`;
-    let jwks = jwksByUrl.get(jwksUrl);
-    if (!jwks) {
-      jwks = createRemoteJWKSet(new URL(jwksUrl));
-      jwksByUrl.set(jwksUrl, jwks);
-    }
-    return (await jwtVerify(token, jwks, { issuer, audience })).payload;
-  } catch {
-    return undefined;
-  }
 }
 
 function invalid(code: string, message: string) {

@@ -11,13 +11,15 @@ import {
   recordView,
   resetViewPruneScheduleForTests,
   scheduleViewEventPrune,
-} from "../functions/_shared/engagement.js";
-import { createEdgeCacheKey, noStore, readEdgeJson } from "../functions/_shared/edge-cache.js";
+} from "../src/lib/engagement.ts";
+import { createEdgeCacheKey, noStore, readEdgeJson } from "../src/lib/edge-cache.ts";
 import { readFileSync } from "node:fs";
+import { CONTENT_IDS } from "../src/lib/post-slugs.ts";
 
 test("normalizeContentId accepts a published content ID", () => {
-  assert.equal(normalizeContentId("blog/first-note"), "blog/first-note");
-  assert.equal(normalizeContentId("note/arknights-p3r"), "note/arknights-p3r");
+  const contentId = CONTENT_IDS[0];
+  assert.ok(contentId, "the fixture requires at least one published content item");
+  assert.equal(normalizeContentId(contentId), contentId);
   assert.equal(normalizeContentId("about/profile"), undefined);
 });
 
@@ -30,7 +32,6 @@ test("the content ID migration prefixes every legacy Blog table idempotently", (
   assert.match(sql, /UPDATE comments[\s\S]*SET slug = 'blog\/' \|\| slug/);
   assert.match(sql, /DELETE FROM post_stats[\s\S]*WHERE slug NOT LIKE '%\/%'/);
   assert.match(sql, /DELETE FROM post_view_events[\s\S]*WHERE slug NOT LIKE '%\/%'/);
-  assert.match(sql, /blog\/designing-for-clarity-in-chaos[\s\S]*blog\/first-note/);
 });
 
 test("statistics isolate identical slugs across content sections", async () => {
@@ -46,7 +47,7 @@ test("statistics isolate identical slugs across content sections", async () => {
 
 test("normalizeContentId rejects unknown or malformed content IDs", () => {
   assert.equal(normalizeContentId("missing-post"), undefined);
-  assert.equal(normalizeContentId("../blog/first-note"), undefined);
+  assert.equal(normalizeContentId("../blog/example-post"), undefined);
   assert.equal(normalizeContentId("future of interface"), undefined);
   assert.equal(normalizeContentId(undefined), undefined);
 });
@@ -59,7 +60,7 @@ test("getViewWindowStart groups timestamps into six hour windows", () => {
 
 test("visitor hashes are stable in the Workers runtime", async () => {
   const request = new Request("https://blog.example/api/view", { headers: { "cf-connecting-ip": "203.0.113.10", "user-agent": "test" } });
-  const hash = await getVisitorHash(request, "blog/first-note");
+  const hash = await getVisitorHash(request, "blog/example-post");
   assert.match(hash, /^[a-f0-9]{64}$/);
 });
 
@@ -105,8 +106,6 @@ test("public engagement write routes enforce same-origin JSON", () => {
   for (const path of [
     "src/pages/api/view.ts",
     "src/pages/api/like.ts",
-    "functions/api/view.js",
-    "functions/api/like.js",
   ]) {
     const source = readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
     assert.match(source, /requireSameOriginJson\(request\)/, `${path} must reject cross-origin writes`);

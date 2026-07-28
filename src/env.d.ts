@@ -4,7 +4,6 @@
 interface ImportMetaEnv {
   readonly GITHUB_TOKEN?: string;
   readonly WAKA_TIME_API_KEY?: string;
-  readonly WAKATIME_API_KEY?: string;
 }
 
 declare namespace Cloudflare {
@@ -27,7 +26,6 @@ declare namespace Cloudflare {
     MODEL?: string;
     GITHUB_TOKEN?: string;
     WAKA_TIME_API_KEY?: string;
-    WAKATIME_API_KEY?: string;
     COMMENT_HASH_SALT?: string;
     CF_ACCESS_TEAM_DOMAIN?: string;
     CF_ACCESS_AUD?: string;

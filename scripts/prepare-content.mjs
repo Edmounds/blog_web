@@ -55,16 +55,10 @@ export const prepareContent = async (rootDir = process.cwd()) => {
   }
 
   contentIds.sort();
-  const outputPaths = [
-    {
-      path: path.join(rootDir, "functions/_shared/post-slugs.js"),
-      output: `export const CONTENT_IDS = [\n${contentIds.map((id) => `  ${JSON.stringify(id)},`).join("\n")}\n];\n`,
-    },
-    {
-      path: path.join(rootDir, "src/lib/post-slugs.ts"),
-      output: `export const CONTENT_IDS = [\n${contentIds.map((id) => `  ${JSON.stringify(id)},`).join("\n")}\n] as const;\n`,
-    },
-  ];
+  const outputPaths = [{
+    path: path.join(rootDir, "src/lib/post-slugs.ts"),
+    output: `export const CONTENT_IDS = [\n${contentIds.map((id) => `  ${JSON.stringify(id)},`).join("\n")}\n] as const;\n`,
+  }];
   let idsUpdated = false;
   for (const target of outputPaths) {
     let targetUpdated = false;

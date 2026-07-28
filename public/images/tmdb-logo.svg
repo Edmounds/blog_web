@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 36" role="img" aria-labelledby="title">
-  <title id="title">TMDB</title>
-  <rect width="240" height="36" rx="4" fill="#0d253f"/>
-  <circle cx="24" cy="18" r="10" fill="#90cea1"/>
-  <path d="M24 8a10 10 0 0 1 0 20V8Z" fill="#01b4e4"/>
-  <text x="43" y="24" fill="#fff" font-family="Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="1">THE MOVIE DB</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 64" role="img" aria-labelledby="tmdb-logo-title">
+  <title id="tmdb-logo-title">The Movie Database</title>
+  <rect width="300" height="64" rx="6" fill="#0d253f"/>
+  <circle cx="34" cy="32" r="15" fill="#90cea1"/>
+  <path d="M34 17a15 15 0 0 1 0 30V17Z" fill="#01b4e4"/>
+  <text x="60" y="42" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700">THE MOVIE DB</text>
 </svg>

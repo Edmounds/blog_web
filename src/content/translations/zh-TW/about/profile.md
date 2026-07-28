@@ -23,6 +23,14 @@ portrait: /images/content/about/profile-8646bdb863b8-w320.webp
 
 本站基於 [Astro-star](https://github.com/hanlife02/Astro-star) 修改與重建
 
+本站基於 [Cloudflare](https://www.cloudflare.com/) 的雲端服務建置與運行
+
+[![Cloudflare](/images/cloudflare-logo.svg)](https://www.cloudflare.com/)
+
 影視資料由 [The Movie Database（TMDB）](https://www.themoviedb.org/) 提供，本網站使用 TMDB API
 
-![The Movie Database](/images/tmdb-logo.svg)
+[![The Movie Database](/images/tmdb-logo.svg)](https://www.themoviedb.org/)
+
+本網站使用 [Steam Web API](https://steamcommunity.com/dev)
+
+[![Steam](/images/steam-logo.svg)](https://steamcommunity.com/dev)

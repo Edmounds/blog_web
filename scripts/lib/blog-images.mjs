@@ -142,7 +142,12 @@ export const writeImageManifest = (manifestPath, manifest) => atomicWrite(
 
 const assetUrl = (publicUrl, key) => `${publicUrl.replace(/\/$/, "")}/${key}`;
 
-export const createManagedImage = async ({ filePath, publicUrl = DEFAULT_PUBLIC_URL, temporaryRoot }) => {
+export const createManagedImage = async ({
+  filePath,
+  publicUrl = DEFAULT_PUBLIC_URL,
+  temporaryRoot,
+  objectBaseKey,
+}) => {
   try { await access(filePath); } catch { throw new Error(`${filePath} does not exist`); }
   if (!(await stat(filePath)).isFile()) throw new Error(`${filePath} is not a file`);
   const extension = path.extname(filePath).toLowerCase();
@@ -172,11 +177,17 @@ export const createManagedImage = async ({ filePath, publicUrl = DEFAULT_PUBLIC_
     };
   }
 
+  const baseKey = objectBaseKey ?? `blog/${digest}`;
+  const objectDirectory = path.posix.dirname(baseKey);
+  const objectStem = path.posix.basename(baseKey);
   const outputDirectory = path.join(temporaryRoot, digest);
-  const responsive = await createResponsiveImage({ sourcePath: filePath, outputDirectory, stem: digest });
+  const responsive = await createResponsiveImage({ sourcePath: filePath, outputDirectory, stem: objectStem });
   const uploads = responsive.variants.map((variant) => ({
     filePath: variant.filePath,
-    key: `blog/${path.basename(variant.filePath)}`,
+    key: path.posix.join(
+      objectDirectory,
+      `${path.basename(variant.filePath)}${variant.format === "avif" ? ".webp" : ""}`,
+    ),
     contentType: `image/${variant.format}`,
     cacheControl: CACHE_CONTROL,
   }));
@@ -184,7 +195,10 @@ export const createManagedImage = async ({ filePath, publicUrl = DEFAULT_PUBLIC_
     format,
     responsive.variants.filter((variant) => variant.format === format).map((variant) => ({
       width: variant.width,
-      url: assetUrl(publicUrl, `blog/${path.basename(variant.filePath)}`),
+      url: assetUrl(publicUrl, path.posix.join(
+        objectDirectory,
+        `${path.basename(variant.filePath)}${variant.format === "avif" ? ".webp" : ""}`,
+      )),
       quality: variant.quality,
       ssim: Number(variant.ssim.toFixed(6)),
       bytes: variant.size,
@@ -219,26 +233,35 @@ const managedKeyPattern = (publicUrl) => new RegExp(
   "gi",
 );
 
-const collectManagedReferences = (source, publicUrl) => {
-  const references = [];
-  for (const match of source.matchAll(managedKeyPattern(publicUrl))) {
-    references.push({ start: match.index, end: match.index + match[0].length, url: match[0], key: match[1] });
+const collectRemoteRasterReferences = (source, publicUrl) => {
+  const references = new Map();
+  const baseUrl = `${publicUrl.replace(/\/$/, "")}/`;
+  for (const match of source.matchAll(/!\[[^\]\n]*\]\(/g)) {
+    const destinationStart = match.index + match[0].length;
+    const destinationEnd = findMarkdownImageClose(source, destinationStart);
+    if (destinationEnd === -1) continue;
+    const parts = splitDestinationAndTitle(source.slice(destinationStart, destinationEnd));
+    if (!parts) continue;
+    const split = splitMarkdownDestination(parts.pathDestination);
+    if (!split?.path.startsWith(baseUrl)) continue;
+    let url;
+    try { url = new URL(split.path); } catch { continue; }
+    const key = decodeURIComponent(url.pathname.slice(1));
+    if (!/^(?:bed|blog)\/.+\.(?:jpe?g|png|webp)$/i.test(key)) continue;
+    references.set(url.href, { url: url.href, key });
   }
   return references;
+};
+
+const responsiveBaseKey = (key) => {
+  const extension = path.posix.extname(key);
+  return key.slice(0, -extension.length).replace(/-w\d+$/i, "");
 };
 
 const collectManagedKeys = (source, publicUrl) => {
   const keys = new Set();
   for (const match of source.matchAll(managedKeyPattern(publicUrl))) keys.add(match[1]);
   return keys;
-};
-
-const rewriteManagedUrls = (source, replacements) => {
-  let output = source;
-  for (const replacement of [...replacements].sort((a, b) => b.start - a.start)) {
-    output = `${output.slice(0, replacement.start)}${replacement.url}${output.slice(replacement.end)}`;
-  }
-  return output;
 };
 
 export const syncBlogImages = async ({
@@ -253,12 +276,16 @@ export const syncBlogImages = async ({
   const articles = [];
   const localPaths = new Set();
   const referencedKeys = new Set();
+  const referencedSourceUrls = new Set();
   for (const group of CONTENT_GROUPS) {
     for (const filePath of await walkContentFiles(path.join(root, "src/content", group))) {
       const source = await readFile(filePath, "utf8");
       const references = collectReferences(source);
       for (const reference of references) localPaths.add(reference.localPath);
       for (const key of collectManagedKeys(source, publicUrl)) referencedKeys.add(key);
+      for (const reference of collectRemoteRasterReferences(source, publicUrl).values()) {
+        referencedSourceUrls.add(reference.url);
+      }
       articles.push({ filePath, source, references });
     }
   }
@@ -299,7 +326,13 @@ export const syncBlogImages = async ({
     const assets = {};
     for (const [fallbackUrl, asset] of Object.entries(previous.assets)) {
       const assetKeys = Object.values(asset.sources ?? {}).flat().map((variant) => new URL(variant.url).pathname.slice(1));
-      if (assetKeys.some((key) => referencedKeys.has(key) || uploadedKeys.has(key))) assets[fallbackUrl] = asset;
+      if (
+        referencedSourceUrls.has(fallbackUrl)
+        || assetKeys.some((key) => (referencedKeys.has(key) || uploadedKeys.has(key)) && !key.endsWith(".avif"))
+      ) {
+        assets[fallbackUrl] = asset;
+        for (const key of assetKeys) referencedKeys.add(key);
+      }
     }
     for (const image of imagesByPath.values()) {
       for (const object of image.uploads) referencedKeys.add(object.key);
@@ -358,15 +391,13 @@ export const migrateBlogImages = async ({
   if (typeof download !== "function") throw new Error("migrateBlogImages requires a download function");
   const manifestPath = path.join(root, MANIFEST_FILE);
   const previous = await readImageManifest(manifestPath);
-  const articles = [];
   const urls = new Map();
   for (const group of CONTENT_GROUPS) {
     for (const filePath of await walkContentFiles(path.join(root, "src/content", group))) {
       const source = await readFile(filePath, "utf8");
-      const references = collectManagedReferences(source, publicUrl)
-        .filter((reference) => /\.(?:jpe?g|png|webp)$/i.test(reference.key) && !/-w\d+\.webp$/i.test(reference.key));
-      for (const reference of references) urls.set(reference.url, reference.key);
-      articles.push({ filePath, source, references });
+      for (const reference of collectRemoteRasterReferences(source, publicUrl).values()) {
+        if (!previous.assets[reference.url]) urls.set(reference.url, reference.key);
+      }
     }
   }
   if (urls.size === 0) {
@@ -381,41 +412,24 @@ export const migrateBlogImages = async ({
       await mkdir(sourceDirectory, { recursive: true });
       const filePath = path.join(sourceDirectory, path.basename(key));
       await download({ url, key, filePath, bucket });
-      migratedByUrl.set(url, await createManagedImage({ filePath, publicUrl, temporaryRoot }));
+      migratedByUrl.set(url, await createManagedImage({
+        filePath,
+        publicUrl,
+        temporaryRoot,
+        objectBaseKey: responsiveBaseKey(key),
+      }));
     }
 
     const uploadsByKey = new Map();
     for (const image of migratedByUrl.values()) for (const object of image.uploads) uploadsByKey.set(object.key, object);
     for (const object of uploadsByKey.values()) await upload({ ...object, bucket });
 
-    let rewrittenFiles = 0;
-    for (const article of articles) {
-      const replacements = article.references.map((reference) => ({
-        ...reference,
-        url: migratedByUrl.get(reference.url).fallbackUrl,
-      }));
-      const rewritten = rewriteManagedUrls(article.source, replacements);
-      if (rewritten === article.source) continue;
-      await atomicWrite(article.filePath, rewritten);
-      rewrittenFiles += 1;
-    }
-
-    const migratedKeys = new Set(urls.values());
-    const activeKeys = [...new Set([
-      ...previous.keys.filter((key) => !migratedKeys.has(key)),
-      ...uploadsByKey.keys(),
-    ])].sort();
+    const activeKeys = [...new Set([...previous.keys, ...uploadsByKey.keys()])].sort();
     const assets = { ...previous.assets };
-    for (const image of migratedByUrl.values()) assets[image.fallbackUrl] = image.manifestAsset;
-    const pendingDeletion = [...new Set([...previous.pendingDeletion, ...migratedKeys])]
-      .filter((key) => !activeKeys.includes(key)).sort();
-    await writeImageManifest(manifestPath, {
-      version: MANIFEST_VERSION,
-      assets,
-      keys: activeKeys,
-      pendingDeletion,
-    });
-    return { migrated: migratedByUrl.size, uploaded: uploadsByKey.size, rewrittenFiles, pendingDeletion: pendingDeletion.length };
+    for (const [sourceUrl, image] of migratedByUrl) assets[sourceUrl] = image.manifestAsset;
+    const pendingDeletion = [...new Set(previous.pendingDeletion)].filter((key) => !activeKeys.includes(key)).sort();
+    await writeImageManifest(manifestPath, { version: MANIFEST_VERSION, assets, keys: activeKeys, pendingDeletion });
+    return { migrated: migratedByUrl.size, uploaded: uploadsByKey.size, rewrittenFiles: 0, pendingDeletion: pendingDeletion.length };
   } finally {
     await rm(temporaryRoot, { recursive: true, force: true });
   }

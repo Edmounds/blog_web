@@ -10,11 +10,9 @@ import {
   svgResponse,
 } from "../src/lib/wakatime.ts";
 
-test("WakaTime prefers the canonical runtime key and supports the legacy key", () => {
-  assert.equal(resolveWakaTimeApiKey({ WAKA_TIME_API_KEY: "canonical", WAKATIME_API_KEY: "legacy" }), "canonical");
-  assert.equal(resolveWakaTimeApiKey({ WAKATIME_API_KEY: "legacy" }), "legacy");
+test("WakaTime reads the runtime key before the build key", () => {
+  assert.equal(resolveWakaTimeApiKey({ WAKA_TIME_API_KEY: "runtime" }, { WAKA_TIME_API_KEY: "build" }), "runtime");
   assert.equal(resolveWakaTimeApiKey({}, { WAKA_TIME_API_KEY: "build-canonical" }), "build-canonical");
-  assert.equal(resolveWakaTimeApiKey({}, { WAKATIME_API_KEY: "build-legacy" }), "build-legacy");
 });
 
 const json = (value, init) => new Response(JSON.stringify(value), { ...init, headers: { "content-type": "application/json" } });

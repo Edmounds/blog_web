@@ -18,10 +18,7 @@ for (const group of groups) {
 }
 
 contentIds.sort();
-for (const file of [
-  "functions/_shared/post-slugs.js",
-  "src/lib/post-slugs.ts",
-]) {
+for (const file of ["src/lib/post-slugs.ts"]) {
   const ids = parseContentIds(await readFile(file, "utf8"), file);
   const actual = [...ids].sort();
   if (JSON.stringify(contentIds) !== JSON.stringify(actual)) {

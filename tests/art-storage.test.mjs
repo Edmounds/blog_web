@@ -4,10 +4,10 @@ import test from "node:test";
 import {
   assertResolvedPublicAddress, fetchRemoteImage, getArtCoverUrl, getShanghaiDate, localizeArtItems,
   normalizeImageType, parsePublicHttpsUrl, resolveArtCoverDelivery, validateArtItemInput,
-} from "../functions/_shared/art.js";
-import { onRequestGet as previewCover } from "../functions/api/admin/art/cover-preview.js";
-import { onRequestDelete as deleteCover, onRequestPost as uploadCover } from "../functions/api/admin/art/covers.js";
-import { onRequestGet as listItems, onRequestPost as createItem } from "../functions/api/admin/art/items.js";
+} from "../src/server/art.js";
+import { onRequestGet as previewCover } from "../src/server/api/admin/art/cover-preview.js";
+import { onRequestDelete as deleteCover, onRequestPost as uploadCover } from "../src/server/api/admin/art/covers.js";
+import { onRequestGet as listItems, onRequestPost as createItem } from "../src/server/api/admin/art/items.js";
 
 test("art input validates types, dates, translations, and required covers", () => {
   const result = validateArtItemInput({

@@ -9,7 +9,12 @@ import {
   inferRegionFromHeaders,
   normalizeCommentContentId,
   validateCommentInput,
-} from "../functions/_shared/comments.js";
+} from "../src/lib/comments.ts";
+import { CONTENT_IDS } from "../src/lib/post-slugs.ts";
+
+const publishedContentId = CONTENT_IDS[0];
+
+assert.ok(publishedContentId, "comment validation requires at least one published content item");
 
 test("About uses one shared comment content ID without enabling other About IDs", () => {
   assert.equal(normalizeCommentContentId("about/profile"), "about/profile");
@@ -25,7 +30,7 @@ test("Links uses one shared comment content ID", () => {
 test("validateCommentInput trims names and preserves comment line breaks", () => {
   assert.deepEqual(
     validateCommentInput({
-      contentId: "blog/first-note",
+      contentId: publishedContentId,
       name: "  访客  ",
       content: "第一行\n第二行  ",
       website: "",
@@ -33,7 +38,7 @@ test("validateCommentInput trims names and preserves comment line breaks", () =>
     {
       ok: true,
       value: {
-        contentId: "blog/first-note",
+        contentId: publishedContentId,
         name: "访客",
         content: "第一行\n第二行  ",
       },
@@ -42,12 +47,12 @@ test("validateCommentInput trims names and preserves comment line breaks", () =>
 });
 
 test("validateCommentInput enforces name and content boundaries", () => {
-  assert.equal(validateCommentInput({ contentId: "blog/first-note", name: " ", content: "内容" }).error.code, "INVALID_NAME");
-  assert.equal(validateCommentInput({ contentId: "blog/first-note", name: "名".repeat(21), content: "内容" }).error.code, "INVALID_NAME");
-  assert.equal(validateCommentInput({ contentId: "blog/first-note", name: "访客", content: " \n " }).error.code, "INVALID_CONTENT");
-  assert.equal(validateCommentInput({ contentId: "blog/first-note", name: "访客", content: "文".repeat(501) }).error.code, "INVALID_CONTENT");
+  assert.equal(validateCommentInput({ contentId: publishedContentId, name: " ", content: "内容" }).error.code, "INVALID_NAME");
+  assert.equal(validateCommentInput({ contentId: publishedContentId, name: "名".repeat(21), content: "内容" }).error.code, "INVALID_NAME");
+  assert.equal(validateCommentInput({ contentId: publishedContentId, name: "访客", content: " \n " }).error.code, "INVALID_CONTENT");
+  assert.equal(validateCommentInput({ contentId: publishedContentId, name: "访客", content: "文".repeat(501) }).error.code, "INVALID_CONTENT");
   assert.equal(validateCommentInput({ contentId: "blog/missing-post", name: "访客", content: "内容" }).error.code, "INVALID_CONTENT_ID");
-  assert.equal(validateCommentInput({ contentId: "blog/first-note", name: "访客", content: "内容", website: "bot" }).error.code, "INVALID_COMMENT");
+  assert.equal(validateCommentInput({ contentId: publishedContentId, name: "访客", content: "内容", website: "bot" }).error.code, "INVALID_COMMENT");
 });
 
 test("validateCommentInput accepts the shared About comment ID", () => {

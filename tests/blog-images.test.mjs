@@ -6,7 +6,7 @@ import test from "node:test";
 
 import sharp from "sharp";
 
-import { cleanupBlogImages, migrateBlogImages, syncBlogImages } from "../scripts/lib/blog-images.mjs";
+import { cleanupBlogImages, syncBlogImages } from "../scripts/lib/blog-images.mjs";
 
 const bom = "\uFEFF";
 
@@ -164,45 +164,35 @@ test("cleanup deletes only pending manifest-owned keys", async () => {
   assert.deepEqual(await readManifest(root), { version: 2, assets: {}, keys: [activeKey], pendingDeletion: [] });
 });
 
-test("remote migration failure keeps source references and the manifest intact", async () => {
+test("sync keeps responsive variants for still-referenced Obsidian URLs", async () => {
   const { root, contentDir } = await createFixture();
-  const originalKey = `blog/${"c".repeat(64)}.png`;
-  const source = `${bom}---\n---\n\n![Remote](https://img.muelsyse.us/${originalKey})\n`;
-  const postPath = path.join(contentDir, "post.md");
-  await writeFile(postPath, source);
-  await writeManifest(root, { version: 2, assets: {}, keys: [originalKey], pendingDeletion: [] });
-
-  await assert.rejects(migrateBlogImages({
-    root,
-    download: async () => { throw new Error("download failed"); },
-    upload: async () => assert.fail("upload must not run"),
-  }), /download failed/);
-  assert.equal(await readFile(postPath, "utf8"), source);
-  assert.deepEqual(await readManifest(root), { version: 2, assets: {}, keys: [originalKey], pendingDeletion: [] });
-});
-
-test("remote migration uploads responsive variants and defers original deletion", async () => {
-  const { root, contentDir } = await createFixture();
-  const originalKey = `blog/${"d".repeat(64)}.png`;
-  const postPath = path.join(contentDir, "post.md");
-  await writeFile(postPath, `${bom}---\n---\n\n![Remote](https://img.muelsyse.us/${originalKey})\n`);
-  await writeManifest(root, { version: 2, assets: {}, keys: [originalKey], pendingDeletion: [] });
-  const uploads = [];
-
-  const result = await migrateBlogImages({
-    root,
-    download: async ({ filePath }) => writeRaster(filePath),
-    upload: async (image) => uploads.push(image),
+  const sourceUrl = "https://img.muelsyse.us/bed/source.png";
+  const avifKey = "bed/source-w96.avif.webp";
+  const webpKey = "bed/source-w96.webp";
+  await writeFile(path.join(contentDir, "post.md"), `${bom}---\n---\n\n![Remote](${sourceUrl})\n`);
+  await writeManifest(root, {
+    version: 2,
+    assets: {
+      [sourceUrl]: {
+        width: 96,
+        height: 64,
+        fallback: `https://img.muelsyse.us/${webpKey}`,
+        sources: {
+          avif: [{ width: 96, url: `https://img.muelsyse.us/${avifKey}` }],
+          webp: [{ width: 96, url: `https://img.muelsyse.us/${webpKey}` }],
+        },
+      },
+    },
+    keys: [avifKey, webpKey],
+    pendingDeletion: [],
   });
-  const rewritten = await readFile(postPath, "utf8");
+
+  const result = await syncBlogImages({ root, upload: async () => assert.fail("no upload expected") });
   const manifest = await readManifest(root);
-  assert.equal(result.migrated, 1);
-  assert.equal(result.uploaded, 2);
-  assert.match(rewritten, /-w96\.webp/);
-  assert.deepEqual(manifest.pendingDeletion, [originalKey]);
-  assert.ok(manifest.keys.every((key) => /\.(?:avif|webp)$/.test(key)));
-  assert.equal(Object.keys(manifest.assets).length, 1);
-  assert.equal(uploads.length, 2);
+
+  assert.equal(result.pendingDeletion, 0);
+  assert.deepEqual(manifest.keys, [avifKey, webpKey]);
+  assert.ok(manifest.assets[sourceUrl]);
 });
 
 test("SVG and animated GIF images pass through unchanged", async () => {

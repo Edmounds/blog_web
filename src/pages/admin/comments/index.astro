@@ -1,7 +1,6 @@
 ---
 import CommentsAdmin from "../../../components/domain/CommentsAdmin";
 import AdminNav from "../../../components/domain/AdminNav.astro";
-import PageContainer from "../../../components/foundation/PageContainer.astro";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import { getAllPublishedContent } from "../../../lib/content";
 
@@ -13,7 +12,7 @@ posts.push({ contentId: "about/profile", title: "about: profile" });
 ---
 
 <BaseLayout title="评论管理" description="管理内容评论" currentPath="/admin/comments/" showFooter={false}>
-  <PageContainer class="py-12 md:py-16">
+  <div class="app-container py-12 md:py-16">
     <div class="mx-auto max-w-5xl">
       <AdminNav current="comments" />
       <header class="mb-10 space-y-3">
@@ -22,5 +21,5 @@ posts.push({ contentId: "about/profile", title: "about: profile" });
       </header>
       <CommentsAdmin posts={posts} client:load />
     </div>
-  </PageContainer>
+  </div>
 </BaseLayout>

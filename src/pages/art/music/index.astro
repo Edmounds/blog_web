@@ -4,7 +4,7 @@ import ArtSection from "../../../components/sections/ArtSection.astro";
 import { getPublicArtItems } from "../../../lib/art";
 import { getLocalizedSite } from "../../../lib/localized-content";
 import { getRuntimeEnv } from "../../../lib/runtime";
-import { listNeteaseRanking } from "../../../../functions/_shared/netease-music.js";
+import { listNeteaseRanking } from "../../../server/netease-music.js";
 
 export const prerender = false;
 const site = await getLocalizedSite("zh-CN");

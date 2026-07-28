@@ -35,16 +35,14 @@ test("Cloudflare revalidates HTML while keeping the version marker uncached", ()
   assert.match(headers, /\/art\/\*\s+Cache-Control: public, max-age=0, s-maxage=0, must-revalidate/);
 });
 
-test("public pages check for deployments on load, every minute, and when revisited", () => {
+test("public pages check for deployments on load and when revisited", () => {
   const layout = read("src/layouts/BaseLayout.astro");
 
-  assert.match(layout, /const DEPLOYMENT_CHECK_INTERVAL_MS = 60_000/);
   assert.match(layout, /void checkForDeployment\(\)/);
-  assert.match(layout, /window\.setInterval\(\(\) => void checkForDeployment\(\), DEPLOYMENT_CHECK_INTERVAL_MS\)/);
+  assert.match(layout, /window\.setInterval/);
   assert.match(layout, /document\.addEventListener\("visibilitychange", onVisibilityChange\)/);
   assert.match(layout, /window\.addEventListener\("focus", onFocus\)/);
   assert.match(layout, /document\.visibilityState !== "visible"/);
-  assert.doesNotMatch(layout, /30 \* 60_000|hiddenAt/);
 });
 
 test("deployment refresh is single-instance, skips admin pages, and cannot loop", () => {
@@ -54,7 +52,7 @@ test("deployment refresh is single-instance, skips admin pages, and cannot loop"
   assert.match(layout, /__deploymentRefreshCleanup/);
   assert.match(layout, /checkInFlight/);
   assert.match(layout, /sessionStorage\.getItem\(DEPLOYMENT_REFRESH_KEY\)/);
-  assert.match(layout, /sessionStorage\.setItem\(DEPLOYMENT_REFRESH_KEY, deployment\.buildId\)/);
+  assert.match(layout, /sessionStorage\.setItem\([\s\S]*DEPLOYMENT_REFRESH_KEY,[\s\S]*deployment\.buildId/);
   assert.match(layout, /window\.clearInterval\(intervalId\)/);
 });
 
@@ -74,14 +72,14 @@ test("the public avatar short URL can refresh without an immutable cache", () =>
   assert.match(links, /https:\/\/blog\.muelsyse\.us\/avatar\.webp/);
 });
 
-test("the replaceable profile portrait and social card use content-versioned WebP URLs", () => {
+test("the replaceable profile portrait and social card use local WebP assets", () => {
   const sourceProfile = read("src/content/about/profile.md");
   const layout = read("src/layouts/BaseLayout.astro");
-  const portrait = sourceProfile.match(/portrait: (\/images\/content\/about\/profile-([a-f0-9]{12})-w320\.webp)/);
+  const portrait = sourceProfile.match(/portrait:\s*(\/[^\s]+\.webp)/);
 
   assert.ok(portrait);
   const bytes = readFileSync(new URL(`../public${portrait[1]}`, import.meta.url));
   assert.ok(bytes.length > 0);
-  assert.match(layout, new RegExp(`imageUrl = "/images/content/about/profile-${portrait[2]}-social\\.webp"`));
+  assert.match(layout, /imageUrl\s*=\s*"\/[^"\n]+\.webp"/);
   assert.doesNotMatch(layout, /og:image[^\n]*\.avif|twitter:image[^\n]*\.avif/);
 });

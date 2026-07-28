@@ -1,7 +1,7 @@
 import { parseArgs } from "node:util";
 import { spawnSync } from "node:child_process";
 
-import { fetchNeteaseRanking } from "../functions/_shared/netease-music.js";
+import { fetchNeteaseRanking } from "../src/server/netease-music.js";
 
 const { values } = parseArgs({
   options: {

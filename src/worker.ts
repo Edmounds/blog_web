@@ -1,7 +1,7 @@
 import { handle } from "@astrojs/cloudflare/handler";
 
-import { syncSteamGames } from "../functions/_shared/games.js";
-import { syncNeteaseRanking } from "../functions/_shared/netease-music.js";
+import { syncSteamGames } from "./server/games.js";
+import { syncNeteaseRanking } from "./server/netease-music.js";
 
 export default {
   fetch(request: Request, env: Cloudflare.Env, ctx: ExecutionContext) {

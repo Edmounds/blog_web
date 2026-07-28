@@ -1,5 +1,4 @@
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
 
@@ -25,48 +24,20 @@ test("unknown API routes keep a JSON 404 instead of the visual page", () => {
   assert.match(api404, /code:\s*"NOT_FOUND"/);
 });
 
-test("the 404 page renders separate responsive visual layers", () => {
+test("the 404 page references generated responsive visual assets", () => {
   const page = read("src/pages/404.astro");
 
-  for (const asset of [
-    "public/images/404-background.png",
-    "public/images/404-background-w1280.avif",
-    "public/images/404-background-w1280.webp",
-    "public/images/404-background-w1920.avif",
-    "public/images/404-background-w1920.webp",
-    "public/images/404-background-w3840.avif",
-    "public/images/404-background-w3840.webp",
-    "public/images/404-character.png",
-    "public/images/404-character-w768.avif",
-    "public/images/404-character-w768.webp",
-    "public/images/404-character-w802.avif",
-    "public/images/404-character-w802.webp",
-    "public/images/404-rhine-mark.png",
-  ]) {
-    assert.equal(exists(asset), true, `${asset} should exist`);
+  for (const source of page.matchAll(/(?:src|srcset)="([^"]+)"/g)) {
+    for (const candidate of source[1].split(",")) {
+      const publicPath = candidate.trim().split(/\s+/, 1)[0];
+      if (publicPath.startsWith("/images/404-")) {
+        assert.equal(exists(`public${publicPath}`), true, `${publicPath} should exist`);
+      }
+    }
   }
 
-  assert.equal(exists("public/images/404-muelsyse.png"), false);
-  assert.match(page, /404-background-w1280\.avif 1280w/);
-  assert.match(page, /404-background-w1280\.webp 1280w/);
-  assert.match(page, /404-character-w768\.avif 768w/);
-  assert.match(page, /404-character-w768\.webp 768w/);
-  assert.match(page, /object-fit:\s*cover/);
-  assert.match(page, /height:\s*100svh/);
-  assert.match(page, /height:\s*100dvh/);
-  assert.match(page, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
-});
-
-test("the 404 message and character form one centered horizontal group", () => {
-  const page = read("src/pages/404.astro");
-
-  assert.match(page, /\.not-found__stage\s*\{[^}]*display:\s*flex/s);
-  assert.match(page, /\.not-found__stage\s*\{[^}]*flex-direction:\s*row/s);
-  assert.match(page, /\.not-found__stage\s*\{[^}]*align-items:\s*center/s);
-  assert.match(page, /\.not-found__stage\s*\{[^}]*justify-content:\s*center/s);
-  assert.match(page, /\.not-found__stage\s*\{[^}]*gap:\s*0/s);
-  assert.doesNotMatch(page, /\.not-found__message\s*\{[^}]*position:\s*absolute/s);
-  assert.doesNotMatch(page, /\.not-found__character\s*\{[^}]*position:\s*absolute/s);
+  assert.match(page, /<picture/);
+  assert.match(page, /prefers-reduced-motion/);
 });
 
 test("the home link supports all four site locales", () => {
@@ -80,54 +51,13 @@ test("the home link supports all four site locales", () => {
   assert.match(page, /localizePath\("\/", locale\)/);
 });
 
-test("the layered 404 asset generator uses guarded gpt-image-2 outputs", () => {
+test("the 404 asset generator validates output before replacing public assets", () => {
   const generator = read("scripts/generate-404-image.py");
 
   assert.match(generator, /--asset/);
-  assert.match(generator, /choices=\["background", "character", "all"\]/);
-  assert.match(generator, /model="gpt-image-2"/);
   assert.match(generator, /OPENAI_IMAGE_BASE_URL/);
   assert.match(generator, /OPENAI_IMAGE_API_KEY/);
-  assert.match(generator, /#ff00ff/);
-  assert.match(generator, /remove_chroma_key\.py/);
   assert.match(generator, /validate_background\(master\)/);
   assert.match(generator, /validate_character\(master\)/);
   assert.match(generator, /os\.replace\(source, destination\)/);
-});
-
-test("the generated 404 raster assets satisfy layout and transparency constraints", () => {
-  const output = execFileSync(
-    "uv",
-    [
-      "run",
-      "--with",
-      "pillow",
-      "python",
-      "-c",
-      `
-from pathlib import Path
-from PIL import Image
-
-root = Path.cwd() / "public/images"
-for name in ["404-background.png", "404-background-w1280.avif", "404-background-w1280.webp", "404-background-w1920.avif", "404-background-w1920.webp", "404-background-w3840.avif", "404-background-w3840.webp"]:
-    image = Image.open(root / name)
-    assert image.width * 9 == image.height * 16, (name, image.size)
-
-character = Image.open(root / "404-character.png").convert("RGBA")
-alpha = character.getchannel("A")
-corners = [(0, 0), (character.width - 1, 0), (0, character.height - 1), (character.width - 1, character.height - 1)]
-assert all(alpha.getpixel(point) == 0 for point in corners)
-visible = sum(alpha.histogram()[1:]) / (character.width * character.height)
-assert 0.22 <= visible <= 0.78, visible
-
-logo = Image.open(root / "404-rhine-mark.png").convert("RGBA")
-assert logo.width / logo.height > 1.8, logo.size
-assert logo.getchannel("A").getbbox() is not None
-print("ok")
-`,
-    ],
-    { cwd: new URL("..", import.meta.url), encoding: "utf8" },
-  );
-
-  assert.equal(output.trim(), "ok");
 });

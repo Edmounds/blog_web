@@ -842,16 +842,16 @@
       "translation": "項目、作品與實驗。"
     },
     "en:content.about.profile.md.document": {
-      "fingerprint": "f71d69764baefe35e77a8e07382ccc52622e611393ed096f35f598064d2a4ab0",
-      "translation": "---\nname: Last4ev3r\ncity: China, Chongqing\nmajor: Robotics Engineering\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile-8646bdb863b8-w320.webp\n---\n\n## About This Website\nThis is my quiet personal space—to write articles, take notes, share projects, and record the books and movies I have read and watched.\nThis is not social media. There are no notifications or anxiety over likes, only words, photos, and a few records. \nI dislike the intense impact and intrusion that social media apps have on personal life.\n\n\n## About Me\nA third-year student at the National School of Excellence in Engineering, Chongqing University\n\n\n## Contact Me\n[i@muelsyse.us](mailto:i@muelsyse.us)\n\n## Acknowledgments\n\nThis site was modified and rebuilt based on [Astro-star](https://github.com/hanlife02/Astro-star)\n\nFilm and television information is provided by [The Movie Database (TMDB)](https://www.themoviedb.org/). This website uses the TMDB API.\n\n![The Movie Database](/images/tmdb-logo.svg)"
+      "fingerprint": "a29a3343a978d2aa96a9b7fb5703e5acaf3271af420516818ed5b0fba61b39c1",
+      "translation": "---\nname: Last4ev3r\ncity: China, Chongqing\nmajor: Robotics Engineering\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile-8646bdb863b8-w320.webp\n---\n\n## About This Website\nThis is my quiet personal space—to write articles, take notes, share projects, and record the books and movies I have read and watched.\nThis is not social media. There are no notifications or anxiety over likes, only words, photos, and a few records.\nI dislike the intense impact and intrusion that social media apps have on personal life.\n\n\n## About Me\nA third-year student at the National School of Excellence in Engineering, Chongqing University\n\n\n## Contact Me\n[i@muelsyse.us](mailto:i@muelsyse.us)\n\n## Acknowledgments\n\nThis site was modified and rebuilt based on [Astro-star](https://github.com/hanlife02/Astro-star)\n\nThis site is built and runs on [Cloudflare](https://www.cloudflare.com/) cloud services.\n\n[![Cloudflare](/images/cloudflare-logo.svg)](https://www.cloudflare.com/)\n\nFilm and television information is provided by [The Movie Database (TMDB)](https://www.themoviedb.org/). This website uses the TMDB API.\n\n[![The Movie Database](/images/tmdb-logo.svg)](https://www.themoviedb.org/)\n\nThis website uses the [Steam Web API](https://steamcommunity.com/dev).\n\n[![Steam](/images/steam-logo.svg)](https://steamcommunity.com/dev)"
     },
     "ja:content.about.profile.md.document": {
-      "fingerprint": "f71d69764baefe35e77a8e07382ccc52622e611393ed096f35f598064d2a4ab0",
-      "translation": "---\nname: Last4ev3r\ncity: 中国重庆\nmajor: 机器机器人工学\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile-8646bdb863b8-w320.webp\n---\n\n## ウェブサイトについて\nここは私の静かな個人空間です——記事を書き、メモを取り、プロジェクトを共有し、観た本や映画を記録しています。\nここはソーシャルメディアではありません。通知や「いいね」への不安もなく、あるのは文章、写真、そしていくつかの記録だけです。\nソーシャルアプリが個人の生活に与える強い影響や干渉が好きではありません。\n\n\n## 私について\n重慶大学国家卓越エンジニア学院の大学3年生\n\n\n## 連絡先\n[i@muelsyse.us](mailto:i@muelsyse.us)\n\n## 謝辞\n\nこのサイトは [Astro-star](https://github.com/hanlife02/Astro-star) をベースに改変・再構築しています。\n\n映像資料は [The Movie Database（TMDB）](https://www.themoviedb.org/) により提供されています。本サイトでは TMDB API を使用しています。\n\n![The Movie Database](/images/tmdb-logo.svg)"
+      "fingerprint": "a29a3343a978d2aa96a9b7fb5703e5acaf3271af420516818ed5b0fba61b39c1",
+      "translation": "---\nname: Last4ev3r\ncity: 中国重庆\nmajor: 机器机器人工学\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile-8646bdb863b8-w320.webp\n---\n\n## ウェブサイトについて\nここは私の静かな個人空間です——記事を書き、メモを取り、プロジェクトを共有し、観た本や映画を記録しています。\nここはソーシャルメディアではありません。通知や「いいね」への不安もなく、あるのは文章、写真、そしていくつかの記録だけです。\nソーシャルアプリが個人の生活に与える強い影響や干渉が好きではありません。\n\n\n## 私について\n重慶大学国家卓越エンジニア学院の大学3年生\n\n\n## 連絡先\n[i@muelsyse.us](mailto:i@muelsyse.us)\n\n## 謝辞\n\nこのサイトは [Astro-star](https://github.com/hanlife02/Astro-star) をベースに改変・再構築しています。\n\n本サイトは [Cloudflare](https://www.cloudflare.com/) のクラウドサービスを基盤として構築・運用されています。\n\n[![Cloudflare](/images/cloudflare-logo.svg)](https://www.cloudflare.com/)\n\n映像資料は [The Movie Database（TMDB）](https://www.themoviedb.org/) により提供されています。本サイトでは TMDB API を使用しています。\n\n[![The Movie Database](/images/tmdb-logo.svg)](https://www.themoviedb.org/)\n\n本サイトでは [Steam Web API](https://steamcommunity.com/dev) を使用しています。\n\n[![Steam](/images/steam-logo.svg)](https://steamcommunity.com/dev)"
     },
     "zh-TW:content.about.profile.md.document": {
-      "fingerprint": "f71d69764baefe35e77a8e07382ccc52622e611393ed096f35f598064d2a4ab0",
-      "translation": "---\nname: Last4ev3r\ncity: 中國重慶\nmajor: 機器人工程\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile-8646bdb863b8-w320.webp\n---\n\n## 關於網站\n這裡是我安靜的個人空間——寫文章、記筆記、分享專案、記錄看過的書和電影。\n這裡不是社群媒體，沒有通知和按讚焦慮，只有文字、照片和一些記錄。 \n不喜歡社群軟體那種對個人生活的高強度影響和侵入 \n\n\n## 關於我\n重慶大學國家卓越工程師學院大三\n\n\n## 聯絡我\n[i@muelsyse.us](mailto:i@muelsyse.us)\n\n## 致謝\n\n本站基於 [Astro-star](https://github.com/hanlife02/Astro-star) 修改與重建\n\n影視資料由 [The Movie Database（TMDB）](https://www.themoviedb.org/) 提供，本網站使用 TMDB API\n\n![The Movie Database](/images/tmdb-logo.svg)"
+      "fingerprint": "a29a3343a978d2aa96a9b7fb5703e5acaf3271af420516818ed5b0fba61b39c1",
+      "translation": "---\nname: Last4ev3r\ncity: 中國重慶\nmajor: 機器人工程\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile-8646bdb863b8-w320.webp\n---\n\n## 關於網站\n這裡是我安靜的個人空間——寫文章、記筆記、分享專案、記錄看過的書和電影。\n這裡不是社群媒體，沒有通知和按讚焦慮，只有文字、照片和一些記錄。\n不喜歡社群軟體那種對個人生活的高強度影響和侵入\n\n\n## 關於我\n重慶大學國家卓越工程師學院大三\n\n\n## 聯絡我\n[i@muelsyse.us](mailto:i@muelsyse.us)\n\n## 致謝\n\n本站基於 [Astro-star](https://github.com/hanlife02/Astro-star) 修改與重建\n\n本站基於 [Cloudflare](https://www.cloudflare.com/) 的雲端服務建置與運行\n\n[![Cloudflare](/images/cloudflare-logo.svg)](https://www.cloudflare.com/)\n\n影視資料由 [The Movie Database（TMDB）](https://www.themoviedb.org/) 提供，本網站使用 TMDB API\n\n[![The Movie Database](/images/tmdb-logo.svg)](https://www.themoviedb.org/)\n\n本網站使用 [Steam Web API](https://steamcommunity.com/dev)\n\n[![Steam](/images/steam-logo.svg)](https://steamcommunity.com/dev)"
     },
     "en:content.blog.first-note.md.document": {
       "fingerprint": "dd4b987756d380667a298f86dd54d772eb611ea8012528da636cc0390071851c",
@@ -984,6 +984,18 @@
     "zh-TW:content.project.engagement-test.md.document": {
       "fingerprint": "ad9da2d4ffed562bb271452faf6563d2469653bf8c7f8bc03465c5f7c0f2e709",
       "translation": "---\ntitle: Project 互動功能測試\ndescription: 用於驗證 Project 文章的瀏覽、按讚與留言功能。\ncreatedAt: 2026-07-27\npublished: true\ntags:\n  - Test\n---\n\n這是一篇用於檢查 Project 文章互動功能的臨時測試文章。\n\n請在頁面底部測試瀏覽計數、按讚按鈕和留言功能是否正常。"
+    },
+    "en:content.note.dongyeguiwu-passaway.md.document": {
+      "fingerprint": "9b0aab1d76ab9cd5571824d6b970e09a73577fcc705d03eef9795b268213e7c2",
+      "translation": "---\ntitle: test\ndescription: Double-fandom bliss!!! I finally came back after quitting the game for over a year! Well, I play this game just to pull for characters anyway.\ncreatedAt: 2026-07-26\npublished: true\n---"
+    },
+    "ja:content.note.dongyeguiwu-passaway.md.document": {
+      "fingerprint": "9b0aab1d76ab9cd5571824d6b970e09a73577fcc705d03eef9795b268213e7c2",
+      "translation": "---\ntitle: test\ndescription: 両方のファン歓喜！！！1年以上ゲームを離れていたけど、ついに復帰しました！まあ、このゲームをプレイしているのはガチャを引くためなんですけどね\ncreatedAt: 2026-07-26\npublished: true\n---"
+    },
+    "zh-TW:content.note.dongyeguiwu-passaway.md.document": {
+      "fingerprint": "9b0aab1d76ab9cd5571824d6b970e09a73577fcc705d03eef9795b268213e7c2",
+      "translation": "---\ntitle: test\ndescription: 雙廚狂喜！！！退遊一年多後終於回歸了！好吧我玩這個遊戲就是為了抽卡來的\ncreatedAt: 2026-07-26\npublished: true\n---"
     }
   }
 }

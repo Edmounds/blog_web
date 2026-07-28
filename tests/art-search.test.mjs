@@ -4,8 +4,8 @@ import test from "node:test";
 import {
   searchArtCandidates, searchBooks, searchDeezerMusic, searchDeezerTracks, searchDoubanBookByIsbn, searchDoubanBooks, searchGoogleBooks,
   searchNeteaseAlbums, searchNeteaseTracks, searchTmdb, searchTracks,
-} from "../functions/_shared/art-search.js";
-import { onRequestGet as searchArt } from "../functions/api/admin/art/search.js";
+} from "../src/server/art-search.js";
+import { onRequestGet as searchArt } from "../src/server/api/admin/art/search.js";
 
 test("book ISBN search prefers an exact Douban result", async () => {
   const calls = [];

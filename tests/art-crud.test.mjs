@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-import { createArtItem, deleteArtItem, getArtItem, listArtItems, updateArtItem, validateArtItemInput } from "../functions/_shared/art.js";
-import { onRequestDelete } from "../functions/api/admin/art/items/[id].js";
+import { createArtItem, deleteArtItem, getArtItem, listArtItems, updateArtItem, validateArtItemInput } from "../src/server/art.js";
+import { onRequestDelete } from "../src/server/api/admin/art/items/[id].js";
 
 test("D1 art CRUD preserves stable collection sorting, visibility, translations, and deletion", async () => {
   const db = new FakeD1();
@@ -20,6 +20,7 @@ test("D1 art CRUD preserves stable collection sorting, visibility, translations,
   assert.equal(updated.isVisible, false);
   assert.equal(updated.translations["zh-CN"].title, "第二本");
   assert.deepEqual((await listArtItems(db, { visibleOnly: true })).map((item) => item.id), ["one"]);
+  assert.deepEqual((await listArtItems(db, { types: ["book"], visibleOnly: true })).map((item) => item.id), ["one"]);
 
   assert.equal(await deleteArtItem(db, "two"), true);
   assert.equal(await getArtItem(db, "two"), undefined);
@@ -104,13 +105,6 @@ test("art schema allows manual items without source IDs and rejects duplicate so
   assert.match(schema, /WHERE source_id IS NOT NULL/);
 });
 
-test("music classification migration backfills legacy music without altering other art", () => {
-  const migration = readFileSync(new URL("../scripts/migrate-art-music-kind.mjs", import.meta.url), "utf8");
-  assert.match(migration, /PRAGMA table_info\(art_items\)/);
-  assert.match(migration, /ADD COLUMN music_kind TEXT CHECK \(music_kind IN \('album', 'single'\)\)/);
-  assert.match(migration, /WHERE type = 'music' AND music_kind IS NULL/);
-});
-
 class FakeD1 {
   items = new Map();
   translations = new Map();
@@ -154,6 +148,10 @@ class FakeStatement {
     let rows = [...this.db.items.values()];
     if (this.sql.includes("WHERE item.id = ?")) rows = rows.filter((item) => item.id === this.args[0]);
     if (this.sql.includes("item.type = ?")) rows = rows.filter((item) => item.type === this.args[0]);
+    if (this.sql.includes("item.type IN")) {
+      const typeCount = (this.sql.match(/item\.type IN \(([^)]+)\)/)?.[1].match(/\?/g) ?? []).length;
+      rows = rows.filter((item) => this.args.slice(0, typeCount).includes(item.type));
+    }
     if (this.sql.includes("item.music_kind = ?")) rows = rows.filter((item) => item.music_kind === this.args.at(-1));
     if (this.sql.includes("item.is_visible = 1")) rows = rows.filter((item) => item.is_visible === 1);
     rows.sort((a, b) => b.collected_on.localeCompare(a.collected_on) || b.created_at.localeCompare(a.created_at) || b.id.localeCompare(a.id));

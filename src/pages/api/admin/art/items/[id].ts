@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 
-import { onRequestDelete, onRequestPatch } from "../../../../../../functions/api/admin/art/items/[id].js";
+import { onRequestDelete, onRequestPatch } from "../../../../../server/api/admin/art/items/[id].js";
 import { getRuntimeEnv } from "../../../../../lib/runtime";
 
 export const PATCH: APIRoute = ({ params, request }) => onRequestPatch({ env: getRuntimeEnv(), params, request });

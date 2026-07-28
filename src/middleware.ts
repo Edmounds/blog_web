@@ -1,6 +1,6 @@
 import { defineMiddleware } from "astro:middleware";
 
-import { verifyAccess } from "./lib/comments";
+import { verifyAccess } from "./server/access.js";
 import { getRuntimeEnv } from "./lib/runtime";
 
 export const onRequest = defineMiddleware(async ({ request }, next) => {

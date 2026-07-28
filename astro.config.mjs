@@ -1,4 +1,5 @@
 // @ts-check
+import { createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
 
 import { defineConfig } from 'astro/config';
@@ -12,10 +13,12 @@ import { markdownOptions, markdownPlugins } from "./src/lib/markdown.mjs";
 import { createResponsiveImagePlugin } from "./src/lib/responsive-images.mjs";
 
 const buildId = process.env.PUBLIC_BUILD_ID ?? `local-${Date.now()}`;
-const imageManifest = JSON.parse(await readFile(new URL("./.blog-images-manifest.json", import.meta.url), "utf8"));
+const imageManifestSource = await readFile(new URL("./.blog-images-manifest.json", import.meta.url), "utf8");
+const imageManifest = JSON.parse(imageManifestSource);
+const imageManifestVersion = createHash("sha256").update(imageManifestSource).digest("hex").slice(0, 12);
 const hastPlugins = /** @type {any} */ ([
   ...markdownPlugins.hastPlugins,
-  createResponsiveImagePlugin({ manifest: imageManifest }),
+  createResponsiveImagePlugin({ manifest: imageManifest, version: imageManifestVersion }),
 ]);
 
 const deploymentVersion = {

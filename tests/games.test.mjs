@@ -3,8 +3,8 @@ import test from "node:test";
 
 import {
   fetchSteamOwnedGames, parsePlaytimeMinutes, parseSteamOwnedGames, syncSteamGames, validateGameCreate, validateGameUpdate,
-} from "../functions/_shared/games.js";
-import { onRequestGet as listAdminGames } from "../functions/api/admin/games.js";
+} from "../src/server/games.js";
+import { onRequestGet as listAdminGames } from "../src/server/api/admin/games/index.js";
 
 test("Steam request includes app info and played free games and parses minutes", async () => {
   let requested;

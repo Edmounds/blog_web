@@ -52,7 +52,7 @@ export const POST: APIRoute = async ({ request }) => {
     if (!salt) return errorResponse(503, "COMMENT_WRITES_DISABLED", "评论发布暂不可用，请稍后重试。");
 
     const cf = (request as Request & { cf?: IncomingRequestCfProperties }).cf;
-    const result = await createComment(requireDb(env), request, validation.value, salt, cf);
+    const result = await createComment(requireDb(env), request, validation.value, salt, new Date(), cf);
     if (!result.ok) {
       return jsonResponse(
         { error: { code: "RATE_LIMITED", message: "发布过于频繁，请稍后再试。" } },

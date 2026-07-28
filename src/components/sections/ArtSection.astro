@@ -3,7 +3,7 @@ import ArtCard from "../cards/ArtCard.astro";
 import type { ArtItem } from "../../lib/art";
 import { getLocalizedSite } from "../../lib/localized-content";
 import type { Locale } from "../../lib/i18n";
-import { getNeteaseSongUrl } from "../../../functions/_shared/netease-music.js";
+import { getNeteaseSongUrl } from "../../server/netease-music.js";
 
 interface RankingItem {
   rank: number;

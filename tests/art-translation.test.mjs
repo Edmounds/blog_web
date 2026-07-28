@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { onRequestPost } from "../functions/api/admin/art/translate.js";
+import { onRequestPost } from "../src/server/api/admin/art/translate.js";
 
 test("art translation API rejects music, series, anime, and missing types", async () => {
   for (const type of ["music", "series", "anime", undefined]) {

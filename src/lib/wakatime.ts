@@ -26,15 +26,12 @@ interface RequestOptions {
 
 interface WakaTimeEnv {
   WAKA_TIME_API_KEY?: unknown;
-  WAKATIME_API_KEY?: unknown;
 }
 
 export function resolveWakaTimeApiKey(runtimeEnv: WakaTimeEnv, buildEnv: WakaTimeEnv = {}): string {
   for (const value of [
     runtimeEnv.WAKA_TIME_API_KEY,
-    runtimeEnv.WAKATIME_API_KEY,
     buildEnv.WAKA_TIME_API_KEY,
-    buildEnv.WAKATIME_API_KEY,
   ]) {
     if (typeof value === "string" && value.trim()) return value.trim();
   }

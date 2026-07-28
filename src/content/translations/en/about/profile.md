@@ -23,6 +23,14 @@ A third-year student at the National School of Excellence in Engineering, Chongq
 
 This site was modified and rebuilt based on [Astro-star](https://github.com/hanlife02/Astro-star)
 
+This site is built and runs on [Cloudflare](https://www.cloudflare.com/) cloud services.
+
+[![Cloudflare](/images/cloudflare-logo.svg)](https://www.cloudflare.com/)
+
 Film and television information is provided by [The Movie Database (TMDB)](https://www.themoviedb.org/). This website uses the TMDB API.
 
-![The Movie Database](/images/tmdb-logo.svg)
+[![The Movie Database](/images/tmdb-logo.svg)](https://www.themoviedb.org/)
+
+This website uses the [Steam Web API](https://steamcommunity.com/dev).
+
+[![Steam](/images/steam-logo.svg)](https://steamcommunity.com/dev)

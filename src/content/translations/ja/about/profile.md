@@ -23,6 +23,14 @@ portrait: /images/content/about/profile-8646bdb863b8-w320.webp
 
 このサイトは [Astro-star](https://github.com/hanlife02/Astro-star) をベースに改変・再構築しています。
 
+本サイトは [Cloudflare](https://www.cloudflare.com/) のクラウドサービスを基盤として構築・運用されています。
+
+[![Cloudflare](/images/cloudflare-logo.svg)](https://www.cloudflare.com/)
+
 映像資料は [The Movie Database（TMDB）](https://www.themoviedb.org/) により提供されています。本サイトでは TMDB API を使用しています。
 
-![The Movie Database](/images/tmdb-logo.svg)
+[![The Movie Database](/images/tmdb-logo.svg)](https://www.themoviedb.org/)
+
+本サイトでは [Steam Web API](https://steamcommunity.com/dev) を使用しています。
+
+[![Steam](/images/steam-logo.svg)](https://steamcommunity.com/dev)

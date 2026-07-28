@@ -22,17 +22,14 @@ test("admin art and API paths are covered by the generic Access boundary", () =>
   const middleware = read("src/middleware.ts");
   assert.match(middleware, /pathname\.startsWith\("\/admin\/"\)/);
   assert.match(middleware, /pathname\.startsWith\("\/api\/admin\/"\)/);
-  assert.equal(existsSync(new URL("../functions/admin/_middleware.js", import.meta.url)), true);
-  assert.equal(existsSync(new URL("../functions/api/admin/_middleware.js", import.meta.url)), true);
 });
 
 test("cutover configuration uses the public image bucket and keeps no art sync hooks", () => {
   const packageJson = read("package.json");
-  const wrangler = read("wrangler.jsonc");
+  const wrangler = read("wrangler.astro.jsonc");
   assert.match(packageJson, /schema\/art\.sql/);
   assert.doesNotMatch(packageJson, /sync-art\.mjs/);
   assert.match(packageJson, /"deploy:cover-fetcher": "wrangler deploy --config wrangler\.art-cover-fetcher\.jsonc"/);
-  assert.match(packageJson, /"art:covers:migrate": "node scripts\/migrate-art-covers-to-images\.mjs"/);
   assert.match(packageJson, /"deploy": "npm run build && npm run deploy:cover-fetcher && wrangler deploy --config dist\/server\/wrangler\.json"/);
   assert.match(packageJson, /wrangler dev --config dist\/server\/wrangler\.json --persist-to \$INIT_CWD\/\.wrangler\/state/);
   assert.match(wrangler, /ART_COVERS/);
@@ -42,16 +39,6 @@ test("cutover configuration uses the public image bucket and keeps no art sync h
   assert.equal(existsSync(new URL("../src/lib/artData.ts", import.meta.url)), false);
   assert.equal(existsSync(new URL("../scripts/sync-art.mjs", import.meta.url)), false);
   assert.equal(existsSync(new URL("../public/images/content/art", import.meta.url)), false);
-});
-
-test("the cover migration verifies hashes before optional source deletion", () => {
-  const migration = read("scripts/migrate-art-covers-to-images.mjs");
-  assert.match(migration, /blog-art-covers/);
-  assert.match(migration, /blog-images/);
-  assert.match(migration, /createHash\("sha256"\)/);
-  assert.match(migration, /--delete-source/);
-  assert.match(migration, /Hash verification failed/);
-  assert.match(migration, /https:\/\/img\.muelsyse\.us/);
 });
 
 test("the Astro SSR Worker owns the art APIs and media route without a Pages origin fallback", () => {
@@ -66,8 +53,8 @@ test("the Astro SSR Worker owns the art APIs and media route without a Pages ori
   ]) {
     assert.equal(existsSync(new URL(`../${file}`, import.meta.url)), true);
   }
-  assert.equal(existsSync(new URL("../functions/[[path]].js", import.meta.url)), false);
-  assert.doesNotMatch(read("wrangler.jsonc"), /SSR_ORIGIN/);
+  assert.equal(existsSync(new URL("../functions", import.meta.url)), false);
+  assert.doesNotMatch(read("wrangler.astro.jsonc"), /SSR_ORIGIN/);
   assert.doesNotMatch(read("src/env.d.ts"), /SSR_ORIGIN/);
 });
 
@@ -95,7 +82,7 @@ test("cover-fetcher normalizes common JPEG MIME aliases", () => {
 
 test("the shared remote image fetcher accepts SVG only for the sanitized friend-avatar path", () => {
   const fetcher = read("workers/art-cover-fetcher.js");
-  const avatar = read("functions/api/friend-avatar.js");
+  const avatar = read("src/server/api/friend-avatar.js");
   const appConfig = read("wrangler.astro.jsonc");
 
   assert.match(fetcher, /image\/svg\+xml/);
@@ -128,7 +115,7 @@ test("deployment docs and CI target the Astro SSR Worker", () => {
   assert.match(workflow, /node-version: 22/);
   assert.doesNotMatch(workflow, /Deploy to Cloudflare Pages/);
   assert.match(readme, /wrangler secret put WAKA_TIME_API_KEY --name new-blog-ssr/);
-  assert.match(readme, /WAKATIME_API_KEY.*兼容/);
+  assert.match(readme, /WAKA_TIME_API_KEY/);
   assert.doesNotMatch(readme, /wrangler pages secret put/);
   assert.equal(existsSync(new URL("../LICENSE-ASTRO-STAR", import.meta.url)), true);
   assert.match(read("NOTICE"), /Astro-star 0\.16\.25/);
@@ -200,7 +187,7 @@ test("the preferred-edge Worker rejects cross-origin write requests", async () =
         "content-type": "application/json",
         origin: "https://evil.example",
       },
-      body: JSON.stringify({ contentId: "blog/first-note" }),
+      body: JSON.stringify({ contentId: "blog/example-post" }),
     }),
     {
       ORIGIN: {

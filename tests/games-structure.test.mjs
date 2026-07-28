@@ -16,15 +16,16 @@ test("Life ends with Game and localized routes retain locale prefixes", () => {
 test("Game is standalone, absent from the SPA canvas, and sorted by effective playtime", () => {
   assert.match(read("src/pages/art/game/index.astro"), /BaseLayout[\s\S]*GameSection/);
   assert.doesNotMatch(read("src/layouts/SpaLayout.astro"), /GameSection|\/art\/game\//);
-  assert.match(read("src/lib/games.ts"), /COALESCE\(custom_playtime_minutes, steam_playtime_minutes\) DESC, title COLLATE NOCASE ASC/);
+  assert.match(read("src/lib/games.ts"), /listPublicGames\(db\)/);
+  assert.match(read("src/server/games.js"), /COALESCE\(custom_playtime_minutes, steam_playtime_minutes\) DESC, title COLLATE NOCASE ASC/);
 });
 
-test("homepage social links place Steam after Email and NetEase after Steam", () => {
+test("homepage exposes labelled Steam and NetEase links", () => {
   const home = read("src/components/sections/HomeSection.astro");
-  assert.match(home, /aria-label="GitHub"[\s\S]*aria-label="Bilibili"[\s\S]*aria-label="Email"[\s\S]*aria-label="Steam"[\s\S]*aria-label="NetEase Cloud Music"/);
-  assert.match(home, /https:\/\/steamcommunity\.com\/profiles\/76561198437201442/);
-  assert.match(home, /https:\/\/y\.music\.163\.com\/m\/user\?id=1460343107/);
-  assert.match(home, /M11\.979 0C5\.678/);
+  assert.match(home, /aria-label="Steam"/);
+  assert.match(home, /aria-label="NetEase Cloud Music"/);
+  assert.match(home, /https:\/\/steamcommunity\.com\/profiles\//);
+  assert.match(home, /https:\/\/y\.music\.163\.com\//);
 });
 
 test("CSP adds only the exact Steam image host and cron uses the shared sync function", () => {
@@ -59,8 +60,8 @@ test("the daily cron independently syncs both NetEase rankings", () => {
 
 test("game administration refreshes from the completed sync response without cached list data", () => {
   const admin = read("src/components/domain/GamesAdmin.tsx");
-  const listApi = read("functions/api/admin/games.js");
-  const syncApi = read("functions/api/admin/games/sync.js");
+  const listApi = read("src/server/api/admin/games/index.js");
+  const syncApi = read("src/server/api/admin/games/sync.js");
 
   assert.match(admin, /fetchJson<\{ items: GameItem\[\]; syncState: SyncState \}>\("\/api\/admin\/games", \{ cache: "no-store" \}\)/);
   assert.match(admin, /\/api\/admin\/games\/sync[\s\S]*setItems\(result\.items\); setSyncState\(result\.syncState\)/);

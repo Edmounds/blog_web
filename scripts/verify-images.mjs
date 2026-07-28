@@ -42,7 +42,9 @@ for (const relativePath of requiredLocal) {
 const manifest = await readImageManifest(path.join(root, ".blog-images-manifest.json"));
 const manifestKeys = new Set(manifest.keys);
 for (const [fallback, asset] of Object.entries(manifest.assets)) {
-  if (fallback !== asset.fallback) errors.push(`${fallback} does not match its fallback field`);
+  if (!/^https:\/\/img\.muelsyse\.us\/(?:bed|blog)\//.test(fallback)) {
+    errors.push(`${fallback} is not a supported source URL`);
+  }
   for (const format of ["avif", "webp"]) {
     const variants = asset.sources?.[format] ?? [];
     if (variants.length === 0) errors.push(`${fallback} has no ${format} variants`);
@@ -63,7 +65,7 @@ if (process.argv.includes("--remote")) {
       await inspectWithWrangler({ bucket: "blog-images", key });
       const response = await fetch(`https://img.muelsyse.us/${key}`, { method: "HEAD", cache: "no-store" });
       if (!response.ok) errors.push(`${key} returned HTTP ${response.status}`);
-      const extension = path.extname(key).slice(1).replace("jpg", "jpeg");
+      const extension = key.endsWith(".avif.webp") ? "avif" : path.extname(key).slice(1).replace("jpg", "jpeg");
       if (!new RegExp(`image/${extension}`, "i").test(response.headers.get("content-type") ?? "")) {
         errors.push(`${key} has an unexpected remote MIME type`);
       }
