@@ -986,16 +986,16 @@
       "translation": "---\ntitle: Project 互動功能測試\ndescription: 用於驗證 Project 文章的瀏覽、按讚與留言功能。\ncreatedAt: 2026-07-27\npublished: true\ntags:\n  - Test\n---\n\n這是一篇用於檢查 Project 文章互動功能的臨時測試文章。\n\n請在頁面底部測試瀏覽計數、按讚按鈕和留言功能是否正常。"
     },
     "en:content.note.dongyeguiwu-passaway.md.document": {
-      "fingerprint": "9b0aab1d76ab9cd5571824d6b970e09a73577fcc705d03eef9795b268213e7c2",
-      "translation": "---\ntitle: test\ndescription: Double-fandom bliss!!! I finally came back after quitting the game for over a year! Well, I play this game just to pull for characters anyway.\ncreatedAt: 2026-07-26\npublished: true\n---"
+      "fingerprint": "b50a830239e05ce926bb2db96bc1d4536d7d503a2df544f7dd18cffffeda40e4",
+      "translation": "---\ntitle: Keigo Higashino Has Passed Away 😿\ndescription: Passed away from colorectal cancer at the age of 68\ncreatedAt: 2026-07-27\npublished: true\n---\n\n# My Impression of Keigo Higashino\n\tI think the first work by Keigo Higashino I encountered was *The Miracles of the Namiya General Store*.\n\tI remember it was during elementary school. I was spending my summer vacation at my cousin's house, and back then, without a phone or tablet to play with, I could only read books, so that was how I was introduced to Keigo Higashino."
     },
     "ja:content.note.dongyeguiwu-passaway.md.document": {
-      "fingerprint": "9b0aab1d76ab9cd5571824d6b970e09a73577fcc705d03eef9795b268213e7c2",
-      "translation": "---\ntitle: test\ndescription: 両方のファン歓喜！！！1年以上ゲームを離れていたけど、ついに復帰しました！まあ、このゲームをプレイしているのはガチャを引くためなんですけどね\ncreatedAt: 2026-07-26\npublished: true\n---"
+      "fingerprint": "b50a830239e05ce926bb2db96bc1d4536d7d503a2df544f7dd18cffffeda40e4",
+      "translation": "---\ntitle: 東野圭吾逝去😿\ndescription: 大腸がんで逝去　享年68歳\ncreatedAt: 2026-07-27\npublished: true\n---\n\n# 私の東野圭吾に対する印象\n\t私が初めて東野圭吾を知ったきっかけは、彼の『ナミヤ雑貨店の奇蹟』だったと思います。\n\t当時は小学生で、夏休みに従姉の家で遊んでいました。その頃は携帯電話もタブレットもなく、遊ぶものといえば本を読むことくらいだったので、そこで東野圭吾と出会いました。"
     },
     "zh-TW:content.note.dongyeguiwu-passaway.md.document": {
-      "fingerprint": "9b0aab1d76ab9cd5571824d6b970e09a73577fcc705d03eef9795b268213e7c2",
-      "translation": "---\ntitle: test\ndescription: 雙廚狂喜！！！退遊一年多後終於回歸了！好吧我玩這個遊戲就是為了抽卡來的\ncreatedAt: 2026-07-26\npublished: true\n---"
+      "fingerprint": "b50a830239e05ce926bb2db96bc1d4536d7d503a2df544f7dd18cffffeda40e4",
+      "translation": "---\ntitle: 東野圭吾逝世😿\ndescription: 因大腸癌逝世 享年68歲\ncreatedAt: 2026-07-27\npublished: true\n---\n\n# 我對東野圭吾的印象\n\t我第一次認識東野圭吾，應該是從他的《解憂雜貨店》開始\n\t我記得當時是小學，那時暑假在表姐家玩，那會兒沒有手機、平板可以玩，就只能看書了，於是便與東野圭吾結緣。"
     }
   }
 }
