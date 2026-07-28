@@ -28,15 +28,17 @@ test("navigation exposes the writing, links, and Life destinations", () => {
   assert.match(header, /localizePath\(item\.href, locale\)/);
 });
 
-test("desktop navigation can hide on scroll and reveal from the top edge", () => {
+test("desktop navigation stays hidden while scrolling and reveals from its full region", () => {
   const header = read("src/components/site/Header.astro");
 
-  assert.match(header, /data-header-reveal-zone/);
+  assert.match(header, /class="desktop-nav-region" data-header-reveal-zone/);
   assert.match(header, /desktopNav\.dataset\.hidden/);
   assert.match(header, /window\.addEventListener\(\s*"scroll"/);
-  assert.match(header, /currentScrollY > previousScrollY[\s\S]*setHidden\(true\)/);
-  assert.match(header, /currentScrollY < previousScrollY[\s\S]*setHidden\(false\)/);
+  assert.match(header, /currentScrollY <= header\.offsetHeight[\s\S]*else setHidden\(true\)/);
+  assert.doesNotMatch(header, /previousScrollY/);
   assert.match(header, /revealZone\.addEventListener\(\s*"pointerenter"/);
+  assert.match(header, /\.desktop-nav-region\s*\{[^}]*align-self:\s*stretch;/s);
+  assert.doesNotMatch(header, /height:\s*12px/);
   assert.match(header, /\.desktop-nav\[data-hidden="true"\]/);
   assert.doesNotMatch(header, /\.site-header\[data-hidden="true"\]/);
 });
