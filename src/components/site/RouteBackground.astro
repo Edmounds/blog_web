@@ -107,16 +107,15 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
         ? "constellation"
       : path === "/about/" || path === "/about"
         ? "rain"
-        : path === "/project/" ||
-            path === "/project" ||
-            path.startsWith("/project/") ||
-            path === "/art" ||
+        : path === "/art" ||
             path.startsWith("/art/")
           ? "constellation"
           : path === "/blog/" ||
-              path.startsWith("/blog/") ||
+              path === "/blog" ||
               path === "/note/" ||
-              path.startsWith("/note/")
+              path === "/note" ||
+              path === "/project/" ||
+              path === "/project"
             ? "grid"
             : "particles";
     root.setAttribute("data-active-kind", kind);
@@ -156,18 +155,15 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
     if (path.startsWith("/admin")) return "plain";
     if (path === "/links/" || path === "/links") return "constellation";
     if (path === "/about/" || path === "/about") return "rain";
-    if (
-      path === "/project/" ||
-      path.startsWith("/project/") ||
-      path === "/art" ||
-      path.startsWith("/art/")
-    )
+    if (path === "/art" || path.startsWith("/art/"))
       return "constellation";
     if (
       path === "/blog/" ||
-      path.startsWith("/blog/") ||
+      path === "/blog" ||
       path === "/note/" ||
-      path.startsWith("/note/")
+      path === "/note" ||
+      path === "/project/" ||
+      path === "/project"
     )
       return "grid";
     return "particles";
