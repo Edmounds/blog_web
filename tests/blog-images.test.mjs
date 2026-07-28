@@ -52,6 +52,7 @@ test("uploads AVIF/WebP variants and rewrites Typora paths to the largest WebP",
   assert.match(rewritten, /https:\/\/img\.muelsyse\.us\/blog\/[a-f0-9]{64}-w96\.webp/);
   assert.ok(rewritten.startsWith(bom));
   const asset = Object.values(manifest.assets)[0];
+  assert.equal(asset.kind, "responsive");
   assert.equal(asset.width, 96);
   assert.equal(asset.height, 64);
   assert.equal(asset.sources.avif.length, 1);
@@ -142,14 +143,14 @@ test("migrates a v1 manifest and defers stale object deletion", async () => {
 
   const result = await syncBlogImages({ root, upload: async () => assert.fail("no upload expected") });
   assert.equal(result.pendingDeletion, 1);
-  assert.deepEqual(await readManifest(root), { version: 2, assets: {}, keys: [keptKey], pendingDeletion: [staleKey] });
+  assert.deepEqual(await readManifest(root), { version: 3, assets: {}, keys: [keptKey], pendingDeletion: [staleKey] });
 });
 
 test("cleanup deletes only pending manifest-owned keys", async () => {
   const { root } = await createFixture();
   const activeKey = `blog/${"a".repeat(64)}.webp`;
   const staleKey = `blog/${"b".repeat(64)}.png`;
-  await writeManifest(root, { version: 2, assets: {}, keys: [activeKey], pendingDeletion: [staleKey] });
+  await writeManifest(root, { version: 3, assets: {}, keys: [activeKey], pendingDeletion: [staleKey] });
   const deleted = [];
   const verified = [];
 
@@ -161,7 +162,7 @@ test("cleanup deletes only pending manifest-owned keys", async () => {
   assert.equal(result.deleted, 1);
   assert.deepEqual(deleted, [{ bucket: "blog-images", key: staleKey }]);
   assert.deepEqual(verified, deleted);
-  assert.deepEqual(await readManifest(root), { version: 2, assets: {}, keys: [activeKey], pendingDeletion: [] });
+  assert.deepEqual(await readManifest(root), { version: 3, assets: {}, keys: [activeKey], pendingDeletion: [] });
 });
 
 test("sync keeps responsive variants for still-referenced Obsidian URLs", async () => {
@@ -171,9 +172,10 @@ test("sync keeps responsive variants for still-referenced Obsidian URLs", async 
   const webpKey = "bed/source-w96.webp";
   await writeFile(path.join(contentDir, "post.md"), `${bom}---\n---\n\n![Remote](${sourceUrl})\n`);
   await writeManifest(root, {
-    version: 2,
+    version: 3,
     assets: {
       [sourceUrl]: {
+        kind: "responsive",
         width: 96,
         height: 64,
         fallback: `https://img.muelsyse.us/${webpKey}`,
@@ -213,7 +215,10 @@ test("SVG and animated GIF images pass through unchanged", async () => {
   assert.deepEqual(new Set(uploads.map((image) => image.contentType)), new Set(["image/svg+xml", "image/gif"]));
   assert.match(rewritten, /[a-f0-9]{64}\.svg/);
   assert.match(rewritten, /[a-f0-9]{64}\.gif/);
-  assert.deepEqual((await readManifest(root)).assets, {});
+  const assets = Object.values((await readManifest(root)).assets);
+  assert.equal(assets.length, 2);
+  assert.ok(assets.every((asset) => asset.kind === "passthrough"));
+  assert.deepEqual(assets.map(({ width, height }) => [width, height]).sort((a, b) => a[0] - b[0]), [[8, 8], [20, 10]]);
 });
 
 test("rejects unsupported local image types before upload", async () => {

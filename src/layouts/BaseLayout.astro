@@ -26,6 +26,7 @@ interface Props {
   imageUrl?: string;
   ogType?: "website" | "article";
   hasMath?: boolean;
+  preconnectImageOrigin?: boolean;
 }
 
 const {
@@ -38,6 +39,7 @@ const {
   imageUrl = "/images/content/about/profile-8646bdb863b8-social.webp",
   ogType = "website",
   hasMath = false,
+  preconnectImageOrigin = false,
 } = Astro.props;
 const localizedSite = await getLocalizedSite(locale);
 const site =
@@ -87,7 +89,15 @@ if (!Astro.response.headers.has("Cache-Control"))
       type="font/woff2"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="/anthropic-fonts.css" />
+    <link
+      rel="preload"
+      href="/fonts/Allura-Last4ev3r.woff?v=1"
+      as="font"
+      type="font/woff"
+      crossorigin="anonymous"
+    />
+    {preconnectImageOrigin && <link rel="preconnect" href="https://img.muelsyse.us" crossorigin="anonymous" />}
+    {preconnectImageOrigin && <link rel="dns-prefetch" href="//img.muelsyse.us" />}
     {hasMath && <link rel="stylesheet" href="/katex.min.css" />}
     <link rel="canonical" href={canonicalUrl} />
     {
@@ -141,6 +151,15 @@ if (!Astro.response.headers.has("Cache-Control"))
         document.documentElement.dataset.theme = theme;
         document.documentElement.dataset.themeMode =
           mode === "dark" || mode === "light" ? mode : "system";
+        if (matchMedia("(min-width: 64.0625rem)").matches) {
+          const shellMax = Math.min(window.innerWidth * 0.92, 1800);
+          const shellLeft = (window.innerWidth - shellMax) / 2;
+          const padding = Math.min(Math.max(window.innerWidth * 0.018, 13.6), 22.4);
+          document.documentElement.style.setProperty(
+            "--content-frame-inline-start",
+            `${shellLeft + padding + Math.min(Math.max(window.innerWidth * 0.19, 168), 280)}px`,
+          );
+        }
       })();
     </script>
   </head>

@@ -64,7 +64,7 @@ const legendLevels = [0, 1, 2, 3, 4];
       const summary = root.querySelector('[data-github-summary]');
       if (!(months instanceof HTMLElement) || !(grid instanceof HTMLOListElement)) return;
 
-      fetch("/api/github-contributions.json", { headers: { accept: "application/json" } })
+      const load = () => fetch("/api/github-contributions.json", { headers: { accept: "application/json" } })
         .then((response) => response.ok ? response.json() as Promise<HeatmapPayload> : Promise.reject())
         .then((heatmap) => {
           root.dataset.state = heatmap.state;
@@ -94,6 +94,12 @@ const legendLevels = [0, 1, 2, 3, 4];
             : "GitHub contribution heatmap";
         })
         .catch(() => { root.dataset.state = "fallback"; });
+      const schedule = () => {
+        window.requestIdleCallback(load, { timeout: 1600 });
+      };
+      const overlay = document.querySelector('[data-loading-overlay][data-state]:not([data-state="idle"])');
+      if (overlay) window.addEventListener("loading-overlay:hidden", schedule, { once: true });
+      else requestAnimationFrame(() => requestAnimationFrame(schedule));
     });
   }
 

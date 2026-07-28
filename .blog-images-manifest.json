@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "assets": {
     "https://img.muelsyse.us/blog/feb3225984a3c83fc03f99f546c1452877c06c5efc10ae44cdabc05488f23930-w1908.webp": {
       "sourceDigest": "4a3df3a2b11f7b4820d43a6e19d8b23d3a0abacc576610fb897f7164a0feb804",
@@ -53,7 +53,8 @@
             "bytes": 48034
           }
         ]
-      }
+      },
+      "kind": "responsive"
     },
     "https://img.muelsyse.us/blog/7ecd34ebb1c7621c63ee37d5dcff42d6b8bb6ad2cbca423e78d22d00ba12acab-w2400.webp": {
       "sourceDigest": "e6e3a06a1bf5c1048ed8ee043b2e7af7a169443783e03d849d8acacef234f9fc",
@@ -121,7 +122,8 @@
             "bytes": 36884
           }
         ]
-      }
+      },
+      "kind": "responsive"
     },
     "https://img.muelsyse.us/blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w2400.webp": {
       "sourceDigest": "98cc0ceb21aaad94bf99ce31ef28b3ea543fd0f9767080a30caf73c97e5e1d7c",
@@ -189,7 +191,26 @@
             "bytes": 225968
           }
         ]
-      }
+      },
+      "kind": "responsive"
+    },
+    "https://img.muelsyse.us/blog/aef376fcd64e4d81a4330335441b6dcd1730c9d4336a59fb861ea8e9a083ffef.svg": {
+      "kind": "passthrough",
+      "width": 1040,
+      "height": 360,
+      "fallback": "https://img.muelsyse.us/blog/aef376fcd64e4d81a4330335441b6dcd1730c9d4336a59fb861ea8e9a083ffef.svg"
+    },
+    "https://img.muelsyse.us/blog/36357886a211c5a9e1f9664b9ecb190aa034a1fe9054c8cab2415e58a6783ab5.svg": {
+      "kind": "passthrough",
+      "width": 1040,
+      "height": 520,
+      "fallback": "https://img.muelsyse.us/blog/36357886a211c5a9e1f9664b9ecb190aa034a1fe9054c8cab2415e58a6783ab5.svg"
+    },
+    "https://img.muelsyse.us/blog/bd64bc8d70d86e5486ed4b4b895c2cb7ce2e9b72396fdd17d878dea078a9958a.svg": {
+      "kind": "passthrough",
+      "width": 1040,
+      "height": 390,
+      "fallback": "https://img.muelsyse.us/blog/bd64bc8d70d86e5486ed4b4b895c2cb7ce2e9b72396fdd17d878dea078a9958a.svg"
     }
   },
   "keys": [

@@ -25,7 +25,7 @@ test("About acknowledgements credit Cloudflare, TMDB, and Steam in order", () =>
     assert.ok(tmdb > cloudflare, `${path} must place TMDB after Cloudflare`);
     assert.ok(steam > tmdb, `${path} must place Steam last`);
     for (const logo of ["cloudflare", "tmdb", "steam"]) {
-      assert.match(profile, new RegExp(`\\[!\\[[^\\]]+\\]\\(\\/images\\/${logo}-logo\\.svg\\)\\]\\(`));
+      assert.match(profile, new RegExp(`\\[!\\[[^\\]]+\\]\\(\\/images\\/${logo}-logo\\.svg\\?v=20260728\\)\\]\\(`));
     }
   }
 });
@@ -39,13 +39,14 @@ test("About acknowledgement logos are local, accessible, and displayed as large 
   }
 
   const about = read("src/components/sections/AboutSection.astro");
-  assert.match(about, /img\[src\$="-logo\.svg"\]/);
+  assert.match(about, /img\[src\*="-logo\.svg"\]/);
   assert.match(about, /max-height:\s*4rem/);
-  assert.match(about, /p:has\(> a > img\[src\$="-logo\.svg"\]\)/);
+  assert.match(about, /p:has\(> a > img\[src\*="-logo\.svg"\]\)/);
 });
 
 test("translation cache preserves the reviewed localized acknowledgements", () => {
   const manifest = JSON.parse(read("src/i18n/translation-manifest.json"));
+  const normalize = (value) => value.trim().replace(/[ \t]+$/gm, "");
 
   for (const locale of ["en", "ja", "zh-TW"]) {
     const profile = read(`src/content/translations/${locale}/about/profile.md`).replace(/^\uFEFF/, "");
@@ -53,6 +54,6 @@ test("translation cache preserves the reviewed localized acknowledgements", () =
 
     assert.ok(cached, `${locale} About translation must be cached`);
     assert.match(cached.fingerprint, /^[a-f0-9]{64}$/);
-    assert.equal(cached.translation.trim(), profile.trim());
+    assert.equal(normalize(cached.translation), normalize(profile));
   }
 });

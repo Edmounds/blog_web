@@ -29,6 +29,7 @@ const updatedLabel = dateFormatter.format(item.updatedAt ?? item.createdAt);
 const canonicalPath = localizePath(`/${item.section}/${item.slug}/`, locale);
 const labels = site.copy;
 const hasMath = /(^|\n)\s*\$\$?|\\\(|\\\[/.test(item.entry.body ?? "");
+const preconnectImageOrigin = /https:\/\/img\.muelsyse\.us\//.test(item.entry.body ?? "");
 const sectionLabels = {
   blog: "Blog",
   note: "Note",
@@ -62,6 +63,7 @@ const articleJsonLd = JSON.stringify({
   locale={locale}
   ogType="article"
   hasMath={hasMath}
+  preconnectImageOrigin={preconnectImageOrigin}
 >
   <script
     slot="head"

@@ -24,8 +24,11 @@
 
     const FIRST_LOAD_KEY = "site-loader-seen";
     const ENTER_DELAY = 40;
-    const EXIT_DURATION = 420;
-    const MIN_INITIAL_DURATION = 760;
+    const INITIAL_MIN_MS = 240;
+    const INITIAL_FADE_MS = 220;
+    const INITIAL_MAX_MS = 1_500;
+    const IMAGE_DECODE_MAX_MS = 800;
+    const ROUTE_FADE_MS = 420;
     const browserWindow = window;
     let shownAt = 0;
     let hideTimer = 0;
@@ -63,7 +66,7 @@
         }, ENTER_DELAY);
       });
     };
-    const hide = ({ minimum = 0 } = {}) => {
+    const hide = ({ minimum = 0, fade = ROUTE_FADE_MS } = {}) => {
       const elapsed = shownAt ? performance.now() - shownAt : minimum;
       const wait = Math.max(0, minimum - elapsed);
       window.clearTimeout(hideTimer);
@@ -74,7 +77,10 @@
           overlay.setAttribute("aria-hidden", "true");
           document.documentElement.removeAttribute("data-loading");
           updateMainState(false);
-        }, EXIT_DURATION);
+          window.dispatchEvent(new CustomEvent("loading-overlay:hidden", {
+            detail: { mode: overlay.dataset.mode },
+          }));
+        }, fade);
       }, wait);
     };
 
@@ -89,12 +95,30 @@
     }
     if (firstVisit) {
       show("initial", "正在准备主页");
-      window.addEventListener(
-        "load",
-        () => hide({ minimum: MIN_INITIAL_DURATION }),
-        { once: true },
+      const twoFrames = new Promise((resolve) => requestAnimationFrame(() => {
+        requestAnimationFrame(resolve);
+      }));
+      const priorityImage = document.querySelector('img[fetchpriority="high"]');
+      const decodePriorityImage = priorityImage instanceof HTMLImageElement
+        ? Promise.race([
+            priorityImage.complete
+              ? priorityImage.decode().catch(() => {})
+              : new Promise((resolve) => {
+                  priorityImage.addEventListener("load", () => {
+                    void priorityImage.decode().catch(() => {}).finally(resolve);
+                  }, { once: true });
+                  priorityImage.addEventListener("error", resolve, { once: true });
+                }),
+            new Promise((resolve) => window.setTimeout(resolve, IMAGE_DECODE_MAX_MS)),
+          ])
+        : Promise.resolve();
+      Promise.all([twoFrames, decodePriorityImage]).then(() => {
+        hide({ minimum: INITIAL_MIN_MS, fade: INITIAL_FADE_MS });
+      });
+      window.setTimeout(
+        () => hide({ minimum: INITIAL_MIN_MS, fade: INITIAL_FADE_MS }),
+        INITIAL_MAX_MS,
       );
-      window.setTimeout(() => hide({ minimum: MIN_INITIAL_DURATION }), 8000);
     }
 
     const handlePageLoad = () => {
@@ -114,7 +138,7 @@
   const loaderWindow = window as typeof window & {
     __siteLoadingOverlay?: {
       show: (mode?: "initial" | "route", message?: string) => void;
-      hide: (options?: { minimum?: number }) => void;
+      hide: (options?: { minimum?: number; fade?: number }) => void;
     };
     __siteLoadingNavigationCleanup?: () => void;
   };
@@ -153,7 +177,7 @@
     visibility: hidden;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 420ms ease, visibility 420ms step-end;
+    transition: opacity 220ms ease, visibility 220ms step-end;
   }
 
   .loading-overlay[data-state="entering"],
@@ -161,7 +185,7 @@
   .loading-overlay[data-state="leaving"] {
     visibility: visible;
     pointer-events: auto;
-    transition: opacity 420ms ease, visibility 0s;
+    transition: opacity 220ms ease, visibility 0s;
   }
 
   .loading-overlay[data-state="entering"],

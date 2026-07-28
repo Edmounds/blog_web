@@ -49,7 +49,6 @@ const isActive = (href: string) =>
       href={localizePath("/", locale)}
       data-content-frame-start
       data-primary-route
-      data-astro-prefetch="viewport"
       aria-label="Last4ev3r home">Last4ev3r</a
     >
 
@@ -64,7 +63,6 @@ const isActive = (href: string) =>
           <a
             href={localizePath(item.href, locale)}
             data-primary-route
-            data-astro-prefetch="viewport"
             aria-current={isActive(item.href) ? "page" : undefined}
           >
             {item.label}
@@ -73,7 +71,6 @@ const isActive = (href: string) =>
       }
       <a
         href={localizePath(links.href, locale)}
-        data-astro-prefetch="viewport"
         aria-current={isActive(links.href) ? "page" : undefined}
         >{links.label}</a
       >
@@ -131,7 +128,6 @@ const isActive = (href: string) =>
           <a
             href={localizePath(item.href, locale)}
             data-primary-route
-            data-astro-prefetch="viewport"
             aria-current={isActive(item.href) ? "page" : undefined}
           >
             {item.label}
@@ -140,7 +136,6 @@ const isActive = (href: string) =>
       }
       <a
         href={localizePath(links.href, locale)}
-        data-astro-prefetch="viewport"
         aria-current={isActive(links.href) ? "page" : undefined}
         >{links.label}</a
       >
@@ -216,19 +211,15 @@ const isActive = (href: string) =>
         return;
       }
 
-      const style = getComputedStyle(frameStart);
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-      if (!context) return;
-      context.font = style.font;
-      context.fontKerning = style.fontKerning as CanvasFontKerning;
-
-      const metrics = context.measureText(frameStart.textContent?.trim() ?? "");
       const startRect = frameStart.getBoundingClientRect();
       const endRect = frameEnd.getBoundingClientRect();
       const viewportWidth = document.documentElement.clientWidth;
-      const glyphRight = metrics.actualBoundingBoxRight || metrics.width;
-      const inlineStart = startRect.left + glyphRight;
+      const signatureTrack = Number.parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue(
+          "--signature-track-width",
+        ),
+      );
+      const inlineStart = startRect.left + signatureTrack;
       const inlineEnd = viewportWidth - endRect.left;
 
       if (inlineStart >= endRect.left) {
@@ -249,11 +240,6 @@ const isActive = (href: string) =>
       if (frameId) cancelAnimationFrame(frameId);
       frameId = requestAnimationFrame(syncContentFrame);
     };
-    const frameObserver = new ResizeObserver(scheduleContentFrame);
-    frameObserver.observe(frameStart);
-    frameObserver.observe(frameEnd);
-    frameObserver.observe(header);
-
     const lifeIsOpen = () =>
       lifeTrigger?.getAttribute("aria-expanded") === "true";
     const navHasFocus = () => desktopNav.contains(document.activeElement);
@@ -430,10 +416,8 @@ const isActive = (href: string) =>
 
     desktopNav.dataset.hidden = "false";
     scheduleContentFrame();
-    document.fonts.ready.then(scheduleContentFrame);
     const cleanup = () => {
       controller.abort();
-      frameObserver.disconnect();
       if (frameId) cancelAnimationFrame(frameId);
     };
     document.addEventListener("astro:before-swap", cleanup, {
@@ -482,7 +466,7 @@ const isActive = (href: string) =>
   }
   .site-signature {
     display: flex;
-    width: min(100%, clamp(10.5rem, 34vw, 23.75rem));
+    width: min(100%, var(--signature-track-width));
     min-height: clamp(2.75rem, 7vh, 4rem);
     align-items: flex-end;
     justify-self: start;

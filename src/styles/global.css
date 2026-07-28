@@ -1,5 +1,37 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Biotif";
+  src: url("/fonts/Biotif-Regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Biotif";
+  src: url("/fonts/Biotif-Medium.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Biotif";
+  src: url("/fonts/Biotif-SemiBold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Biotif";
+  src: url("/fonts/Biotif-Bold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 *,
@@ -123,6 +155,10 @@ html.dark {
   --space: clamp(0.1rem, 0.2vw, 1.25rem);
   --header-main-gap: clamp(1.25rem, 1.4vw, 2.75rem);
   --content-padding: clamp(0.85rem, 1.8vw, 1.4rem);
+  --signature-track-width: clamp(10.5rem, 19vw, 17.5rem);
+  --font-ui: "Biotif", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --font-ui-serif: var(--font-ui);
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
   --content-mobile-padding: clamp(1.5rem, 5vw, 3rem);
   --content-frame-inline-start: max(
     var(--content-padding),
@@ -191,6 +227,17 @@ kbd,
 pre,
 samp {
   font-family: var(--font-mono);
+}
+
+.ui-prose :where(.article-picture, img) {
+  display: block;
+  max-width: 100%;
+  background: var(--surface-soft);
+}
+
+.ui-prose .article-picture > img {
+  width: 100%;
+  height: auto;
 }
 
 .app-container {

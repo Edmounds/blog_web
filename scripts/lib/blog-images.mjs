@@ -12,7 +12,7 @@ const DEFAULT_BUCKET = "blog-images";
 const DEFAULT_PUBLIC_URL = "https://img.muelsyse.us";
 const CACHE_CONTROL = "public, max-age=31536000, immutable";
 const MANIFEST_FILE = ".blog-images-manifest.json";
-const MANIFEST_VERSION = 2;
+const MANIFEST_VERSION = 3;
 export const CONTENT_GROUPS = ["blog", "note", "project"];
 
 const contentTypes = new Map([
@@ -142,6 +142,14 @@ export const writeImageManifest = (manifestPath, manifest) => atomicWrite(
 
 const assetUrl = (publicUrl, key) => `${publicUrl.replace(/\/$/, "")}/${key}`;
 
+const readSvgDimensions = (source) => {
+  const width = source.match(/\bwidth=["']([\d.]+)(?:px)?["']/i)?.[1];
+  const height = source.match(/\bheight=["']([\d.]+)(?:px)?["']/i)?.[1];
+  if (width && height) return { width: Math.round(Number(width)), height: Math.round(Number(height)) };
+  const viewBox = source.match(/\bviewBox=["']\s*[-\d.]+\s+[-\d.]+\s+([\d.]+)\s+([\d.]+)\s*["']/i);
+  return viewBox ? { width: Math.round(Number(viewBox[1])), height: Math.round(Number(viewBox[2])) } : {};
+};
+
 export const createManagedImage = async ({
   filePath,
   publicUrl = DEFAULT_PUBLIC_URL,
@@ -158,10 +166,19 @@ export const createManagedImage = async ({
 
   if (!rasterExtensions.has(extension)) {
     const key = `blog/${digest}${extension}`;
+    const dimensions = extension === ".svg"
+      ? readSvgDimensions(bytes.toString("utf8"))
+      : await sharp(filePath, { animated: true }).metadata();
+    const url = assetUrl(publicUrl, key);
     return {
-      sourceUrl: assetUrl(publicUrl, key),
-      fallbackUrl: assetUrl(publicUrl, key),
-      manifestAsset: undefined,
+      sourceUrl: url,
+      fallbackUrl: url,
+      manifestAsset: {
+        kind: "passthrough",
+        width: dimensions.width,
+        height: dimensions.height,
+        fallback: url,
+      },
       uploads: [{ filePath, key, contentType, cacheControl: CACHE_CONTROL }],
     };
   }
@@ -169,10 +186,17 @@ export const createManagedImage = async ({
   const frameCount = (await sharp(filePath, { animated: true }).metadata()).pages ?? 1;
   if (frameCount > 1) {
     const key = `blog/${digest}${extension}`;
+    const metadata = await sharp(filePath, { animated: true }).metadata();
+    const url = assetUrl(publicUrl, key);
     return {
-      sourceUrl: assetUrl(publicUrl, key),
-      fallbackUrl: assetUrl(publicUrl, key),
-      manifestAsset: undefined,
+      sourceUrl: url,
+      fallbackUrl: url,
+      manifestAsset: {
+        kind: "passthrough",
+        width: metadata.width,
+        height: metadata.pageHeight ?? metadata.height,
+        fallback: url,
+      },
       uploads: [{ filePath, key, contentType, cacheControl: CACHE_CONTROL }],
     };
   }
@@ -209,6 +233,7 @@ export const createManagedImage = async ({
     sourceUrl: fallback,
     fallbackUrl: fallback,
     manifestAsset: {
+      kind: "responsive",
       sourceDigest: responsive.digest,
       width: responsive.width,
       height: responsive.height,
@@ -253,6 +278,25 @@ const collectRemoteRasterReferences = (source, publicUrl) => {
   return references;
 };
 
+const collectRemotePassthroughReferences = (source, publicUrl) => {
+  const references = new Map();
+  const baseUrl = `${publicUrl.replace(/\/$/, "")}/`;
+  for (const match of source.matchAll(/!\[[^\]\n]*\]\(/g)) {
+    const destinationStart = match.index + match[0].length;
+    const destinationEnd = findMarkdownImageClose(source, destinationStart);
+    if (destinationEnd === -1) continue;
+    const parts = splitDestinationAndTitle(source.slice(destinationStart, destinationEnd));
+    const split = parts && splitMarkdownDestination(parts.pathDestination);
+    if (!split?.path.startsWith(baseUrl)) continue;
+    let url;
+    try { url = new URL(split.path); } catch { continue; }
+    const key = decodeURIComponent(url.pathname.slice(1));
+    if (!/^(?:bed|blog)\/.+\.(?:gif|svg)$/i.test(key)) continue;
+    references.set(url.href, { url: url.href, key });
+  }
+  return references;
+};
+
 const responsiveBaseKey = (key) => {
   const extension = path.posix.extname(key);
   return key.slice(0, -extension.length).replace(/-w\d+$/i, "");
@@ -284,6 +328,9 @@ export const syncBlogImages = async ({
       for (const reference of references) localPaths.add(reference.localPath);
       for (const key of collectManagedKeys(source, publicUrl)) referencedKeys.add(key);
       for (const reference of collectRemoteRasterReferences(source, publicUrl).values()) {
+        referencedSourceUrls.add(reference.url);
+      }
+      for (const reference of collectRemotePassthroughReferences(source, publicUrl).values()) {
         referencedSourceUrls.add(reference.url);
       }
       articles.push({ filePath, source, references });
@@ -325,7 +372,9 @@ export const syncBlogImages = async ({
     const uploadedKeys = new Set(uploadsByKey.keys());
     const assets = {};
     for (const [fallbackUrl, asset] of Object.entries(previous.assets)) {
-      const assetKeys = Object.values(asset.sources ?? {}).flat().map((variant) => new URL(variant.url).pathname.slice(1));
+      const assetKeys = asset.kind === "responsive"
+        ? Object.values(asset.sources ?? {}).flat().map((variant) => new URL(variant.url).pathname.slice(1))
+        : [new URL(asset.fallback ?? fallbackUrl).pathname.slice(1)];
       if (
         referencedSourceUrls.has(fallbackUrl)
         || assetKeys.some((key) => (referencedKeys.has(key) || uploadedKeys.has(key)) && !key.endsWith(".avif"))
@@ -396,6 +445,9 @@ export const migrateBlogImages = async ({
     for (const filePath of await walkContentFiles(path.join(root, "src/content", group))) {
       const source = await readFile(filePath, "utf8");
       for (const reference of collectRemoteRasterReferences(source, publicUrl).values()) {
+        if (!previous.assets[reference.url]) urls.set(reference.url, reference.key);
+      }
+      for (const reference of collectRemotePassthroughReferences(source, publicUrl).values()) {
         if (!previous.assets[reference.url]) urls.set(reference.url, reference.key);
       }
     }

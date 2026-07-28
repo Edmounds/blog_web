@@ -145,7 +145,7 @@ const latestBlocks = [
     <div class="profile-metrics">
       <img
         class="codetime-badge"
-        src="/api/wakatime-badge.svg"
+        data-src="/api/wakatime-badge.svg"
         alt="Total coding time"
         width="240"
         height="28"
@@ -213,13 +213,25 @@ const latestBlocks = [
       )
         return;
       image.dataset.bound = "true";
+      const loadImage = () => {
+        if (!image.src && image.dataset.src) image.src = image.dataset.src;
+      };
       image.addEventListener("load", () => {
         if (image.naturalWidth > 1) image.hidden = false;
       });
       image.addEventListener("error", () => {
         image.hidden = true;
       });
-      if (image.complete && image.naturalWidth > 1) image.hidden = false;
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries) => {
+          if (!entries.some((entry) => entry.isIntersecting)) return;
+          observer.disconnect();
+          loadImage();
+        }, { rootMargin: "240px" });
+        observer.observe(image);
+      } else {
+        globalThis.setTimeout(loadImage, 3000);
+      }
     });
   }
   revealWakatime();

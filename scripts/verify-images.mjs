@@ -45,6 +45,14 @@ for (const [fallback, asset] of Object.entries(manifest.assets)) {
   if (!/^https:\/\/img\.muelsyse\.us\/(?:bed|blog)\//.test(fallback)) {
     errors.push(`${fallback} is not a supported source URL`);
   }
+  if (asset.kind === "passthrough") {
+    if (!Number.isInteger(asset.width) || asset.width <= 0) errors.push(`${fallback} has invalid width`);
+    if (!Number.isInteger(asset.height) || asset.height <= 0) errors.push(`${fallback} has invalid height`);
+    const key = new URL(asset.fallback).pathname.slice(1);
+    if (!manifestKeys.has(key)) errors.push(`${asset.fallback} is not manifest-owned`);
+    continue;
+  }
+  if (asset.kind !== "responsive") errors.push(`${fallback} has an invalid kind`);
   for (const format of ["avif", "webp"]) {
     const variants = asset.sources?.[format] ?? [];
     if (variants.length === 0) errors.push(`${fallback} has no ${format} variants`);
@@ -91,5 +99,5 @@ if (errors.length > 0) {
   console.error(errors.join("\n"));
   process.exitCode = 1;
 } else {
-  console.log(`Image verification passed: ${requiredLocal.length} local files, ${Object.keys(manifest.assets).length} responsive R2 assets.`);
+  console.log(`Image verification passed: ${requiredLocal.length} local files, ${Object.keys(manifest.assets).length} managed R2 assets.`);
 }

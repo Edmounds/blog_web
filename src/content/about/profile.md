@@ -25,12 +25,12 @@ portrait: /images/content/about/profile-8646bdb863b8-w320.webp
 
 本站基于 [Cloudflare](https://www.cloudflare.com/) 的云服务构建与运行
 
-[![Cloudflare](/images/cloudflare-logo.svg)](https://www.cloudflare.com/)
+[![Cloudflare](/images/cloudflare-logo.svg?v=20260728)](https://www.cloudflare.com/)
 
 影视资料由 [The Movie Database（TMDB）](https://www.themoviedb.org/) 提供 本网站使用 TMDB API
 
-[![The Movie Database](/images/tmdb-logo.svg)](https://www.themoviedb.org/)
+[![The Movie Database](/images/tmdb-logo.svg?v=20260728)](https://www.themoviedb.org/)
 
 本网站使用 [Steam Web API](https://steamcommunity.com/dev)
 
-[![Steam](/images/steam-logo.svg)](https://steamcommunity.com/dev)
+[![Steam](/images/steam-logo.svg?v=20260728)](https://steamcommunity.com/dev)
