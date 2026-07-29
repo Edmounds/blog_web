@@ -55,6 +55,7 @@ const isActive = (href: string) =>
         class="desktop-nav"
         data-desktop-nav
         data-hidden="false"
+        data-interactive="true"
         aria-label="Primary navigation"
       >
         {
@@ -160,6 +161,7 @@ const isActive = (href: string) =>
 
 <script>
   type HeaderWindow = Window & { __siteHeaderCleanup?: () => void };
+  const DESKTOP_NAV_REVEAL_INTERACTION_MS = 180;
 
   function bindHeader() {
     const headerWindow = window as HeaderWindow;
@@ -193,6 +195,7 @@ const isActive = (href: string) =>
 
     let pointerInsideNavRegion = false;
     let frameId = 0;
+    let interactionTimer = 0;
 
     const clearContentFrame = () => {
       document.documentElement.style.removeProperty(
@@ -249,15 +252,35 @@ const isActive = (href: string) =>
     const lifeIsOpen = () =>
       lifeTrigger?.getAttribute("aria-expanded") === "true";
     const navHasFocus = () => desktopNav.contains(document.activeElement);
-    const setHidden = (hidden: boolean) => {
-      desktopNav.dataset.hidden = String(
+    const clearInteractionTimer = () => {
+      if (!interactionTimer) return;
+      window.clearTimeout(interactionTimer);
+      interactionTimer = 0;
+    };
+    const setInteractive = (interactive: boolean) => {
+      clearInteractionTimer();
+      desktopNav.dataset.interactive = String(interactive);
+    };
+    const deferInteractionAfterReveal = () => {
+      clearInteractionTimer();
+      desktopNav.dataset.interactive = "false";
+      interactionTimer = window.setTimeout(() => {
+        interactionTimer = 0;
+        if (desktopNav.dataset.hidden !== "true")
+          desktopNav.dataset.interactive = "true";
+      }, DESKTOP_NAV_REVEAL_INTERACTION_MS);
+    };
+    const setHidden = (hidden: boolean, interactive = true) => {
+      const nextHidden =
         hidden &&
-          desktopLayout.matches &&
-          window.scrollY > header.offsetHeight &&
-          !lifeIsOpen() &&
-          !pointerInsideNavRegion &&
-          !navHasFocus(),
-      );
+        desktopLayout.matches &&
+        window.scrollY > header.offsetHeight &&
+        !lifeIsOpen() &&
+        !pointerInsideNavRegion &&
+        !navHasFocus();
+      desktopNav.dataset.hidden = String(nextHidden);
+      if (nextHidden) setInteractive(false);
+      else if (!interactionTimer) setInteractive(interactive);
     };
     const syncAfterMenuChange = () =>
       requestAnimationFrame(() => {
@@ -346,7 +369,10 @@ const isActive = (href: string) =>
       "pointerenter",
       () => {
         pointerInsideNavRegion = true;
-        if (desktopPointer.matches) setHidden(false);
+        if (!desktopPointer.matches) return;
+        const wasHidden = desktopNav.dataset.hidden === "true";
+        setHidden(false, !wasHidden);
+        if (wasHidden) deferInteractionAfterReveal();
       },
       { signal },
     );
@@ -397,12 +423,14 @@ const isActive = (href: string) =>
     );
 
     desktopNav.dataset.hidden = "false";
+    desktopNav.dataset.interactive = "true";
     scheduleContentFrame();
     document.fonts.ready.then(scheduleContentFrame);
     const cleanup = () => {
       controller.abort();
       frameObserver.disconnect();
       if (frameId) cancelAnimationFrame(frameId);
+      clearInteractionTimer();
     };
     document.addEventListener("astro:before-swap", cleanup, {
       once: true,
@@ -473,6 +501,9 @@ const isActive = (href: string) =>
     visibility: hidden;
     opacity: 0;
     transform: translateY(-100%);
+    pointer-events: none;
+  }
+  .desktop-nav[data-interactive="false"] {
     pointer-events: none;
   }
   .desktop-nav > a,

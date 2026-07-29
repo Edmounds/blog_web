@@ -32,14 +32,18 @@ test("desktop navigation stays hidden while scrolling and reveals from its full 
   const header = read("src/components/site/Header.astro");
 
   assert.match(header, /class="desktop-nav-region" data-header-reveal-zone/);
+  assert.match(header, /data-interactive="true"/);
   assert.match(header, /desktopNav\.dataset\.hidden/);
+  assert.match(header, /desktopNav\.dataset\.interactive/);
   assert.match(header, /window\.addEventListener\(\s*"scroll"/);
   assert.match(header, /currentScrollY <= header\.offsetHeight[\s\S]*else setHidden\(true\)/);
   assert.doesNotMatch(header, /previousScrollY/);
   assert.match(header, /revealZone\.addEventListener\(\s*"pointerenter"/);
+  assert.match(header, /DESKTOP_NAV_REVEAL_INTERACTION_MS/);
   assert.match(header, /\.desktop-nav-region\s*\{[^}]*align-self:\s*stretch;/s);
   assert.doesNotMatch(header, /height:\s*12px/);
   assert.match(header, /\.desktop-nav\[data-hidden="true"\]/);
+  assert.match(header, /\.desktop-nav\[data-interactive="false"\]/);
   assert.doesNotMatch(header, /\.site-header\[data-hidden="true"\]/);
 });
 
