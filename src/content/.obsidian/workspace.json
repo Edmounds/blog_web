@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "note/dongyeguiwu-passaway.md",
+                "file": "blog/architecture-repot.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "dongyeguiwu-passaway"
+              "title": "architecture-repot"
             }
           }
         ]
@@ -164,13 +164,23 @@
               "icon": "lucide-list",
               "title": "dongyeguiwu-passaway 的大纲"
             }
+          },
+          {
+            "id": "eb2a6754540c3c8c",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
+            }
           }
-        ]
+        ],
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -180,13 +190,16 @@
       "daily-notes:打开/创建今天的日记": false,
       "templates:插入模板": false,
       "command-palette:打开命令面板": false,
-      "bases:新建数据库": false
+      "bases:新建数据库": false,
+      "obsidian-git:Open Git source control": false
     }
   },
   "active": "d81ef78abac64140",
   "lastOpenFiles": [
-    "note/arknights-p3r.md",
     "note/dongyeguiwu-passaway.md",
+    "blog/architecture-repot.md",
+    "architecture-repot.md",
+    "note/arknights-p3r.md",
     "note/_empty.md",
     "blog/websit-architecture.md",
     "translations/zh-TW/about/profile.md",
