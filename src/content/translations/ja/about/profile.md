@@ -23,14 +23,6 @@ portrait: /images/content/about/profile-8646bdb863b8-w320.webp
 
 このサイトは [Astro-star](https://github.com/hanlife02/Astro-star) をもとに改変・再構築されています。
 
-このサイトは [Cloudflare](https://www.cloudflare.com/) のクラウドサービスを利用して構築・運用されています。
+本サイトでは以下のサービスを使用しています。
 
-<a class="acknowledgement-logo" href="https://www.cloudflare.com/"><img src="/images/cloudflare-logo.svg?v=20260728" alt="Cloudflare" width="300" height="64" loading="eager" decoding="async"></a>
-
-映画・ドラマの情報は [The Movie Database（TMDB）](https://www.themoviedb.org/) により提供されています。本サイトでは TMDB API を使用しています。
-
-<a class="acknowledgement-logo" href="https://www.themoviedb.org/"><img src="/images/tmdb-logo.svg?v=20260728" alt="The Movie Database" width="300" height="64" loading="eager" decoding="async"></a>
-
-本サイトでは [Steam Web API](https://steamcommunity.com/dev) を使用しています。
-
-<a class="acknowledgement-logo" href="https://steamcommunity.com/dev"><img src="/images/steam-logo.svg?v=20260728" alt="Steam" width="240" height="64" loading="eager" decoding="async"></a>
+<div class="acknowledgement-logos"><a class="acknowledgement-logo" href="https://www.cloudflare.com/"><img src="/images/cloudflare-logo.svg?v=20260728" alt="Cloudflare" width="300" height="64" loading="eager" decoding="async"></a><a class="acknowledgement-logo" href="https://www.themoviedb.org/"><img src="/images/tmdb-logo.svg?v=20260728" alt="The Movie Database" width="300" height="64" loading="eager" decoding="async"></a><a class="acknowledgement-logo" href="https://steamcommunity.com/dev"><img src="/images/steam-logo.svg?v=20260728" alt="Steam" width="240" height="64" loading="eager" decoding="async"></a></div>

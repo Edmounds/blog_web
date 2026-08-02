@@ -23,14 +23,6 @@ A third-year student at Chongqing University’s National College of Excellence 
 
 This site was modified and rebuilt based on [Astro-star](https://github.com/hanlife02/Astro-star).
 
-This site was built and operates using cloud services provided by [Cloudflare](https://www.cloudflare.com/).
+This site uses the following services:
 
-<a class="acknowledgement-logo" href="https://www.cloudflare.com/"><img src="/images/cloudflare-logo.svg?v=20260728" alt="Cloudflare" width="300" height="64" loading="eager" decoding="async"></a>
-
-Film and television data is provided by [The Movie Database (TMDB)](https://www.themoviedb.org/). This website uses the TMDB API.
-
-<a class="acknowledgement-logo" href="https://www.themoviedb.org/"><img src="/images/tmdb-logo.svg?v=20260728" alt="The Movie Database" width="300" height="64" loading="eager" decoding="async"></a>
-
-This website uses the [Steam Web API](https://steamcommunity.com/dev).
-
-<a class="acknowledgement-logo" href="https://steamcommunity.com/dev"><img src="/images/steam-logo.svg?v=20260728" alt="Steam" width="240" height="64" loading="eager" decoding="async"></a>
+<div class="acknowledgement-logos"><a class="acknowledgement-logo" href="https://www.cloudflare.com/"><img src="/images/cloudflare-logo.svg?v=20260728" alt="Cloudflare" width="300" height="64" loading="eager" decoding="async"></a><a class="acknowledgement-logo" href="https://www.themoviedb.org/"><img src="/images/tmdb-logo.svg?v=20260728" alt="The Movie Database" width="300" height="64" loading="eager" decoding="async"></a><a class="acknowledgement-logo" href="https://steamcommunity.com/dev"><img src="/images/steam-logo.svg?v=20260728" alt="Steam" width="240" height="64" loading="eager" decoding="async"></a></div>

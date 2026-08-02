@@ -48,6 +48,7 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
   class="route-background"
   data-route-background
   data-path={currentPath}
+  data-nosnippet
   aria-hidden="true"
 >
   <div
@@ -76,10 +77,8 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
     {
       drops.map((drop) => (
         <span
-          style={`--x:${drop.left}%;--size:${drop.size}px;--duration:${drop.duration}s;--delay:${drop.delay}s;--opacity:${drop.opacity}`}
-        >
-          {drop.word}
-        </span>
+          style={`--word:"${drop.word}";--x:${drop.left}%;--size:${drop.size}px;--duration:${drop.duration}s;--delay:${drop.delay}s;--opacity:${drop.opacity}`}
+        />
       ))
     }
   </div>
@@ -518,6 +517,10 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
     white-space: nowrap;
     opacity: var(--opacity);
     animation: code-rain var(--duration) linear var(--delay) infinite;
+  }
+
+  .route-background__rain span::before {
+    content: var(--word);
   }
 
   .route-background__constellation {

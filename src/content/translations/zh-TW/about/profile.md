@@ -23,14 +23,6 @@ portrait: /images/content/about/profile-8646bdb863b8-w320.webp
 
 本站基於 [Astro-star](https://github.com/hanlife02/Astro-star) 修改與重建
 
-本站基於 [Cloudflare](https://www.cloudflare.com/) 的雲端服務建構與運作
+本站使用以下服務
 
-<a class="acknowledgement-logo" href="https://www.cloudflare.com/"><img src="/images/cloudflare-logo.svg?v=20260728" alt="Cloudflare" width="300" height="64" loading="eager" decoding="async"></a>
-
-影視資料由 [The Movie Database（TMDB）](https://www.themoviedb.org/) 提供，本網站使用 TMDB API
-
-<a class="acknowledgement-logo" href="https://www.themoviedb.org/"><img src="/images/tmdb-logo.svg?v=20260728" alt="The Movie Database" width="300" height="64" loading="eager" decoding="async"></a>
-
-本網站使用 [Steam Web API](https://steamcommunity.com/dev)
-
-<a class="acknowledgement-logo" href="https://steamcommunity.com/dev"><img src="/images/steam-logo.svg?v=20260728" alt="Steam" width="240" height="64" loading="eager" decoding="async"></a>
+<div class="acknowledgement-logos"><a class="acknowledgement-logo" href="https://www.cloudflare.com/"><img src="/images/cloudflare-logo.svg?v=20260728" alt="Cloudflare" width="300" height="64" loading="eager" decoding="async"></a><a class="acknowledgement-logo" href="https://www.themoviedb.org/"><img src="/images/tmdb-logo.svg?v=20260728" alt="The Movie Database" width="300" height="64" loading="eager" decoding="async"></a><a class="acknowledgement-logo" href="https://steamcommunity.com/dev"><img src="/images/steam-logo.svg?v=20260728" alt="Steam" width="240" height="64" loading="eager" decoding="async"></a></div>
