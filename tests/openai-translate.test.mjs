@@ -21,8 +21,53 @@ test("OpenAI-compatible client sends a Chat Completions request", async () => {
   assert.equal(request.init.headers.authorization, "Bearer secret");
   const body = JSON.parse(request.init.body);
   assert.equal(body.model, "translation-model");
+  assert.equal(body.stream, true);
   assert.match(body.messages[1].content, /Traditional Chinese/);
   assert.match(body.messages[1].content, /你好/);
+});
+
+test("OpenAI-compatible client resets its timeout while streamed translation data keeps arriving", async () => {
+  const encoder = new TextEncoder();
+  const translate = createOpenAITranslateClient({
+    baseUrl: "https://openai.example/v1",
+    apiKey: "secret",
+    model: "translation-model",
+    retries: 1,
+    timeoutMs: 80,
+    fetchImpl: async () => new Response(new ReadableStream({
+      async start(controller) {
+        for (const content of ["A", "B", "C"]) {
+          await new Promise((resolve) => setTimeout(resolve, 45));
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ choices: [{ delta: { content } }] })}\n\n`));
+        }
+        controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+        controller.close();
+      },
+    }), { status: 200, headers: { "content-type": "text/event-stream" } }),
+  });
+
+  assert.equal(await translate({ text: "很长的文章", sourceLang: "ZH", targetLang: "EN" }), "ABC");
+});
+
+test("OpenAI-compatible client times out after streamed translation data stops arriving", async () => {
+  const translate = createOpenAITranslateClient({
+    baseUrl: "https://openai.example/v1",
+    apiKey: "secret",
+    model: "translation-model",
+    retries: 1,
+    timeoutMs: 20,
+    fetchImpl: async (_url, init) => new Response(new ReadableStream({
+      start(controller) {
+        controller.enqueue(new TextEncoder().encode('data: {"choices":[{"delta":{"content":"A"}}]}\n\n'));
+        init.signal.addEventListener("abort", () => controller.error(init.signal.reason), { once: true });
+      },
+    }), { status: 200, headers: { "content-type": "text/event-stream" } }),
+  });
+
+  await assert.rejects(
+    () => translate({ text: "暂停返回的文章", sourceLang: "ZH", targetLang: "EN" }),
+    (error) => error?.name === "AbortError" || error?.name === "TimeoutError",
+  );
 });
 
 test("OpenAI-compatible client requests one complete Markdown document translation", async () => {
@@ -89,6 +134,11 @@ test("translation script keeps an OpenAI segment fallback for complete Markdown 
   assert.match(source, /collectMarkdownSegments\(source\.content\)/);
   assert.match(source, /replaceMarkdownSegments\(source\.content, translatedSegments\)/);
   assert.match(source, /imageLabels\[imageIndex\+\+\]/);
+});
+
+test("translation script skips Markdown documents explicitly marked unpublished", async () => {
+  const source = await readFile(new URL("../scripts/translate.mjs", import.meta.url), "utf8");
+  assert.match(source, /matter\(raw\.replace\(\/\^\\uFEFF\/, ""\)\)\.data\.published === false/);
 });
 
 test("deployment passes OpenAI translation secrets to the build", async () => {
