@@ -95,7 +95,9 @@ const legendLevels = [0, 1, 2, 3, 4];
         })
         .catch(() => { root.dataset.state = "fallback"; });
       const schedule = () => {
-        window.requestIdleCallback(load, { timeout: 1600 });
+        const requestIdle = window.requestIdleCallback?.bind(window);
+        if (requestIdle) requestIdle(load, { timeout: 1600 });
+        else window.setTimeout(load, 0);
       };
       const overlay = document.querySelector('[data-loading-overlay][data-state]:not([data-state="idle"])');
       if (overlay) window.addEventListener("loading-overlay:hidden", schedule, { once: true });

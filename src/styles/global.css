@@ -192,6 +192,7 @@ body {
 
 html {
   scroll-behavior: smooth;
+  scrollbar-gutter: stable both-edges;
   background: var(--canvas);
 }
 
@@ -778,6 +779,7 @@ html.dark .ui-prose pre.astro-code span {
   display: flex;
   min-width: 0;
   max-height: calc(100vh - 8rem);
+  max-height: calc(100dvh - 8rem);
   flex-direction: column;
   gap: 0.9rem;
   overflow-y: auto;
@@ -879,6 +881,7 @@ html.dark .ui-prose pre.astro-code span {
   border-radius: var(--radius-panel);
   background: var(--surface-panel);
   box-shadow: var(--shadow-soft);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
 }
 

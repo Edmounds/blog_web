@@ -1,32 +1,25 @@
-﻿---
+---
 title: 你好
 description: 本站网络架构分享
 createdAt: 2026-08-2
 updatedAt: 2026-08-2
-published: true
+published: false
 tags:
   - 网络
 ---
 # Cloudflare 零成本网站架构系列：从基础概念到国内访问优化
 
-这份文档由三部分组成：先用一节基础导读统一概念，再给出两篇可以独立发布的文章。第一篇回答“一个带服务端能力的个人网站，怎样在免费额度内运行”；第二篇回答“面对国内网络波动，怎样分别优化网络速度、实际加载速度和感知速度”。示例是本站配置的脱敏、精简版本，不是仓库文件逐字复制。
+## 部分名词解释
 
-## 阅读地图：先把八个词说清楚
+| 概念              | 通俗解释                                        | 在本文架构里的角色                            |
+| --------------- | ------------------------------------------- | ------------------------------------ |
+| CDN             | 把内容放到离访客更近的节点，并复用缓存                         | 承载静态资源和边缘缓存，减少重复回源                   |
+| 边缘节点            | CDN 在各地的接入与计算节点                             | 接收请求、终止 TLS、执行 Worker、命中缓存           |
+| Worker          | 运行在 Cloudflare 边缘的 JavaScript/TypeScript 服务 | 入口 Worker 负责公开入口，Astro Worker 负责应用逻辑 |
+| D1              | Cloudflare 的托管 SQL 数据库                      | 保存评论、互动统计、收藏元数据和同步结果                 |
+| R2              | 兼容对象存储思路的文件仓库                               | 保存正文图片、收藏封面等大对象                      |
+| Service Binding | 一个 Worker 调用另一个 Worker 的内部连接                | 入口 Worker 不经公开 URL，直接调用 Astro Worker |
 
-可以把访问网站理解成一次“查地址、进入网络、找到处理柜台、读取仓库”的过程，下面这些词就不再抽象。
-
-| 概念 | 通俗解释 | 在本文架构里的角色 |
-| --- | --- | --- |
-| DNS | 把域名查成网络可以连接的地址，像通讯录 | 告诉浏览器从哪个入口进入 Cloudflare |
-| CDN | 把内容放到离访客更近的节点，并复用缓存 | 承载静态资源和边缘缓存，减少重复回源 |
-| 源站 | 真正生成或保存内容的服务 | 本文中不是一台 VPS，而是 Astro SSR Worker、D1 和 R2 |
-| 边缘节点 | CDN 在各地的接入与计算节点 | 接收请求、终止 TLS、执行 Worker、命中缓存 |
-| Worker | 运行在 Cloudflare 边缘的 JavaScript/TypeScript 服务 | 入口 Worker 负责公开入口，Astro Worker 负责应用逻辑 |
-| D1 | Cloudflare 的托管 SQL 数据库 | 保存评论、互动统计、收藏元数据和同步结果 |
-| R2 | 兼容对象存储思路的文件仓库 | 保存正文图片、收藏封面等大对象 |
-| Service Binding | 一个 Worker 调用另一个 Worker 的内部连接 | 入口 Worker 不经公开 URL，直接调用 Astro Worker |
-
-还有一个贯穿全文的词是“缓存”。缓存不是简单地“把所有东西存一年”，而是根据内容是否会变化决定复用多久：文件名带哈希的 CSS、JS 可以长期缓存；HTML 应该重新验证；评论列表只能短缓存；写请求则不应缓存。
 
 ### 总体架构
 
@@ -71,15 +64,13 @@ sequenceDiagram
   E-->>B: 保留状态码和正文，补充安全响应头
 ```
 
-这张图最重要的约束是：**公开域名路由只由入口 Worker 持有；Astro Worker 由 Service Binding 调用，不再依赖公开的 `pages.dev` 或 `workers.dev` 地址作为“回源地址”。**
-
 ---
 
-# 上篇：除域名外近似零成本，我如何用 Cloudflare 搭建个人网站
+# 上篇：我如何用 Cloudflare 零成本搭建个人网站
 
-**摘要：** 这篇文章复盘我的个人网站从 Astro + Cloudflare Pages，演进到“薄入口 Worker + Astro SSR Worker + D1 + R2”的过程。它不是一份“永久免费”的宣传，而是一套在个人站访问量落入免费额度时，除域名外近似 0 元的可复现架构。文中会解释每个产品为什么存在、两层 Worker 为什么不是为了重复计算，并提供脱敏后的配置、命令、部署顺序和验证方法。
+**摘要：** 这篇文章复盘我的个人网站从 Astro + Cloudflare Pages，演进到“薄入口 Worker + Astro SSR Worker + D1 + R2”的过程。
 
-**推荐标签：** `Cloudflare`、`Astro`、`Workers`、`D1`、`R2`、`个人网站`、`Serverless`
+**TAGS：** `Cloudflare`、`Astro`、`Workers`、`D1`、`R2`、`个人网站`、`Serverless`
 
 ## 开场：我想要的不是一张永远不变的网页
 

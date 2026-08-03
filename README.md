@@ -84,7 +84,7 @@ npm run images:verify -- --remote  # 额外校验 R2 对象和 MIME
 - `GOOGLE_BOOKS_API_KEY`、`TMDB_API_KEY`
 - `NETEASE_MUSIC_U`、`NETEASE_CSRF`
 - `WAKA_TIME_API_KEY`
-- 翻译服务所需的 `SERVICE_TYPE`、`DEEPLX_*` 或 `OPENAI_BASE_URL`、`API_KEY`、`MODEL`
+- 翻译服务所需的 `OPENAI_BASE_URL`、`API_KEY`、`MODEL`
 
 第一次创建 `new-blog-ssr` Worker 后，运行 `npm run cf:secrets:sync` 将本地 `.env` 中的变量批量上传为 Worker Secrets。脚本只把变量值通过标准输入交给 Wrangler，不会输出变量值或创建包含密钥的临时文件；也不会删除仅存在于 Cloudflare 的 Secret。`wrangler.astro.jsonc` 启用了 `keep_vars`，后续代码部署不会清除控制台中已配置的 secrets/vars。
 

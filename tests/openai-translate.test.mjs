@@ -83,10 +83,18 @@ test("OpenAI-compatible client does not retry permanent 4xx responses", async ()
   assert.equal(requests, 1);
 });
 
-test("translation script keeps a DeepLX fallback for complete Markdown documents", async () => {
+test("translation script keeps an OpenAI segment fallback for complete Markdown documents", async () => {
   const source = await readFile(new URL("../scripts/translate.mjs", import.meta.url), "utf8");
-  assert.match(source, /SERVICE_TYPE: "deeplx"/);
+  assert.match(source, /using segment fallback/);
   assert.match(source, /collectMarkdownSegments\(source\.content\)/);
   assert.match(source, /replaceMarkdownSegments\(source\.content, translatedSegments\)/);
   assert.match(source, /imageLabels\[imageIndex\+\+\]/);
+});
+
+test("deployment passes OpenAI translation secrets to the build", async () => {
+  const workflow = await readFile(new URL("../.github/workflows/deploy.yml", import.meta.url), "utf8");
+  assert.match(workflow, /OPENAI_BASE_URL:\s*\$\{\{ secrets\.OPENAI_BASE_URL \}\}/);
+  assert.match(workflow, /API_KEY:\s*\$\{\{ secrets\.API_KEY \}\}/);
+  assert.match(workflow, /MODEL:\s*\$\{\{ secrets\.MODEL \}\}/);
+  assert.doesNotMatch(workflow, /DEEPLX|SERVICE_TYPE/);
 });

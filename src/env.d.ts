@@ -18,9 +18,6 @@ declare namespace Cloudflare {
     STEAM_API_KEY?: string;
     NETEASE_MUSIC_U?: string;
     NETEASE_CSRF?: string;
-    SERVICE_TYPE?: string;
-    DEEPLX_BASE_URL?: string;
-    DEEPLX_API_KEY?: string;
     OPENAI_BASE_URL?: string;
     API_KEY?: string;
     MODEL?: string;

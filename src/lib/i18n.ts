@@ -10,15 +10,14 @@ export interface LocaleDefinition {
   label: string;
   htmlLang: string;
   dateLocale: string;
-  deeplxCode: string;
   dir: "ltr" | "rtl";
 }
 
 export const localeDefinitions: readonly LocaleDefinition[] = [
-  { code: "zh-CN", path: "", label: "简体中文", htmlLang: "zh-CN", dateLocale: "zh-CN", deeplxCode: "ZH", dir: "ltr" },
-  { code: "zh-TW", path: "zh-TW", label: "繁體中文", htmlLang: "zh-TW", dateLocale: "zh-TW", deeplxCode: "ZH-TW", dir: "ltr" },
-  { code: "en", path: "en", label: "English", htmlLang: "en", dateLocale: "en-US", deeplxCode: "EN", dir: "ltr" },
-  { code: "ja", path: "ja", label: "日本語", htmlLang: "ja", dateLocale: "ja-JP", deeplxCode: "JA", dir: "ltr" },
+  { code: "zh-CN", path: "", label: "简体中文", htmlLang: "zh-CN", dateLocale: "zh-CN", dir: "ltr" },
+  { code: "zh-TW", path: "zh-TW", label: "繁體中文", htmlLang: "zh-TW", dateLocale: "zh-TW", dir: "ltr" },
+  { code: "en", path: "en", label: "English", htmlLang: "en", dateLocale: "en-US", dir: "ltr" },
+  { code: "ja", path: "ja", label: "日本語", htmlLang: "ja", dateLocale: "ja-JP", dir: "ltr" },
 ];
 
 const definitionByLocale = new Map(localeDefinitions.map((definition) => [definition.code, definition]));

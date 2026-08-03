@@ -30,7 +30,7 @@ const { Content } = await render(profile);
 </div>
 
 <style>
-  .about-article { width: 100%; max-width: 52rem; min-height: calc(100vh - 4.5rem); margin-inline: auto; padding-block: clamp(4rem, 8vh, 7rem) 6rem; }
+  .about-article { width: 100%; max-width: 52rem; min-height: calc(100vh - 4.5rem); min-height: calc(100dvh - 4.5rem); margin-inline: auto; padding-block: clamp(4rem, 8vh, 7rem) 6rem; }
   .about-article__title { margin-bottom: clamp(2.5rem, 5vw, 4rem); padding-bottom: clamp(0.75rem, 1.5vw, 1.25rem); border-bottom: 1px solid var(--border-soft); }
   .about-article__title h1 { margin: 0; color: transparent; font-family: var(--font-ui); font-size: clamp(2.3rem, 2rem + 1.5vw, 4.3rem); font-weight: 400; line-height: 1.05; letter-spacing: 0; overflow-wrap: anywhere; -webkit-text-stroke: 1px var(--foreground); paint-order: stroke fill; }
   .about-article__body :global(img) { width: auto; max-height: 2rem; border: 0; border-radius: 0; }

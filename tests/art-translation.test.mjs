@@ -20,17 +20,18 @@ test("art translation API accepts books and movies", async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (_url, init) => {
     const request = JSON.parse(init.body);
-    const fields = JSON.parse(request.text);
-    return Response.json({ data: JSON.stringify({
-      title: `${fields.title}-${request.target_lang}`,
-      creator: `${fields.creator}-${request.target_lang}`,
-      extra: fields.extra ? `${fields.extra}-${request.target_lang}` : "",
-    }) });
+    const fields = JSON.parse(request.messages[1].content.match(/JSON: (.*)$/s)[1]);
+    const targetLang = request.messages[1].content.match(/Target language: (.*)\n/)[1];
+    return Response.json({ choices: [{ message: { content: JSON.stringify({
+      title: `${fields.title}-${targetLang}`,
+      creator: `${fields.creator}-${targetLang}`,
+      extra: fields.extra ? `${fields.extra}-${targetLang}` : "",
+    }) } }] });
   };
   try {
     for (const type of ["book", "movie"]) {
       const response = await onRequestPost({
-        env: { DEEPLX_BASE_URL: "https://translate.example" },
+        env: { OPENAI_BASE_URL: "https://openai.example/v1", API_KEY: "secret", MODEL: "model" },
         request: jsonRequest({ type, title: "标题", creator: "作者", extra: "备注" }),
       });
       const body = await response.json();

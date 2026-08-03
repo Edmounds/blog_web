@@ -19,7 +19,7 @@ export const createOpenAITranslateClient = ({
 
   return async ({ text, sourceLang, targetLang, format = "text", preserveFrontmatterKeys = [] }) => {
     if (!normalizedBaseUrl || !apiKey?.trim() || !model?.trim()) {
-      throw new Error("OPENAI_BASE_URL, API_KEY, and MODEL are required when SERVICE_TYPE=openai and translations are missing or stale.");
+      throw new Error("OPENAI_BASE_URL, API_KEY, and MODEL are required when translations are missing or stale.");
     }
 
     const targetLanguage = TARGET_LANGUAGE_NAMES[targetLang] ?? targetLang;

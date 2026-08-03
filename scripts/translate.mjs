@@ -5,7 +5,7 @@ import matter from "gray-matter";
 import { stringify as stringifyYaml } from "yaml";
 
 import { createGoogleTranslateClient } from "./lib/google-translate.mjs";
-import { createTranslationProvider } from "./lib/translation-provider.mjs";
+import { createOpenAITranslateClient } from "./lib/openai-translate.mjs";
 import {
   collectMarkdownSegments,
   replaceMarkdownSegments,
@@ -24,19 +24,17 @@ const MESSAGE_OUTPUT = path.join(ROOT, "src/i18n/generated");
 const MANIFEST_PATH = path.join(ROOT, "src/i18n/translation-manifest.json");
 const JOURNAL_PATH = path.join(ROOT, "src/i18n/translation-journal.jsonl");
 
-const provider = createTranslationProvider();
+const provider = {
+  name: "OpenAI",
+  translate: createOpenAITranslateClient({
+    baseUrl: process.env.OPENAI_BASE_URL,
+    apiKey: process.env.API_KEY,
+    model: process.env.MODEL,
+  }),
+};
 const googleTranslate = createGoogleTranslateClient();
-const markdownFallbackProvider = process.env.SERVICE_TYPE?.trim().toLowerCase() === "openai"
-  ? createTranslationProvider({ env: { ...process.env, SERVICE_TYPE: "deeplx" } })
-  : null;
 const translateMarkdownSegment = async ({ text, targetLang }) => {
-  try {
-    return await markdownFallbackProvider.translate({ text, sourceLang: "ZH", targetLang });
-  } catch (error) {
-    // DeepLX may reject text that needs no Traditional Chinese conversion.
-    if (targetLang === "ZH-TW" && error?.status === 400) return text;
-    throw error;
-  }
+  return provider.translate({ text, sourceLang: "ZH", targetLang });
 };
 const pendingByFingerprint = new Map();
 const activeManifestKeys = new Set();
@@ -100,7 +98,7 @@ const translateText = async ({ locale, targetLang, key, source, manifest, seed, 
   if (cached?.fingerprint === fingerprint && typeof cached.translation === "string") return cached.translation;
 
   const seeded = seed?.[manifestKey];
-  const translatorName = translate ? markdownFallbackProvider?.name ?? "fallback" : provider.name;
+  const translatorName = translate ? `${provider.name}-segment` : provider.name;
   const sharedKey = `${translatorName}:${locale}:${format}:${fingerprint}`;
   const existing = pendingByFingerprint.get(sharedKey);
   const translation = typeof seeded === "string"
@@ -207,9 +205,8 @@ const translateDocument = async ({ raw, keyPrefix, locale, targetLang, manifest 
       preserveFrontmatterKeys,
     });
   } catch (error) {
-    if (!markdownFallbackProvider) throw error;
     usedFallback = true;
-    console.warn(`${provider.name} unavailable for ${locale}; using ${markdownFallbackProvider.name} segment fallback (${error.message})`);
+    console.warn(`${provider.name} document translation failed for ${locale}; using segment fallback (${error.message})`);
     const translatedData = await translateValue({
       value: source.data,
       keyPath: `${keyPrefix}.frontmatter`,

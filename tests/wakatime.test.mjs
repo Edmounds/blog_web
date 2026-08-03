@@ -33,13 +33,13 @@ test("WakaTime formats a complete all-time total from the dedicated endpoint", a
   }]);
 });
 
-test("WakaTime hides all-time totals while they are incomplete", async () => {
-  assert.equal(await getWakaTimeAllTime("secret", {
+test("WakaTime displays positive all-time totals while they are still updating", async () => {
+  assert.deepEqual(await getWakaTimeAllTime("secret", {
     fetchImpl: async () => json({ data: { is_up_to_date: false, total_seconds: 1_800 } }),
-  }), undefined);
-  assert.equal(await getWakaTimeAllTime("secret", {
-    fetchImpl: async () => json({ data: { is_up_to_date: true, total_seconds: 1_800 } }, { status: 202 }),
-  }), undefined);
+  }), { duration: "30mins" });
+  assert.deepEqual(await getWakaTimeAllTime("secret", {
+    fetchImpl: async () => json({ data: { is_up_to_date: false, total_seconds: 1_800 } }, { status: 202 }),
+  }), { duration: "30mins" });
 });
 
 test("WakaTime hides empty and failed all-time totals", async () => {

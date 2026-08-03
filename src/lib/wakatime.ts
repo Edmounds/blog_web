@@ -48,10 +48,9 @@ export async function getWakaTimeAllTime(apiKey: string, options: RequestOptions
     authorization,
     options.fetchImpl ?? fetch,
     options.timeoutMs,
-    true,
   );
   const data = isRecord(result) && isRecord(result.data) ? result.data : undefined;
-  if (!data || data.is_up_to_date !== true) return undefined;
+  if (!data) return undefined;
 
   const seconds = numberValue(data.total_seconds);
   if (seconds === undefined || seconds <= 0) return undefined;
@@ -151,7 +150,6 @@ async function requestJson(
   authorization: string,
   fetchImpl: typeof fetch,
   timeoutMs = WAKATIME_TIMEOUT_MS,
-  rejectAccepted = false,
 ): Promise<unknown> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -160,7 +158,7 @@ async function requestJson(
       headers: { authorization, accept: "application/json" },
       signal: controller.signal,
     });
-    if (!response.ok || (rejectAccepted && response.status === 202)) return undefined;
+    if (!response.ok) return undefined;
     const value = await response.json();
     return isRecord(value) || Array.isArray(value) ? value : undefined;
   } catch {

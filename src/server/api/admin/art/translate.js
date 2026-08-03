@@ -45,44 +45,28 @@ async function translateFields(env, fields, targetLang) {
 }
 
 async function primaryTranslate(env, textValue, targetLang) {
-  const serviceType = String(env.SERVICE_TYPE ?? "DeepLX").trim().toLowerCase();
-  if (serviceType === "openai") {
-    const baseUrl = String(env.OPENAI_BASE_URL ?? "").trim().replace(/\/+$/, "");
-    const apiKey = String(env.API_KEY ?? "").trim();
-    const model = String(env.MODEL ?? "").trim();
-    if (!baseUrl || !apiKey || !model) throw new Error("OpenAI translation is not configured.");
-    const response = await fetch(`${baseUrl}/chat/completions`, {
-      method: "POST",
-      headers: { authorization: `Bearer ${apiKey}`, "content-type": "application/json" },
-      body: JSON.stringify({
-        model,
-        temperature: 0,
-        messages: [
-          { role: "system", content: "Translate the JSON string values. Return only valid JSON with the same title, creator, and extra keys." },
-          { role: "user", content: `Target language: ${targetLang}\nJSON: ${textValue}` },
-        ],
-      }),
-      signal: AbortSignal.timeout(15_000),
-    });
-    if (!response.ok) throw new Error(`OpenAI translation returned ${response.status}.`);
-    const data = await response.json();
-    const content = data?.choices?.[0]?.message?.content?.trim();
-    if (!content) throw new Error("OpenAI translation response was empty.");
-    return content;
-  }
-
-  const baseUrl = String(env.DEEPLX_BASE_URL ?? "").trim().replace(/\/+$/, "");
-  if (!baseUrl) throw new Error("DeepLX translation is not configured.");
-  const endpoint = /\/translate$/i.test(baseUrl) ? baseUrl : `${baseUrl}/translate`;
-  const headers = { "content-type": "application/json" };
-  if (env.DEEPLX_API_KEY) headers.authorization = `Bearer ${String(env.DEEPLX_API_KEY).trim()}`;
-  const response = await fetch(endpoint, {
-    method: "POST", headers, body: JSON.stringify({ text: textValue, source_lang: "ZH", target_lang: targetLang }), signal: AbortSignal.timeout(15_000),
+  const baseUrl = String(env.OPENAI_BASE_URL ?? "").trim().replace(/\/+$/, "");
+  const apiKey = String(env.API_KEY ?? "").trim();
+  const model = String(env.MODEL ?? "").trim();
+  if (!baseUrl || !apiKey || !model) throw new Error("OpenAI translation is not configured.");
+  const response = await fetch(`${baseUrl}/chat/completions`, {
+    method: "POST",
+    headers: { authorization: `Bearer ${apiKey}`, "content-type": "application/json" },
+    body: JSON.stringify({
+      model,
+      temperature: 0,
+      messages: [
+        { role: "system", content: "Translate the JSON string values. Return only valid JSON with the same title, creator, and extra keys." },
+        { role: "user", content: `Target language: ${targetLang}\nJSON: ${textValue}` },
+      ],
+    }),
+    signal: AbortSignal.timeout(15_000),
   });
-  if (!response.ok) throw new Error(`DeepLX translation returned ${response.status}.`);
+  if (!response.ok) throw new Error(`OpenAI translation returned ${response.status}.`);
   const data = await response.json();
-  if (typeof data?.data !== "string" || !data.data.trim()) throw new Error("DeepLX translation response was empty.");
-  return data.data;
+  const content = data?.choices?.[0]?.message?.content?.trim();
+  if (!content) throw new Error("OpenAI translation response was empty.");
+  return content;
 }
 
 async function googleTranslate(value, targetLang) {

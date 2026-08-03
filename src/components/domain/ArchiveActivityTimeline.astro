@@ -195,6 +195,7 @@ if (rangeStart) {
     pointer-events: none;
     transform: translate(var(--tooltip-x), 0.25rem);
     transition: opacity 160ms ease, transform 160ms ease, visibility 0s linear 160ms;
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
   }
   [data-tooltip-align="start"] .archive-activity__tooltip { --tooltip-x: 0; }
