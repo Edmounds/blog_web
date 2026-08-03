@@ -228,7 +228,7 @@ const latestBlocks = [
           observer.disconnect();
           loadImage();
         }, { rootMargin: "240px" });
-        observer.observe(image);
+        observer.observe(image.parentElement ?? image);
       } else {
         globalThis.setTimeout(loadImage, 3000);
       }

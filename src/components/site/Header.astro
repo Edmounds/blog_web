@@ -1,5 +1,5 @@
 ---
-import { Menu, X } from "lucide-static";
+import { Link as LinkIcon, Menu, X } from "lucide-static";
 
 import { localizePath, stripLocaleFromPath, type Locale } from "../../lib/i18n";
 import ThemeToggle from "./ThemeToggle.astro";
@@ -69,11 +69,6 @@ const isActive = (href: string) =>
             </a>
           ))
         }
-        <a
-          href={localizePath(links.href, locale)}
-          aria-current={isActive(links.href) ? "page" : undefined}
-          >{links.label}</a
-        >
         <div class="life-menu">
           <button
             type="button"
@@ -103,6 +98,15 @@ const isActive = (href: string) =>
         currentPath={currentPath}
         label={languageLabel}
       />
+      <a
+        class="header-links inline-flex size-11 items-center justify-center rounded-[var(--radius-control)] text-[var(--foreground-soft)] transition-colors hover:bg-[var(--surface-soft)] hover:text-[var(--foreground)]"
+        href={localizePath(links.href, locale)}
+        title={links.label}
+        aria-label={links.label}
+        aria-current={isActive(links.href) ? "page" : undefined}
+      >
+        <span class="inline-flex size-5 [&>svg]:size-full"><Icon svg={LinkIcon} /></span>
+      </a>
       <ThemeToggle />
       <button
         class="mobile-menu-button"
@@ -135,11 +139,6 @@ const isActive = (href: string) =>
           </a>
         ))
       }
-      <a
-        href={localizePath(links.href, locale)}
-        aria-current={isActive(links.href) ? "page" : undefined}
-        >{links.label}</a
-      >
       <details>
         <summary>Life</summary>
         <div>
@@ -572,6 +571,10 @@ const isActive = (href: string) =>
     border-color: transparent;
     background: transparent;
   }
+  .header-links[aria-current="page"] {
+    color: var(--foreground);
+    background: var(--surface-soft);
+  }
   .mobile-menu-button {
     display: none;
     width: 2.75rem;
@@ -661,6 +664,7 @@ const isActive = (href: string) =>
     }
     :global(.site-header__tools [data-language-trigger]),
     :global(.site-header__tools [data-theme-toggle]),
+    .header-links,
     .mobile-menu-button {
       width: 2.5rem;
       height: 2.5rem;

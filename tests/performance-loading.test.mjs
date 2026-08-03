@@ -51,6 +51,7 @@ test("homepage remote widgets defer work until after first paint", () => {
 
   assert.match(home, /data-src="\/api\/wakatime-badge\.svg"/);
   assert.match(home, /IntersectionObserver/);
+  assert.match(home, /observer\.observe\(image\.parentElement \?\? image\)/);
   assert.match(heatmap, /requestIdleCallback/);
   assert.match(heatmap, /loading-overlay:hidden/);
 });
