@@ -193,9 +193,70 @@
         ]
       },
       "kind": "responsive"
+    },
+    "https://img.muelsyse.us/bed/20260808035823249.png": {
+      "kind": "responsive",
+      "sourceDigest": "2361eae1e761ddbc5fb9ba23d64edc498bb59ef3c948fc917deabce09ff30811",
+      "width": 1876,
+      "height": 1430,
+      "fallback": "https://img.muelsyse.us/bed/20260808035823249-w1876.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/20260808035823249-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.990066,
+            "bytes": 11246
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/20260808035823249-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.996849,
+            "bytes": 32844
+          },
+          {
+            "width": 1876,
+            "url": "https://img.muelsyse.us/bed/20260808035823249-w1876.avif.webp",
+            "quality": 40,
+            "ssim": 0.997828,
+            "bytes": 57769
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/20260808035823249-w640.webp",
+            "quality": 70,
+            "ssim": 0.992831,
+            "bytes": 21690
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/20260808035823249-w1280.webp",
+            "quality": 70,
+            "ssim": 0.997859,
+            "bytes": 69182
+          },
+          {
+            "width": 1876,
+            "url": "https://img.muelsyse.us/bed/20260808035823249-w1876.webp",
+            "quality": 70,
+            "ssim": 0.999045,
+            "bytes": 144684
+          }
+        ]
+      }
     }
   },
   "keys": [
+    "bed/20260808035823249-w1280.avif.webp",
+    "bed/20260808035823249-w1280.webp",
+    "bed/20260808035823249-w1876.avif.webp",
+    "bed/20260808035823249-w1876.webp",
+    "bed/20260808035823249-w640.avif.webp",
+    "bed/20260808035823249-w640.webp",
     "blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w1280.avif.webp",
     "blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w1280.webp",
     "blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w1920.avif.webp",

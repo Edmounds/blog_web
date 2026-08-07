@@ -2,13 +2,14 @@ export const ART_TYPES = ["book", "music", "movie", "series", "anime"];
 export const ART_MUSIC_KINDS = ["album", "single"];
 export const ART_LOCALES = ["zh-CN", "zh-TW", "en", "ja"];
 export const ART_TRANSLATED_TYPES = ["book", "movie"];
-export const ART_SOURCES = ["douban_books", "apple_books", "google_books", "apple_music", "netease_album", "netease_track", "deezer_music", "deezer_track", "tmdb", "legacy"];
+export const ART_SOURCES = ["douban_books", "apple_books", "google_books", "apple_music", "netease_album", "netease_track", "tmdb", "legacy"];
 export const ART_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"];
 export const ART_STORED_IMAGE_TYPES = [...ART_IMAGE_TYPES, "image/svg+xml"];
 
 export const MAX_ART_BODY_BYTES = 14 * 1024 * 1024;
 export const MAX_ART_IMAGE_BYTES = 10 * 1024 * 1024;
 export const ART_COVER_BASE_URL = "https://img.muelsyse.us";
+export const DEFAULT_ART_COVER_URL = "/images/placeholders/default-cover.webp";
 
 const TYPE_SET = new Set(ART_TYPES);
 const MUSIC_KIND_SET = new Set(ART_MUSIC_KINDS);
@@ -222,13 +223,18 @@ export function getArtCoverUrl(key) {
 }
 
 export function resolveArtCoverDelivery(item) {
-  const r2Url = getArtCoverUrl(item.coverKey);
   const sourceUrl = parseExternalArtCoverUrl(item.source, item.coverSourceUrl);
-  if (!sourceUrl) return { primary: r2Url, fallback: null, external: false };
-  return { primary: sourceUrl, fallback: r2Url, external: true };
+  if (sourceUrl && !item.coverKey) {
+    if (item.id && item.source === "douban_books") {
+      return { primary: `/api/art/douban-cover/${encodeURIComponent(item.id)}`, fallback: DEFAULT_ART_COVER_URL, external: false };
+    }
+    return { primary: sourceUrl, fallback: DEFAULT_ART_COVER_URL, external: true };
+  }
+  if (item.coverKey) return { primary: getArtCoverUrl(item.coverKey), fallback: DEFAULT_ART_COVER_URL, external: false };
+  return { primary: DEFAULT_ART_COVER_URL, fallback: null, external: false };
 }
 
-function parseExternalArtCoverUrl(source, value) {
+export function parseExternalArtCoverUrl(source, value) {
   let url;
   try { url = new URL(value); } catch { return null; }
   if (url.protocol !== "https:" || url.username || url.password || url.port) return null;
@@ -265,7 +271,10 @@ export function decodeBase64(value) {
   }
 }
 
-export async function storeCover(bucket, itemId, cover, fetchImpl = fetch, { db, currentItemId } = {}) {
+export async function storeCover(bucket, itemId, cover, fetchImpl = fetch, { db, currentItemId, source } = {}) {
+  const directUrl = cover.kind === "url" ? parseExternalArtCoverUrl(source, cover.url) : null;
+  if (directUrl) return { key: null, sourceUrl: directUrl, mime: null };
+  if (!bucket) throw error(500, "R2_NOT_CONFIGURED", "收藏封面存储未配置。");
   if (cover.kind === "stored") {
     if (db) await assertStoredCoverAvailable(bucket, db, cover.key, currentItemId);
     else if (!await bucket.head(cover.key)) throw error(400, "STORED_COVER_NOT_FOUND", "已上传封面不存在，请重新上传。");
@@ -316,7 +325,7 @@ export async function deleteCoverIfUnreferenced(bucket, db, key) {
 }
 
 export async function cleanupOrphanUploadedCovers(bucket, db, { now = new Date(), maxAgeMs = 24 * 60 * 60 * 1000 } = {}) {
-  const referenced = new Set(((await db.prepare("SELECT cover_key FROM art_items").all()).results ?? []).map((row) => row.cover_key));
+  const referenced = new Set(((await db.prepare("SELECT cover_key FROM art_items").all()).results ?? []).map((row) => row.cover_key).filter(Boolean));
   let cursor;
   do {
     const page = await bucket.list({ prefix: "art/", cursor, include: ["customMetadata"] });
@@ -480,7 +489,7 @@ export async function updateArtItem(db, id, current, input, storedCover, now = n
   };
   merged.translations = filterArtTranslations(merged.type, merged.translations);
   if (merged.type !== "music") merged.musicKind = null;
-  const coverKey = storedCover?.key ?? current.coverKey;
+  const coverKey = storedCover ? storedCover.key : current.coverKey;
   const coverSourceUrl = storedCover ? storedCover.sourceUrl : current.coverSourceUrl;
   const statements = [
     db.prepare(
@@ -592,8 +601,10 @@ function groupArtRows(rows) {
     if (!item) {
       item = {
         id: row.id, type: row.type, musicKind: row.type === "music" ? row.music_kind ?? "album" : null, source: row.source, sourceId: row.source_id ?? "", isbn: row.isbn ?? "",
-        originalTitle: row.original_title ?? "", releaseDate: row.release_date ?? "", coverKey: row.cover_key,
-        coverSourceUrl: row.cover_source_url ?? "", coverUrl: getArtCoverUrl(row.cover_key), collectedOn: row.collected_on,
+        originalTitle: row.original_title ?? "", releaseDate: row.release_date ?? "", coverKey: row.cover_key ?? null,
+        coverSourceUrl: row.cover_source_url ?? "", coverUrl: resolveArtCoverDelivery({
+          id: row.id, source: row.source, coverKey: row.cover_key, coverSourceUrl: row.cover_source_url,
+        }).primary, collectedOn: row.collected_on,
         isVisible: Number(row.is_visible) === 1, createdAt: row.created_at, updatedAt: row.updated_at, translations: {},
       };
       items.set(row.id, item);

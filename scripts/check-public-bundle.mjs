@@ -2,7 +2,7 @@ import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 
 const root = new URL("../dist/client/", import.meta.url);
-const publicPages = ["index.html", "about/index.html", "blog/index.html", "note/index.html", "project/index.html", "blog/first-note/index.html"];
+const publicPages = ["index.html", "about/index.html", "blog/index.html", "note/index.html", "project/index.html", "blog/20260128-01/index.html"];
 const forbidden = [/motion\/react/i];
 
 for (const page of publicPages) {

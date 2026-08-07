@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS art_items (
   isbn TEXT,
   original_title TEXT,
   release_date TEXT,
-  cover_key TEXT NOT NULL,
+  cover_key TEXT,
   cover_source_url TEXT,
   collected_on TEXT NOT NULL,
   is_visible INTEGER NOT NULL DEFAULT 1 CHECK (is_visible IN (0, 1)),

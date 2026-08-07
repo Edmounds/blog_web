@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Background: Pure White Canvas -->
-  <rect width="512" height="512" rx="114" fill="#ffffff" />
-  <!-- Overlapping Venn circles (Dialogue & Lens) -->
-  <circle cx="216" cy="256" r="100" fill="none" stroke="#1d1d1f" stroke-width="24" />
-  <circle cx="296" cy="256" r="100" fill="none" stroke="#1d1d1f" stroke-width="24" />
-  <!-- Intersection in Action Blue -->
-  <path d="M 256 164 A 100 100 0 0 1 296 256 A 100 100 0 0 1 256 348 A 100 100 0 0 1 216 256 A 100 100 0 0 1 256 164 Z" fill="#0066cc" />
-</svg>

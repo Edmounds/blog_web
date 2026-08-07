@@ -37,6 +37,23 @@ Recent history uses short imperative commit subjects, sometimes with a scope suc
 
 Pull requests should include a concise summary, changed areas, verification commands run, and screenshots or recordings for visible UI changes. Reference related task or spec files when the work comes from `tasks/` or `spec/`.
 
+## Worktree Isolation
+
+- Before editing the project, use the `using-git-worktrees` skill to create an isolated worktree.
+- Each agent must use its own worktree and branch. Never allow multiple agents to edit files in the same worktree.
+- Prefer the project-local `.worktrees/` directory and verify that Git ignores it before creating a worktree.
+- Run the project checks in the worktree before integrating its changes.
+
 ## Security & Configuration
 
 Runtime environment variables are not currently required. Do not commit local secrets or machine-specific configuration. Keep generated build output in `dist/` out of source edits unless a deployment workflow explicitly requires it.
+
+## Static Asset Source Policy
+
+- Prefer a stable official or upstream HTTPS asset hosted in mainland China when one is available. Serve that URL directly; do not copy the same asset to Cloudflare R2 only for delivery.
+- NetEase Cloud Music covers must use `p*.music.126.net` and be normalized to `https://p1.music.126.net/...`. Douban book covers may use verified `https://*.doubanio.com/...` URLs.
+- Use R2 for user uploads, assets owned by this site, sources that cannot be reached reliably from mainland China, or assets without a suitable domestic upstream.
+- If a domestic upstream is stable but rejects browser-origin requests through anti-hotlink rules, use a stateless cached proxy to that upstream instead of storing a duplicate in R2.
+- If a domestic upstream image fails, use the local placeholder rather than an R2 duplicate of that image.
+- When moving an existing asset from R2 to a domestic upstream, verify the upstream URL first and delete the unreferenced R2 copy only after the cutover succeeds.
+

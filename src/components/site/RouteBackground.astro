@@ -1,9 +1,12 @@
 ---
+import { getAboutProfile } from "../../lib/content";
+
 interface Props {
   currentPath?: string;
 }
 
 const { currentPath = "/" } = Astro.props;
+const profile = await getAboutProfile();
 const particles = Array.from({ length: 44 }, (_, index) => ({
   left: (index * 37 + 11) % 100,
   top: (index * 53 + 7) % 100,
@@ -11,29 +14,7 @@ const particles = Array.from({ length: 44 }, (_, index) => ({
   duration: 16 + ((index * 7) % 29),
   delay: -((index * 11) % 31),
 }));
-const keywords = [
-  "Fate",
-  "烧肉",
-  "烧鹅",
-  "肠粉",
-  "C++",
-  "ROS2",
-  "KISS",
-  "ubuntu",
-  "Linux",
-  "天文",
-  "AI",
-  "Python",
-  "音乐",
-  "Music",
-  "美剧",
-  "steam",
-  "重庆大学",
-  "重庆",
-  "CQU",
-  "水瓶座",
-  "INFP",
-];
+const keywords = profile.data.backgroundKeywords;
 const drops = Array.from({ length: 60 }, (_, index) => ({
   word: keywords[index % keywords.length],
   left: (index * 43 + 5) % 100,
@@ -77,8 +58,10 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
     {
       drops.map((drop) => (
         <span
-          style={`--word:"${drop.word}";--x:${drop.left}%;--size:${drop.size}px;--duration:${drop.duration}s;--delay:${drop.delay}s;--opacity:${drop.opacity}`}
-        />
+          style={`--x:${drop.left}%;--size:${drop.size}px;--duration:${drop.duration}s;--delay:${drop.delay}s;--opacity:${drop.opacity}`}
+        >
+          {drop.word}
+        </span>
       ))
     }
   </div>
@@ -517,10 +500,6 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
     white-space: nowrap;
     opacity: var(--opacity);
     animation: code-rain var(--duration) linear var(--delay) infinite;
-  }
-
-  .route-background__rain span::before {
-    content: var(--word);
   }
 
   .route-background__constellation {

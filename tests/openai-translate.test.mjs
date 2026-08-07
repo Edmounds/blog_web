@@ -141,6 +141,15 @@ test("translation script skips Markdown documents explicitly marked unpublished"
   assert.match(source, /matter\(raw\.replace\(\/\^\\uFEFF\/, ""\)\)\.data\.published === false/);
 });
 
+test("translation script continuously reports translation progress", async () => {
+  const source = await readFile(new URL("../scripts/translate.mjs", import.meta.url), "utf8");
+  assert.match(source, /\[translate\].*\$\{manifestKey\}.*started/);
+  assert.match(source, /\[translate\].*\$\{manifest\.updated\}.*updated/);
+  assert.match(source, /setInterval/);
+  assert.match(source, /\$\{activeRequests\} active/);
+  assert.doesNotMatch(source, /manifest\.updated % 25/);
+});
+
 test("deployment passes OpenAI translation secrets to the build", async () => {
   const workflow = await readFile(new URL("../.github/workflows/deploy.yml", import.meta.url), "utf8");
   assert.match(workflow, /OPENAI_BASE_URL:\s*\$\{\{ secrets\.OPENAI_BASE_URL \}\}/);

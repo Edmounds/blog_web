@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Background: Near-Black Tile -->
-  <rect width="512" height="512" rx="114" fill="#1d1d1f" />
-  <!-- Flowing 'C' Monogram -->
-  <path d="M340 180 C280 120 180 150 180 256 C180 362 280 392 340 332" fill="none" stroke="#ffffff" stroke-width="28" stroke-linecap="round" />
-  <!-- Action Blue Pill as signature dot -->
-  <rect x="296" y="236" width="80" height="40" rx="20" fill="#0066cc" />
-</svg>

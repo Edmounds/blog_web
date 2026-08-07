@@ -1,10 +1,12 @@
 import { defineMiddleware } from "astro:middleware";
 
 import { verifyAccess } from "./server/access.js";
+import { getLegacyContentRedirect } from "./lib/content-redirects";
 import { getRuntimeEnv } from "./lib/runtime";
 
 export const onRequest = defineMiddleware(async ({ request }, next) => {
-  const pathname = new URL(request.url).pathname;
+  const requestUrl = new URL(request.url);
+  const pathname = requestUrl.pathname;
   if (pathname.startsWith("/admin/") || pathname.startsWith("/api/admin/")) {
     const identity = await verifyAccess(request, getRuntimeEnv());
     if (!identity) {
@@ -21,7 +23,8 @@ export const onRequest = defineMiddleware(async ({ request }, next) => {
     }
   }
 
-  const response = await next();
+  const redirectUrl = request.method === "GET" ? getLegacyContentRedirect(requestUrl) : undefined;
+  const response = redirectUrl ? Response.redirect(redirectUrl, 301) : await next();
   const secured = new Response(response.body, response);
   secured.headers.set("content-security-policy", "default-src 'self'; img-src 'self' data: https://img.muelsyse.us https://raw.githubusercontent.com https://shared.akamai.steamstatic.com https://p1.music.126.net https://*.doubanio.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
   secured.headers.set("strict-transport-security", "max-age=31536000; includeSubDomains");

@@ -1,5 +1,5 @@
 export const CONTENT_IDS = [
-  "blog/first-note",
-  "note/arknights-p3r",
-  "note/dongyeguiwu-passaway",
+  "blog/20260128-01",
+  "note/20260726-01",
+  "note/20260727-01",
 ] as const;

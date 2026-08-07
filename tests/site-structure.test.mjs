@@ -28,23 +28,70 @@ test("navigation exposes the writing, links, and Life destinations", () => {
   assert.match(header, /localizePath\(item\.href, locale\)/);
 });
 
-test("desktop navigation stays hidden while scrolling and reveals from its full region", () => {
+test("desktop navigation stays hidden while scrolling and reveals on hover", () => {
   const header = read("src/components/site/Header.astro");
 
-  assert.match(header, /class="desktop-nav-region" data-header-reveal-zone/);
-  assert.match(header, /data-interactive="true"/);
+  assert.match(header, /class="desktop-nav-region"/);
   assert.match(header, /desktopNav\.dataset\.hidden/);
-  assert.match(header, /desktopNav\.dataset\.interactive/);
   assert.match(header, /window\.addEventListener\(\s*"scroll"/);
-  assert.match(header, /currentScrollY <= header\.offsetHeight[\s\S]*else setHidden\(true\)/);
+  assert.match(header, /currentScrollY <= 0[\s\S]*else setHidden\(true\)/);
+  assert.match(header, /setHidden\(window\.scrollY > 0\)/);
   assert.doesNotMatch(header, /previousScrollY/);
-  assert.match(header, /revealZone\.addEventListener\(\s*"pointerenter"/);
-  assert.match(header, /DESKTOP_NAV_REVEAL_INTERACTION_MS/);
+  assert.match(header, /header\.addEventListener\(\s*"pointerenter"/);
+  assert.match(header, /header\.addEventListener\(\s*"pointerleave"/);
+  assert.doesNotMatch(header, /DESKTOP_NAV_REVEAL_INTERACTION_MS/);
   assert.match(header, /\.desktop-nav-region\s*\{[^}]*align-self:\s*stretch;/s);
-  assert.doesNotMatch(header, /height:\s*12px/);
   assert.match(header, /\.desktop-nav\[data-hidden="true"\]/);
-  assert.match(header, /\.desktop-nav\[data-interactive="false"\]/);
+  assert.doesNotMatch(header, /data-interactive/);
   assert.doesNotMatch(header, /\.site-header\[data-hidden="true"\]/);
+});
+
+test("theme transitions expand from the theme icon through scoped CSS", () => {
+  const toggle = read("src/components/site/ThemeToggle.astro");
+  const global = read("src/styles/global.css");
+
+  assert.match(toggle, /querySelector<SVGElement>\("\[data-theme-icon\]"\)/);
+  assert.match(toggle, /--theme-transition-x/);
+  assert.match(toggle, /--theme-transition-y/);
+  assert.match(toggle, /\(x \/ window\.innerWidth\) \* 100/);
+  assert.match(toggle, /\(y \/ window\.innerHeight\) \* 100/);
+  assert.doesNotMatch(toggle, /--theme-transition-radius/);
+  assert.doesNotMatch(toggle, /document\.documentElement\.animate/);
+  assert.match(global, /@keyframes theme-reveal/);
+  assert.match(global, /html\[data-theme-transitioning\]::view-transition-new\(root\)/);
+  assert.match(
+    global,
+    /circle\(\s*0px at var\(--theme-transition-x\) var\(--theme-transition-y\)\s*\)/,
+  );
+  assert.match(
+    global,
+    /circle\(\s*150vmax at var\(--theme-transition-x\)\s*var\(--theme-transition-y\)\s*\)/,
+  );
+});
+
+test("percentage theme origins remain aligned across viewports and zoom", () => {
+  const cases = [
+    { width: 390, height: 844, x: 301, y: 32, zoom: 1 },
+    { width: 1280, height: 720, x: 1184, y: 44, zoom: 1.25 },
+    { width: 1728, height: 480, x: 1630, y: 44, zoom: 1.5 },
+    { width: 2810, height: 780, x: 2650, y: 48, zoom: 2 },
+  ];
+
+  for (const { width, height, x, y, zoom } of cases) {
+    const renderedWidth = width * zoom;
+    const renderedHeight = height * zoom;
+    const renderedX = (x / width) * renderedWidth;
+    const renderedY = (y / height) * renderedHeight;
+    const radius = Math.max(renderedWidth, renderedHeight) * 1.5;
+    const farthestCorner = Math.hypot(
+      Math.max(renderedX, renderedWidth - renderedX),
+      Math.max(renderedY, renderedHeight - renderedY),
+    );
+
+    assert.equal(renderedX, x * zoom);
+    assert.equal(renderedY, y * zoom);
+    assert.ok(radius >= farthestCorner);
+  }
 });
 
 test("public sections share the content frame and responsive mobile padding", () => {

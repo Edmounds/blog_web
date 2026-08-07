@@ -18,6 +18,8 @@ test("Game is standalone, absent from the SPA canvas, and sorted by effective pl
   assert.doesNotMatch(read("src/layouts/SpaLayout.astro"), /GameSection|\/art\/game\//);
   assert.match(read("src/lib/games.ts"), /listPublicGames\(db\)/);
   assert.match(read("src/server/games.js"), /COALESCE\(custom_playtime_minutes, steam_playtime_minutes\) DESC, title COLLATE NOCASE ASC/);
+  assert.match(read("src/components/cards/GameCard.astro"), /data-game-cover-fallback/);
+  assert.match(read("src/pages/api/game/steam-cover\/\[appId\]\.ts"), /server\/api\/game\/steam-cover\.js/);
 });
 
 test("homepage exposes labelled Steam and NetEase links", () => {

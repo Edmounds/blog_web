@@ -5,14 +5,24 @@ import matter from "gray-matter";
 
 const groups = ["blog", "note", "project"];
 const contentIds = [];
+const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 for (const group of groups) {
   const root = path.join(process.cwd(), "src/content", group);
+  const seen = new Map();
   for (const file of await walk(root)) {
     if (!/\.(md|mdx)$/.test(file)) continue;
     const source = matter((await readFile(file, "utf8")).replace(/^\uFEFF/, ""));
     if (source.data.published === false) continue;
-    const slug = path.basename(file).replace(/\.(md|mdx)$/, "");
+    const slug = source.data.slug;
+    if (typeof slug !== "string" || !slugPattern.test(slug)) {
+      throw new Error(`Published content requires a lowercase kebab-case slug: ${path.relative(process.cwd(), file)}`);
+    }
+    const duplicate = seen.get(slug);
+    if (duplicate) {
+      throw new Error(`Duplicate ${group} slug "${slug}": ${path.relative(process.cwd(), duplicate)} and ${path.relative(process.cwd(), file)}`);
+    }
+    seen.set(slug, file);
     contentIds.push(`${group}/${slug}`);
   }
 }

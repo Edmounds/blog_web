@@ -14,11 +14,12 @@ export async function onRequestPatch({ env, params, request }) {
     if (!current) return error(404, "ART_NOT_FOUND", "未找到该收藏。");
     const validation = validateArtItemInput(await readJson(request), { partial: true, currentType: current.type, currentMusicKind: current.musicKind });
     if (!validation.ok) return error(400, validation.error.code, validation.error.message);
-    const bucket = requireBucket(env);
-    if (validation.value.cover) stored = await storeCover(bucket, id, validation.value.cover, coverFetch(env), { db, currentItemId: id });
+    if (validation.value.cover) stored = await storeCover(env.ART_COVERS, id, validation.value.cover, coverFetch(env), {
+      db, currentItemId: id, source: validation.value.source ?? current.source,
+    });
     const item = await updateArtItem(db, id, current, validation.value, stored);
-    if (stored && current.coverKey !== stored.key) {
-      await bucket.delete(current.coverKey).catch((cleanupError) => console.error("Old art cover deletion failed", cleanupError));
+    if (stored && current.coverKey && current.coverKey !== stored.key) {
+      await requireBucket(env).delete(current.coverKey).catch((cleanupError) => console.error("Old art cover deletion failed", cleanupError));
     }
     return json({ item });
   } catch (err) {
@@ -47,8 +48,7 @@ export async function onRequestDelete({ env, params, request }) {
     const db = requireDb(env);
     const current = await getArtItem(db, id);
     if (!current) return error(404, "ART_NOT_FOUND", "未找到该收藏。");
-    const bucket = requireBucket(env);
-    await bucket.delete(current.coverKey);
+    if (current.coverKey) await requireBucket(env).delete(current.coverKey);
     const result = await db.prepare("DELETE FROM art_items WHERE id = ?").bind(id).run();
     if (Number(result.meta?.changes ?? 0) === 0) throw new Error("Art item disappeared during deletion.");
     return json({ deleted: true });

@@ -91,11 +91,7 @@ export async function searchMusic({ query, fetchImpl = fetch }) {
 }
 
 export async function searchTracks({ query, fetchImpl = fetch }) {
-  try {
-    const items = await searchNeteaseTracks({ query, fetchImpl });
-    if (items.length) return items;
-  } catch {}
-  return searchDeezerTracks({ query, fetchImpl });
+  return searchNeteaseTracks({ query, fetchImpl });
 }
 
 export async function searchNeteaseAlbums({ query, fetchImpl = fetch }) {

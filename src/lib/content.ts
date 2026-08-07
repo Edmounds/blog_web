@@ -23,8 +23,11 @@ export interface ContentSummary {
   entry: ContentEntry;
 }
 
-const slugFromEntry = (entry: { id: string; slug?: string }) =>
-  entry.slug || entry.id.split("/").pop()?.replace(/\.(md|mdx)$/, "") || "";
+const slugFromEntry = (entry: ContentEntry) => {
+  const slug = entry.data.slug;
+  if (!slug) throw new Error(`Published content entry "${entry.id}" is missing its frontmatter slug.`);
+  return slug;
+};
 
 export const getContentId = (section: ContentSection, slug: string) => `${section}/${slug}`;
 

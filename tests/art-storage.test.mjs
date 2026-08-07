@@ -3,9 +3,10 @@ import test from "node:test";
 
 import {
   assertResolvedPublicAddress, fetchRemoteImage, getArtCoverUrl, getShanghaiDate, localizeArtItems,
-  normalizeImageType, parsePublicHttpsUrl, resolveArtCoverDelivery, validateArtItemInput,
+  normalizeImageType, parsePublicHttpsUrl, resolveArtCoverDelivery, storeCover, validateArtItemInput,
 } from "../src/server/art.js";
 import { onRequestGet as previewCover } from "../src/server/api/admin/art/cover-preview.js";
+import { onRequestGet as proxyDoubanCover } from "../src/server/api/art/douban-cover.js";
 import { onRequestDelete as deleteCover, onRequestPost as uploadCover } from "../src/server/api/admin/art/covers.js";
 import { onRequestGet as listItems, onRequestPost as createItem } from "../src/server/api/admin/art/items.js";
 
@@ -21,7 +22,7 @@ test("art input validates types, dates, translations, and required covers", () =
   assert.equal(validateArtItemInput({ ...result.value, type: "game" }).ok, false);
 });
 
-test("art input accepts Deezer album candidates", () => {
+test("art input rejects legacy Deezer album candidates", () => {
   const result = validateArtItemInput({
     type: "music", musicKind: "album", source: "deezer_music", sourceId: "12", isbn: "", originalTitle: "Abbey Road", releaseDate: "1969-09-26",
     collectedOn: "2026-07-24", isVisible: true, cover: { kind: "url", url: "https://deezer.test/cover.jpg" },
@@ -31,18 +32,17 @@ test("art input accepts Deezer album candidates", () => {
       ja: { title: "アビイ・ロード", creator: "ビートルズ", extra: "" },
     },
   });
-  assert.equal(result.ok, true);
-  assert.equal(result.value.musicKind, "album");
-  assert.deepEqual(Object.keys(result.value.translations), ["zh-CN"]);
+  assert.equal(result.ok, false);
+  assert.equal(result.error.code, "INVALID_SOURCE");
 });
 
-test("art input accepts Deezer singles and rejects invalid music classifications", () => {
+test("art input rejects legacy Deezer singles and invalid music classifications", () => {
   const input = {
     type: "music", musicKind: "single", source: "deezer_track", sourceId: "99", isbn: "", originalTitle: "Song", releaseDate: "",
     collectedOn: "2026-07-25", isVisible: true, cover: { kind: "url", url: "https://deezer.test/song.jpg" },
     translations: { "zh-CN": { title: "Song", creator: "Artist", extra: "" } },
   };
-  assert.equal(validateArtItemInput(input).value.musicKind, "single");
+  assert.equal(validateArtItemInput(input).ok, false);
   assert.equal(validateArtItemInput({ ...input, musicKind: "ep" }).ok, false);
   assert.equal(validateArtItemInput({ ...input, type: "book", musicKind: "single" }).ok, false);
 });
@@ -125,26 +125,74 @@ test("admin art lists validate and forward a music classification filter", async
 
 test("public localization falls back to simplified Chinese and carries music classification", () => {
   const item = {
-    id: "1", type: "music", musicKind: "single", source: "netease_track", coverKey: "art/1/a.jpg",
+    id: "1", type: "music", musicKind: "single", source: "netease_track", coverKey: null,
     coverSourceUrl: "https://p3.music.126.net/song.jpg?size=large",
     translations: { "zh-CN": { title: "歌曲", creator: "歌手", extra: "备注" } },
   };
   assert.deepEqual(localizeArtItems([item], "ja"), [{
     id: "1", type: "music", musicKind: "single", title: "歌曲", creator: "歌手", extra: "备注",
-    cover: "https://p1.music.126.net/song.jpg?size=large", coverFallback: "https://img.muelsyse.us/art/1/a.jpg",
+    cover: "https://p1.music.126.net/song.jpg?size=large", coverFallback: "/images/placeholders/default-cover.webp",
   }]);
 });
 
-test("art cover delivery uses valid Douban images with an R2 fallback", () => {
+test("art cover delivery uses valid Douban images with a local placeholder fallback", () => {
   assert.deepEqual(resolveArtCoverDelivery({
     source: "douban_books",
-    coverKey: "art/book/cover.jpg",
+    coverKey: null,
     coverSourceUrl: "https://img9.doubanio.com/view/subject/l/public/s30014644.jpg?x=1",
   }), {
     primary: "https://img9.doubanio.com/view/subject/l/public/s30014644.jpg?x=1",
-    fallback: "https://img.muelsyse.us/art/book/cover.jpg",
+    fallback: "/images/placeholders/default-cover.webp",
     external: true,
   });
+});
+
+test("art cover delivery proxies Douban objects that reject browser-origin requests", () => {
+  for (const [id, coverSourceUrl] of [
+    ["9c26bdf2-eb9c-4cf0-b12e-43173f0947ba", "https://img3.doubanio.com/view/subject/l/public/s33717372.jpg"],
+    ["68b34115-72df-466a-86f6-eab650a34471", "https://img3.doubanio.com/view/subject/l/public/s1872653.jpg"],
+  ]) {
+    assert.deepEqual(resolveArtCoverDelivery({ id, source: "douban_books", coverKey: null, coverSourceUrl }), {
+      primary: `/api/art/douban-cover/${id}`,
+      fallback: "/images/placeholders/default-cover.webp",
+      external: false,
+    });
+  }
+});
+
+test("public Douban cover proxy is limited to visible Douban records", async () => {
+  const bytes = new Uint8Array([0xff, 0xd8, 0xff, 0xd9]);
+  const requests = [];
+  const env = {
+    DB: {
+      prepare() {
+        return {
+          bind(id) {
+            return { first: async () => id === "ac048000-cb82-4c31-a7a5-86284df87e45" ? {
+              source: "douban_books",
+              cover_source_url: "https://img9.doubanio.com/view/subject/l/public/s35297074.jpg",
+            } : null };
+          },
+        };
+      },
+    },
+    ART_COVER_FETCHER: {
+      async fetch(request) {
+        requests.push(request);
+        return new Response(bytes, { headers: { "content-type": "image/jpeg" } });
+      },
+    },
+  };
+
+  const response = await proxyDoubanCover({ env, params: { id: "ac048000-cb82-4c31-a7a5-86284df87e45" } });
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("content-type"), "image/jpeg");
+  assert.match(response.headers.get("cache-control"), /s-maxage=86400/);
+  assert.equal(requests[0].headers.get("user-agent"), "blog-art-cover-fetcher/1.0");
+  assert.equal(requests[0].headers.get("x-art-cover-url"), "https://img9.doubanio.com/view/subject/l/public/s35297074.jpg");
+
+  const missing = await proxyDoubanCover({ env, params: { id: "00000000-0000-4000-8000-000000000000" } });
+  assert.equal(missing.status, 404);
 });
 
 test("art cover delivery rejects invalid or impersonated Douban URLs", () => {
@@ -153,7 +201,7 @@ test("art cover delivery rejects invalid or impersonated Douban URLs", () => {
     "not a url", "https://user:pass@img9.doubanio.com/cover.jpg", "https://img9.doubanio.com:8443/cover.jpg",
   ]) {
     assert.deepEqual(resolveArtCoverDelivery({ source: "douban_books", coverKey: "art/book/cover.jpg", coverSourceUrl }), {
-      primary: "https://img.muelsyse.us/art/book/cover.jpg", fallback: null, external: false,
+      primary: "https://img.muelsyse.us/art/book/cover.jpg", fallback: "/images/placeholders/default-cover.webp", external: false,
     });
   }
 });
@@ -161,13 +209,23 @@ test("art cover delivery rejects invalid or impersonated Douban URLs", () => {
 test("art cover delivery normalizes NetEase album and track hosts", () => {
   for (const source of ["netease_album", "netease_track"]) {
     assert.deepEqual(resolveArtCoverDelivery({
-      source, coverKey: "art/music/cover.webp", coverSourceUrl: "https://p23.music.126.net/path/cover.jpg?param=600y600",
+      source, coverKey: null, coverSourceUrl: "https://p23.music.126.net/path/cover.jpg?param=600y600",
     }), {
       primary: "https://p1.music.126.net/path/cover.jpg?param=600y600",
-      fallback: "https://img.muelsyse.us/art/music/cover.webp",
+      fallback: "/images/placeholders/default-cover.webp",
       external: true,
     });
   }
+});
+
+test("art cover delivery keeps R2 primary until a verified domestic cutover clears the key", () => {
+  assert.deepEqual(resolveArtCoverDelivery({
+    source: "douban_books", coverKey: "art/book/cover.jpg", coverSourceUrl: "https://img1.doubanio.com/cover.jpg",
+  }), {
+    primary: "https://img.muelsyse.us/art/book/cover.jpg",
+    fallback: "/images/placeholders/default-cover.webp",
+    external: false,
+  });
 });
 
 test("art cover delivery keeps TMDB, Deezer, and mismatched sources on R2", () => {
@@ -182,7 +240,7 @@ test("art cover delivery keeps TMDB, Deezer, and mismatched sources on R2", () =
   for (const [source, coverSourceUrl] of cases) {
     const delivery = resolveArtCoverDelivery({ source, coverKey: "art/item/cover.jpg", coverSourceUrl });
     assert.deepEqual(delivery, {
-      primary: "https://img.muelsyse.us/art/item/cover.jpg", fallback: null, external: false,
+      primary: "https://img.muelsyse.us/art/item/cover.jpg", fallback: "/images/placeholders/default-cover.webp", external: false,
     });
     assert.doesNotMatch(delivery.primary, /image\.tmdb\.org|dzcdn\.net|doubanio\.com|music\.126\.net/);
   }
@@ -190,6 +248,32 @@ test("art cover delivery keeps TMDB, Deezer, and mismatched sources on R2", () =
 
 test("art cover keys resolve to the public R2 image domain", () => {
   assert.equal(getArtCoverUrl("art/one/cover.webp"), "https://img.muelsyse.us/art/one/cover.webp");
+});
+
+test("domestic source covers are kept external without fetching or writing to R2", async () => {
+  for (const [source, url, normalized] of [
+    ["netease_album", "https://p23.music.126.net/path/cover.jpg?param=600y600", "https://p1.music.126.net/path/cover.jpg?param=600y600"],
+    ["douban_books", "https://img9.doubanio.com/view/subject/l/public/s30014644.jpg", "https://img9.doubanio.com/view/subject/l/public/s30014644.jpg"],
+  ]) {
+    let fetched = false;
+    const stored = await storeCover(undefined, "item", { kind: "url", url }, async () => {
+      fetched = true;
+      throw new Error("Domestic cover must not be fetched");
+    }, { source });
+    assert.deepEqual(stored, { key: null, sourceUrl: normalized, mime: null });
+    assert.equal(fetched, false);
+  }
+});
+
+test("foreign source covers still require and use R2", async () => {
+  const bytes = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0, 0, 0, 0]);
+  const bucket = new FakeBucket();
+  const stored = await storeCover(bucket, "item", { kind: "url", url: "https://image.tmdb.org/poster.jpg" }, async () => (
+    new Response(bytes, { headers: { "content-type": "image/png" } })
+  ), { source: "tmdb" });
+  assert.match(stored.key, /^art\/item\/[a-f0-9-]+\.png$/);
+  assert.equal(stored.sourceUrl, "https://image.tmdb.org/poster.jpg");
+  assert.equal(bucket.objects.has(stored.key), true);
 });
 
 test("Shanghai default date is independent of UTC day", () => {
@@ -453,7 +537,7 @@ function duplicateRaceDb() {
 
 function albumInput() {
   return {
-    type: "music", musicKind: "album", source: "deezer_music", sourceId: "9007781", isbn: "", originalTitle: "1989 (Deluxe)", releaseDate: "2014-10-27",
+    type: "music", musicKind: "album", source: "netease_album", sourceId: "3029801", isbn: "", originalTitle: "1989 (Deluxe)", releaseDate: "2014-10-27",
     collectedOn: "2026-07-25", isVisible: true, cover: { kind: "url", url: "https://deezer.test/1989.png" },
     translations: { "zh-CN": { title: "1989 (Deluxe)", creator: "Taylor Swift", extra: "" } },
   };

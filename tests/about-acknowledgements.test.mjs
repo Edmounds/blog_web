@@ -8,9 +8,9 @@ const exists = (path) => existsSync(new URL(`../${path}`, import.meta.url));
 test("About acknowledgements credit Cloudflare, TMDB, and Steam in order", () => {
   const profiles = [
     "src/content/about/profile.md",
-    "src/content/translations/en/about/profile.md",
-    "src/content/translations/ja/about/profile.md",
-    "src/content/translations/zh-TW/about/profile.md",
+    "src/i18n/content/en/about/profile.md",
+    "src/i18n/content/ja/about/profile.md",
+    "src/i18n/content/zh-TW/about/profile.md",
   ];
 
   for (const path of profiles) {
@@ -51,7 +51,7 @@ test("translation cache preserves the reviewed localized acknowledgements", () =
   const normalize = (value) => value.trim().replace(/[ \t]+$/gm, "");
 
   for (const locale of ["en", "ja", "zh-TW"]) {
-    const profile = read(`src/content/translations/${locale}/about/profile.md`).replace(/^\uFEFF/, "");
+    const profile = read(`src/i18n/content/${locale}/about/profile.md`).replace(/^\uFEFF/, "");
     const cached = manifest.entries[`${locale}:content.about.profile.md.document`];
 
     assert.ok(cached, `${locale} About translation must be cached`);

@@ -18,7 +18,7 @@ const LOCALES = [
   ["en", "EN"], ["ja", "JA"], ["zh-TW", "ZH-TW"],
 ];
 const CONTENT_GROUPS = ["blog", "note", "project", "about"];
-const GENERATED_ROOT = path.join(ROOT, "src/content/translations");
+const GENERATED_ROOT = path.join(ROOT, "src/i18n/content");
 const MESSAGE_SOURCE = path.join(ROOT, "src/i18n/source.json");
 const MESSAGE_OUTPUT = path.join(ROOT, "src/i18n/generated");
 const MANIFEST_PATH = path.join(ROOT, "src/i18n/translation-manifest.json");
@@ -83,7 +83,7 @@ const checkpointTranslation = async (manifestKey, entry) => {
 
 const isPlainObject = (value) => value && typeof value === "object" && !Array.isArray(value) && !(value instanceof Date);
 const shouldTranslateKey = (key) => !new Set([
-  "slug", "categorySlug", "cover", "portrait", "name", "href", "icon", "id", "type", "side",
+  "slug", "categorySlug", "cover", "portrait", "backgroundKeywords", "name", "href", "icon", "id", "type", "side",
   "projectUrl", "docUrl", "image", "createdAt", "updatedAt", "published",
   "publishedAt", "year", "archiveYear", "showOnHome", "showInArchive", "showInTimeline", "draft",
 ]).has(key);
@@ -97,6 +97,7 @@ const translateText = async ({ locale, targetLang, key, source, manifest, seed, 
   const cached = manifest.entries[manifestKey];
   if (cached?.fingerprint === fingerprint && typeof cached.translation === "string") return cached.translation;
 
+  console.log(`[translate] ${manifestKey} started.`);
   const seeded = seed?.[manifestKey];
   const translatorName = translate ? `${provider.name}-segment` : provider.name;
   const sharedKey = `${translatorName}:${locale}:${format}:${fingerprint}`;
@@ -120,7 +121,7 @@ const translateText = async ({ locale, targetLang, key, source, manifest, seed, 
   manifest.entries[manifestKey] = entry;
   await checkpointTranslation(manifestKey, entry);
   manifest.updated += 1;
-  if (manifest.updated % 25 === 0) console.log(`Translated ${manifest.updated} new segments...`);
+  console.log(`[translate] ${manifest.updated} updated: ${manifestKey}.`);
   return translation;
 };
 
@@ -246,6 +247,7 @@ const translateDocument = async ({ raw, keyPrefix, locale, targetLang, manifest 
     manifest.entries[manifestKey] = entry;
     await checkpointTranslation(manifestKey, entry);
     manifest.updated += 1;
+    console.log(`[translate] ${manifest.updated} updated: ${manifestKey} (segment fallback).`);
   }
   return {
     data: mergeTranslatedData(source.data, translated.data),
@@ -300,18 +302,29 @@ const main = async () => {
   const messages = JSON.parse(await readFile(MESSAGE_SOURCE, "utf8"));
   await mkdir(MESSAGE_OUTPUT, { recursive: true });
 
-  for (const [locale, targetLang] of LOCALES) {
-    const translatedMessages = await translateValue({
-      value: messages,
-      keyPath: "messages",
-      fieldName: "messages",
-      locale,
-      targetLang,
-      manifest,
-      seed,
-    });
-    await writeFile(path.join(MESSAGE_OUTPUT, `${locale}.json`), `${JSON.stringify(translatedMessages, null, 2)}\n`, "utf8");
-    await translateContentFiles({ locale, targetLang, manifest });
+  const progressTimer = setInterval(() => {
+    console.log(`[translate] Still working: ${manifest.updated} updated, ${activeRequests} active, ${waiters.length} queued.`);
+  }, 15_000);
+  progressTimer.unref();
+
+  try {
+    for (const [locale, targetLang] of LOCALES) {
+      console.log(`[translate] ${locale} started.`);
+      const translatedMessages = await translateValue({
+        value: messages,
+        keyPath: "messages",
+        fieldName: "messages",
+        locale,
+        targetLang,
+        manifest,
+        seed,
+      });
+      await writeFile(path.join(MESSAGE_OUTPUT, `${locale}.json`), `${JSON.stringify(translatedMessages, null, 2)}\n`, "utf8");
+      await translateContentFiles({ locale, targetLang, manifest });
+      console.log(`[translate] ${locale} complete.`);
+    }
+  } finally {
+    clearInterval(progressTimer);
   }
 
   const validPrefixes = new Set(LOCALES.map(([locale]) => `${locale}:`));

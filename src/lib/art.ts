@@ -19,7 +19,7 @@ export interface ArtRecord {
   isbn: string;
   originalTitle: string;
   releaseDate: string;
-  coverKey: string;
+  coverKey: string | null;
   coverSourceUrl: string;
   coverUrl: string;
   collectedOn: string;

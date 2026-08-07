@@ -45,24 +45,29 @@ npm run build
 - Note：`src/content/note/**/*.{md,mdx}`
 - Project：`src/content/project/**/*.{md,mdx}`
 - About：`src/content/about/profile.md`
-- 翻译输出：`src/content/translations/<locale>/`
+- 站点配置：`src/config/site/settings.md`
+- 翻译输出：`src/i18n/content/<locale>/`
 
-Blog、Note、Project 公共 frontmatter 为 `title`、`description`、`createdAt`、`updatedAt`、`published`、`order`、`tags`；Project 可额外使用 `projectUrl` 和 `docUrl`。文章 URL 和内容互动 ID 均直接使用文件名，例如 `first-note.md` 对应 `/blog/first-note/` 和 `blog/first-note`。
+Blog、Note、Project 公共 frontmatter 为 `title`、`description`、`createdAt`、`updatedAt`、`published`、`slug`、`tags`；Project 可额外使用 `projectUrl` 和 `docUrl`。文件名不参与 URL，可以直接使用中文或按 Obsidian 中方便管理的方式命名。
 
-含中文的 Markdown 使用 UTF-8 BOM。`npm run content:prepare` 会为新增中文文章补充 BOM，并根据已发布的 Blog、Note、Project 自动更新互动内容 ID；`npm run dev` 和 `npm run build` 会自动先执行它。`npm run translate` 会递归处理 `.md` 与 `.mdx`，保留目录和不可翻译字段。
+About frontmatter 中的 `backgroundKeywords` 仅用于 About 页面背景动画，不会显示在正文、搜索、RSS 或 SEO 中；所有语言共用这组原始关键词。
+
+已发布内容使用 frontmatter 的 `slug` 生成 URL 和互动 ID，例如 `slug: 20260803-01` 对应 `/blog/20260803-01/` 和 `blog/20260803-01`。也可以手写 `slug: cloudflare-architecture`，但只能使用小写字母、数字和连字符，同一栏目内不得重复。slug 发布后应视为永久 ID；如需修改，必须同时增加旧 URL 重定向并迁移 D1 互动数据。
+
+草稿可以不写 `slug`。首次设为 `published: true` 后，`npm run content:prepare` 会按 `createdAt` 自动写入 `YYYYMMDD-NN`，编号在同一栏目、同一天内递增；已写入的 slug 不会因标题、文件名或其他文章变化而重新生成。自动写入的 frontmatter 应和文章一起提交。该命令还会为新增中文文章补充 UTF-8 BOM，并根据已发布的 Blog、Note、Project 更新互动内容 ID；`npm run dev` 和 `npm run build` 会自动先执行它。`npm run translate` 会递归处理 `.md` 与 `.mdx`，保留 `slug`、目录和其他不可翻译字段。
 
 ## D1、R2 与迁移
 
-互动数据和收藏元数据使用 Cloudflare D1，收藏封面通过 `ART_COVERS` binding 写入 `blog-images/art/`，并由 `https://img.muelsyse.us` 公开访问。部署前执行：
+互动数据和收藏元数据使用 Cloudflare D1。网易云音乐封面和豆瓣图书封面直接使用经过域名校验的国内上游 HTTPS 地址；用户上传、TMDB 等不适合国内直连的封面通过 `ART_COVERS` binding 写入 `blog-images/art/`，并由 `https://img.muelsyse.us` 公开访问。部署前执行：
 
 ```bash
 npm run db:migrate:local
 npm run db:migrate:remote
 ```
 
-`schema/content_ids.sql` 会幂等地把旧 Blog 裸 slug 迁移为 `blog/<slug>`。URL 收藏封面由独立的 `blog-art-cover-fetcher` Worker 获取，并同时检查 IPv4/IPv6 DNS 结果；先执行 `wrangler deploy --config wrangler.art-cover-fetcher.jsonc`。
+`schema/content_ids.sql` 会幂等地把旧 Blog 裸 slug 和历史文件名 slug 迁移为当前 contentId。URL 收藏封面由独立的 `blog-art-cover-fetcher` Worker 获取，并同时检查 IPv4/IPv6 DNS 结果；先执行 `wrangler deploy --config wrangler.art-cover-fetcher.jsonc`。
 
-博客、笔记和项目正文使用 Obsidian 图床插件直接上传至 `blog-images` R2，Markdown 始终保存原始 `https://img.muelsyse.us/bed/...` 在线地址。开发和构建会为首次出现的栅格图生成同目录的 AVIF/WebP 多分辨率版本，并把映射写入 manifest；Markdown URL 不变，渲染时自动输出响应式 `<picture>`。AVIF 对象使用 `.avif.webp` 存储键，但响应 MIME 仍为 `image/avif`，用于避开图床域名针对 `.avif` 后缀的错误拦截。Life 收藏封面与数据只通过 D1/R2 和 `/admin/art/` 管理。
+博客、笔记和项目正文使用 Obsidian 图床插件直接上传至 `blog-images` R2，Markdown 始终保存原始 `https://img.muelsyse.us/bed/...` 在线地址。开发和构建会为首次出现的栅格图生成同目录的 AVIF/WebP 多分辨率版本，并把映射写入 manifest；Markdown URL 不变，渲染时自动输出响应式 `<picture>`。AVIF 对象使用 `.avif.webp` 存储键，但响应 MIME 仍为 `image/avif`，用于避开图床域名针对 `.avif` 后缀的错误拦截。Life 收藏元数据通过 D1 和 `/admin/art/` 管理；封面按上述国内源直连或 R2 策略保存。
 
 历史 `blog/` 图片也通过同一套 manifest 渲染。旧的本地绝对路径仍会先上传并改写为在线地址；已有在线地址不会被改写。常用命令：
 

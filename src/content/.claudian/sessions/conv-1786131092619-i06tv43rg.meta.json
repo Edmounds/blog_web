@@ -1,0 +1,28 @@
+{
+  "id": "conv-1786131092619-i06tv43rg",
+  "providerId": "codex",
+  "title": "回应问候",
+  "titleGenerationStatus": "success",
+  "createdAt": 1786131092640,
+  "lastActivityAt": 1786131103909,
+  "sessionId": "019fddb5-9503-7ae2-aa17-33cf58896e65",
+  "selectedModel": "gpt-5.6-sol",
+  "providerState": {
+    "threadId": "019fddb5-9503-7ae2-aa17-33cf58896e65",
+    "nativeConversationContextEstablished": true,
+    "sessionFilePath": "/Users/cqc/.codex/sessions/2026/08/08/rollout-2026-08-08T03-31-32-019fddb5-9503-7ae2-aa17-33cf58896e65.jsonl",
+    "transcriptRootPath": "/Users/cqc/.codex/sessions",
+    "workspaceDependencyToolVersion": 1
+  },
+  "currentNote": "about/profile.md",
+  "usage": {
+    "inputTokens": 17602,
+    "cacheCreationInputTokens": 0,
+    "cacheReadInputTokens": 3840,
+    "contextWindow": 258400,
+    "contextWindowIsAuthoritative": true,
+    "contextTokens": 17602,
+    "percentage": 7,
+    "model": "gpt-5.6-sol"
+  }
+}

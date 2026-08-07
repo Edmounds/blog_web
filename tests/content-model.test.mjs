@@ -1,8 +1,16 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
+const exists = async (path) => {
+  try {
+    await access(new URL(`../${path}`, import.meta.url));
+    return true;
+  } catch {
+    return false;
+  }
+};
 
 test("writing collections use tags instead of category, type, or cover fields", async () => {
   const schema = await read("src/content.config.ts");
@@ -36,14 +44,18 @@ test("all writing sections render as localized Astro-star timeline archives", as
   assert.match(activity, /\.archive-activity__year[^{]*\{[^}]*white-space:\s*nowrap;/s);
 });
 
-test("content slugs always come from Markdown file names", async () => {
+test("content slugs always come from frontmatter", async () => {
   const content = await read("src/lib/content.ts");
   const ids = await read("scripts/check-content-ids.mjs");
+  const schema = await read("src/content.config.ts");
 
   assert.doesNotMatch(content, /routeSlug/);
-  assert.match(content, /entry\.id\.split\("\/"\)\.pop/);
+  assert.match(content, /entry\.data\.slug/);
+  assert.doesNotMatch(content, /entry\.id\.split\("\/"\)\.pop/);
   assert.doesNotMatch(ids, /routeSlug/);
-  assert.match(ids, /path\.basename\(file\)/);
+  assert.match(ids, /source\.data\.slug/);
+  assert.match(schema, /slug:\s*z\.string/);
+  assert.match(schema, /generateId:\s*\(\{ entry \}\) => entry\.replace/);
   assert.doesNotMatch(ids, /functions\/_shared\/post-slugs\.js/);
   assert.match(ids, /src\/lib\/post-slugs\.ts/);
 });
@@ -52,4 +64,28 @@ test("localized writing entries default missing tags to an empty list", async ()
   const content = await read("src/lib/content.ts");
 
   assert.match(content, /tags:\s*entry\.data\.tags\s*\?\?\s*\[\]/);
+});
+
+test("site configuration and translations stay outside content while About owns animation keywords", async () => {
+  const config = await read("src/content.config.ts");
+  const about = await read("src/content/about/profile.md");
+  const aboutSection = await read("src/components/sections/AboutSection.astro");
+  const background = await read("src/components/site/RouteBackground.astro");
+  const translate = await read("scripts/translate.mjs");
+
+  assert.match(config, /base:\s*"\.\/src\/config\/site"/);
+  assert.match(config, /base:\s*"\.\/src\/i18n\/content"/);
+  assert.match(config, /backgroundKeywords:\s*z\.array\(z\.string\(\)\.min\(1\)\)\.min\(1\)/);
+  assert.match(about, /^backgroundKeywords:\s*$/m);
+  assert.match(background, /getAboutProfile/);
+  assert.match(background, /profile\.data\.backgroundKeywords/);
+  assert.doesNotMatch(background, /const keywords\s*=\s*\[/);
+  assert.doesNotMatch(background, /--word|content:\s*var\(--word\)/);
+  assert.doesNotMatch(aboutSection, /backgroundKeywords/);
+  assert.match(translate, /"backgroundKeywords"/);
+  assert.match(translate, /src\/i18n\/content/);
+  assert.equal(await exists("src/config/site/settings.md"), true);
+  assert.equal(await exists("src/i18n/content/en/about/profile.md"), true);
+  assert.equal(await exists("src/content/site"), false);
+  assert.equal(await exists("src/content/translations"), false);
 });

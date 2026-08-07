@@ -1,0 +1,4 @@
+interface:
+  display_name: "Blog Cloudflare 运维"
+  short_description: "盘点、巡检和维护本博客项目的 Cloudflare 资源与部署链路"
+  default_prompt: "使用 $manage-blog-cloudflare 盘点并只读检查本博客的 Cloudflare 资源。"

@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Background: Near-Black Tile -->
-  <rect width="512" height="512" rx="114" fill="#1d1d1f" />
-  <!-- Geometric "C" for CQC / Camera / Creative -->
-  <path d="M336 176 C296 128 208 128 168 176 C128 224 128 288 168 336 C208 384 296 384 336 336" fill="none" stroke="#ffffff" stroke-width="28" stroke-linecap="round" />
-  <!-- Action Blue Focus Point -->
-  <circle cx="280" cy="256" r="32" fill="#0066cc" />
-</svg>

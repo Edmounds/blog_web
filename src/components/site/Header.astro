@@ -50,12 +50,11 @@ const isActive = (href: string) =>
       aria-label="Last4ev3r home">Last4ev3r</a
     >
 
-    <div class="desktop-nav-region" data-header-reveal-zone>
+    <div class="desktop-nav-region">
       <nav
         class="desktop-nav"
         data-desktop-nav
         data-hidden="false"
-        data-interactive="true"
         aria-label="Primary navigation"
       >
         {
@@ -160,19 +159,13 @@ const isActive = (href: string) =>
 
 <script>
   type HeaderWindow = Window & { __siteHeaderCleanup?: () => void };
-  const DESKTOP_NAV_REVEAL_INTERACTION_MS = 180;
 
   function bindHeader() {
     const headerWindow = window as HeaderWindow;
     headerWindow.__siteHeaderCleanup?.();
 
     const header = document.querySelector("[data-site-header]");
-    const revealZone = document.querySelector("[data-header-reveal-zone]");
-    if (
-      !(header instanceof HTMLElement) ||
-      !(revealZone instanceof HTMLElement)
-    )
-      return;
+    if (!(header instanceof HTMLElement)) return;
 
     const controller = new AbortController();
     const { signal } = controller;
@@ -183,7 +176,6 @@ const isActive = (href: string) =>
     const frameEnd = header.querySelector("[data-content-frame-end]");
     const lifeTrigger = header.querySelector("[data-life-trigger]");
     const lifeMenu = header.querySelector("[data-life-menu]");
-    const desktopPointer = matchMedia("(hover: hover) and (pointer: fine)");
     const desktopLayout = matchMedia("(min-width: 64.0625rem)");
     if (
       !(desktopNav instanceof HTMLElement) ||
@@ -192,9 +184,8 @@ const isActive = (href: string) =>
     )
       return;
 
-    let pointerInsideNavRegion = false;
+    let pointerInsideHeader = false;
     let frameId = 0;
-    let interactionTimer = 0;
 
     const clearContentFrame = () => {
       document.documentElement.style.removeProperty(
@@ -251,41 +242,19 @@ const isActive = (href: string) =>
     const lifeIsOpen = () =>
       lifeTrigger?.getAttribute("aria-expanded") === "true";
     const navHasFocus = () => desktopNav.contains(document.activeElement);
-    const clearInteractionTimer = () => {
-      if (!interactionTimer) return;
-      window.clearTimeout(interactionTimer);
-      interactionTimer = 0;
-    };
-    const setInteractive = (interactive: boolean) => {
-      clearInteractionTimer();
-      desktopNav.dataset.interactive = String(interactive);
-    };
-    const deferInteractionAfterReveal = () => {
-      clearInteractionTimer();
-      desktopNav.dataset.interactive = "false";
-      interactionTimer = window.setTimeout(() => {
-        interactionTimer = 0;
-        if (desktopNav.dataset.hidden !== "true")
-          desktopNav.dataset.interactive = "true";
-      }, DESKTOP_NAV_REVEAL_INTERACTION_MS);
-    };
-    const setHidden = (hidden: boolean, interactive = true) => {
+    const setHidden = (hidden: boolean) => {
       const nextHidden =
         hidden &&
         desktopLayout.matches &&
-        window.scrollY > header.offsetHeight &&
+        window.scrollY > 0 &&
         !lifeIsOpen() &&
-        !pointerInsideNavRegion &&
+        !pointerInsideHeader &&
         !navHasFocus();
       desktopNav.dataset.hidden = String(nextHidden);
-      if (nextHidden) setInteractive(false);
-      else if (!interactionTimer) setInteractive(interactive);
     };
     const syncAfterMenuChange = () =>
       requestAnimationFrame(() => {
-        if (lifeIsOpen() || pointerInsideNavRegion || navHasFocus())
-          setHidden(false);
-        else if (window.scrollY > header.offsetHeight) setHidden(true);
+        setHidden(window.scrollY > 0);
       });
 
     const closeMobile = () => {
@@ -364,28 +333,19 @@ const isActive = (href: string) =>
     );
     desktopNav.addEventListener("focusin", () => setHidden(false), { signal });
     desktopNav.addEventListener("focusout", syncAfterMenuChange, { signal });
-    revealZone.addEventListener(
+    header.addEventListener(
       "pointerenter",
       () => {
-        pointerInsideNavRegion = true;
-        if (!desktopPointer.matches) return;
-        const wasHidden = desktopNav.dataset.hidden === "true";
-        setHidden(false, !wasHidden);
-        if (wasHidden) deferInteractionAfterReveal();
+        pointerInsideHeader = true;
+        setHidden(false);
       },
       { signal },
     );
-    revealZone.addEventListener(
+    header.addEventListener(
       "pointerleave",
       () => {
-        pointerInsideNavRegion = false;
-        if (
-          desktopPointer.matches &&
-          window.scrollY > header.offsetHeight &&
-          !lifeIsOpen() &&
-          !navHasFocus()
-        )
-          setHidden(true);
+        pointerInsideHeader = false;
+        setHidden(window.scrollY > 0);
       },
       { signal },
     );
@@ -394,9 +354,9 @@ const isActive = (href: string) =>
       () => {
         const currentScrollY = window.scrollY;
         if (
-          currentScrollY <= header.offsetHeight ||
+          currentScrollY <= 0 ||
           lifeIsOpen() ||
-          pointerInsideNavRegion ||
+          pointerInsideHeader ||
           navHasFocus()
         )
           setHidden(false);
@@ -415,21 +375,19 @@ const isActive = (href: string) =>
     desktopLayout.addEventListener(
       "change",
       () => {
-        setHidden(window.scrollY > header.offsetHeight);
+        setHidden(window.scrollY > 0);
         scheduleContentFrame();
       },
       { signal },
     );
 
-    desktopNav.dataset.hidden = "false";
-    desktopNav.dataset.interactive = "true";
+    setHidden(window.scrollY > 0);
     scheduleContentFrame();
     document.fonts.ready.then(scheduleContentFrame);
     const cleanup = () => {
       controller.abort();
       frameObserver.disconnect();
       if (frameId) cancelAnimationFrame(frameId);
-      clearInteractionTimer();
     };
     document.addEventListener("astro:before-swap", cleanup, {
       once: true,
@@ -500,9 +458,6 @@ const isActive = (href: string) =>
     visibility: hidden;
     opacity: 0;
     transform: translateY(-100%);
-    pointer-events: none;
-  }
-  .desktop-nav[data-interactive="false"] {
     pointer-events: none;
   }
   .desktop-nav > a,

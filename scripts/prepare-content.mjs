@@ -3,6 +3,7 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 import matter from "gray-matter";
+import { parseDocument } from "yaml";
 
 const CONTENT_GROUPS = ["blog", "note", "project"];
 const UTF8_BOM = Buffer.from([0xef, 0xbb, 0xbf]);
@@ -26,12 +27,13 @@ const walk = async (directory) => {
 };
 
 export const prepareContent = async (rootDir = process.cwd()) => {
-  const contentIds = [];
+  const records = [];
   let bomAdded = 0;
+  let slugsAdded = 0;
 
   for (const group of CONTENT_GROUPS) {
     const directory = path.join(rootDir, "src/content", group);
-    for (const filePath of await walk(directory)) {
+    for (const filePath of (await walk(directory)).sort()) {
       if (!/\.(md|mdx)$/.test(filePath)) continue;
 
       const fileBuffer = await readFile(filePath);
@@ -39,21 +41,54 @@ export const prepareContent = async (rootDir = process.cwd()) => {
       const sourceBuffer = withBom ? fileBuffer.subarray(3) : fileBuffer;
       const source = sourceBuffer.toString("utf8");
 
-      if (path.extname(filePath) === ".md" && CJK_REGEX.test(source) && !withBom) {
-        await writeFile(filePath, Buffer.concat([UTF8_BOM, fileBuffer]));
-        bomAdded += 1;
-      }
-
       const document = matter(source);
-      if (document.data.published === false) continue;
-      const slug = path.basename(filePath).replace(/\.(md|mdx)$/, "");
-      if (!SLUG_REGEX.test(slug)) {
-        throw new Error(`Published content filename must use lowercase kebab-case: ${path.relative(rootDir, filePath)}`);
-      }
-      contentIds.push(`${group}/${slug}`);
+      records.push({ group, filePath, fileBuffer, source, document, withBom });
     }
   }
 
+  const published = records.filter(({ document }) => document.data.published !== false);
+  const usedSlugs = new Map(CONTENT_GROUPS.map((group) => [group, new Map()]));
+
+  for (const record of published) {
+    const slug = record.document.data.slug;
+    if (slug === undefined) continue;
+    if (typeof slug !== "string" || !SLUG_REGEX.test(slug)) {
+      throw new Error(`Published content slug must use lowercase kebab-case: ${path.relative(rootDir, record.filePath)}`);
+    }
+    reserveSlug(usedSlugs, record, slug, rootDir);
+  }
+
+  for (const record of published) {
+    if (record.document.data.slug !== undefined) continue;
+    const date = dateKey(record.document.data.createdAt);
+    if (!date) {
+      throw new Error(`Published content requires a valid createdAt before a slug can be generated: ${path.relative(rootDir, record.filePath)}`);
+    }
+
+    const sectionSlugs = usedSlugs.get(record.group);
+    let sequence = 1;
+    let slug;
+    do {
+      slug = `${date}-${String(sequence).padStart(2, "0")}`;
+      sequence += 1;
+    } while (sectionSlugs.has(slug));
+
+    record.document.data.slug = slug;
+    reserveSlug(usedSlugs, record, slug, rootDir);
+    record.source = addFrontmatterSlug(record.document, slug);
+    record.document = matter(record.source);
+    slugsAdded += 1;
+  }
+
+  for (const record of records) {
+    const needsBom = path.extname(record.filePath) === ".md" && CJK_REGEX.test(record.source) && !record.withBom;
+    if (needsBom) bomAdded += 1;
+    if (!needsBom && record.source === record.fileBuffer.subarray(record.withBom ? 3 : 0).toString("utf8")) continue;
+    const sourceBuffer = Buffer.from(record.source, "utf8");
+    await writeFile(record.filePath, record.withBom || needsBom ? Buffer.concat([UTF8_BOM, sourceBuffer]) : sourceBuffer);
+  }
+
+  const contentIds = published.map(({ group, document }) => `${group}/${document.data.slug}`);
   contentIds.sort();
   const outputPaths = [{
     path: path.join(rootDir, "src/lib/post-slugs.ts"),
@@ -72,10 +107,32 @@ export const prepareContent = async (rootDir = process.cwd()) => {
     idsUpdated ||= targetUpdated;
   }
 
-  return { bomAdded, contentIds, idsUpdated };
+  return { bomAdded, contentIds, idsUpdated, slugsAdded };
+};
+
+const reserveSlug = (usedSlugs, record, slug, rootDir) => {
+  const sectionSlugs = usedSlugs.get(record.group);
+  const existing = sectionSlugs.get(slug);
+  if (existing) {
+    throw new Error(
+      `Duplicate ${record.group} slug "${slug}": ${path.relative(rootDir, existing)} and ${path.relative(rootDir, record.filePath)}`,
+    );
+  }
+  sectionSlugs.set(slug, record.filePath);
+};
+
+const dateKey = (value) => {
+  const date = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(date.getTime()) ? undefined : date.toISOString().slice(0, 10).replaceAll("-", "");
+};
+
+const addFrontmatterSlug = (document, slug) => {
+  const yaml = parseDocument(document.matter);
+  yaml.set("slug", slug);
+  return `---\n${String(yaml).trimEnd()}\n---${document.content}`;
 };
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
   const result = await prepareContent();
-  console.log(`Content ready: ${result.contentIds.length} published ID(s), ${result.bomAdded} BOM added, ID list ${result.idsUpdated ? "updated" : "unchanged"}.`);
+  console.log(`Content ready: ${result.contentIds.length} published ID(s), ${result.slugsAdded} slug(s) added, ${result.bomAdded} BOM added, ID list ${result.idsUpdated ? "updated" : "unchanged"}.`);
 }

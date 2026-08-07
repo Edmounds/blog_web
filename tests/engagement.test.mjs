@@ -32,6 +32,13 @@ test("the content ID migration prefixes every legacy Blog table idempotently", (
   assert.match(sql, /UPDATE comments[\s\S]*SET slug = 'blog\/' \|\| slug/);
   assert.match(sql, /DELETE FROM post_stats[\s\S]*WHERE slug NOT LIKE '%\/%'/);
   assert.match(sql, /DELETE FROM post_view_events[\s\S]*WHERE slug NOT LIKE '%\/%'/);
+  for (const [oldId, newId] of [
+    ["blog/first-note", "blog/20260128-01"],
+    ["note/arknights-p3r", "note/20260726-01"],
+    ["note/dongyeguiwu-passaway", "note/20260727-01"],
+  ]) {
+    assert.match(sql, new RegExp(oldId.replace("/", "\\/") + "[\\s\\S]*" + newId.replace("/", "\\/")));
+  }
 });
 
 test("statistics isolate identical slugs across content sections", async () => {

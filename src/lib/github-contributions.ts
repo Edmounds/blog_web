@@ -42,7 +42,9 @@ interface GitHubContributionOptions {
   token?: string;
 }
 
-const CACHE_SECONDS = 6 * 60 * 60;
+const CACHE_REFRESH_SECONDS = 6 * 60 * 60;
+const CACHE_RETENTION_SECONDS = 7 * 24 * 60 * 60;
+const CACHE_TIMESTAMP_HEADER = "x-github-contributions-fetched-at";
 const DAY_MS = 24 * 60 * 60 * 1000;
 const FETCH_TIMEOUT_MS = 8_000;
 const USERNAME_PATTERN = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/;
@@ -230,18 +232,30 @@ export async function getGitHubContributionHeatmap(username: string, options: Gi
 
 export async function getCachedGitHubContributionHeatmap(username: string, options: GitHubContributionOptions = {}) {
   const key = new Request(`https://github-contributions-cache.internal/v2/${encodeURIComponent(username)}`);
+  let staleHeatmap: GitHubContributionHeatmap | undefined;
   if (options.cache) {
     try {
       const cached = await options.cache.match(key);
-      if (cached?.ok) return await cached.json() as GitHubContributionHeatmap;
+      if (cached?.ok) {
+        const heatmap = await cached.json() as GitHubContributionHeatmap;
+        const fetchedAt = Date.parse(cached.headers.get(CACHE_TIMESTAMP_HEADER) ?? "");
+        const ageSeconds = ((options.now ?? new Date()).getTime() - fetchedAt) / 1_000;
+        if (Number.isFinite(fetchedAt) && ageSeconds < CACHE_REFRESH_SECONDS) return heatmap;
+        staleHeatmap = heatmap;
+      }
     } catch {}
   }
 
   const heatmap = await getGitHubContributionHeatmap(username, options);
-  if (!heatmap || !options.cache) return heatmap;
+  if (!heatmap) return staleHeatmap;
+  if (!options.cache) return heatmap;
   try {
     await options.cache.put(key, new Response(JSON.stringify(heatmap), {
-      headers: { "content-type": "application/json", "cache-control": `public, max-age=${CACHE_SECONDS}` },
+      headers: {
+        "content-type": "application/json",
+        "cache-control": `public, max-age=${CACHE_RETENTION_SECONDS}`,
+        [CACHE_TIMESTAMP_HEADER]: (options.now ?? new Date()).toISOString(),
+      },
     }));
   } catch {}
   return heatmap;

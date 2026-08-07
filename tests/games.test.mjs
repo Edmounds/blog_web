@@ -5,6 +5,7 @@ import {
   fetchSteamOwnedGames, parsePlaytimeMinutes, parseSteamOwnedGames, syncSteamGames, validateGameCreate, validateGameUpdate,
 } from "../src/server/games.js";
 import { onRequestGet as listAdminGames } from "../src/server/api/admin/games/index.js";
+import { onRequestGet as resolveSteamCover } from "../src/server/api/game/steam-cover.js";
 
 test("Steam request includes app info and played free games and parses minutes", async () => {
   let requested;
@@ -101,6 +102,68 @@ test("admin game lists are never served from browser or shared caches", async ()
     syncState: { lastAttemptAt: null, lastSuccessAt: null, lastSyncedCount: 0, lastError: null },
   });
 });
+
+test("Steam cover fallback resolves current hashed library assets", async () => {
+  let requested;
+  const response = await resolveSteamCover({ env: steamCoverEnv(), params: { appId: "3527290" } }, async (url) => {
+    requested = new URL(url);
+    return Response.json({ response: { store_items: [{
+      id: 3527290,
+      assets: {
+        asset_url_format: "steam/apps/3527290/${FILENAME}?t=1775581133",
+        library_capsule: "480bd879ac737921bfa2529a6fea15961267ad21/library_600x900.jpg",
+      },
+    }] } });
+  });
+
+  assert.equal(requested.hostname, "api.steampowered.com");
+  assert.equal(response.status, 302);
+  assert.equal(response.headers.get("location"), "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3527290/480bd879ac737921bfa2529a6fea15961267ad21/library_600x900.jpg?t=1775581133");
+  assert.match(response.headers.get("cache-control"), /s-maxage=86400/);
+});
+
+test("Steam cover fallback rejects invalid IDs and malformed asset responses", async () => {
+  const invalid = await resolveSteamCover({ params: { appId: "not-an-id" } }, async () => {
+    throw new Error("Invalid IDs must not reach Steam");
+  });
+  assert.equal(invalid.status, 400);
+
+  const malformed = await resolveSteamCover({ env: steamCoverEnv(), params: { appId: "3527290" } }, async () => Response.json({ response: { store_items: [{
+    id: 3527290,
+    assets: { asset_url_format: "https://evil.test/${FILENAME}", library_capsule: "cover.jpg" },
+  }] } }));
+  assert.equal(malformed.status, 404);
+});
+
+test("Steam cover fallback accepts legacy official portrait assets", async () => {
+  const response = await resolveSteamCover({ env: steamCoverEnv(), params: { appId: "911400" } }, async () => Response.json({ response: { store_items: [{
+    id: 911400,
+    assets: { asset_url_format: "steam/apps/911400/${FILENAME}?t=1692034844", library_capsule: "portrait.png" },
+  }] } }));
+
+  assert.equal(response.status, 302);
+  assert.equal(response.headers.get("location"), "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/911400/portrait.png?t=1692034844");
+});
+
+test("Steam cover fallback is limited to visible stored games", async () => {
+  let fetched = false;
+  const response = await resolveSteamCover({
+    env: steamCoverEnv(null), params: { appId: "3527290" },
+  }, async () => { fetched = true; return Response.json({}); });
+
+  assert.equal(response.status, 404);
+  assert.equal(fetched, false);
+});
+
+function steamCoverEnv(game = { id: "game" }) {
+  return {
+    DB: {
+      prepare() {
+        return { bind: () => ({ first: async () => game }) };
+      },
+    },
+  };
+}
 
 function row(overrides) {
   return { id: crypto.randomUUID(), source: "steam", steam_app_id: null, title: "Game", steam_playtime_minutes: 0, custom_playtime_minutes: null, is_visible: 1, cover_key: null, last_seen_at: null, created_at: "2026-01-01T00:00:00.000Z", updated_at: "2026-01-01T00:00:00.000Z", ...overrides };

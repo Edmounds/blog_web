@@ -4,6 +4,28 @@ city: 重庆
 major: 机器人工程
 motto: Keep it Simple,Stupid
 portrait: /images/content/about/profile-8646bdb863b8-w320.webp
+backgroundKeywords:
+  - Fate
+  - 烧肉
+  - 烧鹅
+  - 肠粉
+  - C++
+  - ROS2
+  - KISS
+  - ubuntu
+  - Linux
+  - 天文
+  - AI
+  - Python
+  - 音乐
+  - Music
+  - 美剧
+  - steam
+  - 重庆大学
+  - 重庆
+  - CQU
+  - 水瓶座
+  - INFP
 ---
 
 ## 关于网站
@@ -12,7 +34,6 @@ portrait: /images/content/about/profile-8646bdb863b8-w320.webp
 这里不是社交媒体，没有通知和点赞焦虑，只有文字一些记录。 
 不喜欢社交软件那种高强度对个人生活的影响和侵入 
 
-## 为什么速度有点慢
 ## 关于我
 重庆大学国家卓越工程师学院大三
 

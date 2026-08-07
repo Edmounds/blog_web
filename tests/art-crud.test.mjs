@@ -97,12 +97,35 @@ test("admin deletion keeps D1 metadata when R2 cover deletion fails", async () =
   assert.ok(await getArtItem(db, "keep"));
 });
 
+test("admin deletion removes direct-source records without requiring R2", async () => {
+  const db = new FakeD1();
+  const input = {
+    type: "book", source: "douban_books", sourceId: "27115970", isbn: "9787544258210", originalTitle: "秘密", releaseDate: "2017",
+    collectedOn: "2026-07-24", isVisible: true,
+    translations: { "zh-CN": { title: "秘密", creator: "东野圭吾", extra: "" } },
+  };
+  await createArtItem(db, input, { key: null, sourceUrl: "https://img9.doubanio.com/cover.jpg" }, { id: "direct", now: new Date("2026-07-24T00:00:00Z") });
+
+  const response = await onRequestDelete({
+    env: { DB: db },
+    params: { id: "direct" },
+    request: new Request("https://blog.muelsyse.us/api/admin/art/items/direct", {
+      method: "DELETE", headers: { origin: "https://blog.muelsyse.us", "sec-fetch-site": "same-origin" },
+    }),
+  });
+
+  assert.equal(response.status, 200);
+  assert.equal(await getArtItem(db, "direct"), undefined);
+});
+
 test("art schema allows manual items without source IDs and rejects duplicate sourced items", () => {
   const schema = readFileSync(new URL("../schema/art.sql", import.meta.url), "utf8");
   assert.match(schema, /music_kind TEXT CHECK \(music_kind IN \('album', 'single'\)\)/);
   assert.match(schema, /CREATE UNIQUE INDEX IF NOT EXISTS idx_art_items_unique_source_id/);
   assert.match(schema, /ON art_items\(source, source_id\)/);
   assert.match(schema, /WHERE source_id IS NOT NULL/);
+  assert.match(schema, /cover_key TEXT,/);
+  assert.doesNotMatch(schema, /cover_key TEXT NOT NULL/);
 });
 
 class FakeD1 {

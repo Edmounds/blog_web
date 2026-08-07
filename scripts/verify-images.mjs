@@ -86,9 +86,9 @@ if (process.argv.includes("--remote")) {
 
 const contentFiles = [
   "src/content/about/profile.md",
-  "src/content/translations/en/about/profile.md",
-  "src/content/translations/ja/about/profile.md",
-  "src/content/translations/zh-TW/about/profile.md",
+  "src/i18n/content/en/about/profile.md",
+  "src/i18n/content/ja/about/profile.md",
+  "src/i18n/content/zh-TW/about/profile.md",
 ];
 for (const relativePath of contentFiles) {
   const source = await readFile(path.join(root, relativePath), "utf8");

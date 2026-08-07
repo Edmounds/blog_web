@@ -273,21 +273,18 @@ test("art candidate search requires a music kind and defaults albums and singles
   assert.equal(single[0].source, "netease_track");
 });
 
-test("single search falls back to Deezer tracks when NetEase fails or has no candidates", async () => {
-  for (const neteaseResponse of [response({ code: 200, result: { songs: [] } }), new Response("down", { status: 503 })]) {
-    const calls = [];
-    const items = await searchTracks({
-      query: "Fallback Song",
-      fetchImpl: async (url) => {
-        const value = String(url); calls.push(value);
-        if (value.startsWith("https://music.163.com/")) return neteaseResponse.clone();
-        return response({ data: [{ id: 9, title: "Fallback Song", artist: { name: "Artist" }, album: { cover_big: "https://deezer.test/track.jpg" } }] });
-      },
-    });
-    assert.equal(items[0].source, "deezer_track");
-    assert.ok(calls[0].startsWith("https://music.163.com/"));
-    assert.match(calls[1], /^https:\/\/api\.deezer\.com\/search\/track/);
-  }
+test("single search never falls back to Deezer tracks", async () => {
+  const calls = [];
+  const items = await searchTracks({
+    query: "Missing Song",
+    fetchImpl: async (url) => {
+      calls.push(String(url));
+      return response({ code: 200, result: { songs: [] } });
+    },
+  });
+  assert.deepEqual(items, []);
+  assert.equal(calls.length, 1);
+  assert.ok(calls[0].startsWith("https://music.163.com/"));
 });
 
 test("Deezer album search uses only the query and picks the most popular released artist", async () => {

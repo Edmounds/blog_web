@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   createGitHubContributionHeatmap,
   createGitHubContributionHeatmapSkeleton,
+  getCachedGitHubContributionHeatmap,
   getGitHubContributionHeatmap,
   parseGitHubContributionHtml,
 } from "../src/lib/github-contributions.ts";
@@ -91,4 +92,75 @@ test("GitHub contribution fetching returns no data when every upstream request f
   });
 
   assert.equal(heatmap, undefined);
+});
+
+test("GitHub contribution caching falls back to stale successful data when refreshes fail", async () => {
+  const now = new Date("2026-07-25T12:00:00Z");
+  const staleHeatmap = createGitHubContributionHeatmap([
+    { count: 7, date: "2026-07-24", label: "7 contributions on July 24, 2026.", level: 4 },
+  ], now);
+  let fetchCalls = 0;
+  let putCalls = 0;
+
+  const heatmap = await getCachedGitHubContributionHeatmap("Edmounds", {
+    now,
+    cache: {
+      match: async () => new Response(JSON.stringify(staleHeatmap), {
+        headers: { "x-github-contributions-fetched-at": "2026-07-25T00:00:00.000Z" },
+      }),
+      put: async () => { putCalls += 1; },
+    },
+    fetchImpl: async () => {
+      fetchCalls += 1;
+      return new Response("no", { status: 502 });
+    },
+  });
+
+  assert.equal(fetchCalls, 2);
+  assert.equal(putCalls, 0);
+  assert.equal(heatmap?.total, 7);
+});
+
+test("GitHub contribution caching refreshes legacy entries without timestamps", async () => {
+  const now = new Date("2026-07-25T12:00:00Z");
+  const legacyHeatmap = createGitHubContributionHeatmap([
+    { count: 3, date: "2026-07-24", label: "3 contributions on July 24, 2026.", level: 2 },
+  ], now);
+  let fetchCalls = 0;
+
+  const heatmap = await getCachedGitHubContributionHeatmap("Edmounds", {
+    now,
+    cache: {
+      match: async () => new Response(JSON.stringify(legacyHeatmap)),
+      put: async () => assert.fail("a failed refresh must not replace the legacy cache"),
+    },
+    fetchImpl: async () => {
+      fetchCalls += 1;
+      return new Response("no", { status: 502 });
+    },
+  });
+
+  assert.equal(fetchCalls, 2);
+  assert.equal(heatmap?.total, 3);
+});
+
+test("GitHub contribution caching retains successful data beyond the refresh interval", async () => {
+  const now = new Date("2026-07-25T12:00:00Z");
+  let cachedResponse;
+
+  const heatmap = await getCachedGitHubContributionHeatmap("Edmounds", {
+    now,
+    cache: {
+      match: async () => undefined,
+      put: async (_request, response) => { cachedResponse = response; },
+    },
+    fetchImpl: async () => new Response(`
+      <td class="ContributionCalendar-day" data-date="2026-07-24" data-level="4"></td>
+      <tool-tip>7 contributions on July 24, 2026.</tool-tip>
+    `),
+  });
+
+  assert.equal(heatmap?.total, 7);
+  assert.equal(cachedResponse?.headers.get("cache-control"), "public, max-age=604800");
+  assert.equal(cachedResponse?.headers.get("x-github-contributions-fetched-at"), now.toISOString());
 });

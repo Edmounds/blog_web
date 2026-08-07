@@ -8,6 +8,9 @@ interface Props {
 
 const { item, playtime } = Astro.props;
 const CoverTag = item.storeUrl ? "a" : "div";
+const coverFallback = item.steamAppId
+  ? `/api/game/steam-cover/${item.steamAppId}`
+  : "/images/placeholders/default-cover.webp";
 ---
 
 <article class="group flex min-w-0 flex-col gap-3">
@@ -24,6 +27,7 @@ const CoverTag = item.storeUrl ? "a" : "div";
       class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.025]"
       loading="lazy"
       data-game-cover
+      data-game-cover-fallback={coverFallback}
     />
   </CoverTag>
   <div class="min-w-0">
@@ -38,7 +42,8 @@ const CoverTag = item.storeUrl ? "a" : "div";
       if (image.dataset.bound === "true") return;
       image.dataset.bound = "true";
       image.addEventListener("error", () => {
-        const fallback = "/images/placeholders/default-cover.webp";
+        const fallback = image.dataset.gameCoverFallback ?? "/images/placeholders/default-cover.webp";
+        delete image.dataset.gameCoverFallback;
         if (image.src !== new URL(fallback, location.href).href) image.src = fallback;
       });
     });

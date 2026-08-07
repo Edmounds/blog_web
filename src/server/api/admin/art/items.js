@@ -1,6 +1,6 @@
 import {
   createArtItem, deleteCoverIfUnreferenced, error, findArtItemBySourceId, isArtSourceIdConflict, json, listArtItems,
-  normalizeArtMusicKind, normalizeArtType, readJson, requireBucket, requireDb, requireSameOriginJson, storeCover, validateArtItemInput,
+  normalizeArtMusicKind, normalizeArtType, readJson, requireDb, requireSameOriginJson, storeCover, validateArtItemInput,
 } from "../../../art.js";
 
 export async function onRequestGet({ env, request }) {
@@ -29,10 +29,9 @@ export async function onRequestPost({ env, request }) {
     const validation = validateArtItemInput(await readJson(request));
     if (!validation.ok) return error(400, validation.error.code, validation.error.message);
     const id = crypto.randomUUID();
-    const bucket = requireBucket(env);
     const db = requireDb(env);
     if (await findArtItemBySourceId(db, validation.value.source, validation.value.sourceId)) return alreadyExists();
-    stored = await storeCover(bucket, id, validation.value.cover, coverFetch(env), { db });
+    stored = await storeCover(env.ART_COVERS, id, validation.value.cover, coverFetch(env), { db, source: validation.value.source });
     const item = await createArtItem(db, validation.value, stored, { id });
     return json({ item }, { status: 201 });
   } catch (err) {
