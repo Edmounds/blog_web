@@ -23,7 +23,7 @@ This is an Astro content site with React islands and Tailwind styling.
 
 ## Coding Style & Naming Conventions
 
-Use 2-space indentation, LF line endings, and UTF-8. Markdown files that contain Chinese text should keep UTF-8 BOM, matching `.editorconfig` and `scripts/check-encoding.mjs`.
+Use 2-space indentation, LF line endings, and UTF-8 without requiring a BOM.
 
 Prefer Astro components for static markup and React `.tsx` components only where client-side interaction or animation is needed. Keep shared UI primitives in `src/components/ui/`; keep site-specific composition outside that folder. Use PascalCase for component files, camelCase for functions and variables, and kebab-case for content slugs.
 
@@ -56,4 +56,3 @@ Runtime environment variables are not currently required. Do not commit local se
 - If a domestic upstream is stable but rejects browser-origin requests through anti-hotlink rules, use a stateless cached proxy to that upstream instead of storing a duplicate in R2.
 - If a domestic upstream image fails, use the local placeholder rather than an R2 duplicate of that image.
 - When moving an existing asset from R2 to a domestic upstream, verify the upstream URL first and delete the unreferenced R2 copy only after the cutover succeeds.
-

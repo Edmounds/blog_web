@@ -6,7 +6,7 @@ import test from "node:test";
 
 import { prepareContent } from "../scripts/prepare-content.mjs";
 
-test("content preparation adds BOM, assigns a date slug, and regenerates published content IDs", async () => {
+test("content preparation keeps UTF-8 without BOM, assigns a date slug, and regenerates published content IDs", async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "blog-content-"));
 
   try {
@@ -22,10 +22,9 @@ test("content preparation adds BOM, assigns a date slug, and regenerates publish
     const article = await readFile(path.join(root, "src/content/blog/新文章.md"));
     const astroContentIds = await readFile(path.join(root, "src/lib/post-slugs.ts"), "utf8");
 
-    assert.deepEqual([...article.subarray(0, 3)], [0xef, 0xbb, 0xbf]);
+    assert.deepEqual([...article.subarray(0, 3)], [0x2d, 0x2d, 0x2d]);
     assert.match(article.toString("utf8"), /slug: 20260803-01/);
     assert.deepEqual(result.contentIds, ["blog/20260803-01"]);
-    assert.equal(result.bomAdded, 1);
     assert.equal(result.slugsAdded, 1);
     assert.match(astroContentIds, /"blog\/20260803-01"/);
     assert.match(astroContentIds, /as const/);

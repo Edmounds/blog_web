@@ -54,7 +54,7 @@ About frontmatter 中的 `backgroundKeywords` 仅用于 About 页面背景动画
 
 已发布内容使用 frontmatter 的 `slug` 生成 URL 和互动 ID，例如 `slug: 20260803-01` 对应 `/blog/20260803-01/` 和 `blog/20260803-01`。也可以手写 `slug: cloudflare-architecture`，但只能使用小写字母、数字和连字符，同一栏目内不得重复。slug 发布后应视为永久 ID；如需修改，必须同时增加旧 URL 重定向并迁移 D1 互动数据。
 
-草稿可以不写 `slug`。首次设为 `published: true` 后，`npm run content:prepare` 会按 `createdAt` 自动写入 `YYYYMMDD-NN`，编号在同一栏目、同一天内递增；已写入的 slug 不会因标题、文件名或其他文章变化而重新生成。自动写入的 frontmatter 应和文章一起提交。该命令还会为新增中文文章补充 UTF-8 BOM，并根据已发布的 Blog、Note、Project 更新互动内容 ID；`npm run dev` 和 `npm run build` 会自动先执行它。`npm run translate` 会递归处理 `.md` 与 `.mdx`，保留 `slug`、目录和其他不可翻译字段。
+草稿可以不写 `slug`。首次设为 `published: true` 后，`npm run content:prepare` 会按 `createdAt` 自动写入 `YYYYMMDD-NN`，编号在同一栏目、同一天内递增；已写入的 slug 不会因标题、文件名或其他文章变化而重新生成。自动写入的 frontmatter 应和文章一起提交。该命令还会根据已发布的 Blog、Note、Project 更新互动内容 ID；`npm run dev` 和 `npm run build` 会自动先执行它。`npm run translate` 会递归处理 `.md` 与 `.mdx`，保留 `slug`、目录和其他不可翻译字段。
 
 ## D1、R2 与迁移
 

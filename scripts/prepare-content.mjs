@@ -7,7 +7,6 @@ import { parseDocument } from "yaml";
 
 const CONTENT_GROUPS = ["blog", "note", "project"];
 const UTF8_BOM = Buffer.from([0xef, 0xbb, 0xbf]);
-const CJK_REGEX = /[\u3400-\u9fff\uf900-\ufaff]/u;
 const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 const hasUtf8Bom = (buffer) =>
@@ -28,7 +27,6 @@ const walk = async (directory) => {
 
 export const prepareContent = async (rootDir = process.cwd()) => {
   const records = [];
-  let bomAdded = 0;
   let slugsAdded = 0;
 
   for (const group of CONTENT_GROUPS) {
@@ -81,11 +79,9 @@ export const prepareContent = async (rootDir = process.cwd()) => {
   }
 
   for (const record of records) {
-    const needsBom = path.extname(record.filePath) === ".md" && CJK_REGEX.test(record.source) && !record.withBom;
-    if (needsBom) bomAdded += 1;
-    if (!needsBom && record.source === record.fileBuffer.subarray(record.withBom ? 3 : 0).toString("utf8")) continue;
+    if (record.source === record.fileBuffer.subarray(record.withBom ? 3 : 0).toString("utf8")) continue;
     const sourceBuffer = Buffer.from(record.source, "utf8");
-    await writeFile(record.filePath, record.withBom || needsBom ? Buffer.concat([UTF8_BOM, sourceBuffer]) : sourceBuffer);
+    await writeFile(record.filePath, record.withBom ? Buffer.concat([UTF8_BOM, sourceBuffer]) : sourceBuffer);
   }
 
   const contentIds = published.map(({ group, document }) => `${group}/${document.data.slug}`);
@@ -107,7 +103,7 @@ export const prepareContent = async (rootDir = process.cwd()) => {
     idsUpdated ||= targetUpdated;
   }
 
-  return { bomAdded, contentIds, idsUpdated, slugsAdded };
+  return { contentIds, idsUpdated, slugsAdded };
 };
 
 const reserveSlug = (usedSlugs, record, slug, rootDir) => {
@@ -134,5 +130,5 @@ const addFrontmatterSlug = (document, slug) => {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
   const result = await prepareContent();
-  console.log(`Content ready: ${result.contentIds.length} published ID(s), ${result.slugsAdded} slug(s) added, ${result.bomAdded} BOM added, ID list ${result.idsUpdated ? "updated" : "unchanged"}.`);
+  console.log(`Content ready: ${result.contentIds.length} published ID(s), ${result.slugsAdded} slug(s) added, ID list ${result.idsUpdated ? "updated" : "unchanged"}.`);
 }
