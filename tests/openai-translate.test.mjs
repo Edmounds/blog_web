@@ -22,7 +22,11 @@ test("OpenAI-compatible client sends a Chat Completions request", async () => {
   const body = JSON.parse(request.init.body);
   assert.equal(body.model, "translation-model");
   assert.equal(body.stream, true);
+  assert.match(body.messages[0].content, /natural, idiomatic/);
+  assert.match(body.messages[0].content, /Do not omit, summarize, add, or explain/);
+  assert.match(body.messages[0].content, /silently check/);
   assert.match(body.messages[1].content, /Traditional Chinese/);
+  assert.match(body.messages[1].content, /<source_text>\n你好\n<\/source_text>/);
   assert.match(body.messages[1].content, /你好/);
 });
 
@@ -92,7 +96,12 @@ test("OpenAI-compatible client requests one complete Markdown document translati
   });
 
   assert.match(request.messages[0].content, /complete Markdown document/);
+  assert.match(request.messages[0].content, /author's meaning, tone, voice/);
+  assert.match(request.messages[0].content, /Never alter code blocks, inline code, commands, math, URLs, paths, slugs, identifiers, dates, booleans, or numbers/);
+  assert.match(request.messages[0].content, /silently check the translation for accuracy, fluency, terminology consistency, omissions, and formatting damage/);
   assert.match(request.messages[0].content, /createdAt/);
+  assert.match(request.messages[1].content, /<source_text>/);
+  assert.match(request.messages[1].content, /<\/source_text>/);
   assert.equal(request.messages[1].content.match(/第一段。/g)?.length, 1);
   assert.match(request.messages[1].content, /第一段。[\s\S]*第二段。/);
 });

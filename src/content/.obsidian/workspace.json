@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "note/我对东野圭吾的印象.md",
+                "file": "blog/使用GitHub Actions 实现博客自动化更新.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "我对东野圭吾的印象"
+              "title": "使用GitHub Actions 实现博客自动化更新"
             }
           }
         ]
@@ -158,7 +158,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "note/我对东野圭吾的印象.md",
+                "file": "blog/使用GitHub Actions 实现博客自动化更新.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -209,14 +209,14 @@
   },
   "active": "88788636fd5d86c4",
   "lastOpenFiles": [
-    "note/明日方舟和P3R联动.md",
-    "note/我对东野圭吾的印象.md",
     "blog/Hello World.md",
-    "blog/基于Cloudflare构建个人网站.md",
     "blog/使用GitHub Actions 实现博客自动化更新.md",
+    "about/profile.md",
+    "note/我对东野圭吾的印象.md",
+    "note/明日方舟和P3R联动.md",
+    "blog/基于Cloudflare构建个人网站.md",
     "note/Lucky~.md",
     "Pasted image 20260808035448.png",
-    "about/profile.md",
     "site/settings.md",
     "note/_empty.md",
     "translations/zh-TW/note/arknights-p3r.md",

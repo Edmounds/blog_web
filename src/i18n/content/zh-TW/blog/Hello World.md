@@ -27,7 +27,7 @@ tags: []
 
 ~~哈囉，世界~~
 
-`哈囉，世界`
+`Hello World`
 
 [哈囉，世界](https://example.com)
 
@@ -68,14 +68,14 @@ tags: []
 ## 哈囉，世界
 
 ```javascript
-const message = "哈囉，世界";
+const message = "Hello World";
 
 console.log(message);
 ```
 
 ```json
 {
-  "message": "哈囉，世界"
+  "message": "Hello World"
 }
 ```
 
@@ -83,8 +83,8 @@ console.log(message);
 
 ## 哈囉，世界
 
-哈囉，世界 $\text{哈囉，世界}$ 哈囉，世界。
+哈囉，世界 $\text{Hello World}$ 哈囉，世界。
 
 $$
-\text{哈囉，世界}
+\text{Hello World}
 $$

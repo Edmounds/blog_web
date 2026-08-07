@@ -4,7 +4,7 @@ import { unified } from "unified";
 import { visit } from "unist-util-visit";
 import remarkParse from "remark-parse";
 
-export const TRANSLATION_ALGORITHM_VERSION = "2026-07-23.1";
+export const TRANSLATION_ALGORITHM_VERSION = "2026-08-08.1";
 
 const processor = unified().use(remarkParse);
 

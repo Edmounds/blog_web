@@ -1,17 +1,12 @@
-﻿---
+---
 name: Last4ev3r
 city: 重庆
 major: 机器人工程
 motto: Keep it Simple,Stupid
 portrait: /images/content/about/profile-8646bdb863b8-w320.webp
 backgroundKeywords:
-  - Fate
-  - 烧肉
-  - 烧鹅
-  - 肠粉
   - C++
   - ROS2
-  - KISS
   - ubuntu
   - Linux
   - 天文
@@ -19,24 +14,30 @@ backgroundKeywords:
   - Python
   - 音乐
   - Music
-  - 美剧
-  - steam
   - 重庆大学
   - 重庆
   - CQU
-  - 水瓶座
-  - INFP
+  - 明日方舟
+  - 机器人
+  - 具身智能
+  - SLAM
 ---
 
 ## 关于网站
 
 这里是我安静的个人空间——写文章、记笔记、分享项目、记录看过的书和电影。
-这里不是社交媒体，没有通知和点赞焦虑，只有文字一些记录。 
-不喜欢社交软件那种高强度对个人生活的影响和侵入 
-
+这里只有手写的文字，如果AI生成文字会使用图片的形式粘贴到文章中/
 ## 关于我
-重庆大学国家卓越工程师学院大三
+重庆大学国家卓越工程师学院大三在读 机器人工程专业
+喜欢天文 浅尝过行星摄影 未来包里有闲钱了就尝试一下深空摄影/星野摄影
+![jupiter.png](https://img.muelsyse.us/bed/jupiter.png)
 
+
+![moon.png](https://img.muelsyse.us/bed/moon.png)
+
+运动方面我喜欢自由泳和乒乓球 
+专业方面 我目前对具身智能这个大方向感兴趣 具体方向比如控制还是感知还在思考中
+大一大二做的多的就是打比赛， robocon、robocup、电赛，负责的都是感知、决策这种上位机工作
 
 ## 联系我
 [i@muelsyse.us](mailto:i@muelsyse.us)

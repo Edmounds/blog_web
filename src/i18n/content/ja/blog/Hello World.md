@@ -1,6 +1,6 @@
 ﻿---
 title: ハロー・ワールド
-description: Hello Worldから作成した、完全なMarkdownレンダリングのショーケース。
+description: 「ハロー・ワールド」から構成された、Markdown の完全なレンダリングショーケース。
 createdAt: 2026-01-28T00:00:00.000Z
 slug: 20260128-01
 updatedAt: 2026-08-04T00:00:00.000Z
@@ -83,8 +83,8 @@ console.log(message);
 
 ## ハロー・ワールド
 
-ハロー・ワールド $\text{ハロー・ワールド}$ ハロー・ワールド。
+ハロー・ワールド $\text{Hello World}$ ハロー・ワールド。
 
 $$
-\text{ハロー・ワールド}
+\text{Hello World}
 $$

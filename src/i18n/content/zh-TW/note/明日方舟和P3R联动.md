@@ -7,17 +7,17 @@ published: true
 ---
 
 ## 所以鷹角你什麼時候聯動P5R
-看到影片之後馬上又把舟載回來了
+看到影片之後秒把方舟又下載回來了
 ![b97287d31bdbe1219820270ee1bf9ba2](https://img.muelsyse.us/blog/feb3225984a3c83fc03f99f546c1452877c06c5efc10ae44cdabc05488f23930-w1908.webp)
 
 ## 回歸😭
 ![111](https://img.muelsyse.us/blog/7ecd34ebb1c7621c63ee37d5dcff42d6b8bb6ad2cbca423e78d22d00ba12acab-w2400.webp)
 
 ## 碎碎念
-是繆繆我們有救了！
-欸上次出的新主線我都還沒打
-今天週日了，意味著我要在一天內把剿滅打完嗎
-好多體力啊啊啊，我不想清體力了，我要把MAA載回來
+是繆繆，我們有救了！
+欸，上次出的新主線我都還沒打
+今天都週日了，意味著我要一天把剿滅打完嗎
+好多體力啊啊啊 我不想清體力了 我要把MAA下載回來
 ![ad45b977fb4e9758335f385ddeef68c6](https://img.muelsyse.us/blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w2400.webp)
 
 好耶，趕上活動復刻又能拿到好多抽卡資源了
