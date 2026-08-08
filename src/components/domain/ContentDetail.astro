@@ -187,7 +187,10 @@ const articleJsonLd = JSON.stringify({
 
 <style>
   .article-page {
+    --article-content-width: 52rem;
     --article-title-size: clamp(1.82rem, 1.52rem + 0.9vw, 2.95rem);
+    --content-measure: var(--article-content-width);
+    margin-left: var(--content-frame-inline-start);
     padding-block: clamp(2.5rem, 6vw, 5rem) 6rem;
   }
   :global(html:lang(zh-CN)) .article-page,
@@ -197,14 +200,14 @@ const articleJsonLd = JSON.stringify({
   }
   .article-page__content {
     display: grid;
-    grid-template-columns: minmax(0, var(--detail-layout-main-width)) minmax(
-        var(--detail-layout-toc-min-width),
-        var(--detail-layout-toc-max-width)
-      );
-    justify-content: center;
-    gap: var(--detail-layout-column-gap);
+    grid-template-columns:
+      minmax(0, 1fr)
+      minmax(0, var(--article-content-width))
+      minmax(0, 1fr);
+    max-width: none;
   }
   .article-page__main {
+    grid-column: 2;
     min-width: 0;
   }
   .article-page__back {
@@ -293,9 +296,16 @@ const articleJsonLd = JSON.stringify({
   .article-page__toc {
     position: sticky;
     top: 6.25rem;
+    grid-column: 3;
     align-self: start;
+    width: clamp(
+      10rem,
+      15vw,
+      var(--detail-layout-toc-max-width)
+    );
     max-height: calc(100vh - 7.25rem);
     max-height: calc(100dvh - 7.25rem);
+    margin-left: var(--detail-layout-column-gap);
   }
   .article-prose {
     min-width: 0;
@@ -321,9 +331,15 @@ const articleJsonLd = JSON.stringify({
     margin-top: 0.4rem;
     font-size: var(--type-lg);
   }
-  @media (max-width: 56.25rem) {
+  @media (max-width: 64rem) {
+    .article-page {
+      margin-inline: 0;
+    }
     .article-page__content {
       grid-template-columns: minmax(0, 1fr);
+    }
+    .article-page__main {
+      grid-column: 1;
     }
     .article-page__toc {
       display: none;
