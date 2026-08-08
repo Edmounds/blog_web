@@ -37,8 +37,9 @@ test("desktop navigation stays hidden while scrolling and reveals on hover", () 
   assert.match(header, /currentScrollY <= 0[\s\S]*else setHidden\(true\)/);
   assert.match(header, /setHidden\(window\.scrollY > 0\)/);
   assert.doesNotMatch(header, /previousScrollY/);
-  assert.match(header, /header\.addEventListener\(\s*"pointerenter"/);
-  assert.match(header, /header\.addEventListener\(\s*"pointerleave"/);
+  assert.match(header, /desktopNavRegion\.addEventListener\(\s*"pointerenter"/);
+  assert.match(header, /desktopNavRegion\.addEventListener\(\s*"pointerleave"/);
+  assert.doesNotMatch(header, /header\.addEventListener\(\s*"pointer(?:enter|leave)"/);
   assert.doesNotMatch(header, /DESKTOP_NAV_REVEAL_INTERACTION_MS/);
   assert.match(header, /\.desktop-nav-region\s*\{[^}]*align-self:\s*stretch;/s);
   assert.match(header, /\.desktop-nav\[data-hidden="true"\]/);

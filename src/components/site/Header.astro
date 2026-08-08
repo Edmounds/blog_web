@@ -50,7 +50,7 @@ const isActive = (href: string) =>
       aria-label="Last4ev3r home">Last4ev3r</a
     >
 
-    <div class="desktop-nav-region">
+    <div class="desktop-nav-region" data-desktop-nav-region>
       <nav
         class="desktop-nav"
         data-desktop-nav
@@ -171,6 +171,7 @@ const isActive = (href: string) =>
     const { signal } = controller;
     const mobileTrigger = header.querySelector("[data-mobile-menu-trigger]");
     const mobileMenu = header.querySelector("[data-mobile-menu]");
+    const desktopNavRegion = header.querySelector("[data-desktop-nav-region]");
     const desktopNav = header.querySelector("[data-desktop-nav]");
     const frameStart = header.querySelector("[data-content-frame-start]");
     const frameEnd = header.querySelector("[data-content-frame-end]");
@@ -178,13 +179,14 @@ const isActive = (href: string) =>
     const lifeMenu = header.querySelector("[data-life-menu]");
     const desktopLayout = matchMedia("(min-width: 64.0625rem)");
     if (
+      !(desktopNavRegion instanceof HTMLElement) ||
       !(desktopNav instanceof HTMLElement) ||
       !(frameStart instanceof HTMLElement) ||
       !(frameEnd instanceof HTMLElement)
     )
       return;
 
-    let pointerInsideHeader = false;
+    let pointerInsideNavRegion = false;
     let frameId = 0;
 
     const clearContentFrame = () => {
@@ -248,7 +250,7 @@ const isActive = (href: string) =>
         desktopLayout.matches &&
         window.scrollY > 0 &&
         !lifeIsOpen() &&
-        !pointerInsideHeader &&
+        !pointerInsideNavRegion &&
         !navHasFocus();
       desktopNav.dataset.hidden = String(nextHidden);
     };
@@ -333,18 +335,18 @@ const isActive = (href: string) =>
     );
     desktopNav.addEventListener("focusin", () => setHidden(false), { signal });
     desktopNav.addEventListener("focusout", syncAfterMenuChange, { signal });
-    header.addEventListener(
+    desktopNavRegion.addEventListener(
       "pointerenter",
       () => {
-        pointerInsideHeader = true;
+        pointerInsideNavRegion = true;
         setHidden(false);
       },
       { signal },
     );
-    header.addEventListener(
+    desktopNavRegion.addEventListener(
       "pointerleave",
       () => {
-        pointerInsideHeader = false;
+        pointerInsideNavRegion = false;
         setHidden(window.scrollY > 0);
       },
       { signal },
@@ -356,7 +358,7 @@ const isActive = (href: string) =>
         if (
           currentScrollY <= 0 ||
           lifeIsOpen() ||
-          pointerInsideHeader ||
+          pointerInsideNavRegion ||
           navHasFocus()
         )
           setHidden(false);
