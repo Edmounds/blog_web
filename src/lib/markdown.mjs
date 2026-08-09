@@ -94,30 +94,50 @@ const isWritingContent = (fileURL) => {
     || /\/src\/i18n\/content\/[^/]+\/(?:blog|note|project)\//.test(path);
 };
 
+const createCaptionFigure = (image, caption) => ({
+  type: "element",
+  tagName: "figure",
+  properties: { className: ["article-figure"] },
+  children: [
+    image,
+    {
+      type: "element",
+      tagName: "figcaption",
+      properties: {},
+      children: [{ type: "text", value: caption }],
+    },
+  ],
+});
+
 const createImageCaptionPlugin = () => ({
   name: "render-image-captions",
   element: {
     filter: ["p"],
     visit(node, ctx) {
-      if (!isWritingContent(ctx.fileURL) || node.children?.length !== 1) return;
-      const image = node.children[0];
+      if (!isWritingContent(ctx.fileURL) || !node.children?.length) return;
+      const image = node.children.at(-1);
       if (image.type !== "element" || image.tagName !== "img") return;
       const caption = typeof image.properties?.alt === "string" ? image.properties.alt.trim() : "";
       if (!caption || caption.toLowerCase() === "image") return;
-      return {
-        type: "element",
-        tagName: "figure",
-        properties: { className: ["article-figure"] },
-        children: [
-          image,
-          {
-            type: "element",
-            tagName: "figcaption",
-            properties: {},
-            children: [{ type: "text", value: caption }],
-          },
-        ],
-      };
+      if (node.children.length === 1) return createCaptionFigure(image, caption);
+
+      let breakIndex = node.children.length - 2;
+      while (breakIndex >= 0 && node.children[breakIndex].type === "text" && !node.children[breakIndex].value.trim()) {
+        breakIndex -= 1;
+      }
+      const lineBreak = node.children[breakIndex];
+      if (lineBreak?.type !== "element" || lineBreak.tagName !== "br") return;
+
+      const paragraphChildren = node.children.slice(0, breakIndex);
+      if (paragraphChildren.length) {
+        ctx.insertBefore(node, {
+          type: "element",
+          tagName: "p",
+          properties: node.properties ?? {},
+          children: paragraphChildren,
+        });
+      }
+      return createCaptionFigure(image, caption);
     },
   },
 });

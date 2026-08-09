@@ -48,6 +48,16 @@ test("standalone writing images use non-empty alt text as a visible caption", as
   assert.match(result.code, /<figure class="article-figure"><img[^>]*alt="看过的东野圭吾作品"[^>]*><figcaption>看过的东野圭吾作品<\/figcaption><\/figure>/);
 });
 
+test("writing images after a soft break become caption figures", async () => {
+  const result = await processor.render(
+    "其他书就不一一赘述了，下面图中是我看过的东野圭吾的作品\n![看过的东野圭吾作品](https://img.muelsyse.us/bed/books.png)",
+    { fileURL: writingFileUrl },
+  );
+
+  assert.match(result.code, /^<p>其他书就不一一赘述了，下面图中是我看过的东野圭吾的作品<\/p>\s*<figure class="article-figure">/);
+  assert.match(result.code, /<figcaption>看过的东野圭吾作品<\/figcaption><\/figure>\s*$/);
+});
+
 test("empty, placeholder, inline, and non-writing images do not create captions", async () => {
   const empty = await processor.render("![](https://example.com/empty.png)", { fileURL: writingFileUrl });
   const placeholder = await processor.render("![Image](https://example.com/placeholder.png)", { fileURL: writingFileUrl });
