@@ -4,6 +4,7 @@ import { ClientRouter } from "astro:transitions";
 
 import Footer from "../components/site/Footer.astro";
 import Header from "../components/site/Header.astro";
+import MarkdownEnhancements from "../components/domain/MarkdownEnhancements.astro";
 import LoadingOverlay from "../components/site/LoadingOverlay.astro";
 import RouteBackground from "../components/site/RouteBackground.astro";
 import { getSiteSettings } from "../lib/content";
@@ -174,6 +175,7 @@ if (!Astro.response.headers.has("Cache-Control"))
         )
       }
     </div>
+    <MarkdownEnhancements locale={locale} />
     <LoadingOverlay />
 
     <script>

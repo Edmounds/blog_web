@@ -1,5 +1,10 @@
 import katex from "katex";
 import { fromHtml } from "hast-util-from-html";
+import {
+  createImageLayoutsPlugin,
+  createObsidianImageSizePlugin,
+  IMAGE_LAYOUT_LANGUAGES,
+} from "./image-layouts.mjs";
 
 const hasClass = (node, className) => (
   Array.isArray(node.properties?.className) && node.properties.className.includes(className)
@@ -144,12 +149,20 @@ const createImageCaptionPlugin = () => ({
 
 export const markdownPlugins = {
   mdastPlugins: [createSoftBreakPlugin, createDirectivePlugin, createMathPlugin],
-  hastPlugins: [createKatexPlugin, createImageCaptionPlugin],
+  hastPlugins: [
+    createKatexPlugin,
+    createImageLayoutsPlugin,
+    createObsidianImageSizePlugin,
+    createImageCaptionPlugin,
+  ],
 };
 
 /** @type {import("@astrojs/markdown-satteri").SatteriMarkdownProcessorOptions} */
 export const markdownOptions = {
-  syntaxHighlight: { type: "shiki", excludeLangs: ["math", "mermaid"] },
+  syntaxHighlight: {
+    type: "shiki",
+    excludeLangs: ["math", "mermaid", ...IMAGE_LAYOUT_LANGUAGES],
+  },
   shikiConfig: {
     themes: { light: "github-light", dark: "github-dark" },
     defaultColor: false,

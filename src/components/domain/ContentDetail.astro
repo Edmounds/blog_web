@@ -6,7 +6,6 @@ import { getLocaleDefinition, localizePath, type Locale } from "../../lib/i18n";
 import { getLocalizedSite } from "../../lib/localized-content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import CommentsSection from "./CommentsSection.astro";
-import MarkdownEnhancements from "./MarkdownEnhancements.astro";
 import PostEngagement from "./PostEngagement.astro";
 import TableOfContents from "./TableOfContents.astro";
 import Icon from "../ui/Icon.astro";
@@ -140,8 +139,6 @@ const articleJsonLd = JSON.stringify({
         </header>
 
         <div class="article-prose ui-prose"><Content /></div>
-        <MarkdownEnhancements locale={locale} />
-
         <div class="article-page__interaction">
           <PostEngagement
             contentId={item.contentId}

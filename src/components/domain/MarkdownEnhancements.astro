@@ -1,5 +1,5 @@
 ---
-import { Check, Copy } from "lucide-static";
+import { ArrowLeft, ArrowRight, Check, Copy, X } from "lucide-static";
 
 import type { Locale } from "../../lib/i18n";
 
@@ -8,21 +8,57 @@ interface Props {
 }
 
 const { locale } = Astro.props;
-const copyLabels = {
-  "zh-CN": { copy: "复制代码", copied: "已复制" },
-  "zh-TW": { copy: "複製程式碼", copied: "已複製" },
-  en: { copy: "Copy code", copied: "Copied" },
-  ja: { copy: "コードをコピー", copied: "コピーしました" },
-} satisfies Record<Locale, { copy: string; copied: string }>;
-const labels = copyLabels[locale];
+const enhancementLabels = {
+  "zh-CN": {
+    copy: "复制代码",
+    copied: "已复制",
+    close: "关闭大图",
+    previous: "上一张图片",
+    next: "下一张图片",
+    open: "查看大图",
+  },
+  "zh-TW": {
+    copy: "複製程式碼",
+    copied: "已複製",
+    close: "關閉大圖",
+    previous: "上一張圖片",
+    next: "下一張圖片",
+    open: "查看大圖",
+  },
+  en: {
+    copy: "Copy code",
+    copied: "Copied",
+    close: "Close image",
+    previous: "Previous image",
+    next: "Next image",
+    open: "View image",
+  },
+  ja: {
+    copy: "コードをコピー",
+    copied: "コピーしました",
+    close: "画像を閉じる",
+    previous: "前の画像",
+    next: "次の画像",
+    open: "画像を表示",
+  },
+} satisfies Record<Locale, Record<string, string>>;
+const labels = enhancementLabels[locale];
 ---
 
 <div
   data-markdown-enhancements
+  data-image-lightbox
   data-copy-label={labels.copy}
   data-copied-label={labels.copied}
+  data-close-label={labels.close}
+  data-previous-label={labels.previous}
+  data-next-label={labels.next}
+  data-open-label={labels.open}
   data-copy-icon={Copy}
   data-check-icon={Check}
+  data-close-icon={X}
+  data-previous-icon={ArrowLeft}
+  data-next-icon={ArrowRight}
   hidden
 ></div>
 
@@ -49,8 +85,14 @@ const labels = copyLabels[locale];
   let renderSequence = 0;
 
   const getConfig = () => document.querySelector<HTMLElement>("[data-markdown-enhancements]");
-  const getArticle = () => getConfig()?.closest("article")?.querySelector<HTMLElement>(".article-prose");
+  const getProseContainers = () => [
+    ...document.querySelectorAll<HTMLElement>(".article-prose, .about-article__body"),
+  ];
   const normalizeLanguage = (value: string) => LANGUAGE_LABELS[value.toLowerCase()] ?? value;
+  const addIcon = (button: HTMLButtonElement | null, icon: string | undefined) => {
+    if (!button || !icon || button.querySelector("svg")) return;
+    button.insertAdjacentHTML("afterbegin", icon);
+  };
 
   const copyText = async (value: string) => {
     if (navigator.clipboard?.writeText) {
@@ -65,7 +107,6 @@ const labels = copyLabels[locale];
     textarea.style.opacity = "0";
     document.body.appendChild(textarea);
     textarea.select();
-    // Clipboard fallback for older browsers and restricted contexts.
     const copied = Reflect.apply(document.execCommand, document, ["copy"]);
     textarea.remove();
     if (!copied) throw new Error("Copy is unavailable");
@@ -73,91 +114,93 @@ const labels = copyLabels[locale];
 
   const enhanceCodeBlocks = () => {
     const config = getConfig();
-    const article = getArticle();
-    if (!config || !article) return;
+    if (!config) return;
 
-    article.querySelectorAll<HTMLPreElement>("pre").forEach((pre) => {
-      if (pre.closest(".markdown-code-block") || pre.querySelector("code.language-mermaid")) return;
+    getProseContainers().forEach((container) => {
+      container.querySelectorAll<HTMLPreElement>("pre").forEach((pre) => {
+        if (pre.closest(".markdown-code-block") || pre.querySelector("code.language-mermaid")) return;
 
-      const code = pre.querySelector("code");
-      if (!code) return;
-      const rawLanguage = pre.dataset.language
-        ?? [...code.classList].find((name) => name.startsWith("language-"))?.slice("language-".length)
-        ?? "plaintext";
-      const frame = document.createElement("div");
-      const toolbar = document.createElement("div");
-      const label = document.createElement("span");
-      const button = document.createElement("button");
-      const buttonText = document.createElement("span");
+        const code = pre.querySelector("code");
+        if (!code) return;
+        const rawLanguage = pre.dataset.language
+          ?? [...code.classList].find((name) => name.startsWith("language-"))?.slice("language-".length)
+          ?? "plaintext";
+        const frame = document.createElement("div");
+        const toolbar = document.createElement("div");
+        const label = document.createElement("span");
+        const button = document.createElement("button");
+        const buttonText = document.createElement("span");
 
-      frame.className = "markdown-code-block";
-      toolbar.className = "markdown-code-block__toolbar";
-      label.className = "markdown-code-block__language";
-      label.textContent = normalizeLanguage(rawLanguage);
-      button.className = "markdown-code-block__copy";
-      button.type = "button";
-      button.ariaLabel = config.dataset.copyLabel ?? "Copy code";
-      button.title = button.ariaLabel;
-      button.innerHTML = config.dataset.copyIcon ?? "";
-      buttonText.textContent = config.dataset.copyLabel ?? "Copy code";
-      button.appendChild(buttonText);
-      toolbar.appendChild(label);
-      toolbar.appendChild(button);
-      pre.parentNode?.insertBefore(frame, pre);
-      frame.appendChild(toolbar);
-      frame.appendChild(pre);
+        frame.className = "markdown-code-block";
+        toolbar.className = "markdown-code-block__toolbar";
+        label.className = "markdown-code-block__language";
+        label.textContent = normalizeLanguage(rawLanguage);
+        button.className = "markdown-code-block__copy";
+        button.type = "button";
+        button.ariaLabel = config.dataset.copyLabel ?? "Copy code";
+        button.title = button.ariaLabel;
+        button.innerHTML = config.dataset.copyIcon ?? "";
+        buttonText.textContent = config.dataset.copyLabel ?? "Copy code";
+        button.appendChild(buttonText);
+        toolbar.appendChild(label);
+        toolbar.appendChild(button);
+        pre.parentNode?.insertBefore(frame, pre);
+        frame.appendChild(toolbar);
+        frame.appendChild(pre);
 
-      button.addEventListener("click", async () => {
-        try {
-          await copyText(code.textContent ?? "");
-          button.dataset.state = "copied";
-          button.ariaLabel = config.dataset.copiedLabel ?? "Copied";
-          button.title = button.ariaLabel;
-          button.innerHTML = config.dataset.checkIcon ?? "";
-          buttonText.textContent = config.dataset.copiedLabel ?? "Copied";
-          button.appendChild(buttonText);
-          window.setTimeout(() => {
-            if (!button.isConnected) return;
-            button.dataset.state = "";
-            button.ariaLabel = config.dataset.copyLabel ?? "Copy code";
+        button.addEventListener("click", async () => {
+          try {
+            await copyText(code.textContent ?? "");
+            button.dataset.state = "copied";
+            button.ariaLabel = config.dataset.copiedLabel ?? "Copied";
             button.title = button.ariaLabel;
-            button.innerHTML = config.dataset.copyIcon ?? "";
-            buttonText.textContent = config.dataset.copyLabel ?? "Copy code";
+            button.innerHTML = config.dataset.checkIcon ?? "";
+            buttonText.textContent = config.dataset.copiedLabel ?? "Copied";
             button.appendChild(buttonText);
-          }, 1800);
-        } catch {
-          button.dataset.state = "unavailable";
-        }
+            window.setTimeout(() => {
+              if (!button.isConnected) return;
+              button.dataset.state = "";
+              button.ariaLabel = config.dataset.copyLabel ?? "Copy code";
+              button.title = button.ariaLabel;
+              button.innerHTML = config.dataset.copyIcon ?? "";
+              buttonText.textContent = config.dataset.copyLabel ?? "Copy code";
+              button.appendChild(buttonText);
+            }, 1800);
+          } catch {
+            button.dataset.state = "unavailable";
+          }
+        });
       });
     });
   };
 
   const prepareMermaidBlocks = () => {
-    const article = getArticle();
-    if (!article) return [];
+    const diagrams: HTMLElement[] = [];
+    getProseContainers().forEach((container) => {
+      container.querySelectorAll<HTMLElement>("code.language-mermaid").forEach((code) => {
+        const pre = code.parentElement;
+        if (pre?.tagName !== "PRE" || pre.closest(".markdown-mermaid")) return;
 
-    article.querySelectorAll<HTMLElement>("code.language-mermaid").forEach((code) => {
-      const pre = code.parentElement;
-      if (pre?.tagName !== "PRE" || pre.closest(".markdown-mermaid")) return;
-
-      const figure = document.createElement("figure");
-      const diagram = document.createElement("div");
-      const source = document.createElement("pre");
-      const sourceCode = document.createElement("code");
-      const value = code.textContent ?? "";
-      figure.className = "markdown-mermaid";
-      diagram.className = "markdown-mermaid__diagram";
-      diagram.dataset.mermaidSource = value;
-      source.className = "markdown-mermaid__source";
-      sourceCode.className = "language-mermaid";
-      sourceCode.textContent = value;
-      source.appendChild(sourceCode);
-      pre.parentNode?.replaceChild(figure, pre);
-      figure.appendChild(diagram);
-      figure.appendChild(source);
+        const figure = document.createElement("figure");
+        const diagram = document.createElement("div");
+        const source = document.createElement("pre");
+        const sourceCode = document.createElement("code");
+        const value = code.textContent ?? "";
+        figure.className = "markdown-mermaid";
+        diagram.className = "markdown-mermaid__diagram";
+        diagram.dataset.mermaidSource = value;
+        source.className = "markdown-mermaid__source";
+        sourceCode.className = "language-mermaid";
+        sourceCode.textContent = value;
+        source.appendChild(sourceCode);
+        pre.parentNode?.replaceChild(figure, pre);
+        figure.appendChild(diagram);
+        figure.appendChild(source);
+        diagrams.push(diagram);
+      });
+      diagrams.push(...container.querySelectorAll<HTMLElement>(".markdown-mermaid__diagram"));
     });
-
-    return [...article.querySelectorAll<HTMLElement>(".markdown-mermaid__diagram")];
+    return [...new Set(diagrams)];
   };
 
   const loadMermaid = () => {
@@ -198,12 +241,171 @@ const labels = copyLabels[locale];
     }
   };
 
+  const enhanceCarousels = () => {
+    const config = getConfig();
+    if (!config) return;
+    getProseContainers().forEach((container) => {
+      container.querySelectorAll<HTMLElement>("[data-image-layout-carousel]").forEach((carousel) => {
+        if (carousel.dataset.enhanced === "true") return;
+        carousel.dataset.enhanced = "true";
+        const slides = [...carousel.querySelectorAll<HTMLElement>("[data-carousel-slide]")];
+        const selectors = [...carousel.querySelectorAll<HTMLButtonElement>("[data-carousel-go-to]")];
+        const description = carousel.querySelector<HTMLElement>("[data-carousel-description]");
+        const previous = carousel.querySelector<HTMLButtonElement>("[data-carousel-previous]");
+        const next = carousel.querySelector<HTMLButtonElement>("[data-carousel-next]");
+        const stage = carousel.querySelector<HTMLElement>(".image-layout__stage");
+        if (!slides.length || !stage) return;
+
+        addIcon(previous, config.dataset.previousIcon);
+        addIcon(next, config.dataset.nextIcon);
+        if (previous) previous.title = previous.ariaLabel = config.dataset.previousLabel ?? "Previous image";
+        if (next) next.title = next.ariaLabel = config.dataset.nextLabel ?? "Next image";
+
+        let activeIndex = 0;
+        const show = (requestedIndex: number) => {
+          activeIndex = (requestedIndex + slides.length) % slides.length;
+          slides.forEach((slide, index) => {
+            const active = index === activeIndex;
+            slide.dataset.active = String(active);
+            slide.setAttribute("aria-hidden", String(!active));
+            const image = slide.querySelector<HTMLImageElement>("img[data-lightbox-ready='true']");
+            if (image) image.tabIndex = active ? 0 : -1;
+          });
+          selectors.forEach((selector, index) => {
+            selector.setAttribute("aria-current", String(index === activeIndex));
+          });
+          const activeImage = slides[activeIndex]?.querySelector<HTMLImageElement>("img");
+          if (description) description.textContent = activeImage?.alt ?? "";
+        };
+
+        previous?.addEventListener("click", () => show(activeIndex - 1));
+        next?.addEventListener("click", () => show(activeIndex + 1));
+        selectors.forEach((selector) => selector.addEventListener("click", () => {
+          show(Number(selector.dataset.carouselGoTo ?? 0));
+        }));
+        stage.addEventListener("keydown", (event) => {
+          if (event.key === "ArrowLeft") show(activeIndex - 1);
+          if (event.key === "ArrowRight") show(activeIndex + 1);
+        });
+        show(0);
+      });
+    });
+  };
+
+  const ensureLightbox = () => {
+    const existing = document.querySelector<HTMLDialogElement>("dialog.image-lightbox");
+    if (existing && typeof Reflect.get(existing, "openImage") === "function") return existing;
+    existing?.remove();
+    const config = getConfig();
+    if (!config) return null;
+
+    const dialog = document.createElement("dialog");
+    const image = document.createElement("img");
+    const caption = document.createElement("figcaption");
+    const count = document.createElement("span");
+    const close = document.createElement("button");
+    const previous = document.createElement("button");
+    const next = document.createElement("button");
+    const figure = document.createElement("figure");
+    dialog.className = "image-lightbox";
+    dialog.dataset.imageLightbox = "";
+    image.className = "image-lightbox__image";
+    caption.className = "image-lightbox__caption";
+    count.className = "image-lightbox__count";
+    close.className = "image-lightbox__button image-lightbox__close";
+    previous.className = "image-lightbox__button image-lightbox__previous";
+    next.className = "image-lightbox__button image-lightbox__next";
+    for (const button of [close, previous, next]) button.type = "button";
+    close.title = close.ariaLabel = config.dataset.closeLabel ?? "Close image";
+    previous.title = previous.ariaLabel = config.dataset.previousLabel ?? "Previous image";
+    next.title = next.ariaLabel = config.dataset.nextLabel ?? "Next image";
+    close.innerHTML = config.dataset.closeIcon ?? "";
+    previous.innerHTML = config.dataset.previousIcon ?? "";
+    next.innerHTML = config.dataset.nextIcon ?? "";
+    figure.appendChild(image);
+    figure.appendChild(caption);
+    dialog.appendChild(close);
+    dialog.appendChild(previous);
+    dialog.appendChild(figure);
+    dialog.appendChild(next);
+    dialog.appendChild(count);
+    document.body.appendChild(dialog);
+
+    let images: HTMLImageElement[] = [];
+    let activeIndex = 0;
+    let returnFocus: HTMLElement | null = null;
+    const show = (requestedIndex: number) => {
+      if (!images.length) return;
+      activeIndex = (requestedIndex + images.length) % images.length;
+      const source = images[activeIndex];
+      image.src = source.currentSrc || source.src;
+      image.alt = source.alt;
+      caption.textContent = source.alt;
+      caption.hidden = !source.alt;
+      count.textContent = images.length > 1 ? `${activeIndex + 1} / ${images.length}` : "";
+      previous.hidden = next.hidden = images.length < 2;
+    };
+    const open = (availableImages: HTMLImageElement[], index: number, trigger: HTMLElement) => {
+      images = availableImages;
+      returnFocus = trigger;
+      show(index);
+      dialog.showModal();
+      close.focus();
+    };
+    Reflect.set(dialog, "openImage", open);
+
+    close.addEventListener("click", () => dialog.close());
+    previous.addEventListener("click", () => show(activeIndex - 1));
+    next.addEventListener("click", () => show(activeIndex + 1));
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+    dialog.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") dialog.close();
+      if (event.key === "ArrowLeft") show(activeIndex - 1);
+      if (event.key === "ArrowRight") show(activeIndex + 1);
+    });
+    dialog.addEventListener("close", () => returnFocus?.focus());
+    return dialog;
+  };
+
+  const enhanceLightboxImages = () => {
+    const config = getConfig();
+    const dialog = ensureLightbox();
+    if (!config || !dialog) return;
+    getProseContainers().forEach((container) => {
+      const images = [...container.querySelectorAll<HTMLImageElement>("img")].filter((image) => (
+        !image.closest("a, .acknowledgement-logo, .image-layout__pagination")
+      ));
+      images.forEach((image, index) => {
+        if (image.dataset.lightboxReady === "true") return;
+        image.dataset.lightboxReady = "true";
+        image.tabIndex = image.closest("[data-carousel-slide][data-active='false']") ? -1 : 0;
+        image.setAttribute("role", "button");
+        image.ariaLabel = `${config.dataset.openLabel ?? "View image"}${image.alt ? `: ${image.alt}` : ""}`;
+        const open = () => {
+          const openImage = Reflect.get(dialog, "openImage");
+          if (typeof openImage === "function") openImage(images, index, image);
+        };
+        image.addEventListener("click", open);
+        image.addEventListener("keydown", (event) => {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          open();
+        });
+      });
+    });
+  };
+
   const initializeMarkdown = () => {
     enhanceCodeBlocks();
+    enhanceCarousels();
+    enhanceLightboxImages();
     void renderMermaid();
   };
 
   document.addEventListener("astro:page-load", initializeMarkdown);
+  window.addEventListener("spa:nav-sync", initializeMarkdown);
   window.addEventListener("blog:theme-change", () => { if (mermaidApi) void renderMermaid(); });
   initializeMarkdown();
 </script>
