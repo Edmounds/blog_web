@@ -98,6 +98,8 @@ test("OpenAI-compatible client requests one complete Markdown document translati
   assert.match(request.messages[0].content, /complete Markdown document/);
   assert.match(request.messages[0].content, /author's meaning, tone, voice/);
   assert.match(request.messages[0].content, /Never alter code blocks, inline code, commands, math, URLs, paths, slugs, identifiers, dates, booleans, or numbers/);
+  assert.match(request.messages[0].content, /image alt text/);
+  assert.match(request.messages[0].content, /placeholder alt text equal to image unchanged/);
   assert.match(request.messages[0].content, /silently check the translation for accuracy, fluency, terminology consistency, omissions, and formatting damage/);
   assert.match(request.messages[0].content, /createdAt/);
   assert.match(request.messages[1].content, /<source_text>/);
@@ -142,7 +144,7 @@ test("translation script keeps an OpenAI segment fallback for complete Markdown 
   assert.match(source, /using segment fallback/);
   assert.match(source, /collectMarkdownSegments\(source\.content\)/);
   assert.match(source, /replaceMarkdownSegments\(source\.content, translatedSegments\)/);
-  assert.match(source, /imageLabels\[imageIndex\+\+\]/);
+  assert.doesNotMatch(source, /imageLabels\[imageIndex\+\+\]/);
 });
 
 test("translation script skips Markdown documents explicitly marked unpublished", async () => {

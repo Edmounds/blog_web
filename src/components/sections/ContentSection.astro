@@ -80,7 +80,7 @@ const years = sections.map((group) => group.year);
   .content-listing__header h1 {
     margin: 0;
     color: transparent;
-    font-size: clamp(2.3rem, 2rem + 1.5vw, 4.3rem);
+    font-size: var(--type-page-title);
     font-weight: 400;
     line-height: 1.05;
     overflow-wrap: anywhere;
@@ -108,7 +108,7 @@ const years = sections.map((group) => group.year);
   }
   .content-timeline time {
     color: var(--text-muted);
-    font-size: var(--type-sm);
+    font-size: var(--type-base);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
@@ -118,6 +118,7 @@ const years = sections.map((group) => group.year);
     align-items: center;
     gap: 0.4rem;
     color: var(--foreground);
+    font-size: var(--type-md);
     line-height: 1.6;
     text-decoration: none;
     transform: translateX(0);

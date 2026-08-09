@@ -8,6 +8,8 @@ import { mdxToJs } from "satteri";
 import { markdownOptions } from "../src/lib/markdown.mjs";
 
 const fixtureUrl = new URL("./fixtures/markdown-showcase.md", import.meta.url);
+const writingFileUrl = new URL("../src/content/note/caption-test.md", import.meta.url);
+const aboutFileUrl = new URL("../src/content/about/caption-test.md", import.meta.url);
 const fixture = readFileSync(fixtureUrl, "utf8");
 const processor = await createSatteriMarkdownProcessor(markdownOptions);
 const rendered = await processor.render(fixture, { fileURL: fixtureUrl });
@@ -29,6 +31,30 @@ test("single Markdown line breaks remain visible in rendered prose", async () =>
   const result = await processor.render("第一行\n第二行\n第三行");
 
   assert.match(result.code, /<p>第一行<br>\s*第二行<br>\s*第三行<\/p>/);
+});
+
+test("blank Markdown lines create separate article paragraphs", async () => {
+  const result = await processor.render("第一段。\n\n第二段。", { fileURL: writingFileUrl });
+
+  assert.equal(result.code.trimEnd(), "<p>第一段。</p>\n<p>第二段。</p>");
+});
+
+test("standalone writing images use non-empty alt text as a visible caption", async () => {
+  const result = await processor.render(
+    "![看过的东野圭吾作品](https://img.muelsyse.us/bed/books.png)",
+    { fileURL: writingFileUrl },
+  );
+
+  assert.match(result.code, /<figure class="article-figure"><img[^>]*alt="看过的东野圭吾作品"[^>]*><figcaption>看过的东野圭吾作品<\/figcaption><\/figure>/);
+});
+
+test("empty, placeholder, inline, and non-writing images do not create captions", async () => {
+  const empty = await processor.render("![](https://example.com/empty.png)", { fileURL: writingFileUrl });
+  const placeholder = await processor.render("![Image](https://example.com/placeholder.png)", { fileURL: writingFileUrl });
+  const inline = await processor.render("正文中的 ![内联图片](https://example.com/inline.png) 不单独成图。", { fileURL: writingFileUrl });
+  const about = await processor.render("![关于页图片](https://example.com/about.png)", { fileURL: aboutFileUrl });
+
+  for (const result of [empty, placeholder, inline, about]) assert.doesNotMatch(result.code, /<figcaption>/);
 });
 
 test("Shiki highlights common fenced languages and leaves Mermaid as source", () => {

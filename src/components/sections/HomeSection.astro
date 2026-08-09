@@ -274,7 +274,7 @@ const latestBlocks = [
   }
   .profile-card h1 {
     margin: 1.25rem 0 0.7rem;
-    font-size: clamp(1.8rem, 4vw, 4rem);
+    font-size: var(--type-2xl);
     line-height: 1;
   }
   .profile-card nav {
@@ -333,7 +333,7 @@ const latestBlocks = [
   }
   .latest-content h2 {
     margin: 0 0 0.6rem;
-    font-size: clamp(2rem, 4vw, 4rem);
+    font-size: var(--type-page-title);
     line-height: 1;
   }
   .latest-content h2 a {
@@ -395,11 +395,6 @@ const latestBlocks = [
   }
   .latest-empty {
     color: var(--text-faint);
-  }
-  @media (min-width: 64.0625rem) {
-    .profile-card h1 {
-      font-size: clamp(1.08rem, 2.4vw, 2.4rem);
-    }
   }
   @media (min-width: 78.0625rem) {
     .latest-content {

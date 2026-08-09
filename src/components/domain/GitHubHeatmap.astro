@@ -123,7 +123,7 @@ const legendLevels = [0, 1, 2, 3, 4];
   .github-heatmap__summary { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .github-heatmap__calendar { display: grid; min-width: 0; gap: 0.4rem; }
   .github-heatmap__months { display: grid; grid-template-columns: repeat(var(--github-week-count, 53), 1fr); min-height: 1rem; align-items: start; line-height: 1; }
-  .github-heatmap__month { display: block; overflow: visible; color: var(--text-muted); font-size: clamp(0.68rem, 0.62rem + 0.12vw, 0.82rem); font-weight: 600; white-space: nowrap; }
+  .github-heatmap__month { display: block; overflow: visible; color: var(--text-muted); font-size: var(--type-xs); font-weight: 600; white-space: nowrap; }
   .github-heatmap__grid { display: grid; grid-template-columns: repeat(var(--github-week-count, 53), 1fr); grid-template-rows: repeat(7, 1fr); gap: clamp(2px, 0.22vw, 3px); width: 100%; aspect-ratio: var(--github-week-count, 53) / 7; margin: 0; padding: 0; list-style: none; }
   .github-heatmap__cell, .github-heatmap__legend-cell { --github-fill: var(--github-empty); background: var(--github-fill); border-radius: 3px; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 5%, transparent); }
   .github-heatmap__cell { width: 100%; height: 100%; transform-origin: center; }
@@ -132,7 +132,7 @@ const legendLevels = [0, 1, 2, 3, 4];
   :is(.github-heatmap__cell, .github-heatmap__legend-cell)[data-level="2"] { --github-fill: color-mix(in srgb, var(--github-active) 42%, transparent); }
   :is(.github-heatmap__cell, .github-heatmap__legend-cell)[data-level="3"] { --github-fill: color-mix(in srgb, var(--github-active) 64%, transparent); }
   :is(.github-heatmap__cell, .github-heatmap__legend-cell)[data-level="4"] { --github-fill: color-mix(in srgb, var(--github-active) 86%, transparent); }
-  .github-heatmap__footer { display: flex; min-height: 1rem; align-items: center; justify-content: space-between; gap: 0.75rem; color: var(--text-muted); font-size: clamp(0.68rem, 0.62rem + 0.12vw, 0.82rem); font-weight: 500; line-height: 1; }
+  .github-heatmap__footer { display: flex; min-height: 1rem; align-items: center; justify-content: space-between; gap: 0.75rem; color: var(--text-muted); font-size: var(--type-xs); font-weight: 500; line-height: 1; }
   .github-heatmap__count { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .github-heatmap__legend { display: flex; flex: 0 0 auto; align-items: center; gap: 0.4rem; }
   .github-heatmap__legend-scale { display: inline-grid; grid-template-columns: repeat(5, 0.72rem); gap: 0.16rem; }

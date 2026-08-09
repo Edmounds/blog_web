@@ -87,9 +87,44 @@ const createKatexPlugin = () => ({
   ],
 });
 
+const isWritingContent = (fileURL) => {
+  const path = fileURL?.pathname;
+  if (!path) return false;
+  return /\/src\/content\/(?:blog|note|project)\//.test(path)
+    || /\/src\/i18n\/content\/[^/]+\/(?:blog|note|project)\//.test(path);
+};
+
+const createImageCaptionPlugin = () => ({
+  name: "render-image-captions",
+  element: {
+    filter: ["p"],
+    visit(node, ctx) {
+      if (!isWritingContent(ctx.fileURL) || node.children?.length !== 1) return;
+      const image = node.children[0];
+      if (image.type !== "element" || image.tagName !== "img") return;
+      const caption = typeof image.properties?.alt === "string" ? image.properties.alt.trim() : "";
+      if (!caption || caption.toLowerCase() === "image") return;
+      return {
+        type: "element",
+        tagName: "figure",
+        properties: { className: ["article-figure"] },
+        children: [
+          image,
+          {
+            type: "element",
+            tagName: "figcaption",
+            properties: {},
+            children: [{ type: "text", value: caption }],
+          },
+        ],
+      };
+    },
+  },
+});
+
 export const markdownPlugins = {
   mdastPlugins: [createSoftBreakPlugin, createDirectivePlugin, createMathPlugin],
-  hastPlugins: [createKatexPlugin],
+  hastPlugins: [createKatexPlugin, createImageCaptionPlugin],
 };
 
 /** @type {import("@astrojs/markdown-satteri").SatteriMarkdownProcessorOptions} */

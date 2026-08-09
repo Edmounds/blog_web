@@ -135,13 +135,20 @@ test("Blog Note and Project collections and localized archive routes remain conf
 test("writing archives and details retain their functional components", () => {
   const archive = read("src/components/sections/ContentSection.astro");
   const detail = read("src/components/domain/ContentDetail.astro");
+  const global = read("src/styles/global.css");
   const toc = read("src/components/domain/TableOfContents.astro");
 
   assert.match(archive, /ArchiveActivityTimeline/);
   assert.match(archive, /ArchiveTableOfContents/);
+  assert.match(archive, /\.content-timeline time[^}]*font-size:\s*var\(--type-base\)/s);
+  assert.match(archive, /\.content-timeline a[^}]*font-size:\s*var\(--type-md\)/s);
+  assert.match(detail, /<h1 class="ui-page-title">\{item\.title\}<\/h1>/);
   assert.match(detail, /PostEngagement/);
   assert.match(detail, /CommentsSection/);
   assert.match(detail, /TableOfContents/);
+  assert.match(global, /html:lang\(zh\)[^}]*\.article-prose\s*>\s*p[^}]*text-indent:\s*2em/s);
+  assert.match(global, /html:lang\(ja\)[^}]*\.article-prose\s*>\s*p[^}]*text-indent:\s*2em/s);
+  assert.match(global, /\.article-figure[^}]*margin:\s*0/s);
   assert.match(toc, /data-toc-progress/);
   assert.match(toc, /data-toc-link/);
 });

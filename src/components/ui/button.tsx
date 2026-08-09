@@ -12,7 +12,7 @@ const variantClasses: Record<ButtonVariant, string> = {
 }
 const sizeClasses: Record<ButtonSize, string> = {
   default: "h-10 gap-1.5 px-5",
-  sm: "h-8 gap-1 px-3.5 text-[0.8rem] [&_svg:not([class*='size-'])]:size-3.5",
+  sm: "h-8 gap-1 px-3.5 text-xs [&_svg:not([class*='size-'])]:size-3.5",
 }
 
 function Button({

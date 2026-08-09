@@ -227,12 +227,9 @@ const translateDocument = async ({ raw, keyPrefix, locale, targetLang, manifest 
       format: "markdown-segment",
       translate: translateMarkdownSegment,
     })));
-    const imageLabels = [...source.content.matchAll(/!\[([^\]]*)\]\(/g)].map((match) => match[1]);
     const translatedBody = replaceMarkdownSegments(source.content, translatedSegments);
-    let imageIndex = 0;
-    const preservedBody = translatedBody.replace(/!\[([^\]]*)\]\(/g, () => `![${imageLabels[imageIndex++] ?? ""}](`);
     const yaml = stringifyYaml(mergeTranslatedData(source.data, translatedData), { lineWidth: 0 }).trimEnd();
-    translation = `---\n${yaml}\n---\n\n${preservedBody}`;
+    translation = `---\n${yaml}\n---\n\n${translatedBody}`;
   }
   const translated = matter(unwrapMarkdownFence(translation));
   if (source.content.trim() && !translated.content.trim()) {

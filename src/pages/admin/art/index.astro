@@ -11,7 +11,7 @@ Astro.response.headers.set("Cache-Control", "no-store");
   <main class="app-container py-10 md:py-14">
     <AdminNav current="art" />
     <div class="mb-8">
-      <h1 class="ui-page-title">收藏管理</h1>
+      <h1 class="ui-page-title" style="font-size: var(--type-2xl)">收藏管理</h1>
       <p class="mt-2 text-sm text-[var(--text-muted)]">搜索来源只生成候选，保存前确认封面、分类和多语言文字。</p>
     </div>
     <ArtAdmin client:load />

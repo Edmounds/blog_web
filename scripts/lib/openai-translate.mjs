@@ -80,6 +80,7 @@ export const createOpenAITranslateClient = ({
           "Keep terminology, names, and repeated phrases consistent across the whole document. Preserve established product and project names unless a standard target-language form exists.",
           "Use the target locale's standard spelling, punctuation, and terminology.",
           "Preserve YAML frontmatter delimiters and field names, Markdown and MDX block structure, blank-line layout, headings, lists, tables, blockquotes, footnotes, task markers, links, images, HTML, and math.",
+          "Translate human-readable image alt text, but keep placeholder alt text equal to image unchanged and preserve image URLs and Markdown image structure exactly.",
           "Never alter code blocks, inline code, commands, math, URLs, paths, slugs, identifiers, dates, booleans, or numbers.",
           preserveFrontmatterKeys.length
             ? `Keep the values of these YAML frontmatter fields unchanged: ${preserveFrontmatterKeys.join(", ")}.`

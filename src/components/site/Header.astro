@@ -403,8 +403,6 @@ const isActive = (href: string) =>
 
 <style>
   .site-header {
-    --desktop-nav-font-size: clamp(20px, 1.2rem + 0.4vw, 24px);
-    --life-submenu-font-size: clamp(16.3px, 0.82rem + 0.13vw, 20px);
     --life-submenu-gap: clamp(0.75rem, 1.5vw, 1.5rem);
     --life-submenu-color: var(--text-faint);
     position: sticky;
@@ -435,7 +433,7 @@ const isActive = (href: string) =>
     justify-self: start;
     color: var(--foreground);
     font-family: "Site Signature", cursive;
-    font-size: clamp(2.75rem, 2.46rem + 0.92vw, 3.55rem);
+    font-size: 3.5rem;
     font-weight: 400;
     line-height: 0.78;
     text-decoration: none;
@@ -467,7 +465,7 @@ const isActive = (href: string) =>
   .life-menu__items a {
     color: var(--text-muted);
     font-family: var(--font-ui);
-    font-size: var(--desktop-nav-font-size);
+    font-size: var(--type-lg);
     font-weight: 400;
     line-height: 1.25;
     text-decoration: none;
@@ -514,7 +512,7 @@ const isActive = (href: string) =>
   .life-menu__items a {
     padding: 0.2rem 0;
     color: var(--life-submenu-color);
-    font-size: var(--life-submenu-font-size);
+    font-size: var(--type-base);
     text-align: left;
   }
   .site-header__tools {
@@ -608,7 +606,7 @@ const isActive = (href: string) =>
     }
     .site-signature {
       width: min(100%, 10.5rem);
-      font-size: clamp(2.15rem, 1.95rem + 1vw, 2.6rem);
+      font-size: 2.6rem;
       transform: translateY(-0.625rem);
     }
   }

@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import { createSatteriMarkdownProcessor } from "@astrojs/markdown-satteri";
+
+import { markdownOptions } from "../src/lib/markdown.mjs";
 import { createResponsiveImagePlugin } from "../src/lib/responsive-images.mjs";
 
 const visitImages = (manifest, sources) => {
@@ -63,4 +66,40 @@ test("passthrough images retain their source while receiving intrinsic dimension
   assert.equal(image.properties.height, 400);
   assert.equal(image.properties.loading, "eager");
   assert.equal(image.properties.fetchPriority, "high");
+});
+
+test("responsive writing images keep picture sources inside the caption figure", async () => {
+  const source = "https://img.muelsyse.us/blog/books.webp";
+  const processor = await createSatteriMarkdownProcessor({
+    ...markdownOptions,
+    hastPlugins: [
+      ...markdownOptions.hastPlugins,
+      createResponsiveImagePlugin({
+        version: "caption-test",
+        manifest: {
+          version: 3,
+          assets: {
+            [source]: {
+              kind: "responsive",
+              width: 1600,
+              height: 900,
+              fallback: source,
+              sources: {
+                avif: [{ width: 640, url: `${source}?format=avif` }],
+                webp: [{ width: 640, url: `${source}?format=webp` }],
+              },
+            },
+          },
+        },
+      }),
+    ],
+  });
+  const result = await processor.render(`![作品图](${source})`, {
+    fileURL: new URL("../src/content/blog/caption-test.md", import.meta.url),
+  });
+
+  assert.match(result.code, /<figure class="article-figure"><picture class="article-picture">/);
+  assert.match(result.code, /<source type="image\/avif"/);
+  assert.match(result.code, /<img[^>]*alt="作品图"[^>]*width="1600"[^>]*height="900"/);
+  assert.match(result.code, /<figcaption>作品图<\/figcaption><\/figure>/);
 });
