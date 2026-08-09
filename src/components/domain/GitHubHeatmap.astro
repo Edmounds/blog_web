@@ -70,13 +70,14 @@ const legendLevels = [0, 1, 2, 3, 4];
           root.dataset.state = heatmap.state;
           root.style.setProperty("--github-week-count", String(heatmap.weekCount));
           const monthsByWeek = new Map(heatmap.months.map((month) => [month.weekIndex, month]));
-          months.replaceChildren(...monthsByWeek.values().map((month) => {
+          const monthLabels = Array.from(monthsByWeek.values(), (month) => {
             const label = document.createElement("span");
             label.className = "github-heatmap__month";
             label.style.gridColumn = String(month.weekIndex + 1);
             label.textContent = month.label;
             return label;
-          }));
+          });
+          months.replaceChildren(...monthLabels);
           grid.replaceChildren(...heatmap.days.map((day) => {
             const cell = document.createElement("li");
             cell.className = "github-heatmap__cell";

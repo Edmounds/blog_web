@@ -47,8 +47,19 @@ const isActive = (href: string) =>
       href={localizePath("/", locale)}
       data-content-frame-start
       data-primary-route
-      aria-label="Last4ev3r home">Last4ev3r</a
+      aria-label="Last4ev3r home"
     >
+      <img
+        class="site-signature__mark"
+        data-site-signature-mark
+        src="/images/site-signature.svg?v=1"
+        width="3409"
+        height="775"
+        alt=""
+        decoding="sync"
+        fetchpriority="high"
+      />
+    </a>
 
     <div class="desktop-nav-region" data-desktop-nav-region>
       <nav
@@ -174,6 +185,7 @@ const isActive = (href: string) =>
     const desktopNavRegion = header.querySelector("[data-desktop-nav-region]");
     const desktopNav = header.querySelector("[data-desktop-nav]");
     const frameStart = header.querySelector("[data-content-frame-start]");
+    const signatureMark = header.querySelector("[data-site-signature-mark]");
     const frameEnd = header.querySelector("[data-content-frame-end]");
     const lifeTrigger = header.querySelector("[data-life-trigger]");
     const lifeMenu = header.querySelector("[data-life-menu]");
@@ -182,6 +194,7 @@ const isActive = (href: string) =>
       !(desktopNavRegion instanceof HTMLElement) ||
       !(desktopNav instanceof HTMLElement) ||
       !(frameStart instanceof HTMLElement) ||
+      !(signatureMark instanceof HTMLImageElement) ||
       !(frameEnd instanceof HTMLElement)
     )
       return;
@@ -204,19 +217,10 @@ const isActive = (href: string) =>
         return;
       }
 
-      const style = getComputedStyle(frameStart);
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-      if (!context) return;
-      context.font = style.font;
-      context.fontKerning = style.fontKerning as CanvasFontKerning;
-
-      const metrics = context.measureText(frameStart.textContent?.trim() ?? "");
-      const startRect = frameStart.getBoundingClientRect();
+      const markRect = signatureMark.getBoundingClientRect();
       const endRect = frameEnd.getBoundingClientRect();
       const viewportWidth = document.documentElement.clientWidth;
-      const glyphRight = metrics.actualBoundingBoxRight || metrics.width;
-      const inlineStart = startRect.left + glyphRight;
+      const inlineStart = markRect.right;
       const inlineEnd = viewportWidth - endRect.left;
 
       if (inlineStart >= endRect.left) {
@@ -239,6 +243,7 @@ const isActive = (href: string) =>
     };
     const frameObserver = new ResizeObserver(scheduleContentFrame);
     frameObserver.observe(frameStart);
+    frameObserver.observe(signatureMark);
     frameObserver.observe(frameEnd);
     frameObserver.observe(header);
     const lifeIsOpen = () =>
@@ -385,7 +390,6 @@ const isActive = (href: string) =>
 
     setHidden(window.scrollY > 0);
     scheduleContentFrame();
-    document.fonts.ready.then(scheduleContentFrame);
     const cleanup = () => {
       controller.abort();
       frameObserver.disconnect();
@@ -419,12 +423,6 @@ const isActive = (href: string) =>
     gap: 1rem;
     padding-top: 1rem;
   }
-  @font-face {
-    font-family: "Site Signature";
-    src: url("/fonts/Allura-Last4ev3r.woff?v=1") format("woff");
-    font-weight: 400;
-    font-display: swap;
-  }
   .site-signature {
     display: flex;
     width: min(100%, clamp(10.5rem, 34vw, 23.75rem));
@@ -432,12 +430,15 @@ const isActive = (href: string) =>
     align-items: flex-end;
     justify-self: start;
     color: var(--foreground);
-    font-family: "Site Signature", cursive;
-    font-size: 3.5rem;
-    font-weight: 400;
-    line-height: 0.78;
     text-decoration: none;
-    white-space: nowrap;
+  }
+  .site-signature__mark {
+    display: block;
+    width: min(100%, calc(3.5rem * 3.411));
+    height: auto;
+  }
+  :global(html.dark) .site-signature__mark {
+    filter: invert(1);
   }
   .desktop-nav {
     --desktop-nav-gap: clamp(0.75rem, 1.5vw, 1.5rem);
@@ -606,8 +607,10 @@ const isActive = (href: string) =>
     }
     .site-signature {
       width: min(100%, 10.5rem);
-      font-size: 2.6rem;
       transform: translateY(-0.625rem);
+    }
+    .site-signature__mark {
+      width: min(100%, calc(2.6rem * 3.411));
     }
   }
   @media (max-width: 30rem) {
@@ -626,7 +629,9 @@ const isActive = (href: string) =>
     }
     .site-signature {
       width: min(100%, 8.75rem);
-      font-size: 2.15rem;
+    }
+    .site-signature__mark {
+      width: min(100%, calc(2.15rem * 3.411));
     }
   }
   @media (prefers-reduced-motion: reduce) {
