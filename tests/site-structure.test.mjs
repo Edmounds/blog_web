@@ -201,3 +201,20 @@ test("homepage activity widgets and project links remain wired", () => {
   assert.match(detail, /item\.projectUrl/);
   assert.match(detail, /item\.docUrl/);
 });
+
+test("home and About omit the profile location and major", () => {
+  const home = read("src/components/sections/HomeSection.astro");
+  const profiles = [
+    ["src/content/about/profile.md", "重庆大学国家卓越工程师学院大三在读 机器人工程专业"],
+    ["src/i18n/content/en/about/profile.md", "I am a third-year Robotics Engineering student"],
+    ["src/i18n/content/ja/about/profile.md", "重慶大学国家卓越工程師学院の3年生"],
+    ["src/i18n/content/zh-TW/about/profile.md", "目前就讀於重慶大學國家卓越工程師學院大三"],
+  ];
+
+  assert.doesNotMatch(home, /profile\.(?:major|city)/);
+  for (const [file, biography] of profiles) {
+    const profile = read(file);
+    assert.doesNotMatch(profile, /^(?:city|major):/m);
+    assert.doesNotMatch(profile, new RegExp(biography));
+  }
+});

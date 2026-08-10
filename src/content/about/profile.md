@@ -1,7 +1,5 @@
 ---
 name: Last4ev3r
-city: 重庆
-major: 机器人工程
 motto: Keep it Simple,Stupid
 portrait: /images/content/about/profile-8646bdb863b8-w320.webp
 backgroundKeywords:
@@ -28,7 +26,6 @@ backgroundKeywords:
 这里是我安静的个人空间——写文章、记笔记、分享项目、记录看过的书和电影。
 这里只有手写的文字，如果AI生成文字会使用图片的形式粘贴到文章中/
 ## 关于我
-重庆大学国家卓越工程师学院大三在读 机器人工程专业
 喜欢天文 浅尝过行星摄影 未来包里有闲钱了就尝试一下深空摄影/星野摄影
 
 ```image-layout

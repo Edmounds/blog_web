@@ -1,7 +1,5 @@
 ﻿---
 name: Last4ev3r
-city: Chongqing
-major: Robotics Engineering
 motto: Keep it Simple,Stupid
 portrait: /images/content/about/profile-8646bdb863b8-w320.webp
 backgroundKeywords:
@@ -28,7 +26,6 @@ backgroundKeywords:
 This is my quiet personal space—to write articles, take notes, share projects, and keep track of the books and films I've experienced.
 Everything here is handwritten text. If I use AI-generated text, I will paste it into the article as an image/
 ## About Me
-I am a third-year Robotics Engineering student at the National School of Excellence for Engineers of Chongqing University.
 I like astronomy and have dabbled in planetary photography. Once I have some spare money in the future, I’d like to try deep-sky or astrophotography.
 ![jupiter.png](https://img.muelsyse.us/bed/jupiter.png)
 

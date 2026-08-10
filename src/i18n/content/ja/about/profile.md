@@ -1,7 +1,5 @@
 ﻿---
 name: Last4ev3r
-city: 重慶
-major: ロボット工学
 motto: シンプルにしろ、愚か者
 portrait: /images/content/about/profile-8646bdb863b8-w320.webp
 backgroundKeywords:
@@ -28,7 +26,6 @@ backgroundKeywords:
 ここは私の静かな個人スペースです——記事を書いたり、メモを残したり、プロジェクトを共有したり、読んだ本や観た映画を記録したりしています。
 ここにあるのはすべて自分で書いた文章です。AIが生成した文章を使う場合は、画像として記事に貼り付けます/
 ## 私について
-重慶大学国家卓越工程師学院の3年生で、ロボット工学を専攻しています。
 天文が好きで、惑星撮影を少しかじったことがあります。将来、カメラや機材に使える余裕資金ができたら、ディープスカイ撮影や星野撮影にも挑戦してみたいです。
 ![jupiter.png](https://img.muelsyse.us/bed/jupiter.png)
 

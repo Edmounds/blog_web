@@ -1,7 +1,5 @@
 ﻿---
 name: Last4ev3r
-city: 重慶
-major: 機器人工程
 motto: Keep it Simple,Stupid
 portrait: /images/content/about/profile-8646bdb863b8-w320.webp
 backgroundKeywords:
@@ -29,7 +27,6 @@ backgroundKeywords:
 這裡只有親手寫下的文字；如果是 AI 生成的文字，會以圖片的形式貼到文章中/
 ## 關於我
 
-目前就讀於重慶大學國家卓越工程師學院大三，主修機器人工程。
 喜歡天文，也稍微嘗試過行星攝影；未來如果手頭寬裕，會再試試深空攝影／星野攝影。
 ![jupiter.png](https://img.muelsyse.us/bed/jupiter.png)
 

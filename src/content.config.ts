@@ -22,8 +22,6 @@ const about = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/about" }),
   schema: z.object({
     name: z.string(),
-    city: z.string(),
-    major: z.string(),
     motto: z.string(),
     portrait: z.string().min(1),
     backgroundKeywords: z.array(z.string().min(1)).min(1),
@@ -40,7 +38,7 @@ const translations = defineCollection({
     createdAt: z.coerce.date().optional(), updatedAt: z.coerce.date().optional(), published: z.boolean().optional(),
     slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).optional(),
     tags: z.array(z.string()).optional(), projectUrl: z.string().optional(), docUrl: z.string().optional(),
-    name: z.string().optional(), city: z.string().optional(), major: z.string().optional(), motto: z.string().optional(), portrait: z.string().optional(),
+    name: z.string().optional(), motto: z.string().optional(), portrait: z.string().optional(),
   }),
 });
 const site = defineCollection({
