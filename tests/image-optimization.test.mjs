@@ -95,10 +95,11 @@ test("unmanaged first images stay unchanged and receive high-priority native att
   );
 });
 
-test("repository image manifest uses the responsive v3 shape", async () => {
+test("repository image manifest uses the responsive v4 shape", async () => {
   const manifest = JSON.parse(await readFile(new URL("../.blog-images-manifest.json", import.meta.url), "utf8"));
-  assert.equal(manifest.version, 3);
+  assert.equal(manifest.version, 4);
   assert.ok(manifest.assets && typeof manifest.assets === "object");
+  assert.ok(manifest.vaultAssets && typeof manifest.vaultAssets === "object");
   assert.ok(Object.values(manifest.assets).every((asset) => ["responsive", "passthrough"].includes(asset.kind)));
   assert.ok(Array.isArray(manifest.pendingDeletion));
 });

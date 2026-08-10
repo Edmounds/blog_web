@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import sharp from "sharp";
+import { parse as parseYaml } from "yaml";
 
 import { createResponsiveImage } from "./image-optimization.mjs";
 
@@ -12,11 +13,12 @@ const DEFAULT_BUCKET = "blog-images";
 const DEFAULT_PUBLIC_URL = "https://img.muelsyse.us";
 const CACHE_CONTROL = "public, max-age=31536000, immutable";
 const MANIFEST_FILE = ".blog-images-manifest.json";
-const MANIFEST_VERSION = 3;
-export const CONTENT_GROUPS = ["blog", "note", "project"];
+const MANIFEST_VERSION = 4;
+export const CONTENT_GROUPS = ["about", "blog", "note", "project"];
 
 const contentTypes = new Map([
   [".avif", "image/avif"],
+  [".bmp", "image/bmp"],
   [".gif", "image/gif"],
   [".jpeg", "image/jpeg"],
   [".jpg", "image/jpeg"],
@@ -24,7 +26,7 @@ const contentTypes = new Map([
   [".svg", "image/svg+xml"],
   [".webp", "image/webp"],
 ]);
-const rasterExtensions = new Set([".jpeg", ".jpg", ".png", ".webp"]);
+const rasterExtensions = new Set([".bmp", ".jpeg", ".jpg", ".png", ".webp"]);
 
 const isLocalAbsolutePath = (value) => {
   if (value.startsWith("file://")) return true;
@@ -117,7 +119,7 @@ const atomicWrite = async (filePath, contents) => {
   }
 };
 
-const emptyManifest = () => ({ version: MANIFEST_VERSION, assets: {}, keys: [], pendingDeletion: [] });
+const emptyManifest = () => ({ version: MANIFEST_VERSION, assets: {}, vaultAssets: {}, keys: [], pendingDeletion: [] });
 
 export const readImageManifest = async (manifestPath) => {
   try {
@@ -127,18 +129,23 @@ export const readImageManifest = async (manifestPath) => {
     }
     if (manifest.version === 2 && manifest.assets && Array.isArray(manifest.keys) && Array.isArray(manifest.pendingDeletion)) {
       return {
+        ...emptyManifest(),
         ...manifest,
         version: MANIFEST_VERSION,
+        vaultAssets: {},
         assets: Object.fromEntries(Object.entries(manifest.assets).map(([url, asset]) => [
           url,
           { ...asset, kind: asset.sources ? "responsive" : "passthrough" },
         ])),
       };
     }
+    if (manifest.version === 3 && manifest.assets && Array.isArray(manifest.keys) && Array.isArray(manifest.pendingDeletion)) {
+      return { ...manifest, version: MANIFEST_VERSION, vaultAssets: {} };
+    }
     if (manifest.version !== MANIFEST_VERSION || !manifest.assets || !Array.isArray(manifest.keys) || !Array.isArray(manifest.pendingDeletion)) {
       throw new Error(`${manifestPath} has an unsupported format`);
     }
-    return manifest;
+    return { ...manifest, vaultAssets: manifest.vaultAssets ?? {} };
   } catch (error) {
     if (error?.code === "ENOENT") return emptyManifest();
     throw error;
@@ -318,6 +325,111 @@ const collectManagedKeys = (source, publicUrl) => {
   return keys;
 };
 
+const vaultPathFromFile = (contentRoot, filePath) => path.relative(contentRoot, filePath).split(path.sep).join("/");
+
+const isInside = (root, candidate) => {
+  const relative = path.relative(root, candidate);
+  return relative !== ".." && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative);
+};
+
+const readImageLayoutSettings = async (contentRoot) => {
+  const settingsPath = path.join(contentRoot, ".obsidian/plugins/obsidian-image-layouts/data.json");
+  try {
+    const value = JSON.parse(await readFile(settingsPath, "utf8"));
+    return value && typeof value === "object" && !Array.isArray(value) ? value : {};
+  } catch (error) {
+    if (error?.code === "ENOENT") return {};
+    throw error;
+  }
+};
+
+const buildVaultImageIndex = async (contentRoot) => {
+  const entries = new Map();
+  for (const filePath of await walkImageFiles(contentRoot)) {
+    const relativePath = vaultPathFromFile(contentRoot, filePath);
+    entries.set(relativePath, { filePath, relativePath, mtime: (await stat(filePath)).mtimeMs });
+  }
+  return entries;
+};
+
+const resolveVaultImage = (link, articlePath, contentRoot, vaultIndex) => {
+  let decoded;
+  try { decoded = decodeURIComponent(link); } catch { decoded = link; }
+  decoded = decoded.replaceAll("\\", "/").trim();
+  if (!decoded || /^(?:https?:|data:)/i.test(decoded) || decoded.startsWith("/images/")) return null;
+  let absolute;
+  if (/^file:\/\//i.test(decoded)) absolute = fileURLToPath(decoded);
+  else if (path.isAbsolute(decoded)) absolute = path.resolve(contentRoot, `.${decoded}`);
+  else absolute = path.resolve(path.dirname(articlePath), decoded);
+
+  if (!isInside(contentRoot, absolute)) {
+    if (/^(?:\.\.\/|file:\/\/)/i.test(decoded)) throw new Error(`${decoded} escapes src/content`);
+    return null;
+  }
+  const candidates = [vaultPathFromFile(contentRoot, absolute)];
+  const rootRelative = decoded.replace(/^\.\//, "").replace(/^\//, "");
+  if (rootRelative && !candidates.includes(rootRelative)) candidates.push(path.posix.normalize(rootRelative));
+  for (const candidate of [...candidates]) {
+    if (!path.posix.extname(candidate)) {
+      for (const extension of contentTypes.keys()) candidates.push(`${candidate}${extension}`);
+    }
+  }
+  for (const candidate of candidates) if (vaultIndex.has(candidate)) return vaultIndex.get(candidate);
+
+  const requestedName = path.posix.basename(rootRelative).toLowerCase();
+  const hasExtension = Boolean(path.posix.extname(requestedName));
+  return [...vaultIndex.values()].find(({ relativePath }) => {
+    const name = path.posix.basename(relativePath).toLowerCase();
+    return hasExtension ? name === requestedName : name.startsWith(`${requestedName}.`);
+  }) ?? null;
+};
+
+const parseLayoutOptions = (body) => {
+  const match = body.match(/^---\s*\n([\s\S]*?)\n---(?:\s*\n|$)/);
+  if (!match) return {};
+  try {
+    const options = parseYaml(match[1]);
+    return options && typeof options === "object" && !Array.isArray(options) ? options : {};
+  } catch {
+    return {};
+  }
+};
+
+const collectVaultReferences = ({ source, articlePath, contentRoot, vaultIndex, settings }) => {
+  const references = new Map();
+  const add = (link) => {
+    const resolved = resolveVaultImage(link, articlePath, contentRoot, vaultIndex);
+    if (resolved) references.set(resolved.relativePath, resolved);
+  };
+
+  for (const match of source.matchAll(/!\[\[([^\]]+)\]\]/g)) add(match[1].split("|")[0].trim());
+  for (const match of source.matchAll(/!\[[^\]\n]*\]\(/g)) {
+    const start = match.index + match[0].length;
+    const end = findMarkdownImageClose(source, start);
+    if (end < 0) continue;
+    const destination = splitDestinationAndTitle(source.slice(start, end));
+    const split = destination && splitMarkdownDestination(destination.pathDestination);
+    if (split && !isLocalAbsolutePath(toLocalPath(split.path))) add(split.path);
+  }
+
+  for (const match of source.matchAll(/^\s*(?:`{3,}|~{3,})image-layout[^\n]*\n([\s\S]*?)^\s*(?:`{3,}|~{3,})\s*$/gm)) {
+    const options = parseLayoutOptions(match[1]);
+    if (typeof options.fromFolder !== "string") continue;
+    const folder = path.posix.normalize(options.fromFolder.replaceAll("\\", "/").replace(/^\//, ""));
+    if (!folder || folder === ".." || folder.startsWith("../")) throw new Error(`${options.fromFolder} escapes src/content`);
+    const prefix = `${folder.replace(/\/$/, "")}/`;
+    for (const entry of vaultIndex.values()) {
+      if (entry.relativePath.startsWith(prefix) && !entry.relativePath.slice(prefix.length).includes("/")) {
+        references.set(entry.relativePath, entry);
+      }
+    }
+  }
+
+  const placeholder = typeof settings.placeholderImage === "string" ? settings.placeholderImage.trim() : "";
+  if (placeholder && !/^(?:https?:|data:)/i.test(placeholder)) add(placeholder);
+  return references;
+};
+
 export const syncBlogImages = async ({
   root = process.cwd(),
   bucket = DEFAULT_BUCKET,
@@ -327,8 +439,12 @@ export const syncBlogImages = async ({
   if (typeof upload !== "function") throw new Error("syncBlogImages requires an upload function");
   const manifestPath = path.join(root, MANIFEST_FILE);
   const previous = await readImageManifest(manifestPath);
+  const contentRoot = path.join(root, "src/content");
+  const vaultIndex = await buildVaultImageIndex(contentRoot);
+  const settings = await readImageLayoutSettings(contentRoot);
   const articles = [];
   const localPaths = new Set();
+  const referencedVaultAssets = new Map();
   const referencedKeys = new Set();
   const referencedSourceUrls = new Set();
   for (const group of CONTENT_GROUPS) {
@@ -336,6 +452,17 @@ export const syncBlogImages = async ({
       const source = await readFile(filePath, "utf8");
       const references = collectReferences(source);
       for (const reference of references) localPaths.add(reference.localPath);
+      const vaultReferences = collectVaultReferences({
+        source,
+        articlePath: filePath,
+        contentRoot,
+        vaultIndex,
+        settings,
+      });
+      for (const [vaultPath, reference] of vaultReferences) {
+        referencedVaultAssets.set(vaultPath, reference);
+        localPaths.add(reference.filePath);
+      }
       for (const key of collectManagedKeys(source, publicUrl)) referencedKeys.add(key);
       for (const reference of collectRemoteRasterReferences(source, publicUrl).values()) {
         referencedSourceUrls.add(reference.url);
@@ -397,6 +524,16 @@ export const syncBlogImages = async ({
       for (const object of image.uploads) referencedKeys.add(object.key);
       if (image.manifestAsset) assets[image.fallbackUrl] = image.manifestAsset;
     }
+    const vaultAssets = {};
+    for (const [vaultPath, reference] of referencedVaultAssets) {
+      const image = imagesByPath.get(reference.filePath);
+      vaultAssets[vaultPath] = {
+        fallback: image.fallbackUrl,
+        mtime: reference.mtime,
+        width: image.manifestAsset?.width,
+        height: image.manifestAsset?.height,
+      };
+    }
     const activeKeys = [...new Set([...referencedKeys, ...uploadedKeys])].sort();
     const pendingDeletion = [...new Set([
       ...previous.pendingDeletion,
@@ -405,6 +542,7 @@ export const syncBlogImages = async ({
     await writeImageManifest(manifestPath, {
       version: MANIFEST_VERSION,
       assets,
+      vaultAssets,
       keys: activeKeys,
       pendingDeletion,
     });
@@ -490,7 +628,13 @@ export const migrateBlogImages = async ({
     const assets = { ...previous.assets };
     for (const [sourceUrl, image] of migratedByUrl) assets[sourceUrl] = image.manifestAsset;
     const pendingDeletion = [...new Set(previous.pendingDeletion)].filter((key) => !activeKeys.includes(key)).sort();
-    await writeImageManifest(manifestPath, { version: MANIFEST_VERSION, assets, keys: activeKeys, pendingDeletion });
+    await writeImageManifest(manifestPath, {
+      version: MANIFEST_VERSION,
+      assets,
+      vaultAssets: previous.vaultAssets,
+      keys: activeKeys,
+      pendingDeletion,
+    });
     return { migrated: migratedByUrl.size, uploaded: uploadsByKey.size, rewrittenFiles: 0, pendingDeletion: pendingDeletion.length };
   } finally {
     await rm(temporaryRoot, { recursive: true, force: true });
@@ -506,6 +650,20 @@ const walkContentFiles = async (directory) => {
     const fullPath = path.join(directory, entry.name);
     if (entry.isDirectory()) files.push(...await walkContentFiles(fullPath));
     else if (/\.(md|mdx)$/.test(entry.name)) files.push(fullPath);
+  }
+  return files.sort();
+};
+
+const walkImageFiles = async (directory) => {
+  const files = [];
+  let entries;
+  try { entries = await readdir(directory, { withFileTypes: true }); }
+  catch (error) { if (error?.code === "ENOENT") return files; throw error; }
+  for (const entry of entries) {
+    if (entry.name === ".obsidian" || entry.name === ".claudian") continue;
+    const fullPath = path.join(directory, entry.name);
+    if (entry.isDirectory()) files.push(...await walkImageFiles(fullPath));
+    else if (contentTypes.has(path.extname(entry.name).toLowerCase())) files.push(fullPath);
   }
   return files.sort();
 };

@@ -143,7 +143,13 @@ test("migrates a v1 manifest and defers stale object deletion", async () => {
 
   const result = await syncBlogImages({ root, upload: async () => assert.fail("no upload expected") });
   assert.equal(result.pendingDeletion, 1);
-  assert.deepEqual(await readManifest(root), { version: 3, assets: {}, keys: [keptKey], pendingDeletion: [staleKey] });
+  assert.deepEqual(await readManifest(root), {
+    version: 4,
+    assets: {},
+    vaultAssets: {},
+    keys: [keptKey],
+    pendingDeletion: [staleKey],
+  });
 });
 
 test("cleanup deletes only pending manifest-owned keys", async () => {
@@ -162,10 +168,16 @@ test("cleanup deletes only pending manifest-owned keys", async () => {
   assert.equal(result.deleted, 1);
   assert.deepEqual(deleted, [{ bucket: "blog-images", key: staleKey }]);
   assert.deepEqual(verified, deleted);
-  assert.deepEqual(await readManifest(root), { version: 3, assets: {}, keys: [activeKey], pendingDeletion: [] });
+  assert.deepEqual(await readManifest(root), {
+    version: 4,
+    assets: {},
+    vaultAssets: {},
+    keys: [activeKey],
+    pendingDeletion: [],
+  });
 });
 
-test("reads v2 responsive manifests into the v3 discriminated shape", async () => {
+test("reads v2 responsive manifests into the v4 discriminated shape", async () => {
   const { root } = await createFixture();
   const sourceUrl = "https://img.muelsyse.us/blog/source.webp";
   await writeManifest(root, {
@@ -183,11 +195,57 @@ test("reads v2 responsive manifests into the v3 discriminated shape", async () =
   });
 
   const manifest = await readImageManifest(path.join(root, ".blog-images-manifest.json"));
-  assert.equal(manifest.version, 3);
+  assert.equal(manifest.version, 4);
+  assert.deepEqual(manifest.vaultAssets, {});
   assert.equal(manifest.assets[sourceUrl].kind, "responsive");
   const result = await syncBlogImages({ root, upload: async () => {} });
   assert.equal(result.scannedFiles, 0);
-  assert.equal((await readManifest(root)).version, 3);
+  assert.equal((await readManifest(root)).version, 4);
+});
+
+test("migrates a v3 manifest with an empty vault path index", async () => {
+  const { root } = await createFixture();
+  await writeManifest(root, { version: 3, assets: {}, keys: [], pendingDeletion: [] });
+  const manifest = await readImageManifest(path.join(root, ".blog-images-manifest.json"));
+  assert.deepEqual(manifest, { version: 4, assets: {}, vaultAssets: {}, keys: [], pendingDeletion: [] });
+});
+
+test("indexes relative, Wiki, folder, and configured placeholder images without rewriting source", async () => {
+  const { root, contentDir } = await createFixture();
+  const contentRoot = path.join(root, "src/content");
+  const gallery = path.join(contentRoot, "gallery");
+  const nested = path.join(gallery, "nested");
+  const pluginDir = path.join(contentRoot, ".obsidian/plugins/obsidian-image-layouts");
+  await mkdir(nested, { recursive: true });
+  await mkdir(pluginDir, { recursive: true });
+
+  const imageBytesPath = path.join(contentDir, "local.png");
+  await writeRaster(imageBytesPath);
+  for (const destination of [path.join(gallery, "a.png"), path.join(gallery, "b.png"), path.join(nested, "ignored.png")]) {
+    await writeFile(destination, await readFile(imageBytesPath));
+  }
+  await writeFile(path.join(pluginDir, "data.json"), JSON.stringify({ placeholderImage: "gallery/a.png" }));
+  const postPath = path.join(contentDir, "post.md");
+  const source = `${bom}---\n---\n\n![Relative](./local.png)\n![[gallery/a.png|Wiki|300]]\n\n\`\`\`image-layout\n---\nlayout: masonry-2\nfromFolder: gallery\n---\n\`\`\`\n`;
+  await writeFile(postPath, source);
+
+  const uploads = [];
+  const result = await syncBlogImages({ root, upload: async (image) => uploads.push(image) });
+  const manifest = await readManifest(root);
+  assert.equal(result.uploaded, 2);
+  assert.equal(uploads.length, 2);
+  assert.equal(await readFile(postPath, "utf8"), source);
+  assert.deepEqual(Object.keys(manifest.vaultAssets).sort(), ["blog/local.png", "gallery/a.png", "gallery/b.png"]);
+  assert.ok(Object.values(manifest.vaultAssets).every((asset) => /-w96\.webp$/.test(asset.fallback)));
+  assert.equal(Object.keys(manifest.assets).length, 1);
+  assert.equal(manifest.version, 4);
+});
+
+test("rejects vault references that traverse outside src/content", async () => {
+  const { root, contentDir } = await createFixture();
+  await writeFile(path.join(root, "outside.png"), Buffer.from("not read"));
+  await writeFile(path.join(contentDir, "post.md"), "![[../../../outside.png]]\n");
+  await assert.rejects(syncBlogImages({ root, upload: async () => {} }), /escapes src\/content/);
 });
 
 test("sync keeps responsive variants for still-referenced Obsidian URLs", async () => {
@@ -246,10 +304,13 @@ test("SVG and animated GIF images pass through unchanged", async () => {
   assert.deepEqual(assets.map(({ width, height }) => [width, height]).sort((a, b) => a[0] - b[0]), [[8, 8], [20, 10]]);
 });
 
-test("rejects unsupported local image types before upload", async () => {
+test("converts BMP vault images through the responsive pipeline", async () => {
   const { root, contentDir, imageDir } = await createFixture();
   const imagePath = path.join(imageDir, "image.bmp");
-  await writeFile(imagePath, Buffer.from("bitmap"));
+  await writeRaster(imagePath, "png");
   await writeFile(path.join(contentDir, "post.md"), `${bom}---\n---\n\n![Image](<${imagePath}>)\n`);
-  await assert.rejects(syncBlogImages({ root, upload: async () => assert.fail("no upload expected") }), /unsupported image type/);
+  const uploads = [];
+  const result = await syncBlogImages({ root, upload: async (image) => uploads.push(image) });
+  assert.equal(result.uploaded, 2);
+  assert.deepEqual(new Set(uploads.map(({ contentType }) => contentType)), new Set(["image/avif", "image/webp"]));
 });

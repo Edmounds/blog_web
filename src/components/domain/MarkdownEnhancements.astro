@@ -376,6 +376,7 @@ const labels = enhancementLabels[locale];
     getProseContainers().forEach((container) => {
       const images = [...container.querySelectorAll<HTMLImageElement>("img")].filter((image) => (
         !image.closest("a, .acknowledgement-logo, .image-layout__pagination")
+        && !image.matches("[data-image-layout-placeholder]")
       ));
       images.forEach((image, index) => {
         if (image.dataset.lightboxReady === "true") return;

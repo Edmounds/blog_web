@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "assets": {
     "https://img.muelsyse.us/blog/feb3225984a3c83fc03f99f546c1452877c06c5efc10ae44cdabc05488f23930-w1908.webp": {
       "sourceDigest": "4a3df3a2b11f7b4820d43a6e19d8b23d3a0abacc576610fb897f7164a0feb804",
@@ -248,8 +248,105 @@
           }
         ]
       }
+    },
+    "https://img.muelsyse.us/bed/jupiter.png": {
+      "kind": "responsive",
+      "sourceDigest": "3fdc6cd599ed3535a64e098eb28a27b99cd02e50d7df590d08e26ed5b4d9e118",
+      "width": 1280,
+      "height": 960,
+      "fallback": "https://img.muelsyse.us/bed/jupiter-w1280.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/jupiter-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.998673,
+            "bytes": 2293
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/jupiter-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.999517,
+            "bytes": 4986
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/jupiter-w640.webp",
+            "quality": 70,
+            "ssim": 0.998886,
+            "bytes": 4028
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/jupiter-w1280.webp",
+            "quality": 70,
+            "ssim": 0.99942,
+            "bytes": 10422
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/moon.png": {
+      "kind": "responsive",
+      "sourceDigest": "c5d4ece0392bae9ddcc9b333c49b5c1a7b5036225025adb4d2600bcd20bce98d",
+      "width": 1282,
+      "height": 1080,
+      "fallback": "https://img.muelsyse.us/bed/moon-w1282.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/moon-w640.avif.webp",
+            "quality": 47,
+            "ssim": 0.985809,
+            "bytes": 17747
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/moon-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.994872,
+            "bytes": 39458
+          },
+          {
+            "width": 1282,
+            "url": "https://img.muelsyse.us/bed/moon-w1282.avif.webp",
+            "quality": 40,
+            "ssim": 0.995007,
+            "bytes": 39301
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/moon-w640.webp",
+            "quality": 70,
+            "ssim": 0.990864,
+            "bytes": 26898
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/moon-w1280.webp",
+            "quality": 70,
+            "ssim": 0.997605,
+            "bytes": 80782
+          },
+          {
+            "width": 1282,
+            "url": "https://img.muelsyse.us/bed/moon-w1282.webp",
+            "quality": 70,
+            "ssim": 0.997616,
+            "bytes": 79238
+          }
+        ]
+      }
     }
   },
+  "vaultAssets": {},
   "keys": [
     "bed/20260808043442545-w1280.avif.webp",
     "bed/20260808043442545-w1280.webp",
@@ -257,6 +354,16 @@
     "bed/20260808043442545-w1876.webp",
     "bed/20260808043442545-w640.avif.webp",
     "bed/20260808043442545-w640.webp",
+    "bed/jupiter-w1280.avif.webp",
+    "bed/jupiter-w1280.webp",
+    "bed/jupiter-w640.avif.webp",
+    "bed/jupiter-w640.webp",
+    "bed/moon-w1280.avif.webp",
+    "bed/moon-w1280.webp",
+    "bed/moon-w1282.avif.webp",
+    "bed/moon-w1282.webp",
+    "bed/moon-w640.avif.webp",
+    "bed/moon-w640.webp",
     "blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w1280.avif.webp",
     "blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w1280.webp",
     "blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w1920.avif.webp",

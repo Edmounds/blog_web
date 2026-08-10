@@ -3,6 +3,7 @@ import { fromHtml } from "hast-util-from-html";
 import {
   createImageLayoutsPlugin,
   createObsidianImageSizePlugin,
+  createObsidianWikiImagePlugin,
   IMAGE_LAYOUT_LANGUAGES,
 } from "./image-layouts.mjs";
 
@@ -147,15 +148,22 @@ const createImageCaptionPlugin = () => ({
   },
 });
 
-export const markdownPlugins = {
-  mdastPlugins: [createSoftBreakPlugin, createDirectivePlugin, createMathPlugin],
+export const createMarkdownPlugins = (imageLayoutConfiguration = {}) => ({
+  mdastPlugins: [
+    () => createObsidianWikiImagePlugin(imageLayoutConfiguration),
+    createSoftBreakPlugin,
+    createDirectivePlugin,
+    createMathPlugin,
+  ],
   hastPlugins: [
     createKatexPlugin,
-    createImageLayoutsPlugin,
-    createObsidianImageSizePlugin,
+    () => createImageLayoutsPlugin(imageLayoutConfiguration),
+    () => createObsidianImageSizePlugin(imageLayoutConfiguration),
     createImageCaptionPlugin,
   ],
-};
+});
+
+export const markdownPlugins = createMarkdownPlugins();
 
 /** @type {import("@astrojs/markdown-satteri").SatteriMarkdownProcessorOptions} */
 export const markdownOptions = {

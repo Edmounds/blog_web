@@ -9,13 +9,24 @@ import cloudflare from "@astrojs/cloudflare";
 import mdx from "@astrojs/mdx";
 import { satteri } from "@astrojs/markdown-satteri";
 import sitemap from "@astrojs/sitemap";
-import { markdownOptions, markdownPlugins } from "./src/lib/markdown.mjs";
+import { createMarkdownPlugins, markdownOptions } from "./src/lib/markdown.mjs";
 import { createResponsiveImagePlugin } from "./src/lib/responsive-images.mjs";
 
 const buildId = process.env.PUBLIC_BUILD_ID ?? `local-${Date.now()}`;
 const imageManifestSource = await readFile(new URL("./.blog-images-manifest.json", import.meta.url), "utf8");
 const imageManifest = JSON.parse(imageManifestSource);
 const imageManifestVersion = createHash("sha256").update(imageManifestSource).digest("hex").slice(0, 12);
+const imageLayoutsSettings = await readFile(
+  new URL("./src/content/.obsidian/plugins/obsidian-image-layouts/data.json", import.meta.url),
+  "utf8",
+).then(JSON.parse).catch((error) => {
+  if (error?.code === "ENOENT") return {};
+  throw error;
+});
+const markdownPlugins = createMarkdownPlugins({
+  vaultAssets: imageManifest.vaultAssets ?? {},
+  settings: imageLayoutsSettings,
+});
 const hastPlugins = /** @type {any} */ ([
   ...markdownPlugins.hastPlugins,
   createResponsiveImagePlugin({ manifest: imageManifest, version: imageManifestVersion }),

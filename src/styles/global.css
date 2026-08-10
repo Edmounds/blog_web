@@ -670,6 +670,7 @@ html.dark .ui-prose {
   background: var(--surface-soft);
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-control);
+  max-width: min(100%, var(--image-layout-item-width, 100%));
 }
 
 .ui-prose .image-layout__item > :where(img, picture),
@@ -678,6 +679,7 @@ html.dark .ui-prose {
   width: 100%;
   max-width: none;
   height: 100%;
+  max-height: var(--image-layout-item-height, none);
   margin: 0;
   object-fit: cover;
   object-position: center;
@@ -749,7 +751,7 @@ html.dark .ui-prose {
 
 .ui-prose .image-layout--carousel {
   padding: 0.5rem;
-  background: var(--surface-soft);
+  background: var(--image-layout-carousel-background, var(--surface-soft));
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-control);
 }
@@ -914,6 +916,24 @@ html.dark .ui-prose {
   margin-top: 0.75rem;
 }
 
+.ui-prose .image-layout__placeholder {
+  cursor: default;
+  pointer-events: none;
+}
+
+.ui-prose .image-layout-error {
+  margin-block: 1.5rem;
+  padding: 0.75rem 0.875rem;
+  color: var(--text-muted);
+  font-size: var(--type-sm);
+  line-height: 1.5;
+  white-space: pre-line;
+  background: var(--surface-soft);
+  border: 1px solid var(--border-soft);
+  border-left: 3px solid var(--border-strong);
+  border-radius: var(--radius-control);
+}
+
 .ui-prose img[data-lightbox-ready="true"] {
   cursor: zoom-in;
 }
@@ -1022,19 +1042,20 @@ html.dark .ui-prose {
 
 @media (max-width: 40rem) {
   .ui-prose .image-layout__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-areas: none;
-    grid-auto-rows: auto;
+    gap: 0.3rem;
+    grid-auto-rows: clamp(5.5rem, 24vw, 8rem);
   }
 
   .ui-prose .image-layout__grid .image-layout__item {
-    min-height: 8rem;
-    grid-area: auto !important;
-    aspect-ratio: 4 / 3;
+    min-height: 0;
   }
 
   .ui-prose .image-layout__masonry {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.3rem;
+  }
+
+  .ui-prose .image-layout__masonry-column {
+    gap: 0.3rem;
   }
 
   .ui-prose .image-layout__stage {
@@ -1048,17 +1069,6 @@ html.dark .ui-prose {
 
   .image-lightbox__image {
     max-height: calc(100dvh - 10rem);
-  }
-}
-
-@media (max-width: 28rem) {
-  .ui-prose .image-layout__grid,
-  .ui-prose .image-layout__masonry {
-    grid-template-columns: 1fr;
-  }
-
-  .ui-prose .image-layout__masonry-column:empty {
-    display: none;
   }
 }
 

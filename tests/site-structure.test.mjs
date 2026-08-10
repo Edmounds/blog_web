@@ -129,7 +129,7 @@ test("Blog Note and Project collections and localized archive routes remain conf
     assert.equal(exists(`src/pages/${group}/index.astro`), true);
     assert.equal(exists(`src/pages/[locale]/${group}/index.astro`), true);
   }
-  assert.match(images, /CONTENT_GROUPS\s*=\s*\["blog",\s*"note",\s*"project"\]/);
+  assert.match(images, /CONTENT_GROUPS\s*=\s*\["about",\s*"blog",\s*"note",\s*"project"\]/);
 });
 
 test("writing archives and details retain their functional components", () => {
