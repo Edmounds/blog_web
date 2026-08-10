@@ -30,10 +30,21 @@ backgroundKeywords:
 ## 关于我
 重庆大学国家卓越工程师学院大三在读 机器人工程专业
 喜欢天文 浅尝过行星摄影 未来包里有闲钱了就尝试一下深空摄影/星野摄影
-![jupiter.png](https://img.muelsyse.us/bed/jupiter.png)
+
+```image-layout
+---
+layout: carousel
+grid: |
+  A A B
+  A A C
+carouselShowThumbnails: true
+---
+![jupiter](https://img.muelsyse.us/bed/jupiter.png)
 
 
-![moon.png](https://img.muelsyse.us/bed/moon.png)
+![moon](https://img.muelsyse.us/bed/moon.png)
+```
+
 
 运动方面我喜欢自由泳和乒乓球 
 专业方面 我目前对具身智能这个大方向感兴趣 具体方向比如控制还是感知还在思考中
