@@ -61,6 +61,8 @@ The generated Astro deployment adds `SESSION` even though it is not declared dir
 
 The D1 and R2 counts are volatile. Do not treat this snapshot as a quota or invariant.
 
+The pending NetEase session migration adds `netease_auth_state`, bringing D1 to 13 tables after deployment. It has not been applied to the live snapshot above.
+
 ## Secret Names
 
 The deployed `new-blog-ssr` Worker has these 17 secret names:
@@ -86,6 +88,8 @@ WAKA_TIME_API_KEY
 ```
 
 `GITHUB_TOKEN` is optional in `src/env.d.ts` and was not present during the snapshot. The DEEPLX, OpenAI image, and `SERVICE_TYPE` secrets are deployed but are not declared in the current runtime type; do not remove them without confirming they are obsolete outside this repository.
+
+`NETEASE_COOKIE_KEY` is required by the pending NetEase auto-refresh release but was not present in this live snapshot. Configure it as a random value of at least 32 characters before deploying; never print or commit it. `NETEASE_MUSIC_U` and `NETEASE_CSRF` become optional bootstrap secrets after the first successful encrypted session save.
 
 ## Verified Connectivity
 

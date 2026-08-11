@@ -87,7 +87,8 @@ npm run images:verify -- --remote  # 额外校验 R2 对象和 MIME
 - `COMMENT_HASH_SALT`
 - `CF_ACCESS_TEAM_DOMAIN`、`CF_ACCESS_AUD`
 - `GOOGLE_BOOKS_API_KEY`、`TMDB_API_KEY`
-- `NETEASE_MUSIC_U`、`NETEASE_CSRF`
+- `NETEASE_COOKIE_KEY`（至少 32 个字符，用于加密持久化的网易云登录 Cookie）
+- `NETEASE_MUSIC_U`、`NETEASE_CSRF`（仅用于首次迁移的旧登录引导，可在扫码登录成功后移除）
 - `WAKA_TIME_API_KEY`
 - 翻译服务所需的 `OPENAI_BASE_URL`、`API_KEY`、`MODEL`
 
@@ -112,7 +113,7 @@ npm run cf:dev
 
 `cf:dev` 使用构建产物中的 Astro Worker 配置和本地 D1/R2 状态；先运行 `npm run db:migrate:local`。
 
-音乐页的“听歌排行”由 `new-blog-ssr` 每天北京时间 04:00 同步网易云账号近一周的前 20 首歌曲，并写入 D1。Worker 需要配置 `NETEASE_MUSIC_U` 与 `NETEASE_CSRF` 两个 Secret；同步失败时保留上一次成功排行。首次上线先运行 `npm run db:migrate:remote`，再通过本机环境执行 `npm run netease:sync -- --remote`，或等待下一次定时任务。
+音乐页的“听歌排行”由 `new-blog-ssr` 每天北京时间 04:00 先续期网易云登录，再分别同步一周排行前 20 首和总排行前 50 首；单项失败时保留上一次成功排行。首次上线先配置至少 32 个字符的 `NETEASE_COOKIE_KEY` Secret 并运行 `npm run db:migrate:remote`。随后可在 Cloudflare Access 保护的 `/admin/music/` 扫码登录；页面会显示 Token 与排行刷新时间及最近错误，也可手动刷新。旧的 `NETEASE_MUSIC_U` 与 `NETEASE_CSRF` 只作为迁移引导，首次成功续期会将音乐 Cookie 白名单加密写入 D1。
 
 Cloudflare Access 必须同时保护 `blog.muelsyse.us/admin/*` 和 `blog.muelsyse.us/api/admin/*`。本地部署运行 `npm run deploy`；GitHub Actions 使用 Node 22，并需要 `CLOUDFLARE_API_TOKEN` 与 `CLOUDFLARE_ACCOUNT_ID`。`npm run deploy` 只更新 `new-blog-ssr`；生产域名路由继续由 `blog-preferred-proxy` 持有，它通过 `ORIGIN` service binding 调用该 Astro SSR Worker，因此代理 Worker 只需在其配置或代码变化时单独执行 `npx wrangler deploy --config wrangler.preferred-proxy.jsonc`。不要让两个 Worker 同时声明 `blog.muelsyse.us/*`。
 
