@@ -43,6 +43,9 @@ Pull requests should include a concise summary, changed areas, verification comm
 - Each agent must use its own worktree and branch. Never allow multiple agents to edit files in the same worktree.
 - Prefer the project-local `.worktrees/` directory and verify that Git ignores it before creating a worktree.
 - Run the project checks in the worktree before integrating its changes.
+- Unless the user explicitly asks to leave work unmerged, finish completed worktree tasks by committing the worktree branch and merging it into the repository's default branch.
+- Resolve merge conflicts without discarding unrelated user changes, rerun the required checks on the integrated default branch, then remove the completed worktree and delete its merged branch.
+- If the default worktree has uncommitted changes that make integration unsafe, preserve them and ask the user how to proceed instead of overwriting or stashing them without permission.
 
 ## Security & Configuration
 
