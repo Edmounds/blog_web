@@ -1,0 +1,14 @@
+---
+import AdminNav from "../../../components/domain/AdminNav.astro";
+import NeteaseAdmin from "../../../components/domain/NeteaseAdmin";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+export const prerender = false;
+Astro.response.headers.set("Cache-Control", "no-store");
+---
+<BaseLayout title="听歌排行管理" description="管理网易云登录和听歌排行同步" currentPath="/admin/music/" showFooter={false}>
+  <div class="app-container py-8 md:py-12">
+    <AdminNav current="music" />
+    <NeteaseAdmin client:load />
+  </div>
+</BaseLayout>

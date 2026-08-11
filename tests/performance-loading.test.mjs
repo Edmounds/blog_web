@@ -31,17 +31,16 @@ test("SPA preload policy prioritizes neighbors and user intent", () => {
   assert.match(spa, /visibilitychange/);
 });
 
-test("header and fonts reserve stable first-paint geometry", () => {
+test("header and visual assets reserve stable first-paint geometry", () => {
   const base = read("src/layouts/BaseLayout.astro");
   const header = read("src/components/site/Header.astro");
   const global = read("src/styles/global.css");
 
-  assert.match(base, /Allura-Last4ev3r\.woff/);
+  assert.match(base, /href="\/images\/site-signature\.svg\?v=1"[\s\S]*?as="image"/);
   assert.doesNotMatch(base, /anthropic-fonts\.css/);
   assert.match(global, /@font-face[\s\S]*font-family:\s*"Biotif"/);
-  assert.match(header, /measureText/);
-  assert.match(header, /actualBoundingBoxRight/);
-  assert.match(header, /document\.fonts\.ready/);
+  assert.match(header, /data-site-signature-mark/);
+  assert.match(header, /signatureMark\.getBoundingClientRect/);
   assert.match(header, /ResizeObserver/);
 });
 

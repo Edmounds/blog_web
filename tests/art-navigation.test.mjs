@@ -18,7 +18,8 @@ test("primary navigation uses fixed English labels with Links before Life", () =
 
 test("SPA canvas contains home, about, blog, note, and project", () => {
   const layout = read("src/layouts/SpaLayout.astro");
-  assert.match(layout, /width: 500vw/);
+  assert.match(layout, /\.spa-track\s*\{[\s\S]*?display:\s*flex;[\s\S]*?width:\s*100%/);
+  assert.match(layout, /\.spa-track > section\s*\{[\s\S]*?flex:\s*0 0 100%/);
   assert.match(layout, /data-path="\/"/);
   assert.match(layout, /const routes = \["\/", "\/about\/", "\/blog\/", "\/note\/", "\/project\/"\]/);
   assert.match(layout, /routes\.slice\(1\)\.map/);

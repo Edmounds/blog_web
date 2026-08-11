@@ -1,3 +1,9 @@
+import {
+  loadNeteaseCookieJar,
+  recordNeteaseSessionFailure,
+  refreshNeteaseSession,
+} from "./netease-auth.js";
+
 export const NETEASE_USER_ID = "1460343107";
 export const NETEASE_RECORD_URL = "https://music.163.com/api/v1/play/record";
 
@@ -24,8 +30,7 @@ const RANKING_CONFIG = {
 
 export async function fetchNeteaseRanking(env, type, fetchImpl = fetch, now = new Date()) {
   const config = getRankingConfig(type);
-  const musicU = requireSecret(env?.NETEASE_MUSIC_U, "NETEASE_MUSIC_U");
-  const csrf = requireSecret(env?.NETEASE_CSRF, "NETEASE_CSRF");
+  const cookies = await loadNeteaseCookieJar(env);
   const url = new URL(NETEASE_RECORD_URL);
   url.searchParams.set("uid", NETEASE_USER_ID);
   url.searchParams.set("type", config.apiType);
@@ -35,7 +40,7 @@ export async function fetchNeteaseRanking(env, type, fetchImpl = fetch, now = ne
     response = await fetchImpl(url, {
       headers: {
         accept: "application/json",
-        cookie: `MUSIC_U=${musicU}; __csrf=${csrf}`,
+        cookie: `MUSIC_U=${cookies.MUSIC_U}; __csrf=${cookies.__csrf ?? ""}`,
         referer: "https://music.163.com/",
         "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/124 Safari/537.36",
       },
@@ -46,6 +51,9 @@ export async function fetchNeteaseRanking(env, type, fetchImpl = fetch, now = ne
   }
 
   if (!response.ok) {
+    if ([401, 403].includes(response.status)) {
+      throw syncError("NETEASE_SESSION_EXPIRED", "网易云登录已失效，请重新扫码登录。");
+    }
     throw syncError("NETEASE_FETCH_FAILED", `网易云音乐${config.label}同步失败（HTTP ${response.status}）。`);
   }
 
@@ -62,6 +70,9 @@ export async function fetchNeteaseRanking(env, type, fetchImpl = fetch, now = ne
 export function parseNeteaseRanking(payload, type, now = new Date()) {
   const config = getRankingConfig(type);
   const entries = payload?.[config.dataField];
+  if ([301, 302].includes(Number(payload?.code))) {
+    throw syncError("NETEASE_SESSION_EXPIRED", "网易云登录已失效，请重新扫码登录。");
+  }
   if (payload?.code !== 200 || !Array.isArray(entries) || entries.length < config.limit) {
     throw syncError(
       "NETEASE_INVALID_RESPONSE",
@@ -97,7 +108,7 @@ export function parseNeteaseRanking(payload, type, now = new Date()) {
   });
 
   if (ranking.every((item) => item.playCount === 0)) {
-    throw syncError("NETEASE_ANONYMOUS_RESPONSE", `网易云音乐${config.label}未返回有效的播放次数，已保留旧排行。`);
+    throw syncError("NETEASE_SESSION_EXPIRED", "网易云登录已失效，请重新扫码登录。");
   }
 
   return ranking;
@@ -137,6 +148,7 @@ export async function syncNeteaseRanking(env, type, { fetchImpl = fetch, now = n
     return { type, total: ranking.length, syncedAt: attemptedAt };
   } catch (error) {
     const publicError = normalizeSyncError(error);
+    await recordNeteaseSessionFailure(env, publicError, now);
     try {
       await recordSyncFailure(db, config.stateTable, attemptedAt, publicError.message);
     } catch (stateError) {
@@ -150,6 +162,33 @@ export async function syncNeteaseRankings(env, options = {}) {
   const weekly = await settleSync(() => syncNeteaseRanking(env, "weekly", options));
   const total = await settleSync(() => syncNeteaseRanking(env, "total", options));
   return { weekly, total };
+}
+
+export async function syncNeteaseRankingsWithRefresh(env, options = {}) {
+  const refresh = await settleSync(() => refreshNeteaseSession(env, options));
+  const [weekly, total] = await Promise.all([
+    settleSync(() => syncNeteaseRanking(env, "weekly", options)),
+    settleSync(() => syncNeteaseRanking(env, "total", options)),
+  ]);
+  return { refresh, weekly, total };
+}
+
+export async function getNeteaseSyncState(db, type) {
+  const config = getRankingConfig(type);
+  try {
+    const row = await db.prepare(`SELECT * FROM ${config.stateTable} WHERE id = 1`).first();
+    return {
+      lastAttemptAt: row?.last_attempt_at ?? null,
+      lastSuccessAt: row?.last_success_at ?? null,
+      lastSyncedCount: Number(row?.last_synced_count ?? 0),
+      lastError: row?.last_error ?? null,
+    };
+  } catch (error) {
+    if (isMissingRankingTable(error, config.stateTable)) {
+      return { lastAttemptAt: null, lastSuccessAt: null, lastSyncedCount: 0, lastError: null };
+    }
+    throw error;
+  }
 }
 
 export async function listNeteaseRanking(db, type) {
@@ -224,13 +263,6 @@ function cleanText(value) {
   if (typeof value !== "string") return undefined;
   const text = value.trim();
   return text && Array.from(text).length <= TEXT_LIMIT ? text : undefined;
-}
-
-function requireSecret(value, name) {
-  if (typeof value !== "string" || !value.trim()) {
-    throw syncError("NETEASE_SECRET_MISSING", `${name} 未配置。`);
-  }
-  return value.trim();
 }
 
 function requireDb(env) {

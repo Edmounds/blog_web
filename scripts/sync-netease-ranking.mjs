@@ -54,6 +54,8 @@ function executeRankingSync(type, ranking) {
     "d1",
     "execute",
     "blog_web",
+    "--config",
+    "./wrangler.astro.jsonc",
     values.remote ? "--remote" : "--local",
     "--command",
     `${statements.join(";\n")};`,

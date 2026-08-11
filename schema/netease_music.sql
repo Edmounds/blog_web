@@ -45,3 +45,17 @@ CREATE TABLE IF NOT EXISTS netease_total_ranking_sync_state (
 );
 
 INSERT OR IGNORE INTO netease_total_ranking_sync_state (id, last_synced_count) VALUES (1, 0);
+
+CREATE TABLE IF NOT EXISTS netease_auth_state (
+  id INTEGER PRIMARY KEY CHECK (id = 1),
+  encrypted_cookie TEXT,
+  cookie_iv TEXT,
+  last_refresh_attempt_at TEXT,
+  last_refresh_success_at TEXT,
+  last_login_at TEXT,
+  last_error_code TEXT,
+  last_error TEXT,
+  updated_at TEXT
+);
+
+INSERT OR IGNORE INTO netease_auth_state (id) VALUES (1);

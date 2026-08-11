@@ -30,8 +30,8 @@
     "cf:dev": "npx wrangler dev --config dist/server/wrangler.json --persist-to $INIT_CWD/.wrangler/state",
     "deploy:cover-fetcher": "wrangler deploy --config wrangler.art-cover-fetcher.jsonc",
     "deploy": "npm run build && npm run deploy:cover-fetcher && wrangler deploy --config dist/server/wrangler.json",
-    "db:migrate:local": "npx wrangler d1 execute DB --local --file=./schema/post_stats.sql && npx wrangler d1 execute DB --local --file=./schema/comments.sql && npx wrangler d1 execute DB --local --file=./schema/content_ids.sql && npx wrangler d1 execute DB --local --file=./schema/art.sql && npx wrangler d1 execute DB --local --file=./schema/games.sql && npx wrangler d1 execute DB --local --file=./schema/netease_music.sql",
-    "db:migrate:remote": "npx wrangler d1 execute blog_web --remote --file=./schema/post_stats.sql && npx wrangler d1 execute blog_web --remote --file=./schema/comments.sql && npx wrangler d1 execute blog_web --remote --file=./schema/content_ids.sql && npx wrangler d1 execute blog_web --remote --file=./schema/art.sql && npx wrangler d1 execute blog_web --remote --file=./schema/games.sql && npx wrangler d1 execute blog_web --remote --file=./schema/netease_music.sql"
+    "db:migrate:local": "npx wrangler d1 execute DB --config ./wrangler.astro.jsonc --local --file=./schema/post_stats.sql && npx wrangler d1 execute DB --config ./wrangler.astro.jsonc --local --file=./schema/comments.sql && npx wrangler d1 execute DB --config ./wrangler.astro.jsonc --local --file=./schema/content_ids.sql && npx wrangler d1 execute DB --config ./wrangler.astro.jsonc --local --file=./schema/art.sql && npx wrangler d1 execute DB --config ./wrangler.astro.jsonc --local --file=./schema/games.sql && npx wrangler d1 execute DB --config ./wrangler.astro.jsonc --local --file=./schema/netease_music.sql",
+    "db:migrate:remote": "npx wrangler d1 execute blog_web --config ./wrangler.astro.jsonc --remote --file=./schema/post_stats.sql && npx wrangler d1 execute blog_web --config ./wrangler.astro.jsonc --remote --file=./schema/comments.sql && npx wrangler d1 execute blog_web --config ./wrangler.astro.jsonc --remote --file=./schema/content_ids.sql && npx wrangler d1 execute blog_web --config ./wrangler.astro.jsonc --remote --file=./schema/art.sql && npx wrangler d1 execute blog_web --config ./wrangler.astro.jsonc --remote --file=./schema/games.sql && npx wrangler d1 execute blog_web --config ./wrangler.astro.jsonc --remote --file=./schema/netease_music.sql"
   },
   "dependencies": {
     "@astrojs/cloudflare": "14.1.4",
@@ -51,6 +51,7 @@
     "lucide-react": "^1.11.0",
     "lucide-static": "^0.562.0",
     "mermaid": "^11.16.0",
+    "qrcode": "^1.5.4",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "remark-parse": "^11.0.0",
@@ -65,6 +66,7 @@
   "devDependencies": {
     "@astrojs/check": "0.9.9",
     "@cloudflare/workers-types": "^5.20260723.1",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "typescript": "^5.9.3",

@@ -46,9 +46,9 @@ test("the daily cron independently syncs both NetEase rankings", () => {
   const schema = read("schema/netease_music.sql");
   const packageJson = read("package.json");
 
-  assert.match(worker, /syncNeteaseRanking/);
-  assert.match(worker, /ctx\.waitUntil\(syncSteamGames[\s\S]*for \(const type of \["weekly", "total"\]/);
-  assert.match(worker, /ctx\.waitUntil\(syncNeteaseRanking\(env, type\)/);
+  assert.match(worker, /syncNeteaseRankingsWithRefresh/);
+  assert.match(worker, /ctx\.waitUntil\(syncSteamGames[\s\S]*ctx\.waitUntil\(syncNeteaseRankingsWithRefresh\(env\)/);
+  assert.match(worker, /\["refresh", "weekly", "total"\]/);
   assert.match(envTypes, /NETEASE_MUSIC_U\?: string/);
   assert.match(envTypes, /NETEASE_CSRF\?: string/);
   assert.match(schema, /CREATE TABLE IF NOT EXISTS netease_weekly_ranking/);

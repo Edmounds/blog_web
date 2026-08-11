@@ -35,11 +35,17 @@ test("each NetEase ranking rejects incomplete, malformed, and anonymous all-zero
 
   const anonymousWeekly = payload({ weekCount: 20 });
   for (const item of anonymousWeekly.weekData) item.playCount = 0;
-  assert.throws(() => parseNeteaseRanking(anonymousWeekly, "weekly"), /播放次数/);
+  assert.throws(
+    () => parseNeteaseRanking(anonymousWeekly, "weekly"),
+    (error) => error.code === "NETEASE_SESSION_EXPIRED" && /重新扫码/.test(error.message),
+  );
 
   const anonymousTotal = payload({ allCount: 50 });
   for (const item of anonymousTotal.allData) item.playCount = 0;
-  assert.throws(() => parseNeteaseRanking(anonymousTotal, "total"), /播放次数/);
+  assert.throws(
+    () => parseNeteaseRanking(anonymousTotal, "total"),
+    (error) => error.code === "NETEASE_SESSION_EXPIRED" && /重新扫码/.test(error.message),
+  );
 });
 
 test("NetEase requests select the matching API type and data field without returning credentials", async () => {
