@@ -17,8 +17,8 @@ test("About acknowledgements credit Cloudflare, TMDB, and Steam in order", () =>
     const profile = read(path);
     const astroStar = profile.indexOf("Astro-star");
     const cloudflare = profile.indexOf("Cloudflare");
-    const tmdb = profile.indexOf("TMDB");
-    const steam = profile.indexOf("Steam Web API");
+    const tmdb = profile.indexOf("The Movie Database");
+    const steam = profile.indexOf('alt="Steam"');
 
     assert.ok(astroStar >= 0, `${path} must credit Astro-star`);
     assert.ok(cloudflare > astroStar, `${path} must place Cloudflare after Astro-star`);
@@ -42,7 +42,7 @@ test("About acknowledgement logos are local, accessible, and displayed as large 
 
   const about = read("src/components/sections/AboutSection.astro");
   assert.match(about, /\.acknowledgement-logo/);
-  assert.match(about, /max-height:\s*4rem/);
+  assert.match(about, /max-height:\s*3rem/);
   assert.doesNotMatch(about, /:has\(/);
 });
 
