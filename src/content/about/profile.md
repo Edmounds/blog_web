@@ -6,18 +6,11 @@ backgroundKeywords:
   - C++
   - ROS2
   - ubuntu
-  - Linux
   - 天文
   - AI
   - Python
-  - 音乐
   - Music
-  - 重庆大学
-  - 重庆
   - CQU
-  - 明日方舟
-  - 机器人
-  - 具身智能
   - SLAM
 ---
 
@@ -34,7 +27,6 @@ layout: carousel
 grid: |
   A A B
   A A C
-carouselShowThumbnails: true
 ---
 ![jupiter](https://img.muelsyse.us/bed/jupiter.png)
 
