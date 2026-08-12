@@ -5,18 +5,19 @@
 This is an Astro content site with React islands and Tailwind styling.
 
 - `src/pages/` contains route files, including blog and project detail routes.
-- `src/components/` is grouped by role: `site/`, `sections/`, `cards/`, `domain/`, `foundation/`, `animation/`, and `ui/`.
+- `src/components/` is grouped by role: `site/`, `sections/`, `cards/`, `domain/`, `links/`, and `ui/`. Do not add new empty grouping folders; create a folder only together with its first component.
 - `src/content/` holds Astro Content Collections: `blog/`, `projects/`, `about/`, and `site/`.
 - `src/lib/` contains shared routing, content, theme, utility, and view-model helpers.
 - `src/styles/global.css` defines global styles and design tokens.
 - `public/images/` stores content images; `public/favicon.*` and font CSS are static assets.
-- `docs/`, `spec/`, and `tasks/` contain planning and design notes.
+- `tests/` contains `node --test` suites; `scripts/` contains build and content tooling.
 
 ## Build, Test, and Development Commands
 
 - `npm install`: install project dependencies from `package-lock.json`.
 - `npm run dev`: start the Astro development server.
 - `npm run check`: run Astro and TypeScript checks.
+- `npm test`: run the `node --test` suites in `tests/`.
 - `npm run check:encoding`: verify Markdown encoding rules.
 - `npm run build`: run encoding checks, then create the production build in `dist/`.
 - `npm run preview`: preview the built site locally.
@@ -29,13 +30,20 @@ Prefer Astro components for static markup and React `.tsx` components only where
 
 ## Testing Guidelines
 
-There is no dedicated unit-test framework configured. Treat `npm run check` and `npm run build` as the required verification path for code changes. For content-only edits, run `npm run check:encoding`; run `npm run build` when route structure, frontmatter schema, images, or rendering behavior changes.
+Tests use the built-in Node test runner (`npm test`, files in `tests/*.test.mjs`). Treat `npm test`, `npm run check`, and `npm run build` as the required verification path for code changes. For content-only edits, run `npm run check:encoding`; run `npm run build` when route structure, frontmatter schema, images, or rendering behavior changes.
+
+Rules for writing tests:
+
+- Tests must exercise behavior: import the module under test (or call the running app) and assert on its output or side effects.
+- Never write source-snapshot tests that `readFileSync` a source file and regex-match implementation details (constant values, CSS class names, selector strings, "this string must/must not appear"). They break on every refactor and catch no real regressions. Such tests were removed once already; do not reintroduce them.
+- If something cannot be tested through behavior (for example a pure markup tweak), leave it untested and verify with `npm run check`/`npm run build` instead of pinning source text.
+- Do not add a new test file per task or fix; extend the existing suite for that domain, and delete tests when the behavior they cover is removed.
 
 ## Commit & Pull Request Guidelines
 
 Recent history uses short imperative commit subjects, sometimes with a scope such as `feat(ui): add shadcn redesign baseline`. Keep commits focused on one change and use clear verbs, for example `Animate homepage surfaces` or `Update content image paths`.
 
-Pull requests should include a concise summary, changed areas, verification commands run, and screenshots or recordings for visible UI changes. Reference related task or spec files when the work comes from `tasks/` or `spec/`.
+Pull requests should include a concise summary, changed areas, verification commands run, and screenshots or recordings for visible UI changes.
 
 ## Worktree Isolation
 
