@@ -1,15 +1,15 @@
 ﻿---
 title: 使用GitHub Actions 实现博客自动化更新
-createdAt: 2026-08-02
-published: false
+createdAt: 2026-08-13
+published: true
 updatedAt: 2026-08-13
 description: 在 Obsidian 里写完文章，按一次提交。测试、slug 生成、图片处理、多语言翻译和部署，剩下的全部自动完成。
 tags:
   - 自动化
   - obsidian
   - actions
+slug: 20260813-01
 ---
-
 我发布一篇文章的全部操作是：在 Obsidian 里写完，点一次提交。几分钟后文章出现在网站上，带着自动生成的 URL、响应式图片和英文、日文、繁体三个翻译版本。中间没有任何手动步骤，我甚至不需要打开终端。
 
 这套流程搭起来不复杂，这篇文章讲清楚它的原理和配置。

@@ -36,10 +36,14 @@ const years = sections.map((group) => group.year);
               <section class="content-timeline__group" aria-labelledby={`year-${group.year}`} data-reveal-group>
                 <h2 id={`year-${group.year}`} data-reveal>{group.year}</h2>
                 <ol aria-label={`${group.year} ${sectionLabel}`}>
-                  {group.posts.map((post) => (
+                  {group.posts.map((post, index) => (
                     <li data-reveal>
                       <div class="content-timeline__meta">
-                        <time datetime={post.dateIso}>{post.dateLabel}</time>
+                        {(index === 0 ||
+                          group.posts[index - 1].dateIso.slice(0, 10) !==
+                            post.dateIso.slice(0, 10)) && (
+                          <time datetime={post.dateIso}>{post.dateLabel}</time>
+                        )}
                         <span class="content-timeline__reading">{post.readingTime}</span>
                       </div>
                       <div class="content-timeline__entry">
@@ -87,7 +91,7 @@ const years = sections.map((group) => group.year);
   }
   .content-listing__header h1 {
     margin: 0;
-    color: transparent;
+    color: var(--outline-title-fill);
     font-size: var(--type-page-title);
     font-weight: 400;
     line-height: 1.05;

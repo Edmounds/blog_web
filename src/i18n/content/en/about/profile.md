@@ -16,7 +16,7 @@ backgroundKeywords:
 
 ## About This Website
 
-This is my quiet personal space—to write articles, take notes, share projects, and keep track of the books and films I've experienced.
+This is my quiet personal space—to write articles, take notes, and keep track of the books and films I've experienced.
 Everything here is handwritten text. If I use AI-generated text, I will paste it into the article as an image/
 ## About Me
 I like astronomy and have dabbled in planetary photography. Once I have some spare money in the future, I’d like to try deep-sky or astrophotography.
