@@ -39,6 +39,26 @@ test("blank Markdown lines create separate article paragraphs", async () => {
   assert.equal(result.code.trimEnd(), "<p>第一段。</p>\n<p>第二段。</p>");
 });
 
+test("writing content drops the leading level-1 heading that duplicates the title", async () => {
+  const result = await processor.render("# 文章标题\n\n正文第一段。", { fileURL: writingFileUrl });
+
+  assert.doesNotMatch(result.code, /<h1/);
+  assert.match(result.code, /<p>正文第一段。<\/p>/);
+  assert.equal(result.metadata.headings.some(({ depth }) => depth === 1), false);
+});
+
+test("a level-1 heading below other writing content is preserved", async () => {
+  const result = await processor.render("引言段落。\n\n# 正文标题", { fileURL: writingFileUrl });
+
+  assert.match(result.code, /<h1[^>]*>正文标题<\/h1>/);
+});
+
+test("non-writing content keeps its leading level-1 heading", async () => {
+  const result = await processor.render("# About\n\n正文。", { fileURL: aboutFileUrl });
+
+  assert.match(result.code, /<h1[^>]*>About<\/h1>/);
+});
+
 test("standalone writing images use non-empty alt text as a visible caption", async () => {
   const result = await processor.render(
     "![看过的东野圭吾作品](https://img.muelsyse.us/bed/books.png)",
