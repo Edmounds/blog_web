@@ -1,11 +1,13 @@
 ---
 import { getAboutProfile } from "../../lib/content";
+import { getBackgroundKind } from "../../lib/route-background";
 
 interface Props {
   currentPath?: string;
 }
 
 const { currentPath = "/" } = Astro.props;
+const activeKind = getBackgroundKind(currentPath);
 const profile = await getAboutProfile();
 const particles = Array.from({ length: 44 }, (_, index) => ({
   left: (index * 37 + 11) % 100,
@@ -29,6 +31,7 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
   class="route-background"
   data-route-background
   data-path={currentPath}
+  data-active-kind={activeKind}
   data-nosnippet
   aria-hidden="true"
 >
@@ -74,37 +77,9 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
     data-speed="0.22"></canvas>
 </div>
 
-<script is:inline define:vars={{ currentPath }}>
-  (() => {
-    const root = document.currentScript?.previousElementSibling;
-    if (!root) return;
-    const segments = currentPath.split("/").filter(Boolean);
-    if (["en", "ja", "zh-TW"].includes(segments[0])) segments.shift();
-    const path =
-      `/${segments.join("/")}${currentPath.endsWith("/") && segments.length ? "/" : ""}` ||
-      "/";
-    const kind = path.startsWith("/admin")
-      ? "plain"
-      : path === "/links/" || path === "/links"
-        ? "constellation"
-      : path === "/about/" || path === "/about"
-        ? "rain"
-        : path === "/art" ||
-            path.startsWith("/art/")
-          ? "constellation"
-          : path === "/blog/" ||
-              path === "/blog" ||
-              path === "/note/" ||
-              path === "/note" ||
-              path === "/project/" ||
-              path === "/project"
-            ? "grid"
-            : "particles";
-    root.setAttribute("data-active-kind", kind);
-  })();
-</script>
-
 <script>
+  import { getBackgroundKind } from "../../lib/route-background";
+
   type ConstellationParticle = {
     x: number;
     y: number;
@@ -118,38 +93,9 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
     __routeBackgroundConstellationCleanup?: () => void;
   };
 
-  const localeSegments = new Set(["en", "ja", "zh-TW"]);
   const reducedMotionQuery = "(prefers-reduced-motion: reduce)";
   const clamp = (value: number, min: number, max: number) =>
     Math.max(min, Math.min(max, value));
-
-  function stripLocale(pathname: string) {
-    const segments = pathname.split("/").filter(Boolean);
-    if (localeSegments.has(segments[0])) segments.shift();
-    return (
-      `/${segments.join("/")}${pathname.endsWith("/") && segments.length ? "/" : ""}` ||
-      "/"
-    );
-  }
-
-  function getBackgroundKind(pathname: string) {
-    const path = stripLocale(pathname);
-    if (path.startsWith("/admin")) return "plain";
-    if (path === "/links/" || path === "/links") return "constellation";
-    if (path === "/about/" || path === "/about") return "rain";
-    if (path === "/art" || path.startsWith("/art/"))
-      return "constellation";
-    if (
-      path === "/blog/" ||
-      path === "/blog" ||
-      path === "/note/" ||
-      path === "/note" ||
-      path === "/project/" ||
-      path === "/project"
-    )
-      return "grid";
-    return "particles";
-  }
 
   function parseColor(value: string) {
     const normalized = value.trim();
@@ -443,6 +389,13 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
     background: color-mix(in srgb, var(--foreground) 24%, transparent);
     border-radius: 50%;
     animation: particle-drift var(--duration) linear var(--delay) infinite;
+    animation-play-state: paused;
+  }
+
+  .route-background[data-active-kind="particles"]
+    .route-background__particles
+    span {
+    animation-play-state: running;
   }
 
   html.light .route-background__particles span {
@@ -500,6 +453,11 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
     white-space: nowrap;
     opacity: var(--opacity);
     animation: code-rain var(--duration) linear var(--delay) infinite;
+    animation-play-state: paused;
+  }
+
+  .route-background[data-active-kind="rain"] .route-background__rain span {
+    animation-play-state: running;
   }
 
   .route-background__constellation {
