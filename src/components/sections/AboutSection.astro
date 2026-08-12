@@ -30,9 +30,9 @@ const { Content } = await render(profile);
 </div>
 
 <style>
-  .about-article { width: 100%; max-width: 52rem; min-height: calc(100vh - 4.5rem); min-height: calc(100dvh - 4.5rem); margin-inline: auto; padding-block: clamp(4rem, 8vh, 7rem) 6rem; }
+  .about-article { width: 100%; max-width: 52rem; min-height: calc(100vh - 4.5rem); min-height: calc(100dvh - 4.5rem); margin-inline: auto; padding-block: clamp(4rem, 8vh, 7rem) 6rem; --image-layout-carousel-height: 18rem; }
   .about-article__title { margin-bottom: clamp(2.5rem, 5vw, 4rem); padding-bottom: clamp(0.75rem, 1.5vw, 1.25rem); border-bottom: 1px solid var(--border-soft); }
-  .about-article__title h1 { margin: 0; color: transparent; font-family: var(--font-ui); font-size: var(--type-page-title); font-weight: 400; line-height: 1.05; letter-spacing: 0; overflow-wrap: anywhere; -webkit-text-stroke: 1px var(--foreground); paint-order: stroke fill; }
+  .about-article__title h1 { margin: 0; color: var(--outline-title-fill); font-family: var(--font-ui); font-size: var(--type-page-title); font-weight: 400; line-height: 1.05; letter-spacing: 0; overflow-wrap: anywhere; -webkit-text-stroke: 1px var(--foreground); paint-order: stroke fill; }
   .about-article__body :global(img:not(.obsidian-image-size):not(.image-layout__image)) { width: auto; border: 0; border-radius: 0; }
   .about-article__body :global(.acknowledgement-logos) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; align-items: center; }
   .about-article__body :global(.acknowledgement-logo) { display: flex; min-width: 0; height: 4rem; align-items: center; justify-content: center; border-radius: var(--radius-control); }

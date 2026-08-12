@@ -178,6 +178,7 @@ html.dark {
   --content-frame-inline-end: var(--content-frame-inline-start);
   --section-gap: clamp(2.5rem, 5vw, 5rem);
   --content-measure: 42rem;
+  --outline-title-fill: color-mix(in srgb, var(--foreground) 28%, transparent);
   --detail-layout-left-gap: clamp(2rem, 3vw, 4rem);
   --detail-layout-main-width: var(--content-measure);
   --detail-layout-toc-min-width: 13rem;
@@ -376,7 +377,7 @@ html:lang(ja) .article-prose > p {
 
 .ui-page-title,
 .ui-outline-title {
-  color: transparent;
+  color: var(--outline-title-fill);
   font-family: var(--font-ui);
   font-size: var(--type-page-title);
   font-weight: 500;
@@ -387,7 +388,7 @@ html:lang(ja) .article-prose > p {
 }
 
 .ui-article-title {
-  color: transparent;
+  color: var(--outline-title-fill);
   font-family: var(--font-ui);
   font-size: var(--type-article-title);
   font-weight: 400;
@@ -1626,7 +1627,7 @@ html.js-reveal [data-reveal].is-revealed {
 }
 .comments-section__header h2 {
   margin: 0;
-  color: transparent;
+  color: var(--outline-title-fill);
   font-size: var(--type-xl);
   font-weight: 400;
   line-height: 1.05;

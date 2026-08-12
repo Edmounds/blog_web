@@ -23,7 +23,7 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
   size: 12 + ((index * 5) % 11),
   duration: 14 + ((index * 9) % 21),
   delay: -((index * 13) % 34),
-  opacity: index % 13 === 0 ? 0.14 : 0.03 + (index % 6) * 0.01,
+  opacity: index % 13 === 0 ? 0.09 : 0.02 + (index % 6) * 0.008,
 }));
 ---
 
