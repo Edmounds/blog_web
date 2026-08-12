@@ -100,6 +100,23 @@ const isWritingContent = (fileURL) => {
     || /\/src\/i18n\/content\/[^/]+\/(?:blog|note)\//.test(path);
 };
 
+// Writing content conventionally repeats the frontmatter title as a leading
+// level-1 heading; the page header already renders the title, so drop the
+// duplicate before heading metadata (and the table of contents) is collected.
+const createLeadingTitlePlugin = () => ({
+  name: "strip-duplicate-title-heading",
+  heading(node, ctx) {
+    if (node.depth !== 1 || !isWritingContent(ctx.fileURL)) return;
+    const parent = ctx.parent(node);
+    if (!parent || parent.type !== "root") return;
+    const index = ctx.indexOf(node);
+    if (index === undefined) return;
+    const preceding = parent.children.slice(0, index);
+    if (preceding.some((sibling) => sibling.type !== "yaml" && sibling.type !== "toml")) return;
+    ctx.removeNode(node);
+  },
+});
+
 const createCaptionFigure = (image, caption) => ({
   type: "element",
   tagName: "figure",
@@ -150,6 +167,7 @@ const createImageCaptionPlugin = () => ({
 
 export const createMarkdownPlugins = (imageLayoutConfiguration = {}) => ({
   mdastPlugins: [
+    createLeadingTitlePlugin,
     () => createObsidianWikiImagePlugin(imageLayoutConfiguration),
     createSoftBreakPlugin,
     createDirectivePlugin,

@@ -38,11 +38,19 @@ const years = sections.map((group) => group.year);
                 <ol aria-label={`${group.year} ${sectionLabel}`}>
                   {group.posts.map((post) => (
                     <li>
-                      <time datetime={post.dateIso}>{post.dateLabel}</time>
-                      <a href={post.href}>
-                        <span>{post.title}</span>
-                        <span class="content-timeline__arrow" aria-hidden="true"></span>
-                      </a>
+                      <div class="content-timeline__meta">
+                        <time datetime={post.dateIso}>{post.dateLabel}</time>
+                        <span class="content-timeline__reading">{post.readingTime}</span>
+                      </div>
+                      <div class="content-timeline__entry">
+                        <a href={post.href}>
+                          <span>{post.title}</span>
+                          <span class="content-timeline__arrow" aria-hidden="true"></span>
+                        </a>
+                        {post.summary && (
+                          <p class="content-timeline__summary">{post.summary}</p>
+                        )}
+                      </div>
                     </li>
                   ))}
                 </ol>
@@ -99,17 +107,41 @@ const years = sections.map((group) => group.year);
     line-height: 1.35;
     border-bottom: 1px solid var(--border-soft);
   }
-  .content-timeline ol { display: grid; gap: 0.65rem; margin: 0; padding: 0; list-style: none; }
+  .content-timeline ol { display: grid; gap: 1.1rem; margin: 0; padding: 0; list-style: none; }
   .content-timeline li {
     display: grid;
     grid-template-columns: minmax(6rem, auto) minmax(0, 1fr);
     align-items: baseline;
     gap: 0.9rem;
   }
+  .content-timeline__meta {
+    display: grid;
+    gap: 0.2rem;
+    justify-items: start;
+  }
   .content-timeline time {
     color: var(--text-muted);
     font-size: var(--type-base);
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .content-timeline__reading {
+    color: var(--text-faint);
+    font-size: var(--type-xs);
+    white-space: nowrap;
+  }
+  .content-timeline__entry {
+    display: grid;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+  .content-timeline__summary {
+    margin: 0;
+    overflow: hidden;
+    color: var(--text-muted);
+    font-size: var(--type-sm);
+    line-height: 1.6;
+    text-overflow: ellipsis;
     white-space: nowrap;
   }
   .content-timeline a {
@@ -144,7 +176,13 @@ const years = sections.map((group) => group.year);
   }
   @media (max-width: 40rem) {
     .content-listing { padding-block-start: 2.5rem; }
-    .content-timeline li { grid-template-columns: minmax(0, 1fr); gap: 0.1rem; }
+    .content-timeline li { grid-template-columns: minmax(0, 1fr); gap: 0.2rem; }
+    .content-timeline__meta {
+      grid-auto-flow: column;
+      justify-content: start;
+      align-items: baseline;
+      gap: 0.6rem;
+    }
     .content-timeline time { white-space: normal; }
   }
 </style>
