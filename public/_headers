@@ -34,9 +34,6 @@
 /note/*
   Cache-Control: no-cache
 
-/project/*
-  Cache-Control: no-cache
-
 /media/art/*
   Cache-Control: public, max-age=31536000, immutable
 

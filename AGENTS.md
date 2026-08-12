@@ -4,9 +4,9 @@
 
 This is an Astro content site with React islands and Tailwind styling.
 
-- `src/pages/` contains route files, including blog and project detail routes.
+- `src/pages/` contains route files, including blog and note detail routes.
 - `src/components/` is grouped by role: `site/`, `sections/`, `cards/`, `domain/`, `links/`, and `ui/`. Do not add new empty grouping folders; create a folder only together with its first component.
-- `src/content/` holds Astro Content Collections: `blog/`, `projects/`, `about/`, and `site/`.
+- `src/content/` holds Astro Content Collections: `blog/`, `note/`, `about/`, and `site/`.
 - `src/lib/` contains shared routing, content, theme, utility, and view-model helpers.
 - `src/styles/global.css` defines global styles and design tokens.
 - `public/images/` stores content images; `public/favicon.*` and font CSS are static assets.
