@@ -24,11 +24,11 @@
 
     const FIRST_LOAD_KEY = "site-loader-seen";
     const ENTER_DELAY = 40;
-    const INITIAL_MIN_MS = 240;
+    const INITIAL_MIN_MS = 0;
     const INITIAL_FADE_MS = 220;
     const INITIAL_MAX_MS = 1_500;
     const IMAGE_DECODE_MAX_MS = 800;
-    const ROUTE_FADE_MS = 420;
+    const ROUTE_FADE_MS = 220;
     const browserWindow = window;
     let shownAt = 0;
     let hideTimer = 0;
@@ -126,7 +126,7 @@
 
     const handlePageLoad = () => {
       if (overlay.dataset.state !== "idle" && overlay.dataset.mode === "route")
-        hide({ minimum: 420 });
+        hide();
     };
     document.addEventListener("astro:page-load", handlePageLoad);
     document.addEventListener("astro:before-swap", () => {
@@ -203,15 +203,11 @@
   .loading-overlay__scrim {
     position: absolute;
     inset: 0;
-    background: color-mix(in srgb, var(--canvas) 90%, transparent);
-    -webkit-backdrop-filter: blur(14px) saturate(0.82);
-    backdrop-filter: blur(14px) saturate(0.82);
+    background: color-mix(in srgb, var(--canvas) 96%, transparent);
   }
 
   .loading-overlay[data-mode="initial"] .loading-overlay__scrim {
     background: var(--canvas);
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
   }
 
   .loading-overlay__stage {

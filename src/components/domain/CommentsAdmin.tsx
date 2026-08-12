@@ -1,8 +1,34 @@
 import { Eye, EyeOff, LoaderCircle, RefreshCw } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ComponentProps } from "react";
 
-import { Button } from "@/components/ui/button";
 import type { AdminComment } from "@/lib/comments";
+
+type ButtonVariant = "outline" | "destructive";
+type ButtonSize = "default" | "sm";
+
+const buttonBaseClass = "inline-flex shrink-0 items-center justify-center rounded-[var(--radius-control)] border border-transparent text-sm font-medium whitespace-nowrap transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-ring/35 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4";
+const buttonVariantClasses: Record<ButtonVariant, string> = {
+  outline: "border-[var(--border-strong)] bg-transparent text-foreground hover:border-foreground hover:bg-muted",
+  destructive: "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:ring-destructive/20",
+};
+const buttonSizeClasses: Record<ButtonSize, string> = {
+  default: "h-10 gap-1.5 px-5",
+  sm: "h-8 gap-1 px-3.5 text-xs [&_svg:not([class*='size-'])]:size-3.5",
+};
+
+function Button({
+  className,
+  variant = "outline",
+  size = "default",
+  ...props
+}: ComponentProps<"button"> & { variant?: ButtonVariant; size?: ButtonSize }) {
+  return (
+    <button
+      className={`${buttonBaseClass} ${buttonVariantClasses[variant]} ${buttonSizeClasses[size]} ${className ?? ""}`.trim()}
+      {...props}
+    />
+  );
+}
 
 interface PostOption {
   contentId: string;
