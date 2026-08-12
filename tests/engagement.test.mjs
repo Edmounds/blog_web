@@ -49,11 +49,11 @@ test("statistics isolate identical slugs across content sections", async () => {
 
   assert.deepEqual(await getStats(db, "blog/shared-slug"), { contentId: "blog/shared-slug", views: 0, likes: 1 });
   assert.deepEqual(await getStats(db, "note/shared-slug"), { contentId: "note/shared-slug", views: 0, likes: 2 });
-  assert.deepEqual(await getStats(db, "project/shared-slug"), { contentId: "project/shared-slug", views: 0, likes: 0 });
 });
 
 test("normalizeContentId rejects unknown or malformed content IDs", () => {
   assert.equal(normalizeContentId("missing-post"), undefined);
+  assert.equal(normalizeContentId("project/shared-slug"), undefined);
   assert.equal(normalizeContentId("../blog/example-post"), undefined);
   assert.equal(normalizeContentId("future of interface"), undefined);
   assert.equal(normalizeContentId(undefined), undefined);

@@ -5,7 +5,7 @@ import { pathToFileURL } from "node:url";
 import matter from "gray-matter";
 import { parseDocument } from "yaml";
 
-const CONTENT_GROUPS = ["blog", "note", "project"];
+const CONTENT_GROUPS = ["blog", "note"];
 const UTF8_BOM = Buffer.from([0xef, 0xbb, 0xbf]);
 const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 

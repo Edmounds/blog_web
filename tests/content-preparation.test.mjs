@@ -10,7 +10,7 @@ test("content preparation keeps UTF-8 without BOM, assigns a date slug, and rege
   const root = await mkdtemp(path.join(os.tmpdir(), "blog-content-"));
 
   try {
-    for (const group of ["blog", "note", "project"]) {
+    for (const group of ["blog", "note"]) {
       await mkdir(path.join(root, "src/content", group), { recursive: true });
     }
     await mkdir(path.join(root, "src/lib"), { recursive: true });
@@ -38,7 +38,7 @@ test("content preparation keeps assigned and custom slugs stable", async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "blog-content-"));
 
   try {
-    for (const group of ["blog", "note", "project"]) {
+    for (const group of ["blog", "note"]) {
       await mkdir(path.join(root, "src/content", group), { recursive: true });
     }
     await mkdir(path.join(root, "src/lib"), { recursive: true });
@@ -64,7 +64,7 @@ test("content preparation rejects invalid and duplicate published slugs", async 
   const root = await mkdtemp(path.join(os.tmpdir(), "blog-content-"));
 
   try {
-    for (const group of ["blog", "note", "project"]) {
+    for (const group of ["blog", "note"]) {
       await mkdir(path.join(root, "src/content", group), { recursive: true });
     }
     await writeFile(path.join(root, "src/content/blog/a.md"), "---\ntitle: A\ncreatedAt: 2026-08-03\nslug: duplicate\npublished: true\n---\n", "utf8");
@@ -84,7 +84,7 @@ test("content preparation requires a valid creation date before generating a slu
   const root = await mkdtemp(path.join(os.tmpdir(), "blog-content-"));
 
   try {
-    for (const group of ["blog", "note", "project"]) {
+    for (const group of ["blog", "note"]) {
       await mkdir(path.join(root, "src/content", group), { recursive: true });
     }
     await writeFile(path.join(root, "src/content/blog/missing-date.md"), "---\ntitle: Missing date\npublished: true\n---\n", "utf8");

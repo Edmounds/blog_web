@@ -13,10 +13,9 @@ const about =
     ? await getAboutProfile()
     : await getLocalizedAbout(locale);
 const profile = about.data;
-const [blogs, notes, projects] = await Promise.all([
+const [blogs, notes] = await Promise.all([
   getPublishedContent("blog", locale),
   getPublishedContent("note", locale),
-  getPublishedContent("project", locale),
 ]);
 const groupLatestByYear = (items: typeof blogs) => {
   const byYear = new Map<number, typeof items>();
@@ -29,11 +28,6 @@ const groupLatestByYear = (items: typeof blogs) => {
 const latestBlocks = [
   { title: "Latest Blogs", section: "blog", items: groupLatestByYear(blogs) },
   { title: "Latest Notes", section: "note", items: groupLatestByYear(notes) },
-  {
-    title: "Latest Projects",
-    section: "project",
-    items: groupLatestByYear(projects),
-  },
 ];
 ---
 

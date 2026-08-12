@@ -6,17 +6,17 @@ seo:
   defaultDescription: Personal blog and design reflections.
   titleSeparator: " | "
 nav:
-  - label: About
-    href: /about/
-    match: prefix
   - label: Blog
     href: /blog/
     match: prefix
   - label: Note
     href: /note/
     match: prefix
-  - label: Project
-    href: /project/
+  - label: Links
+    href: /links/
+    match: prefix
+  - label: About
+    href: /about/
     match: prefix
   - label: Life
     href: /art/book/

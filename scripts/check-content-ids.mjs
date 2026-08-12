@@ -3,7 +3,7 @@ import path from "node:path";
 
 import matter from "gray-matter";
 
-const groups = ["blog", "note", "project"];
+const groups = ["blog", "note"];
 const contentIds = [];
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 

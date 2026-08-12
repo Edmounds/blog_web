@@ -5,7 +5,7 @@ const LEGACY_CONTENT_SLUGS: Record<string, string> = {
   "note/dongyeguiwu-passaway": "note/20260727-01",
 };
 
-const CONTENT_PATH_PATTERN = /^\/(?:(en|ja|zh-TW)\/)?(blog|note|project)\/([^/]+)\/?$/;
+const CONTENT_PATH_PATTERN = /^\/(?:(en|ja|zh-TW)\/)?(blog|note)\/([^/]+)\/?$/;
 
 export const getLegacyContentRedirect = (requestUrl: URL): URL | undefined => {
   const match = requestUrl.pathname.match(CONTENT_PATH_PATTERN);

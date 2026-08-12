@@ -1,7 +1,0 @@
----
-import ContentSection from "./ContentSection.astro";
-import type { Locale } from "../../lib/i18n";
-interface Props { locale?: Locale }
-const { locale = "zh-CN" } = Astro.props;
----
-<ContentSection section="project" locale={locale} />

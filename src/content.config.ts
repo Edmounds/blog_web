@@ -14,10 +14,6 @@ const contentSchema = z.object({
 
 const blog = defineCollection({ loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/blog" }), schema: contentSchema });
 const note = defineCollection({ loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/note" }), schema: contentSchema });
-const project = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/project" }),
-  schema: contentSchema.extend({ projectUrl: z.url().optional(), docUrl: z.url().optional() }),
-});
 const about = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/about" }),
   schema: z.object({
@@ -37,7 +33,7 @@ const translations = defineCollection({
     title: z.string().optional(), description: z.string().optional(),
     createdAt: z.coerce.date().optional(), updatedAt: z.coerce.date().optional(), published: z.boolean().optional(),
     slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).optional(),
-    tags: z.array(z.string()).optional(), projectUrl: z.string().optional(), docUrl: z.string().optional(),
+    tags: z.array(z.string()).optional(),
     name: z.string().optional(), motto: z.string().optional(), portrait: z.string().optional(),
   }),
 });
@@ -50,4 +46,4 @@ const site = defineCollection({
   }),
 });
 
-export const collections = { blog, note, project, about, site, translations };
+export const collections = { blog, note, about, site, translations };

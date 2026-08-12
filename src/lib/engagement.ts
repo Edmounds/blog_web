@@ -1,6 +1,6 @@
 import { CONTENT_IDS } from "./post-slugs.ts";
 
-const CONTENT_ID_PATTERN = /^(blog|note|project)\/[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const CONTENT_ID_PATTERN = /^(blog|note)\/[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const VIEW_WINDOW_SECONDS = 6 * 60 * 60;
 const VIEW_PRUNE_INTERVAL_MS = 6 * 60 * 60 * 1000;
 let nextViewPruneAt = 0;
