@@ -37,9 +37,11 @@ test("responsive raster images emit AVIF/WebP sources and stable priority attrib
 
   assert.equal(first.tagName, "picture");
   assert.equal(first.children[0].properties.type, "image/avif");
+  assert.equal(first.children[0].properties.srcSet, "/media/img/blog/source-w640.avif.webp 640w");
   assert.equal(first.children[1].properties.type, "image/webp");
+  assert.equal(first.children[1].properties.srcSet, "/media/img/blog/source-w640.webp 640w");
   assert.deepEqual(first.children[2].properties, {
-    src: source,
+    src: "/media/img/blog/source.webp",
     alt: "Example",
     width: 1600,
     height: 900,
@@ -51,7 +53,7 @@ test("responsive raster images emit AVIF/WebP sources and stable priority attrib
   assert.equal(second.children[2].properties.fetchPriority, "auto");
 });
 
-test("passthrough images retain their source while receiving intrinsic dimensions", () => {
+test("passthrough images are served same-origin while receiving intrinsic dimensions", () => {
   const source = "https://img.muelsyse.us/blog/diagram.svg";
   const [image] = visitImages({
     version: 3,
@@ -61,7 +63,7 @@ test("passthrough images retain their source while receiving intrinsic dimension
   }, [source]);
 
   assert.equal(image.tagName, "img");
-  assert.equal(image.properties.src, source);
+  assert.equal(image.properties.src, "/media/img/blog/diagram.svg");
   assert.equal(image.properties.width, 800);
   assert.equal(image.properties.height, 400);
   assert.equal(image.properties.loading, "eager");

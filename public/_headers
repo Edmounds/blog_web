@@ -11,28 +11,31 @@
   Cache-Control: public, max-age=31536000, immutable
 
 /avatar.webp
-  Cache-Control: public, max-age=0, must-revalidate
+  Cache-Control: public, max-age=0, stale-while-revalidate=86400
 
 /version.json
   Cache-Control: no-store
 
+/katex.min.css
+  Cache-Control: public, max-age=604800, stale-while-revalidate=2592000
+
 /
-  Cache-Control: no-cache
+  Cache-Control: public, max-age=0, stale-while-revalidate=604800
 
 /about/*
-  Cache-Control: no-cache
+  Cache-Control: public, max-age=0, stale-while-revalidate=604800
 
 /links/*
-  Cache-Control: no-cache
+  Cache-Control: public, max-age=0, stale-while-revalidate=604800
 
 /blog/*
-  Cache-Control: no-cache
+  Cache-Control: public, max-age=0, stale-while-revalidate=604800
 
 /art/*
   Cache-Control: public, max-age=0, s-maxage=0, must-revalidate
 
 /note/*
-  Cache-Control: no-cache
+  Cache-Control: public, max-age=0, stale-while-revalidate=604800
 
 /media/art/*
   Cache-Control: public, max-age=31536000, immutable
@@ -41,19 +44,19 @@
   Cache-Control: public, max-age=31536000, immutable
 
 /en/*
-  Cache-Control: no-cache
+  Cache-Control: public, max-age=0, stale-while-revalidate=604800
 
 /en/art/*
   Cache-Control: public, max-age=0, s-maxage=0, must-revalidate
 
 /ja/*
-  Cache-Control: no-cache
+  Cache-Control: public, max-age=0, stale-while-revalidate=604800
 
 /ja/art/*
   Cache-Control: public, max-age=0, s-maxage=0, must-revalidate
 
 /zh-TW/*
-  Cache-Control: no-cache
+  Cache-Control: public, max-age=0, stale-while-revalidate=604800
 
 /zh-TW/art/*
   Cache-Control: public, max-age=0, s-maxage=0, must-revalidate

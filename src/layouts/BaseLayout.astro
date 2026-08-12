@@ -27,7 +27,6 @@ interface Props {
   imageUrl?: string;
   ogType?: "website" | "article";
   hasMath?: boolean;
-  preconnectImageOrigin?: boolean;
 }
 
 const {
@@ -40,7 +39,6 @@ const {
   imageUrl = "/images/content/about/profile-8646bdb863b8-social.webp",
   ogType = "website",
   hasMath = false,
-  preconnectImageOrigin = false,
 } = Astro.props;
 const localizedSite = await getLocalizedSite(locale);
 const site =
@@ -99,8 +97,6 @@ if (!Astro.response.headers.has("Cache-Control"))
       as="image"
       type="image/svg+xml"
     />
-    {preconnectImageOrigin && <link rel="preconnect" href="https://img.muelsyse.us" crossorigin="anonymous" />}
-    {preconnectImageOrigin && <link rel="dns-prefetch" href="//img.muelsyse.us" />}
     {hasMath && <link rel="stylesheet" href="/katex.min.css" />}
     <link rel="canonical" href={canonicalUrl} />
     {

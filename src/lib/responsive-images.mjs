@@ -1,6 +1,16 @@
 export const ARTICLE_IMAGE_SIZES = "(max-width: 48rem) calc(100vw - 2rem), 46rem";
 
-const srcset = (items) => items.map((item) => `${item.url} ${item.width}w`).join(", ");
+// Content images live in R2 behind img.muelsyse.us, which bypasses the
+// preferred-proxy route and needs an extra DNS+TLS handshake. Serving them
+// same-origin through /media/img/* keeps them on the optimized path.
+const REMOTE_IMAGE_PREFIX = /^https:\/\/img\.muelsyse\.us\/((?:blog|bed)\/)/;
+
+export const toSameOriginImageUrl = (url) =>
+  typeof url === "string"
+    ? url.replace(REMOTE_IMAGE_PREFIX, "/media/img/$1")
+    : url;
+
+const srcset = (items) => items.map((item) => `${toSameOriginImageUrl(item.url)} ${item.width}w`).join(", ");
 
 export const createResponsiveImagePlugin = ({ manifest, version = "static" }) => {
   const counterKey = `responsiveImageIndex:${version}`;
@@ -30,7 +40,7 @@ export const createResponsiveImagePlugin = ({ manifest, version = "static" }) =>
         ...image,
         properties: {
           ...image.properties,
-          src: asset.fallback ?? source,
+          src: toSameOriginImageUrl(asset.fallback ?? source),
           width: asset.width,
           height: asset.height,
         },
