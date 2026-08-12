@@ -207,7 +207,13 @@ function formatBadgeDuration(seconds: number) {
 }
 
 function formatLastActivity(date: Date) {
-  return new Intl.DateTimeFormat("en", { hour: "2-digit", minute: "2-digit", hour12: false }).format(date);
+  // Fixed to the author's timezone so the Worker (UTC) and CI render the same time.
+  return new Intl.DateTimeFormat("en", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "Asia/Shanghai",
+  }).format(date);
 }
 
 export function svgResponse(svg?: string) {
