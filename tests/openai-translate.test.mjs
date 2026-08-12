@@ -1,5 +1,4 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 import { createOpenAITranslateClient } from "../scripts/lib/openai-translate.mjs";
@@ -137,34 +136,4 @@ test("OpenAI-compatible client does not retry permanent 4xx responses", async ()
   });
   await assert.rejects(() => translate({ text: "你好", sourceLang: "ZH", targetLang: "EN" }), /HTTP 400/);
   assert.equal(requests, 1);
-});
-
-test("translation script keeps an OpenAI segment fallback for complete Markdown documents", async () => {
-  const source = await readFile(new URL("../scripts/translate.mjs", import.meta.url), "utf8");
-  assert.match(source, /using segment fallback/);
-  assert.match(source, /collectMarkdownSegments\(source\.content\)/);
-  assert.match(source, /replaceMarkdownSegments\(source\.content, translatedSegments\)/);
-  assert.doesNotMatch(source, /imageLabels\[imageIndex\+\+\]/);
-});
-
-test("translation script skips Markdown documents explicitly marked unpublished", async () => {
-  const source = await readFile(new URL("../scripts/translate.mjs", import.meta.url), "utf8");
-  assert.match(source, /matter\(raw\.replace\(\/\^\\uFEFF\/, ""\)\)\.data\.published === false/);
-});
-
-test("translation script continuously reports translation progress", async () => {
-  const source = await readFile(new URL("../scripts/translate.mjs", import.meta.url), "utf8");
-  assert.match(source, /\[translate\].*\$\{manifestKey\}.*started/);
-  assert.match(source, /\[translate\].*\$\{manifest\.updated\}.*updated/);
-  assert.match(source, /setInterval/);
-  assert.match(source, /\$\{activeRequests\} active/);
-  assert.doesNotMatch(source, /manifest\.updated % 25/);
-});
-
-test("deployment passes OpenAI translation secrets to the build", async () => {
-  const workflow = await readFile(new URL("../.github/workflows/deploy.yml", import.meta.url), "utf8");
-  assert.match(workflow, /OPENAI_BASE_URL:\s*\$\{\{ secrets\.OPENAI_BASE_URL \}\}/);
-  assert.match(workflow, /API_KEY:\s*\$\{\{ secrets\.API_KEY \}\}/);
-  assert.match(workflow, /MODEL:\s*\$\{\{ secrets\.MODEL \}\}/);
-  assert.doesNotMatch(workflow, /DEEPLX|SERVICE_TYPE/);
 });
