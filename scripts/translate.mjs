@@ -88,6 +88,11 @@ const shouldTranslateKey = (key) => !new Set([
   "publishedAt", "year", "archiveYear", "showOnHome", "showInArchive", "showInTimeline", "draft",
 ]).has(key);
 
+// Full translations come from OpenAI. When OpenAI is unavailable the run is
+// incremental instead: previously translated entries are kept as they are
+// (even when the source changed), and only entries with no translation at all
+// are gap-filled through Google Translate. Gap fills are marked with
+// `fallback: true` so the next successful OpenAI run replaces them.
 const translateText = async ({ locale, targetLang, key, source, manifest, seed, format = "text", preserveFrontmatterKeys = [], translate }) => {
   if (!source.trim()) return source;
   const fingerprintSource = format === "markdown-document" ? `markdown-document-v1\0${source}` : source;
@@ -95,34 +100,50 @@ const translateText = async ({ locale, targetLang, key, source, manifest, seed, 
   const manifestKey = `${locale}:${key}`;
   activeManifestKeys.add(manifestKey);
   const cached = manifest.entries[manifestKey];
-  if (cached?.fingerprint === fingerprint && typeof cached.translation === "string") return cached.translation;
+  const cachedTranslation = typeof cached?.translation === "string" ? cached.translation : undefined;
+  if (cached?.fingerprint === fingerprint && cachedTranslation !== undefined && cached.fallback !== true) {
+    return cachedTranslation;
+  }
 
   console.log(`[translate] ${manifestKey} started.`);
   const seeded = seed?.[manifestKey];
   const translatorName = translate ? `${provider.name}-segment` : provider.name;
   const sharedKey = `${translatorName}:${locale}:${format}:${fingerprint}`;
   const existing = pendingByFingerprint.get(sharedKey);
-  const translation = typeof seeded === "string"
-    ? seeded
+  const result = typeof seeded === "string"
+    ? { translation: seeded, mode: "fresh" }
     : await (existing ?? (() => {
         const promise = runLimited(async () => {
           try {
-            return await (translate ?? provider.translate)({ text: source, sourceLang: "ZH", targetLang, format, preserveFrontmatterKeys });
+            const translation = await (translate ?? provider.translate)({ text: source, sourceLang: "ZH", targetLang, format, preserveFrontmatterKeys });
+            return { translation, mode: "fresh" };
           } catch (error) {
+            if (cachedTranslation !== undefined) {
+              console.warn(`${provider.name} unavailable for ${manifestKey}; keeping the previous translation (${error.message})`);
+              return { translation: cachedTranslation, mode: "reused" };
+            }
             if (format === "markdown-document") throw error;
-            console.warn(`${provider.name} unavailable for ${locale}; using Google Translate fallback (${error.message})`);
-            return googleTranslate({ text: source, sourceLang: "ZH", targetLang });
+            console.warn(`${provider.name} unavailable for ${manifestKey}; gap-filling with Google Translate (${error.message})`);
+            return {
+              translation: await googleTranslate({ text: source, sourceLang: "ZH", targetLang }),
+              mode: "fallback",
+            };
           }
         });
         pendingByFingerprint.set(sharedKey, promise);
         return promise;
       })());
-  const entry = { fingerprint, translation };
+  // A reused translation keeps its old manifest entry untouched, so the next
+  // run retries OpenAI for it.
+  if (result.mode === "reused") return result.translation;
+  const entry = result.mode === "fallback"
+    ? { fingerprint, translation: result.translation, fallback: true }
+    : { fingerprint, translation: result.translation };
   manifest.entries[manifestKey] = entry;
   await checkpointTranslation(manifestKey, entry);
   manifest.updated += 1;
-  console.log(`[translate] ${manifest.updated} updated: ${manifestKey}.`);
-  return translation;
+  console.log(`[translate] ${manifest.updated} updated: ${manifestKey}${result.mode === "fallback" ? " (Google gap fill)" : ""}.`);
+  return result.translation;
 };
 
 const translateValue = async ({ value, keyPath, fieldName, locale, targetLang, manifest, seed, translate }) => {
@@ -162,8 +183,8 @@ const translateValue = async ({ value, keyPath, fieldName, locale, targetLang, m
 };
 
 const mergeTranslatedData = (source, translated, fieldName = "frontmatter") => {
+  if (!shouldTranslateKey(fieldName)) return source;
   if (typeof source === "string") {
-    if (!shouldTranslateKey(fieldName)) return source;
     if (typeof translated !== "string") throw new Error(`Translated frontmatter field "${fieldName}" is missing or invalid.`);
     return translated;
   }
@@ -189,14 +210,23 @@ const unwrapMarkdownFence = (value) => {
   return match?.[1] ?? trimmed;
 };
 
+const parseTranslatedDocument = (source, translation, keyPrefix) => {
+  const translated = matter(unwrapMarkdownFence(translation));
+  if (source.content.trim() && !translated.content.trim()) {
+    throw new Error(`Translated document "${keyPrefix}" is missing its Markdown body.`);
+  }
+  return {
+    data: mergeTranslatedData(source.data, translated.data),
+    body: translated.content,
+  };
+};
+
 const translateDocument = async ({ raw, keyPrefix, locale, targetLang, manifest }) => {
   const sourceDocument = raw.replace(/^\uFEFF/, "");
   const source = matter(sourceDocument);
   const preserveFrontmatterKeys = Object.keys(source.data).filter((key) => !shouldTranslateKey(key));
-  let translation;
-  let usedFallback = false;
   try {
-    translation = await translateText({
+    const translation = await translateText({
       locale,
       targetLang,
       key: `${keyPrefix}.document`,
@@ -205,8 +235,8 @@ const translateDocument = async ({ raw, keyPrefix, locale, targetLang, manifest 
       format: "markdown-document",
       preserveFrontmatterKeys,
     });
+    return parseTranslatedDocument(source, translation, keyPrefix);
   } catch (error) {
-    usedFallback = true;
     console.warn(`${provider.name} document translation failed for ${locale}; using segment fallback (${error.message})`);
     const translatedData = await translateValue({
       value: source.data,
@@ -229,27 +259,20 @@ const translateDocument = async ({ raw, keyPrefix, locale, targetLang, manifest 
     })));
     const translatedBody = replaceMarkdownSegments(source.content, translatedSegments);
     const yaml = stringifyYaml(mergeTranslatedData(source.data, translatedData), { lineWidth: 0 }).trimEnd();
-    translation = `---\n${yaml}\n---\n\n${translatedBody}`;
-  }
-  const translated = matter(unwrapMarkdownFence(translation));
-  if (source.content.trim() && !translated.content.trim()) {
-    throw new Error(`Translated document "${keyPrefix}" is missing its Markdown body.`);
-  }
-  if (usedFallback) {
+    const translation = `---\n${yaml}\n---\n\n${translatedBody}`;
+    const parsed = parseTranslatedDocument(source, translation, keyPrefix);
     const manifestKey = `${locale}:${keyPrefix}.document`;
     const entry = {
       fingerprint: translationFingerprint(`markdown-document-v1\0${sourceDocument}`),
       translation,
+      fallback: true,
     };
     manifest.entries[manifestKey] = entry;
     await checkpointTranslation(manifestKey, entry);
     manifest.updated += 1;
     console.log(`[translate] ${manifest.updated} updated: ${manifestKey} (segment fallback).`);
+    return parsed;
   }
-  return {
-    data: mergeTranslatedData(source.data, translated.data),
-    body: translated.content,
-  };
 };
 
 const writeMarkdown = async (filePath, data, body) => {
@@ -263,16 +286,22 @@ const translateContentFiles = async ({ locale, targetLang, manifest }) => {
   for (const group of CONTENT_GROUPS) {
     const sourceDir = path.join(ROOT, "src/content", group);
     const outputDir = path.join(GENERATED_ROOT, locale, group);
-    await rm(outputDir, { recursive: true, force: true });
     await mkdir(outputDir, { recursive: true });
     const fileNames = await walkContentFiles(sourceDir);
+    const written = new Set();
     await Promise.all(fileNames.map(async (fileName) => {
       const raw = await readFile(path.join(sourceDir, fileName), "utf8");
       if (matter(raw.replace(/^\uFEFF/, "")).data.published === false) return;
       const keyPrefix = `content.${group}.${fileName.replaceAll(path.sep, ".")}`;
       const { data, body } = await translateDocument({ raw, keyPrefix, locale, targetLang, manifest });
       await writeMarkdown(path.join(outputDir, fileName), data, body);
+      written.add(fileName);
     }));
+    // Prune stale outputs only after successful writes so an interrupted run
+    // never deletes previously generated translations.
+    for (const staleFile of await walkContentFiles(outputDir)) {
+      if (!written.has(staleFile)) await rm(path.join(outputDir, staleFile), { force: true });
+    }
   }
 };
 
