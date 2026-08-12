@@ -73,9 +73,9 @@ test("responsive image plugin renders AVIF then WebP with a WebP fallback", asyn
     "![Diagram](https://img.muelsyse.us/blog/source.webp \"Caption\")",
   );
 
-  assert.match(rendered.code, /<picture class="article-picture"><source type="image\/avif" srcset="https:\/\/img\.muelsyse\.us\/blog\/source-w640\.avif 640w, https:\/\/img\.muelsyse\.us\/blog\/source-w1280\.avif 1280w"/);
-  assert.match(rendered.code, /<source type="image\/webp" srcset="https:\/\/img\.muelsyse\.us\/blog\/source-w640\.webp 640w, https:\/\/img\.muelsyse\.us\/blog\/source-w1280\.webp 1280w"/);
-  assert.match(rendered.code, /<img src="https:\/\/img\.muelsyse\.us\/blog\/source-w1280\.webp" alt="Diagram" title="Caption" loading="eager" fetchpriority="high" decoding="async" width="1280" height="720">/);
+  assert.match(rendered.code, /<picture class="article-picture"><source type="image\/avif" srcset="\/media\/img\/blog\/source-w640\.avif 640w, \/media\/img\/blog\/source-w1280\.avif 1280w"/);
+  assert.match(rendered.code, /<source type="image\/webp" srcset="\/media\/img\/blog\/source-w640\.webp 640w, \/media\/img\/blog\/source-w1280\.webp 1280w"/);
+  assert.match(rendered.code, /<img src="\/media\/img\/blog\/source-w1280\.webp" alt="Diagram" title="Caption" loading="eager" fetchpriority="high" decoding="async" width="1280" height="720">/);
   assert.match(rendered.code, new RegExp(`sizes="${ARTICLE_IMAGE_SIZES.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`));
 });
 

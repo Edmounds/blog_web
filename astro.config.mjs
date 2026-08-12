@@ -1,6 +1,6 @@
 // @ts-check
 import { createHash } from "node:crypto";
-import { readFile, writeFile } from "node:fs/promises";
+import { appendFile, readdir, readFile, writeFile } from "node:fs/promises";
 
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
@@ -32,6 +32,11 @@ const hastPlugins = /** @type {any} */ ([
   createResponsiveImagePlugin({ manifest: imageManifest, version: imageManifestVersion }),
 ]);
 
+// Routes serving prerendered HTML. Early-hint Link headers let browsers fetch
+// the render-blocking stylesheet and body font before HTML parsing starts,
+// which saves a round trip on high-latency (e.g. mainland China) connections.
+const HTML_ROUTES = ["/", "/about/*", "/links/*", "/blog/*", "/note/*", "/en/*", "/ja/*", "/zh-TW/*"];
+
 const deploymentVersion = {
   name: "deployment-version",
   hooks: {
@@ -42,6 +47,17 @@ const deploymentVersion = {
         `${JSON.stringify({ buildId })}\n`,
         "utf8",
       );
+      const hashedAssets = await readdir(new URL("_astro/", dir));
+      const layoutCss = hashedAssets.find(
+        (file) => file.startsWith("BaseLayout.") && file.endsWith(".css"),
+      );
+      if (!layoutCss) throw new Error("BaseLayout stylesheet missing from _astro output");
+      const links = [
+        `  Link: </_astro/${layoutCss}>; rel=preload; as=style`,
+        "  Link: </fonts/Biotif-Regular.woff2>; rel=preload; as=font; type=font/woff2; crossorigin",
+      ];
+      const rules = HTML_ROUTES.map((route) => [route, ...links].join("\n")).join("\n\n");
+      await appendFile(new URL("_headers", dir), `\n${rules}\n`, "utf8");
     },
   },
 };
@@ -51,6 +67,12 @@ export default defineConfig({
   compressHTML: true,
   site: "https://blog.muelsyse.us",
   output: 'server',
+  // ClientRouter enables hover prefetch by default; viewport strategy also
+  // covers touch devices, where most mainland China traffic comes from.
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: "viewport",
+  },
   adapter: cloudflare({
     imageService: "compile",
     configPath: "./wrangler.astro.jsonc",

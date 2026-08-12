@@ -7,6 +7,7 @@ import test from "node:test";
 import sharp from "sharp";
 
 import { cleanupBlogImages, readImageManifest, syncBlogImages } from "../scripts/lib/blog-images.mjs";
+import { onRequestGet as onMediaImgGet } from "../src/server/api/media-img.js";
 
 const bom = "\uFEFF";
 
@@ -313,4 +314,56 @@ test("converts BMP vault images through the responsive pipeline", async () => {
   const result = await syncBlogImages({ root, upload: async (image) => uploads.push(image) });
   assert.equal(result.uploaded, 2);
   assert.deepEqual(new Set(uploads.map(({ contentType }) => contentType)), new Set(["image/avif", "image/webp"]));
+});
+
+const digest = "a".repeat(64);
+const r2Object = (body = "image-bytes") => ({
+  body,
+  httpEtag: '"etag-1"',
+  writeHttpMetadata: (headers) => headers.set("content-type", "image/webp"),
+});
+const mediaImgRequest = (path, { env, headers } = {}) => onMediaImgGet({
+  env: env ?? { ART_COVERS: { get: async () => r2Object() } },
+  params: { path },
+  request: new Request(`https://blog.muelsyse.us/media/img/${path}`, { headers }),
+});
+
+test("media/img serves R2 content images same-origin with immutable caching", async () => {
+  const requestedKeys = [];
+  const env = {
+    ART_COVERS: {
+      get: async (key) => {
+        requestedKeys.push(key);
+        return r2Object();
+      },
+    },
+  };
+  for (const key of [`blog/${digest}-w640.avif.webp`, "bed/20260808043442545-w1280.webp"]) {
+    const response = await mediaImgRequest(key, { env });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("content-type"), "image/webp");
+    assert.equal(response.headers.get("cache-control"), "public, max-age=31536000, immutable");
+    assert.equal(await response.text(), "image-bytes");
+  }
+  assert.deepEqual(requestedKeys, [`blog/${digest}-w640.avif.webp`, "bed/20260808043442545-w1280.webp"]);
+});
+
+test("media/img rejects keys outside the content prefixes without touching R2", async () => {
+  const env = { ART_COVERS: { get: async () => assert.fail("R2 must not be queried") } };
+  for (const path of ["art/book/secret.webp", "blog/../art/secret.webp", `blog/${digest}.exe`, "other/image.webp"]) {
+    const response = await mediaImgRequest(path, { env });
+    assert.equal(response.status, 404);
+  }
+});
+
+test("media/img answers conditional requests with 304 and no body", async () => {
+  const env = { ART_COVERS: { get: async () => r2Object(null) } };
+  const response = await mediaImgRequest(`blog/${digest}.webp`, {
+    env,
+    headers: { "if-none-match": '"etag-1"' },
+  });
+
+  assert.equal(response.status, 304);
+  assert.equal(response.body, null);
+  assert.equal(response.headers.get("etag"), '"etag-1"');
 });
