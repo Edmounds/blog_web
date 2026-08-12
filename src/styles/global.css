@@ -177,7 +177,7 @@ html.dark {
   );
   --content-frame-inline-end: var(--content-frame-inline-start);
   --section-gap: clamp(2.5rem, 5vw, 5rem);
-  --content-measure: 46rem;
+  --content-measure: 42rem;
   --detail-layout-left-gap: clamp(2rem, 3vw, 4rem);
   --detail-layout-main-width: var(--content-measure);
   --detail-layout-toc-min-width: 13rem;
