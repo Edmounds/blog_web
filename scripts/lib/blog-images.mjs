@@ -14,7 +14,7 @@ const DEFAULT_PUBLIC_URL = "https://img.muelsyse.us";
 const CACHE_CONTROL = "public, max-age=31536000, immutable";
 const MANIFEST_FILE = ".blog-images-manifest.json";
 const MANIFEST_VERSION = 4;
-export const CONTENT_GROUPS = ["about", "blog", "note", "project"];
+export const CONTENT_GROUPS = ["about", "blog", "note"];
 
 const contentTypes = new Map([
   [".avif", "image/avif"],

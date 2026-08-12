@@ -5,7 +5,9 @@ import {
   createComment,
   listAdminComments,
   listPublicComments,
+  normalizeCommentContentId,
   setCommentHidden,
+  validateCommentInput,
 } from "../src/lib/comments.ts";
 
 const commentContentId = "blog/example-post";
@@ -67,10 +69,10 @@ test("D1-style comment storage lists newest first, paginates, hides, restores, a
   assert.deepEqual(secondAttempt, { ok: false, retryAfter: 30 });
 });
 
-test("comments isolate identical slugs across Blog Note and Project", async () => {
+test("comments isolate identical slugs across Blog and Note", async () => {
   const db = new FakeD1();
   const request = new Request("https://blog.muelsyse.us/api/comments", { headers: { "cf-connecting-ip": "203.0.113.42" } });
-  for (const [index, section] of ["blog", "note", "project"].entries()) {
+  for (const [index, section] of ["blog", "note"].entries()) {
     const result = await createComment(
       db,
       requestWithIp(request, `203.0.113.${42 + index}`),
@@ -81,10 +83,18 @@ test("comments isolate identical slugs across Blog Note and Project", async () =
     assert.equal(result.ok, true);
   }
 
-  for (const section of ["blog", "note", "project"]) {
+  for (const section of ["blog", "note"]) {
     const page = await listPublicComments(db, `${section}/shared-slug`);
     assert.deepEqual(page.items.map((item) => item.content), [`${section} comment`]);
   }
+});
+
+test("Project comments are rejected by content ID validation", () => {
+  assert.equal(normalizeCommentContentId("project/shared-slug"), undefined);
+  assert.equal(
+    validateCommentInput({ contentId: "project/shared-slug", name: "访客", content: "评论" }).ok,
+    false,
+  );
 });
 
 test("About comments use the shared about/profile content ID", async () => {

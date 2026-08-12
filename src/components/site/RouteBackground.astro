@@ -95,9 +95,7 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
           : path === "/blog/" ||
               path === "/blog" ||
               path === "/note/" ||
-              path === "/note" ||
-              path === "/project/" ||
-              path === "/project"
+              path === "/note"
             ? "grid"
             : "particles";
     root.setAttribute("data-active-kind", kind);
@@ -143,9 +141,7 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
       path === "/blog/" ||
       path === "/blog" ||
       path === "/note/" ||
-      path === "/note" ||
-      path === "/project/" ||
-      path === "/project"
+      path === "/note"
     )
       return "grid";
     return "particles";

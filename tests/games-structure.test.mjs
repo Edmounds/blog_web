@@ -6,7 +6,7 @@ const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf
 
 test("Life ends with Game and localized routes retain locale prefixes", () => {
   const header = read("src/components/site/Header.astro");
-  assert.match(header, /const links = \{ label: "Links"[\s\S]*?<div class="life-menu">/);
+  assert.match(header, /\{ label: "Links", href: "\/links\/", primaryRoute: false \}[\s\S]*?<div class="life-menu">/);
   assert.match(header, /Books[\s\S]*Music[\s\S]*Screen[\s\S]*Game/);
   assert.match(header, /localizePath\(item\.href, locale\)/);
   const localized = read("src/pages/[locale]/art/[type]/index.astro");

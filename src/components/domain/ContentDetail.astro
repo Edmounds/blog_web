@@ -1,5 +1,5 @@
 ---
-import { ArrowLeft, BookOpen, ExternalLink } from "lucide-static";
+import { ArrowLeft } from "lucide-static";
 import type { ContentSummary } from "../../lib/content";
 import { render } from "astro:content";
 import { getLocaleDefinition, localizePath, type Locale } from "../../lib/i18n";
@@ -32,7 +32,6 @@ const preconnectImageOrigin = /https:\/\/img\.muelsyse\.us\//.test(item.entry.bo
 const sectionLabels = {
   blog: "Blog",
   note: "Note",
-  project: "Project",
 } as const;
 const sectionLabel = sectionLabels[item.section];
 const backLabel = `Back to ${sectionLabel}`;
@@ -43,7 +42,7 @@ const words =
     .match(/[\p{L}\p{N}]+/gu)?.length ?? 0;
 const articleJsonLd = JSON.stringify({
   "@context": "https://schema.org",
-  "@type": item.section === "project" ? "CreativeWork" : "BlogPosting",
+  "@type": "BlogPosting",
   headline: item.title,
   description: item.description,
   datePublished: item.createdAt.toISOString(),
@@ -108,34 +107,6 @@ const articleJsonLd = JSON.stringify({
             <span>Words:</span>
             <strong>{words.toLocaleString(localeDefinition.dateLocale)}</strong>
           </p>
-          {
-            item.section === "project" && (item.projectUrl || item.docUrl) && (
-              <nav class="article-page__links" aria-label="Project links">
-                {item.projectUrl && (
-                  <a
-                    href={item.projectUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="Project"
-                    title="Project"
-                  >
-                    <Icon svg={ExternalLink} />
-                  </a>
-                )}
-                {item.docUrl && (
-                  <a
-                    href={item.docUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="Docs"
-                    title="Docs"
-                  >
-                    <Icon svg={BookOpen} />
-                  </a>
-                )}
-              </nav>
-            )
-          }
         </header>
 
         <div class="article-prose ui-prose"><Content /></div>
@@ -263,25 +234,6 @@ const articleJsonLd = JSON.stringify({
   .article-page__meta-line i {
     color: var(--text-faint);
     font-style: normal;
-  }
-  .article-page__links {
-    display: flex;
-    gap: 0.45rem;
-    margin-top: 0.9rem;
-  }
-  .article-page__links a {
-    display: inline-flex;
-    width: 2.25rem;
-    height: 2.25rem;
-    align-items: center;
-    justify-content: center;
-    color: var(--foreground);
-    border: 1px solid var(--border-soft);
-    border-radius: 999px;
-  }
-  .article-page__links :global(svg) {
-    width: 1rem;
-    height: 1rem;
   }
   .article-page__toc {
     position: sticky;

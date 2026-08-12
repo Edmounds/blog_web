@@ -1,5 +1,5 @@
 ---
-import { Link as LinkIcon, Menu, X } from "lucide-static";
+import { Menu, X } from "lucide-static";
 
 import { localizePath, stripLocaleFromPath, type Locale } from "../../lib/i18n";
 import ThemeToggle from "./ThemeToggle.astro";
@@ -19,12 +19,11 @@ const {
 } = Astro.props;
 const routePath = stripLocaleFromPath(currentPath).pathname;
 const primary = [
-  { label: "About", href: "/about/" },
-  { label: "Blog", href: "/blog/" },
-  { label: "Note", href: "/note/" },
-  { label: "Project", href: "/project/" },
+  { label: "Blog", href: "/blog/", primaryRoute: true },
+  { label: "Note", href: "/note/", primaryRoute: true },
+  { label: "Links", href: "/links/", primaryRoute: false },
+  { label: "About", href: "/about/", primaryRoute: true },
 ];
-const links = { label: "Links", href: "/links/" };
 const life = [
   { label: "Books", href: "/art/book/" },
   { label: "Music", href: "/art/music/" },
@@ -72,7 +71,7 @@ const isActive = (href: string) =>
           primary.map((item) => (
             <a
               href={localizePath(item.href, locale)}
-              data-primary-route
+              data-primary-route={item.primaryRoute ? true : undefined}
               aria-current={isActive(item.href) ? "page" : undefined}
             >
               {item.label}
@@ -108,15 +107,6 @@ const isActive = (href: string) =>
         currentPath={currentPath}
         label={languageLabel}
       />
-      <a
-        class="header-links inline-flex size-11 items-center justify-center rounded-[var(--radius-control)] text-[var(--foreground-soft)] transition-colors hover:bg-[var(--surface-soft)] hover:text-[var(--foreground)]"
-        href={localizePath(links.href, locale)}
-        title={links.label}
-        aria-label={links.label}
-        aria-current={isActive(links.href) ? "page" : undefined}
-      >
-        <span class="inline-flex size-5 [&>svg]:size-full"><Icon svg={LinkIcon} /></span>
-      </a>
       <ThemeToggle />
       <button
         class="mobile-menu-button"
@@ -142,7 +132,7 @@ const isActive = (href: string) =>
         primary.map((item) => (
           <a
             href={localizePath(item.href, locale)}
-            data-primary-route
+            data-primary-route={item.primaryRoute ? true : undefined}
             aria-current={isActive(item.href) ? "page" : undefined}
           >
             {item.label}
@@ -527,10 +517,6 @@ const isActive = (href: string) =>
     border-color: transparent;
     background: transparent;
   }
-  .header-links[aria-current="page"] {
-    color: var(--foreground);
-    background: var(--surface-soft);
-  }
   .mobile-menu-button {
     display: none;
     width: 2.75rem;
@@ -622,7 +608,6 @@ const isActive = (href: string) =>
     }
     :global(.site-header__tools [data-language-trigger]),
     :global(.site-header__tools [data-theme-toggle]),
-    .header-links,
     .mobile-menu-button {
       width: 2.5rem;
       height: 2.5rem;

@@ -7,7 +7,7 @@ export async function createRssResponse(locale: Locale) {
   const items = await getAllPublishedContent(locale);
   return rss({
     title: "chasen",
-    description: "Blog, notes, and projects by Chasen Chen.",
+    description: "Blog and notes by Chasen Chen.",
     site: "https://blog.muelsyse.us",
     items: items.map((item) => ({
       title: item.title,

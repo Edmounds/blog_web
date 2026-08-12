@@ -1,4 +1,4 @@
--- Prefix legacy Blog keys so Blog, Note, and Project can safely share slugs.
+-- Prefix legacy Blog keys so Blog and Note can safely share slugs.
 -- If a prefixed row already exists, keep the canonical row and merge the old
 -- aggregate before deleting the legacy key.
 INSERT INTO post_stats (slug, views, likes, updated_at)

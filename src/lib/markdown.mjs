@@ -96,8 +96,8 @@ const createKatexPlugin = () => ({
 const isWritingContent = (fileURL) => {
   const path = fileURL?.pathname;
   if (!path) return false;
-  return /\/src\/content\/(?:blog|note|project)\//.test(path)
-    || /\/src\/i18n\/content\/[^/]+\/(?:blog|note|project)\//.test(path);
+  return /\/src\/content\/(?:blog|note)\//.test(path)
+    || /\/src\/i18n\/content\/[^/]+\/(?:blog|note)\//.test(path);
 };
 
 const createCaptionFigure = (image, caption) => ({

@@ -8,7 +8,7 @@ const exists = (path) => existsSync(new URL(`../${path}`, import.meta.url));
 test("the primary canvas keeps the writing routes and loads deferred sections", () => {
   const layout = read("src/layouts/SpaLayout.astro");
 
-  for (const route of ["/", "/about/", "/blog/", "/note/", "/project/"]) {
+  for (const route of ["/", "/about/", "/blog/", "/note/"]) {
     assert.match(layout, new RegExp(`"${route.replaceAll("/", "\\/")}"`));
   }
   assert.match(layout, /data-section-url=\{localizePath\(path, locale\)\}/);
@@ -19,9 +19,12 @@ test("the primary canvas keeps the writing routes and loads deferred sections", 
 test("navigation exposes the writing, links, and Life destinations", () => {
   const header = read("src/components/site/Header.astro");
 
-  for (const label of ["About", "Blog", "Note", "Project", "Links", "Life", "Books", "Music", "Screen", "Game"]) {
+  for (const label of ["About", "Blog", "Note", "Links", "Life", "Books", "Music", "Screen", "Game"]) {
     assert.match(header, new RegExp(`(?:>|label: ")${label}`));
   }
+  assert.doesNotMatch(header, /Project/);
+  assert.match(header, /label: "Blog"[\s\S]*label: "Note"[\s\S]*label: "Links"[\s\S]*label: "About"[\s\S]*<button[\s\S]*?>Life<\/button/);
+  assert.doesNotMatch(header, /LinkIcon|header-links/);
   for (const route of ["/art/book/", "/art/music/", "/art/screen/", "/art/game/"]) {
     assert.match(header, new RegExp(route.replaceAll("/", "\\/")));
   }
@@ -120,16 +123,20 @@ test("public sections share the content frame and responsive mobile padding", ()
   }
 });
 
-test("Blog Note and Project collections and localized archive routes remain configured", () => {
+test("Blog and Note collections and localized archive routes remain configured", () => {
   const config = read("src/content.config.ts");
   const images = read("scripts/lib/blog-images.mjs");
 
-  for (const group of ["blog", "note", "project"]) {
+  for (const group of ["blog", "note"]) {
     assert.match(config, new RegExp(`const ${group} = defineCollection`));
     assert.equal(exists(`src/pages/${group}/index.astro`), true);
     assert.equal(exists(`src/pages/[locale]/${group}/index.astro`), true);
   }
-  assert.match(images, /CONTENT_GROUPS\s*=\s*\["about",\s*"blog",\s*"note",\s*"project"\]/);
+  assert.doesNotMatch(config, /const project = defineCollection/);
+  assert.equal(exists("src/content/project"), false);
+  assert.equal(exists("src/pages/project"), false);
+  assert.equal(exists("src/pages/[locale]/project"), false);
+  assert.match(images, /CONTENT_GROUPS\s*=\s*\["about",\s*"blog",\s*"note"\]/);
 });
 
 test("writing archives and details retain their functional components", () => {
@@ -157,7 +164,6 @@ test("localized content routes keep their route builders", () => {
   for (const path of [
     "src/pages/[locale]/blog/index.astro",
     "src/pages/[locale]/note/index.astro",
-    "src/pages/[locale]/project/index.astro",
     "src/pages/[locale]/links/index.astro",
   ]) {
     assert.match(read(path), /getStaticPaths/, `${path} must generate localized routes`);
@@ -191,15 +197,16 @@ test("legacy routes redirect or stay removed", () => {
   assert.equal(exists("src/pages/[section]-archive.astro"), false);
 });
 
-test("homepage activity widgets and project links remain wired", () => {
+test("homepage activity widgets keep only Blog and Note sections", () => {
   const home = read("src/components/sections/HomeSection.astro");
   const detail = read("src/components/domain/ContentDetail.astro");
 
   assert.match(home, /GitHubHeatmap/);
   assert.match(home, /\/api\/wakatime-badge\.svg/);
-  assert.match(home, /getPublishedContent\("project", locale\)/);
-  assert.match(detail, /item\.projectUrl/);
-  assert.match(detail, /item\.docUrl/);
+  assert.match(home, /getPublishedContent\("blog", locale\)/);
+  assert.match(home, /getPublishedContent\("note", locale\)/);
+  assert.doesNotMatch(home, /project|Project/);
+  assert.doesNotMatch(detail, /project|Project|projectUrl|docUrl/);
 });
 
 test("home and About omit the profile location and major", () => {

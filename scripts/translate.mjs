@@ -17,7 +17,7 @@ const ROOT = process.cwd();
 const LOCALES = [
   ["en", "EN"], ["ja", "JA"], ["zh-TW", "ZH-TW"],
 ];
-const CONTENT_GROUPS = ["blog", "note", "project", "about"];
+const CONTENT_GROUPS = ["blog", "note", "about"];
 const GENERATED_ROOT = path.join(ROOT, "src/i18n/content");
 const MESSAGE_SOURCE = path.join(ROOT, "src/i18n/source.json");
 const MESSAGE_OUTPUT = path.join(ROOT, "src/i18n/generated");
@@ -84,7 +84,7 @@ const checkpointTranslation = async (manifestKey, entry) => {
 const isPlainObject = (value) => value && typeof value === "object" && !Array.isArray(value) && !(value instanceof Date);
 const shouldTranslateKey = (key) => !new Set([
   "slug", "categorySlug", "cover", "portrait", "backgroundKeywords", "name", "href", "icon", "id", "type", "side",
-  "projectUrl", "docUrl", "image", "createdAt", "updatedAt", "published",
+  "image", "createdAt", "updatedAt", "published",
   "publishedAt", "year", "archiveYear", "showOnHome", "showInArchive", "showInTimeline", "draft",
 ]).has(key);
 

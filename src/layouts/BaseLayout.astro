@@ -178,7 +178,7 @@ if (!Astro.response.headers.has("Cache-Control"))
     <LoadingOverlay />
 
     <script>
-      const PRIMARY_ROUTES = ["/", "/about/", "/blog/", "/note/", "/project/"];
+      const PRIMARY_ROUTES = ["/", "/about/", "/blog/", "/note/"];
       const stripLocale = (path: string) => {
         const parts = path.split("/").filter(Boolean);
         if (["en", "ja", "zh-TW"].includes(parts[0])) parts.shift();

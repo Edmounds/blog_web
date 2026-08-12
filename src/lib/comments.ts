@@ -6,7 +6,7 @@ export const MAX_COMMENT_BODY_BYTES = 4_096;
 
 const ABOUT_COMMENT_CONTENT_ID = "about/profile";
 const LINKS_COMMENT_CONTENT_ID = "links";
-const CONTENT_ID_PATTERN = /^(blog|note|project)\/[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const CONTENT_ID_PATTERN = /^(blog|note)\/[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const CHINA_REGIONS: Record<string, string> = {
   AH: "安徽", BJ: "北京", CQ: "重庆", FJ: "福建", GD: "广东", GS: "甘肃", GX: "广西", GZ: "贵州",
   HA: "河南", HB: "湖北", HE: "河北", HI: "海南", HK: "中国香港", HL: "黑龙江", HN: "湖南",
