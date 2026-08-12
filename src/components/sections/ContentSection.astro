@@ -33,11 +33,11 @@ const years = sections.map((group) => group.year);
           <ArchiveActivityTimeline sections={sections} label={sectionLabel} locale={locale} />
           <div class="content-timeline">
             {sections.map((group) => (
-              <section class="content-timeline__group" aria-labelledby={`year-${group.year}`}>
-                <h2 id={`year-${group.year}`}>{group.year}</h2>
+              <section class="content-timeline__group" aria-labelledby={`year-${group.year}`} data-reveal-group>
+                <h2 id={`year-${group.year}`} data-reveal>{group.year}</h2>
                 <ol aria-label={`${group.year} ${sectionLabel}`}>
                   {group.posts.map((post) => (
-                    <li>
+                    <li data-reveal>
                       <time datetime={post.dateIso}>{post.dateLabel}</time>
                       <a href={post.href}>
                         <span>{post.title}</span>

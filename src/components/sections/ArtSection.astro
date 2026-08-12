@@ -104,6 +104,7 @@ const rankingTabs = [
 
   <div
     class="grid min-h-48 grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-3 lg:grid-cols-5"
+    data-reveal-group
     data-art-grid
     data-music-panel={type === "music" ? "collection" : undefined}
     role={type === "music" ? "tabpanel" : undefined}
@@ -111,7 +112,7 @@ const rankingTabs = [
     aria-labelledby={type === "music" ? "music-tab-album" : undefined}
   >
     {items.map((item) => (
-      <div data-art-type={item.type} data-music-kind={item.musicKind ?? undefined} class={(type === "screen" && item.type !== "movie") || (type === "music" && item.musicKind !== "album") ? "hidden" : undefined}>
+      <div data-reveal data-art-type={item.type} data-music-kind={item.musicKind ?? undefined} class={(type === "screen" && item.type !== "movie") || (type === "music" && item.musicKind !== "album") ? "hidden" : undefined}>
         <ArtCard item={item} />
       </div>
     ))}

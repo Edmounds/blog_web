@@ -454,12 +454,35 @@ const isActive = (href: string) =>
   .desktop-nav > a,
   .life-menu > button,
   .life-menu__items a {
+    position: relative;
     color: var(--text-muted);
     font-family: var(--font-ui);
     font-size: var(--type-lg);
     font-weight: 400;
     line-height: 1.25;
     text-decoration: none;
+    transition: color var(--dur-hover) ease;
+  }
+  .desktop-nav > a::after,
+  .life-menu > button::after,
+  .life-menu__items a::after {
+    position: absolute;
+    right: 0;
+    bottom: -0.12em;
+    left: 0;
+    height: 1px;
+    background: currentColor;
+    content: "";
+    transform: scaleX(0);
+    transition: transform var(--dur-hover) var(--ease-out-soft);
+  }
+  .desktop-nav > a:hover::after,
+  .desktop-nav > a[aria-current="page"]::after,
+  .life-menu > button:hover::after,
+  .life-menu:focus-within > button::after,
+  .life-menu__items a:hover::after,
+  .life-menu__items a[aria-current="page"]::after {
+    transform: scaleX(1);
   }
   .life-menu > button {
     padding: 0;
@@ -621,7 +644,10 @@ const isActive = (href: string) =>
   }
   @media (prefers-reduced-motion: reduce) {
     .desktop-nav,
-    .life-menu__items {
+    .life-menu__items,
+    .desktop-nav > a::after,
+    .life-menu > button::after,
+    .life-menu__items a::after {
       transition: none;
     }
   }
