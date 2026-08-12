@@ -237,7 +237,7 @@ if (!Astro.response.headers.has("Cache-Control"))
     <script>
       import { stripLocaleFromPath } from "../lib/i18n";
 
-      const PRIMARY_ROUTES = ["/", "/about/", "/blog/", "/note/"];
+      const PRIMARY_ROUTES = ["/", "/blog/", "/note/", "/links/", "/about/"];
       const routeIndex = (path: string) =>
         PRIMARY_ROUTES.indexOf(stripLocaleFromPath(path).pathname);
       document.addEventListener("astro:before-preparation", (event) => {
