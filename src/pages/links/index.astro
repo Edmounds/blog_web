@@ -1,9 +1,6 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import LinksSection from "../../components/sections/LinksSection.astro";
+import SpaLayout from "../../layouts/SpaLayout.astro";
 
 export const prerender = true;
 ---
-<BaseLayout title="Links" description="Friends, collaborators, and sites worth visiting." currentPath="/links/">
-  <LinksSection />
-</BaseLayout>
+<SpaLayout initialPath="/links/" title="Links" description="Friends, collaborators, and sites worth visiting." />

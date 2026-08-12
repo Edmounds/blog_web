@@ -12,24 +12,28 @@ interface Props {
 }
 
 const { initialPath = "/", title, description, locale = "zh-CN" } = Astro.props;
-const routes = ["/", "/about/", "/blog/", "/note/"];
+const routes = ["/", "/blog/", "/note/", "/links/", "/about/"];
 const routePath = stripLocaleFromPath(initialPath).pathname;
 const initialIndex = Math.max(0, routes.indexOf(routePath));
-const sectionLabels = ["Home", "About", "Blog", "Note"];
-const sections = [null, null, null, null] as Array<
+const sectionLabels = ["Home", "Blog", "Note", "Links", "About"];
+const sections = [null, null, null, null, null] as Array<
   typeof HomeSection | null
 >;
 if (initialIndex === 1)
   sections[1] = (
-    await import("../components/sections/AboutSection.astro")
+    await import("../components/sections/BlogsSection.astro")
   ).default;
 if (initialIndex === 2)
   sections[2] = (
-    await import("../components/sections/BlogsSection.astro")
+    await import("../components/sections/NotesSection.astro")
   ).default;
 if (initialIndex === 3)
   sections[3] = (
-    await import("../components/sections/NotesSection.astro")
+    await import("../components/sections/LinksSection.astro")
+  ).default;
+if (initialIndex === 4)
+  sections[4] = (
+    await import("../components/sections/AboutSection.astro")
   ).default;
 ---
 
@@ -155,7 +159,7 @@ if (initialIndex === 3)
     localizedRoutes: routes.map((route) => localizePath(route, locale)),
   }}
 >
-  const PRIMARY_ROUTES = ["/", "/about/", "/blog/", "/note/"];
+  const PRIMARY_ROUTES = ["/", "/blog/", "/note/", "/links/", "/about/"];
 
   function initSpa() {
     const browserWindow = window;
