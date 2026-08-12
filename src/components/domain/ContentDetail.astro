@@ -73,34 +73,50 @@ const articleJsonLd = JSON.stringify({
     <div class="article-page__content detail-layout-inner">
       <div class="article-page__main">
         <a
-          class="article-page__back"
+          class="article-page__back entrance-rise"
           href={localizePath(`/${item.section}/`, locale)}
         >
           <Icon svg={ArrowLeft} /><span>{backLabel}</span>
         </a>
 
         <header class="article-page__header">
-          <h1 class="ui-page-title">{item.title}</h1>
+          <h1 class="ui-page-title entrance-rise" style="--entrance-delay: 60ms">
+            {item.title}
+          </h1>
           {
             item.description && (
-              <p class="article-page__description">{item.description}</p>
+              <p
+                class="article-page__description entrance-rise"
+                style="--entrance-delay: 120ms"
+              >
+                {item.description}
+              </p>
             )
           }
           {
             item.tags.length > 0 && (
-              <p class="article-page__meta-line">
+              <p
+                class="article-page__meta-line entrance-rise"
+                style="--entrance-delay: 160ms"
+              >
                 <span>Type:</span> <strong>{item.tags.join(" / ")}</strong>
               </p>
             )
           }
-          <p class="article-page__meta-line">
+          <p
+            class="article-page__meta-line entrance-rise"
+            style="--entrance-delay: 160ms"
+          >
             <span>Created:</span>
             <strong>{dateLabel}</strong>
             <i>/</i>
             <span>Updated:</span>
             <strong>{updatedLabel}</strong>
           </p>
-          <p class="article-page__meta-line">
+          <p
+            class="article-page__meta-line entrance-rise"
+            style="--entrance-delay: 160ms"
+          >
             <span>{labels.blogMetaRead}:</span>
             <strong>{item.readingTime}</strong>
             <i>/</i>
@@ -139,7 +155,8 @@ const articleJsonLd = JSON.stringify({
       </div>
 
       <aside
-        class="article-page__toc"
+        class="article-page__toc entrance-fade"
+        style="--entrance-delay: 200ms"
         aria-label={labels.tableOfContents}
         data-article-toc
       >

@@ -149,7 +149,7 @@ const latestBlocks = [
   <div class="latest-content">
     {
       latestBlocks.map((block) => (
-        <section>
+        <section data-reveal-group>
           <h2>
             <a
               href={localizePath(`/${block.section}/`, locale)}
@@ -166,7 +166,7 @@ const latestBlocks = [
                 <h3>{year}</h3>
                 <ol>
                   {items.map((item) => (
-                    <li>
+                    <li data-reveal>
                       <time>
                         {new Intl.DateTimeFormat(locale, {
                           month: "short",

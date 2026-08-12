@@ -20,7 +20,7 @@ const formatPlaytime = (minutes: number) => {
       <h1 class="ui-page-title">{site.labels.game}</h1>
     </div>
     {items.length > 0 ? (
-      <div class="grid grid-cols-2 gap-x-4 gap-y-9 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+      <div class="grid grid-cols-2 gap-x-4 gap-y-9 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6" data-reveal-group>
         {items.map((item) => <GameCard item={item} playtime={formatPlaytime(item.playtimeMinutes)} />)}
       </div>
     ) : (

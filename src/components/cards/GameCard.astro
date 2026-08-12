@@ -13,7 +13,7 @@ const coverFallback = item.steamAppId
   : "/images/placeholders/default-cover.webp";
 ---
 
-<article class="group flex min-w-0 flex-col gap-3">
+<article class="group flex min-w-0 flex-col gap-3 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5" data-reveal>
   <CoverTag
     class="block aspect-[2/3] w-full overflow-hidden rounded-[var(--radius-control)] border border-[var(--border-soft)] bg-[var(--surface-soft)]"
     href={item.storeUrl ?? undefined}

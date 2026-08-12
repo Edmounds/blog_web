@@ -41,12 +41,19 @@ const copy = { engagementLabel: "内容互动", views: "浏览", likes: "喜欢"
       };
       const requestIdle = window.requestIdleCallback?.bind(window);
       const idleId = Number(requestIdle ? requestIdle(() => void recordView(), { timeout: 1000 }) : setTimeout(() => void recordView(), 1000));
+      const bumpLikes = () => {
+        if (!likes) return;
+        likes.classList.remove("stat-bump");
+        void likes.offsetWidth;
+        likes.classList.add("stat-bump");
+      };
       button?.addEventListener("click", async () => {
         if (liked || button.disabled) return;
         liked = true; button.disabled = true; current.likes += 1; render();
+        button.classList.add("is-liked"); bumpLikes();
         if (label) label.textContent = root.dataset.liking ?? "";
         try { current = await request("/api/like", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ contentId }) }); render(); if (label) label.textContent = root.dataset.like ?? ""; }
-        catch (error) { if ((error as Error).name !== "AbortError") { liked = false; current.likes = Math.max(0, current.likes - 1); render(); button.disabled = false; if (label) label.textContent = root.dataset.like ?? ""; if (status) status.textContent = root.dataset.unavailable ?? ""; } }
+        catch (error) { if ((error as Error).name !== "AbortError") { liked = false; current.likes = Math.max(0, current.likes - 1); render(); button.disabled = false; button.classList.remove("is-liked"); if (label) label.textContent = root.dataset.like ?? ""; if (status) status.textContent = root.dataset.unavailable ?? ""; } }
       });
       document.addEventListener("astro:before-swap", () => { controller.abort(); if (window.cancelIdleCallback) window.cancelIdleCallback(idleId); else clearTimeout(idleId); }, { once: true });
     });

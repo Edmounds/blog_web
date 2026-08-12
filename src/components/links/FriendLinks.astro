@@ -15,11 +15,12 @@ const friends = [
 const avatarUrl = (url: string) => `/api/friend-avatar?v=1&url=${encodeURIComponent(url)}`;
 ---
 
-<div class="friend-links-grid" aria-label="Friend links">
+<div class="friend-links-grid" aria-label="Friend links" data-reveal-group>
   {
     friends.map((friend) => (
       <a
         class="friend-link"
+        data-reveal
         href={friend.href}
         target="_blank"
         rel="noreferrer"
@@ -82,15 +83,18 @@ const avatarUrl = (url: string) => `/api/friend-avatar?v=1&url=${encodeURICompon
     -webkit-backdrop-filter: blur(20px) saturate(1.2);
     backdrop-filter: blur(20px) saturate(1.2);
     transition:
-      background-color 180ms ease,
-      border-color 180ms ease,
-      transform 180ms ease;
+      background-color var(--dur-fade) var(--ease-out-soft),
+      border-color var(--dur-fade) var(--ease-out-soft),
+      box-shadow var(--dur-fade) var(--ease-out-soft),
+      transform var(--dur-fade) var(--ease-out-soft);
   }
   .friend-link:hover,
   .friend-link:focus-visible {
     background: color-mix(in srgb, var(--canvas) 68%, transparent);
     border-color: var(--border-strong);
-    transform: translateY(-1px);
+    box-shadow: 0 8px 28px -6px
+      color-mix(in srgb, var(--foreground) 16%, transparent);
+    transform: translateY(-2px);
   }
   .friend-link__background {
     position: absolute;
