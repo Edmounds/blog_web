@@ -202,7 +202,8 @@ function createEapiForm(apiPath, data, cookies) {
   const header = createEapiHeader(cookies);
   const plaintext = JSON.stringify({ ...data, e_r: false, header });
   const digest = createHash("md5").update(`nobody${apiPath}use${plaintext}md5forencrypt`).digest("hex");
-  const cipher = createCipheriv("aes-128-ecb", EAPI_KEY, null);
+  // Workers 的 node:crypto 不接受 null iv；ECB 下空 Buffer 与 null 等价。
+  const cipher = createCipheriv("aes-128-ecb", EAPI_KEY, Buffer.alloc(0));
   const encrypted = Buffer.concat([
     cipher.update(`${apiPath}${EAPI_DELIMITER}${plaintext}${EAPI_DELIMITER}${digest}`, "utf8"),
     cipher.final(),
