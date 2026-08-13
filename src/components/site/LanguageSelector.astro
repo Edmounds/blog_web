@@ -53,6 +53,8 @@ const { locale, currentPath, label = "选择语言" } = Astro.props;
       const menu = root.querySelector<HTMLElement>("[data-language-menu]");
       if (!trigger || !menu) return;
 
+      const controller = new AbortController();
+      const { signal } = controller;
       const close = (restoreFocus = false) => {
         menu.classList.add("hidden");
         trigger.setAttribute("aria-expanded", "false");
@@ -63,13 +65,14 @@ const { locale, currentPath, label = "选择语言" } = Astro.props;
         trigger.setAttribute("aria-expanded", "true");
         menu.querySelector<HTMLElement>("[aria-checked='true']")?.focus();
       };
-      trigger.addEventListener("click", () => menu.classList.contains("hidden") ? open() : close());
+      trigger.addEventListener("click", () => menu.classList.contains("hidden") ? open() : close(), { signal });
       root.addEventListener("keydown", (event) => {
         if (event.key === "Escape") close(true);
-      });
+      }, { signal });
       document.addEventListener("pointerdown", (event) => {
         if (!root.contains(event.target as Node)) close();
-      });
+      }, { signal });
+      document.addEventListener("astro:before-swap", () => controller.abort(), { once: true });
     });
   }
   bindLanguageSelectors();
