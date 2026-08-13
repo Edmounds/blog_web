@@ -49,7 +49,6 @@ const years = sections.map((group) => group.year);
                       <div class="content-timeline__entry">
                         <a href={post.href}>
                           <span>{post.title}</span>
-                          <span class="content-timeline__arrow" aria-hidden="true"></span>
                         </a>
                         {post.summary && (
                           <p class="content-timeline__summary">{post.summary}</p>
@@ -161,20 +160,7 @@ const years = sections.map((group) => group.year);
     transition: color 180ms ease, transform 180ms ease;
   }
   .content-timeline a > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .content-timeline__arrow {
-    position: relative;
-    width: 0.75rem;
-    height: 0.75rem;
-    flex: 0 0 0.75rem;
-    opacity: 0;
-    transform: translateX(-0.35rem);
-    transition: opacity 180ms ease, transform 180ms ease;
-  }
-  .content-timeline__arrow::before, .content-timeline__arrow::after { content: ""; position: absolute; top: 50%; right: 0; }
-  .content-timeline__arrow::before { width: 0.75rem; height: 1px; background: currentColor; }
-  .content-timeline__arrow::after { width: 0.38rem; height: 0.38rem; border-top: 1px solid currentColor; border-right: 1px solid currentColor; transform: translateY(-45%) rotate(45deg); }
   .content-timeline a:hover, .content-timeline a:focus-visible { color: var(--foreground-soft); transform: translateX(0.14rem); }
-  .content-timeline a:hover .content-timeline__arrow, .content-timeline a:focus-visible .content-timeline__arrow { opacity: 1; transform: translateX(0); }
   @media (max-width: 56.25rem) {
     .content-listing__layout { grid-template-columns: minmax(0, 1fr); }
   }
