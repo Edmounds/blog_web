@@ -1,0 +1,46 @@
+---
+import { localizePath, type Locale } from "../../lib/i18n";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = "zh-CN" } = Astro.props;
+---
+
+<a class="life-back" href={localizePath("/life/", locale)} data-primary-route>
+  <span class="life-back__arrow" aria-hidden="true">&lt;-</span>
+  <span>Life</span>
+</a>
+
+<style>
+  .life-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--type-xs);
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color var(--dur-hover) ease;
+  }
+  .life-back:hover,
+  .life-back:focus-visible {
+    color: var(--foreground);
+  }
+  .life-back__arrow {
+    transition: transform var(--dur-hover) var(--ease-out-soft);
+  }
+  .life-back:hover .life-back__arrow,
+  .life-back:focus-visible .life-back__arrow {
+    transform: translateX(-0.25rem);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .life-back,
+    .life-back__arrow {
+      transition: none;
+    }
+  }
+</style>

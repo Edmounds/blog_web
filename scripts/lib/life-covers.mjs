@@ -26,16 +26,17 @@ const DOUBAN_REFERER = "https://book.douban.com/";
  */
 const bucketUrl = (key) => `${ART_COVER_BASE_URL}/${String(key).replace(/^\/+/, "")}`;
 
-const artQuery = (types) =>
+const artQuery = (types, extraWhere = "") =>
   `SELECT id, source, cover_key, cover_source_url FROM art_items
-   WHERE is_visible = 1 AND type IN (${types.map((type) => `'${type}'`).join(", ")})
+   WHERE is_visible = 1 AND type IN (${types.map((type) => `'${type}'`).join(", ")})${extraWhere}
    ORDER BY collected_on DESC, created_at DESC, id DESC
    LIMIT ${LIFE_COVER_CANDIDATES}`;
 
 /** Mirrors the ordering the public Life pages use, so the deck previews the top of each grid. */
 export const LIFE_COVER_QUERIES = {
   book: artQuery(["book"]),
-  music: artQuery(["music"]),
+  // Singles reuse their album artwork, so the deck only reads albums.
+  music: artQuery(["music"], " AND music_kind = 'album'"),
   screen: artQuery(["movie", "series", "anime"]),
   game: `SELECT id, steam_app_id, cover_key FROM game_items
    WHERE is_visible = 1

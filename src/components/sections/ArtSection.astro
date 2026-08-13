@@ -1,5 +1,6 @@
 ---
 import ArtCard from "../cards/ArtCard.astro";
+import LifeBackLink from "../domain/LifeBackLink.astro";
 import type { ArtItem } from "../../lib/art";
 import { getLocalizedSite } from "../../lib/localized-content";
 import type { Locale } from "../../lib/i18n";
@@ -44,10 +45,11 @@ const rankingTabs = [
 ] as const;
 ---
 
-<div class="detail-layout-outer py-12 md:py-20">
+<div class="life-section detail-layout-outer">
   <div class="detail-layout-inner">
-  <div class="mb-8 border-b border-[var(--border-soft)] pb-8 md:mb-12">
+  <div class="life-section__header mb-8 border-b border-[var(--border-soft)] pb-8 md:mb-12">
     <h1 class="ui-page-title">{title}</h1>
+    <LifeBackLink locale={locale} />
   </div>
 
   {type === "screen" && (

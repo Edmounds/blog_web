@@ -21,19 +21,6 @@ nav:
   - label: Life
     href: /life/
     match: prefix
-    children:
-      - label: Books
-        href: /life/book/
-        match: prefix
-      - label: Music
-        href: /life/music/
-        match: prefix
-      - label: Screen
-        href: /life/screen/
-        match: prefix
-      - label: Game
-        href: /life/game/
-        match: prefix
 footerLinks:
   - label: Blog
     href: /blog/
