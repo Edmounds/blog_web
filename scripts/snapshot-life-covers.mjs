@@ -94,7 +94,7 @@ async function renderThumbnail(source, box) {
   const bytes = (await downloadCover(source)) ?? (await readFile(PLACEHOLDER_PATH));
   const webp = await sharp(bytes)
     .resize(box.width, box.height, { fit: "cover" })
-    .webp({ quality: 62, effort: 6 })
+    .webp({ quality: 52, effort: 6 })
     .toBuffer();
   return `data:image/webp;base64,${webp.toString("base64")}`;
 }

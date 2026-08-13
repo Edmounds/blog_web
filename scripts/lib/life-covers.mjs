@@ -2,17 +2,17 @@ import { ART_COVER_BASE_URL, parseExternalArtCoverUrl } from "../../src/server/a
 import { getSteamCoverUrl } from "../../src/server/games.js";
 
 /** Covers shown in one Life home deck. */
-export const LIFE_COVER_LIMIT = 4;
+export const LIFE_COVER_LIMIT = 6;
 
 /** Rows to read per section so items without a usable cover can be skipped. */
-export const LIFE_COVER_CANDIDATES = 12;
+export const LIFE_COVER_CANDIDATES = 18;
 
-/** Thumbnails are baked at deck size; the browser never upscales them much. */
+/** Thumbnails are baked at roughly twice the deck size so they stay crisp. */
 export const LIFE_COVER_BOXES = {
-  book: { width: 56, height: 84 },
-  music: { width: 64, height: 64 },
-  screen: { width: 56, height: 84 },
-  game: { width: 56, height: 84 },
+  book: { width: 96, height: 144 },
+  music: { width: 112, height: 112 },
+  screen: { width: 96, height: 144 },
+  game: { width: 96, height: 144 },
 };
 
 export const LIFE_COVER_SECTIONS = ["book", "music", "screen", "game"];
