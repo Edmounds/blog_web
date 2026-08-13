@@ -36,7 +36,7 @@ img.muelsyse.us
 | Production Worker routes | 1 | `blog.muelsyse.us/*` on `blog-preferred-proxy` |
 | R2 custom domains | 1 | `img.muelsyse.us`, TLS active, minimum TLS 1.2 |
 | Access applications observed | 1 | `blog-admin` protecting `/admin/`; repository policy also requires `/api/admin/*` |
-| Worker secrets | 17 | Names listed below; values must never be printed |
+| Worker secrets | 18 | Names listed below; values must never be printed |
 
 `new-blog-smoke` is not deployed and must remain local-only. The account also contains an unrelated KV namespace named `link`; it is not referenced by this application.
 
@@ -65,7 +65,7 @@ The pending NetEase session migration adds `netease_auth_state`, bringing D1 to 
 
 ## Secret Names
 
-The deployed `new-blog-ssr` Worker has these 17 secret names:
+The deployed `new-blog-ssr` Worker has these 18 secret names:
 
 ```text
 API_KEY
@@ -76,6 +76,7 @@ DEEPLX_API_KEY
 DEEPLX_BASE_URL
 GOOGLE_BOOKS_API_KEY
 MODEL
+NETEASE_COOKIE_KEY
 NETEASE_CSRF
 NETEASE_MUSIC_U
 OPENAI_BASE_URL
@@ -89,7 +90,7 @@ WAKA_TIME_API_KEY
 
 `GITHUB_TOKEN` is optional in `src/env.d.ts` and was not present during the snapshot. The DEEPLX, OpenAI image, and `SERVICE_TYPE` secrets are deployed but are not declared in the current runtime type; do not remove them without confirming they are obsolete outside this repository.
 
-`NETEASE_COOKIE_KEY` is required by the pending NetEase auto-refresh release but was not present in this live snapshot. Configure it as a random value of at least 32 characters before deploying; never print or commit it. `NETEASE_MUSIC_U` and `NETEASE_CSRF` become optional bootstrap secrets after the first successful encrypted session save.
+`NETEASE_COOKIE_KEY` was configured on 2026-08-13 as a random 64-character hex value (also stored in the local `.env`); never print or commit it. `NETEASE_MUSIC_U` and `NETEASE_CSRF` become optional bootstrap secrets after the first successful encrypted session save.
 
 ## Verified Connectivity
 
