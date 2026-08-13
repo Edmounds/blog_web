@@ -31,6 +31,8 @@
     "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "none",
+    // The Life home is prerendered, so only its SSR sub-sections (and the
+    // legacy /art/* redirects) are listed here.
     "run_worker_first": [
       "/api/*",
       "/admin/*",
@@ -38,6 +40,22 @@
       "/en/art/*",
       "/ja/art/*",
       "/zh-TW/art/*",
+      "/life/book/*",
+      "/life/music/*",
+      "/life/screen/*",
+      "/life/game/*",
+      "/en/life/book/*",
+      "/en/life/music/*",
+      "/en/life/screen/*",
+      "/en/life/game/*",
+      "/ja/life/book/*",
+      "/ja/life/music/*",
+      "/ja/life/screen/*",
+      "/ja/life/game/*",
+      "/zh-TW/life/book/*",
+      "/zh-TW/life/music/*",
+      "/zh-TW/life/screen/*",
+      "/zh-TW/life/game/*",
       "/media/*"
     ]
   },

@@ -1,0 +1,159 @@
+---
+import ArtSection from "./ArtSection.astro";
+import GameSection from "./GameSection.astro";
+import LifeHomeSection from "./LifeHomeSection.astro";
+import type { ArtItem } from "../../lib/art";
+import type { GameItem } from "../../lib/games";
+import { localizePath, type Locale } from "../../lib/i18n";
+import { LIFE_ROUTES, LIFE_TYPES } from "../../lib/spa-routes";
+import { getLocalizedSite } from "../../lib/localized-content";
+
+interface RankingItem {
+  rank: number;
+  songId: number;
+  title: string;
+  artists: string[];
+  coverUrl: string | null;
+  playCount: number;
+}
+
+interface Props {
+  locale?: Locale;
+  /** Index in `LIFE_ROUTES`; the only sub-slide rendered on the server. */
+  activeIndex?: number;
+  artItems?: ArtItem[];
+  gameItems?: GameItem[];
+  ranking?: { weekly: RankingItem[]; total: RankingItem[] };
+}
+
+const {
+  locale = "zh-CN",
+  activeIndex = 0,
+  artItems = [],
+  gameItems = [],
+  ranking = { weekly: [], total: [] },
+} = Astro.props;
+const site = await getLocalizedSite(locale);
+const slides = LIFE_ROUTES.map((route, index) => ({
+  index,
+  route,
+  key: index === 0 ? "home" : LIFE_TYPES[index - 1],
+  label: index === 0 ? site.labels.art : site.labels[LIFE_TYPES[index - 1]],
+  url: localizePath(route, locale),
+}));
+---
+
+<div class="life-root" data-life-root data-active-life-index={activeIndex}>
+  <div class="life-viewport">
+    <div
+      class="life-track"
+      data-life-track
+      style={`transform: translate3d(-${activeIndex * 100}%, 0, 0);`}
+    >
+      {
+        slides.map((slide) => (
+          <div
+            class="life-slide"
+            data-life-slide={slide.key}
+            data-life-index={slide.index}
+            data-path={slide.route}
+            data-section-url={slide.index === 0 ? undefined : slide.url}
+            data-load-state={
+              slide.index === 0 || slide.index === activeIndex ? "loaded" : "idle"
+            }
+          >
+            {slide.index === 0 && <LifeHomeSection locale={locale} />}
+            {slide.index === activeIndex && slide.key === "book" && (
+              <ArtSection type="book" items={artItems} locale={locale} />
+            )}
+            {slide.index === activeIndex && slide.key === "music" && (
+              <ArtSection
+                type="music"
+                items={artItems}
+                ranking={ranking}
+                locale={locale}
+              />
+            )}
+            {slide.index === activeIndex && slide.key === "screen" && (
+              <ArtSection type="screen" items={artItems} locale={locale} />
+            )}
+            {slide.index === activeIndex && slide.key === "game" && (
+              <GameSection items={gameItems} locale={locale} />
+            )}
+            {slide.index !== 0 && slide.index !== activeIndex && (
+              <div class="life-slide__loading" role="status">
+                <span aria-hidden="true" />
+                <span class="sr-only">正在加载 {slide.label}</span>
+              </div>
+            )}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</div>
+
+<style>
+  .life-root {
+    position: relative;
+    width: 100%;
+    isolation: isolate;
+  }
+  .life-viewport {
+    width: 100%;
+    overflow-x: hidden;
+    overflow-x: clip;
+  }
+  .life-track {
+    display: flex;
+    width: 100%;
+    will-change: transform;
+    transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .life-slide {
+    position: relative;
+    flex: 0 0 100%;
+    width: 100%;
+  }
+  .life-root:not([data-transitioning="true"])
+    .life-slide:not([data-active="true"]) {
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .life-slide__loading,
+  .life-slide__error {
+    display: grid;
+    min-height: calc(100vh - 4.5rem);
+    min-height: calc(100dvh - 4.5rem);
+    place-items: center;
+  }
+  .life-slide__loading > span:first-child {
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid color-mix(in srgb, var(--foreground) 22%, transparent);
+    border-top-color: var(--foreground);
+    border-radius: 50%;
+    animation: life-slide-spin 800ms linear infinite;
+  }
+  .life-slide__error {
+    padding: 2rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+  @keyframes life-slide-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .life-track {
+      transition: none;
+    }
+    .life-slide__loading > span:first-child {
+      animation: none;
+    }
+  }
+</style>

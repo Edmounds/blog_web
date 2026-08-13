@@ -24,19 +24,15 @@ const primary = [
   { label: "Links", href: "/links/", primaryRoute: true },
   { label: "About", href: "/about/", primaryRoute: true },
 ];
+const lifeHome = "/life/";
 const life = [
-  { label: "Books", href: "/art/book/" },
-  { label: "Music", href: "/art/music/" },
-  { label: "Screen", href: "/art/screen/" },
-  { label: "Game", href: "/art/game/" },
+  { label: "Books", href: "/life/book/" },
+  { label: "Music", href: "/life/music/" },
+  { label: "Screen", href: "/life/screen/" },
+  { label: "Game", href: "/life/game/" },
 ];
 const isActive = (href: string) =>
-  routePath === href ||
-  routePath.startsWith(href) ||
-  (href === "/art/screen/" &&
-    ["/art/movie/", "/art/series/", "/art/anime/"].some((path) =>
-      routePath.startsWith(path),
-    ));
+  routePath === href || routePath.startsWith(href);
 ---
 
 <header class="site-header" data-site-header>
@@ -79,17 +75,20 @@ const isActive = (href: string) =>
           ))
         }
         <div class="life-menu">
-          <button
-            type="button"
+          <a
+            href={localizePath(lifeHome, locale)}
+            data-primary-route
             aria-haspopup="true"
             aria-expanded="false"
-            data-life-trigger>Life</button
+            aria-current={isActive(lifeHome) ? "page" : undefined}
+            data-life-trigger>Life</a
           >
           <div class="life-menu__items" data-life-menu>
             {
               life.map((item) => (
                 <a
                   href={localizePath(item.href, locale)}
+                  data-primary-route
                   aria-current={isActive(item.href) ? "page" : undefined}
                 >
                   {item.label}
@@ -139,21 +138,26 @@ const isActive = (href: string) =>
           </a>
         ))
       }
-      <details>
-        <summary>Life</summary>
-        <div>
-          {
-            life.map((item) => (
-              <a
-                href={localizePath(item.href, locale)}
-                aria-current={isActive(item.href) ? "page" : undefined}
-              >
-                {item.label}
-              </a>
-            ))
-          }
-        </div>
-      </details>
+      <a
+        href={localizePath(lifeHome, locale)}
+        data-primary-route
+        aria-current={isActive(lifeHome) ? "page" : undefined}
+      >
+        Life
+      </a>
+      <div class="mobile-menu__sub">
+        {
+          life.map((item) => (
+            <a
+              href={localizePath(item.href, locale)}
+              data-primary-route
+              aria-current={isActive(item.href) ? "page" : undefined}
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </div>
     </div>
   </nav>
 </header>
@@ -265,11 +269,13 @@ const isActive = (href: string) =>
       mobileMenu.hidden = true;
       syncAfterMenuChange();
     };
-    const closeLife = () => {
-      lifeTrigger?.setAttribute("aria-expanded", "false");
-      if (lifeMenu instanceof HTMLElement) lifeMenu.dataset.open = "false";
-      syncAfterMenuChange();
+    const setLifeOpen = (open: boolean) => {
+      lifeTrigger?.setAttribute("aria-expanded", String(open));
+      if (lifeMenu instanceof HTMLElement) lifeMenu.dataset.open = String(open);
+      if (open) setHidden(false);
+      else syncAfterMenuChange();
     };
+    const closeLife = () => setLifeOpen(false);
     mobileTrigger?.addEventListener(
       "click",
       () => {
@@ -293,27 +299,20 @@ const isActive = (href: string) =>
       .forEach((link) =>
         link.addEventListener("click", closeMobile, { signal }),
       );
-    lifeTrigger?.addEventListener(
-      "click",
-      () => {
-        if (
-          !(lifeTrigger instanceof HTMLButtonElement) ||
-          !(lifeMenu instanceof HTMLElement)
-        )
-          return;
-        const open = lifeTrigger.getAttribute("aria-expanded") !== "true";
-        lifeTrigger.setAttribute("aria-expanded", String(open));
-        lifeMenu.dataset.open = String(open);
-        setHidden(false);
-      },
-      { signal },
-    );
+    // The trigger navigates to the Life home, so the submenu follows hover and
+    // focus instead of a click toggle.
+    const lifeMenuRoot = lifeMenu?.parentElement;
+    lifeMenuRoot?.addEventListener("pointerenter", () => setLifeOpen(true), {
+      signal,
+    });
+    lifeMenuRoot?.addEventListener("pointerleave", closeLife, { signal });
+    lifeMenuRoot?.addEventListener("focusin", () => setLifeOpen(true), {
+      signal,
+    });
     document.addEventListener(
       "pointerdown",
       (event) => {
-        if (!lifeMenu?.parentElement?.contains(event.target as Node)) {
-          closeLife();
-        }
+        if (!lifeMenuRoot?.contains(event.target as Node)) closeLife();
       },
       { signal },
     );
@@ -323,7 +322,7 @@ const isActive = (href: string) =>
         if (event.key === "Escape") {
           closeMobile();
           closeLife();
-          if (lifeTrigger instanceof HTMLButtonElement) lifeTrigger.focus();
+          if (lifeTrigger instanceof HTMLElement) lifeTrigger.focus();
         }
       },
       { signal },
@@ -452,7 +451,7 @@ const isActive = (href: string) =>
     pointer-events: none;
   }
   .desktop-nav > a,
-  .life-menu > button,
+  .life-menu > a,
   .life-menu__items a {
     position: relative;
     color: var(--text-muted);
@@ -464,7 +463,7 @@ const isActive = (href: string) =>
     transition: color var(--dur-hover) ease;
   }
   .desktop-nav > a::after,
-  .life-menu > button::after,
+  .life-menu > a::after,
   .life-menu__items a::after {
     position: absolute;
     right: 0;
@@ -478,17 +477,12 @@ const isActive = (href: string) =>
   }
   .desktop-nav > a:hover::after,
   .desktop-nav > a[aria-current="page"]::after,
-  .life-menu > button:hover::after,
-  .life-menu:focus-within > button::after,
+  .life-menu > a:hover::after,
+  .life-menu > a[aria-current="page"]::after,
+  .life-menu:focus-within > a::after,
   .life-menu__items a:hover::after,
   .life-menu__items a[aria-current="page"]::after {
     transform: scaleX(1);
-  }
-  .life-menu > button {
-    padding: 0;
-    background: none;
-    border: 0;
-    cursor: pointer;
   }
   .desktop-nav :is(a, button):hover,
   .desktop-nav a[aria-current="page"] {
@@ -565,19 +559,17 @@ const isActive = (href: string) =>
     display: grid;
     padding-block: 1rem 1.5rem;
   }
-  .mobile-menu a,
-  .mobile-menu summary {
+  .mobile-menu a {
     padding: 0.75rem 0;
     color: var(--foreground);
     font-size: var(--type-lg);
     text-decoration: none;
-    list-style: none;
   }
-  .mobile-menu details div {
+  .mobile-menu__sub {
     display: grid;
     padding-left: 1.25rem;
   }
-  .mobile-menu details div a {
+  .mobile-menu__sub a {
     color: var(--text-muted);
     font-size: var(--type-base);
   }

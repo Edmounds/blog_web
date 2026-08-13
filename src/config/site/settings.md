@@ -19,20 +19,20 @@ nav:
     href: /about/
     match: prefix
   - label: Life
-    href: /art/book/
+    href: /life/
     match: prefix
     children:
       - label: Books
-        href: /art/book/
+        href: /life/book/
         match: prefix
       - label: Music
-        href: /art/music/
+        href: /life/music/
         match: prefix
       - label: Screen
-        href: /art/screen/
+        href: /life/screen/
         match: prefix
       - label: Game
-        href: /art/game/
+        href: /life/game/
         match: prefix
 footerLinks:
   - label: Blog

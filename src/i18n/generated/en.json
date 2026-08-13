@@ -79,7 +79,8 @@
       "musicDescription": "Music Collection",
       "bookDescription": "Book Collection",
       "screenDescription": "Movie, TV Series, and Anime Collection",
-      "gameDescription": "Game Collection Sorted by Playtime"
+      "gameDescription": "Game Collection Sorted by Playtime",
+      "lifeDescription": "An overview of the book, music, screen, and game collections"
     }
   }
 }

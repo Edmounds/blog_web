@@ -6,6 +6,7 @@ import {
 } from "../src/server/games.js";
 import { onRequestGet as listAdminGames } from "../src/server/api/admin/games/index.js";
 import { onRequestGet as resolveSteamCover } from "../src/server/api/game/steam-cover.js";
+import { gameCoverSource, selectCoverSources } from "../scripts/lib/life-covers.mjs";
 
 test("Steam request includes app info and played free games and parses minutes", async () => {
   let requested;
@@ -153,6 +154,28 @@ test("Steam cover fallback is limited to visible stored games", async () => {
 
   assert.equal(response.status, 404);
   assert.equal(fetched, false);
+});
+
+test("Life cover snapshots prefer uploaded game covers over the Steam library art", () => {
+  assert.deepEqual(gameCoverSource({ cover_key: "game/abc.webp", steam_app_id: 10 }), {
+    url: "https://img.muelsyse.us/game/abc.webp",
+  });
+  assert.deepEqual(gameCoverSource({ steam_app_id: 10 }), {
+    url: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/10/library_600x900.jpg",
+  });
+  assert.equal(gameCoverSource({ steam_app_id: null }), null);
+});
+
+test("Life cover snapshots keep the most played games that have covers", () => {
+  const rows = [
+    { id: "manual-no-cover", steam_app_id: null },
+    { id: "steam", steam_app_id: 42 },
+    { id: "manual", steam_app_id: null, cover_key: "game/x.webp" },
+  ];
+  assert.deepEqual(
+    selectCoverSources(rows, gameCoverSource, 4).map((cover) => cover.id),
+    ["steam", "manual"],
+  );
 });
 
 function steamCoverEnv(game = { id: "game" }) {

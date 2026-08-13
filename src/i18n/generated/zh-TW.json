@@ -79,7 +79,8 @@
       "musicDescription": "音樂收藏",
       "bookDescription": "書籍收藏",
       "screenDescription": "電影、劇集與動畫收藏",
-      "gameDescription": "依遊玩時數排列的遊戲收藏"
+      "gameDescription": "依遊玩時數排列的遊戲收藏",
+      "lifeDescription": "書籍、音樂、影視與遊戲的收藏總覽"
     }
   }
 }

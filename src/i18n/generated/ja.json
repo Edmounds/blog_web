@@ -79,7 +79,8 @@
       "musicDescription": "音楽コレクション",
       "bookDescription": "書籍コレクション",
       "screenDescription": "映画・ドラマ・アニメのコレクション",
-      "gameDescription": "プレイ時間順のゲームコレクション"
+      "gameDescription": "プレイ時間順のゲームコレクション",
+      "lifeDescription": "書籍・音楽・映像・ゲームのコレクション一覧"
     }
   }
 }
