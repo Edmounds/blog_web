@@ -69,6 +69,7 @@ test("WakaTime combines today's summary and durations", async () => {
   assert.equal(calls.length, 2);
   assert.ok(calls.every((call) => call.authorization === "Basic c2VydmVyLXNlY3JldA=="));
   assert.ok(calls.every((call) => !call.url.includes("server-secret")));
+  assert.ok(calls.some((call) => call.url.includes("durations?date=2026-07-24")));
 });
 
 test("WakaTime returns no public data when unconfigured or empty", async () => {

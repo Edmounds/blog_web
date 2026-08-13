@@ -66,7 +66,7 @@ export async function getWakaTimeToday(apiKey: string, options: RequestOptions =
   const authorization = `Basic ${encodeBase64(key)}`;
   const [status, durations] = await Promise.all([
     requestJson(`${WAKATIME_API}/status_bar/today`, authorization, fetchImpl, options.timeoutMs),
-    requestJson(`${WAKATIME_API}/durations?date=${now.toISOString().slice(0, 10)}`, authorization, fetchImpl, options.timeoutMs),
+    requestJson(`${WAKATIME_API}/durations?date=${formatShanghaiDateKey(now)}`, authorization, fetchImpl, options.timeoutMs),
   ]);
 
   if (!status || !durations) return undefined;
@@ -204,6 +204,16 @@ function formatBadgeDuration(seconds: number) {
   const minuteLabel = `${minutes}${minutes === 1 ? "min" : "mins"}`;
   if (!hours) return minuteLabel;
   return `${hours}${hours === 1 ? "hr" : "hrs"} ${minuteLabel}`;
+}
+
+function formatShanghaiDateKey(date: Date) {
+  // "Today" follows the author's timezone, matching formatLastActivity below.
+  return new Intl.DateTimeFormat("en-CA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: "Asia/Shanghai",
+  }).format(date);
 }
 
 function formatLastActivity(date: Date) {
