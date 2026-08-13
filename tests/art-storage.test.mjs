@@ -9,6 +9,7 @@ import { onRequestGet as previewCover } from "../src/server/api/admin/art/cover-
 import { onRequestGet as proxyDoubanCover } from "../src/server/api/art/douban-cover.js";
 import { onRequestDelete as deleteCover, onRequestPost as uploadCover } from "../src/server/api/admin/art/covers.js";
 import { onRequestGet as listItems, onRequestPost as createItem } from "../src/server/api/admin/art/items.js";
+import { artCoverSource, selectCoverSources } from "../scripts/lib/life-covers.mjs";
 
 test("art input validates types, dates, translations, and required covers", () => {
   const result = validateArtItemInput({
@@ -534,6 +535,34 @@ function duplicateRaceDb() {
     },
   };
 }
+
+test("Life cover snapshots download stored covers and hotlink-protected upstreams", () => {
+  assert.deepEqual(artCoverSource({ cover_key: "art/one/cover.webp", source: "tmdb" }), {
+    url: "https://img.muelsyse.us/art/one/cover.webp",
+  });
+  assert.deepEqual(
+    artCoverSource({ source: "douban_books", cover_source_url: "https://img9.doubanio.com/view/s30014644.jpg" }),
+    { url: "https://img9.doubanio.com/view/s30014644.jpg", referer: "https://book.douban.com/" },
+  );
+  assert.deepEqual(
+    artCoverSource({ source: "netease_album", cover_source_url: "https://p2.music.126.net/cover.jpg" }),
+    { url: "https://p1.music.126.net/cover.jpg" },
+  );
+});
+
+test("Life cover snapshots skip items without a usable cover and stop at the limit", () => {
+  const rows = [
+    { id: "no-cover", source: "tmdb", cover_source_url: "https://image.tmdb.org/poster.jpg" },
+    { id: "stored", source: "tmdb", cover_key: "art/a/cover.webp" },
+    { id: "douban", source: "douban_books", cover_source_url: "https://img1.doubanio.com/b.jpg" },
+    { id: "spare", source: "tmdb", cover_key: "art/b/cover.webp" },
+  ];
+  assert.deepEqual(
+    selectCoverSources(rows, artCoverSource, 2).map((cover) => cover.id),
+    ["stored", "douban"],
+  );
+  assert.deepEqual(selectCoverSources([], artCoverSource, 4), []);
+});
 
 function albumInput() {
   return {

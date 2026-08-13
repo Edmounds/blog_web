@@ -12,7 +12,7 @@ export function getBackgroundKind(pathname: string): BackgroundKind {
   if (path.startsWith("/admin")) return "plain";
   if (path === "/links/") return "constellation";
   if (path === "/about/") return "rain";
-  if (path.startsWith("/art/")) return "constellation";
+  if (path.startsWith("/life/")) return "constellation";
   if (path === "/blog/" || path === "/note/") return "grid";
   return "particles";
 }

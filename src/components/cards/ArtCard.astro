@@ -10,7 +10,7 @@ const { item } = Astro.props;
 
 <article class="group flex flex-col gap-3 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5">
   {item.type === "music" ? (
-    <div class="relative aspect-square w-full overflow-hidden rounded-[var(--radius-control)] border border-[var(--border-soft)] bg-[var(--surface-soft)]">
+    <div class="relative aspect-square w-full overflow-hidden rounded-[var(--radius-control)] border border-[var(--border-soft)] bg-[var(--surface-soft)]" data-life-cover>
       <img
         src={item.cover}
         alt=""
@@ -30,7 +30,7 @@ const { item } = Astro.props;
       />
     </div>
   ) : (
-    <div class="aspect-[2/3] w-full overflow-hidden rounded-[var(--radius-control)] border border-[var(--border-soft)] bg-[var(--surface-soft)]">
+    <div class="aspect-[2/3] w-full overflow-hidden rounded-[var(--radius-control)] border border-[var(--border-soft)] bg-[var(--surface-soft)]" data-life-cover>
       <img
         src={item.cover}
         alt={item.title}
@@ -47,21 +47,3 @@ const { item } = Astro.props;
     {item.extra && item.musicKind !== "single" && <p class="text-xs text-[var(--text-muted)]">{item.extra}</p>}
   </div>
 </article>
-
-<script>
-  function bindArtCoverFallbacks() {
-    document.querySelectorAll<HTMLImageElement>("[data-art-cover-fallback]").forEach((image) => {
-      if (image.dataset.artCoverBound === "true") return;
-      image.dataset.artCoverBound = "true";
-      const useFallback = () => {
-        const fallback = image.dataset.artCoverFallback;
-        delete image.dataset.artCoverFallback;
-        if (fallback) image.src = fallback;
-      };
-      image.addEventListener("error", useFallback, { once: true });
-    });
-  }
-
-  bindArtCoverFallbacks();
-  document.addEventListener("astro:page-load", bindArtCoverFallbacks);
-</script>

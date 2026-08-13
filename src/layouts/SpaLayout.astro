@@ -1,20 +1,50 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
 import HomeSection from "../components/sections/HomeSection.astro";
+import type { ArtItem } from "../lib/art";
+import type { GameItem } from "../lib/games";
 import type { Locale } from "../lib/i18n";
-import { localizePath, stripLocaleFromPath } from "../lib/i18n";
+import { localizePath } from "../lib/i18n";
+import { getLocalizedSite } from "../lib/localized-content";
+import {
+  LIFE_ROUTES,
+  LIFE_TOP_INDEX,
+  TOP_ROUTES,
+  resolveSpaLocation,
+} from "../lib/spa-routes";
+
+interface RankingItem {
+  rank: number;
+  songId: number;
+  title: string;
+  artists: string[];
+  coverUrl: string | null;
+  playCount: number;
+}
 
 interface Props {
   initialPath?: string;
   title: string;
   description: string;
   locale?: Locale;
+  artItems?: ArtItem[];
+  gameItems?: GameItem[];
+  ranking?: { weekly: RankingItem[]; total: RankingItem[] };
 }
 
-const { initialPath = "/", title, description, locale = "zh-CN" } = Astro.props;
-const routes = ["/", "/blog/", "/note/", "/links/", "/about/"];
-const routePath = stripLocaleFromPath(initialPath).pathname;
-const initialIndex = Math.max(0, routes.indexOf(routePath));
+const {
+  initialPath = "/",
+  title,
+  description,
+  locale = "zh-CN",
+  artItems,
+  gameItems,
+  ranking,
+} = Astro.props;
+const site = await getLocalizedSite(locale);
+const location = resolveSpaLocation(initialPath);
+const initialIndex = Math.max(0, location.top);
+const initialLifeIndex = location.life;
 const sectionLabels = ["Home", "Blog", "Note", "Links", "About"];
 const sections = [null, null, null, null, null] as Array<
   typeof HomeSection | null
@@ -35,6 +65,26 @@ if (initialIndex === 4)
   sections[4] = (
     await import("../components/sections/AboutSection.astro")
   ).default;
+const LifeSlide =
+  initialIndex === LIFE_TOP_INDEX
+    ? (await import("../components/sections/LifeSection.astro")).default
+    : null;
+const spaConfig = {
+  topRoutes: [...TOP_ROUTES],
+  lifeRoutes: LIFE_ROUTES,
+  localizedTopRoutes: TOP_ROUTES.map((route) => localizePath(route, locale)),
+  localizedLifeRoutes: LIFE_ROUTES.map((route) => localizePath(route, locale)),
+  lifeTopIndex: LIFE_TOP_INDEX,
+  localePrefixes: ["en", "ja", "zh-TW"],
+  topTitles: ["last4ev4r", "Blog", "Note", "Links", "About", site.labels.art],
+  lifeTitles: [
+    site.labels.art,
+    site.labels.book,
+    site.labels.music,
+    site.labels.screen,
+    site.labels.game,
+  ],
+};
 ---
 
 <BaseLayout
@@ -55,7 +105,7 @@ if (initialIndex === 4)
           <HomeSection locale={locale} />
         </section>
         {
-          routes.slice(1).map((path, offset) => {
+          TOP_ROUTES.slice(1, LIFE_TOP_INDEX).map((path, offset) => {
             const index = offset + 1;
             const Section = sections[index];
             return (
@@ -77,6 +127,29 @@ if (initialIndex === 4)
             );
           })
         }
+        <section
+          data-slide-index={LIFE_TOP_INDEX}
+          data-path="/life/"
+          data-section-url={localizePath("/life/", locale)}
+          data-load-state={LifeSlide ? "loaded" : "idle"}
+        >
+          {
+            LifeSlide ? (
+              <LifeSlide
+                locale={locale}
+                activeIndex={initialLifeIndex}
+                artItems={artItems}
+                gameItems={gameItems}
+                ranking={ranking}
+              />
+            ) : (
+              <div class="spa-section-loading" role="status">
+                <span aria-hidden="true" />
+                <span class="sr-only">正在加载 {site.labels.art}</span>
+              </div>
+            )
+          }
+        </section>
       </div>
     </div>
   </div>
@@ -153,14 +226,46 @@ if (initialIndex === 4)
   }
 </style>
 
-<script
-  is:inline
-  define:vars={{
-    localizedRoutes: routes.map((route) => localizePath(route, locale)),
-  }}
->
-  const PRIMARY_ROUTES = ["/", "/blog/", "/note/", "/links/", "/about/"];
+<style is:global>
+  /* The nested Life track jumps instantly when the deck expansion owns the
+     motion, so the flying cover clones stay aligned with the grid. */
+  .life-root[data-life-instant="true"] .life-track {
+    transition: none;
+  }
+  .life-flip-overlay {
+    position: fixed;
+    z-index: 60;
+    inset: 0;
+    pointer-events: none;
+  }
+  .life-flip-card {
+    position: fixed;
+    overflow: hidden;
+    border: 1px solid var(--border-soft);
+    border-radius: calc(var(--radius-control) * 0.6);
+    background: var(--surface-soft);
+    box-shadow: 0 0.65rem 1.6rem
+      color-mix(in srgb, var(--foreground) 20%, transparent);
+    transform-origin: 50% 50%;
+    will-change: transform;
+  }
+  .life-flip-card img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>
 
+<script>
+  import { bindLifeBehaviors } from "../lib/life-behaviors";
+
+  bindLifeBehaviors();
+  document.addEventListener("astro:page-load", bindLifeBehaviors);
+  window.addEventListener("spa:nav-sync", bindLifeBehaviors);
+</script>
+
+<script is:inline define:vars={{ spaConfig }}>
   function initSpa() {
     const browserWindow = window;
     browserWindow.__spaCleanup?.();
@@ -170,9 +275,23 @@ if (initialIndex === 4)
     const slides = Array.from(root.querySelectorAll("[data-slide-index]"));
     if (!(track instanceof HTMLElement)) return;
 
+    const {
+      topRoutes,
+      lifeRoutes,
+      localizedTopRoutes,
+      localizedLifeRoutes,
+      lifeTopIndex,
+      localePrefixes,
+      topTitles,
+      lifeTitles,
+    } = spaConfig;
     const controller = new AbortController();
     const { signal } = controller;
+    const reducedMotion = () =>
+      matchMedia("(prefers-reduced-motion: reduce)").matches;
     let activeIndex = Number(root.dataset.activeIndex ?? 0);
+    let activeLifeIndex = 0;
+    let activated = false;
     let pointerStartX = 0;
     let pointerStartY = 0;
     let wheelDelta = 0;
@@ -182,50 +301,78 @@ if (initialIndex === 4)
     let backgroundTimer;
     let backgroundQueue = [];
 
-    const copySectionContent = (slide, sourceDocument) => {
-      const source = sourceDocument.querySelector(
-        `[data-spa-root] [data-slide-index="${slide.dataset.slideIndex}"]`,
-      );
+    const lifeRoot = () => root.querySelector("[data-life-root]");
+    const lifeSlideAt = (index) =>
+      root.querySelector(`[data-life-slide][data-life-index="${index}"]`);
+
+    const copyContent = (target, sourceDocument, selector) => {
+      const source = sourceDocument.querySelector(selector);
       if (!(source instanceof HTMLElement))
-        throw new Error(`Missing SPA section ${slide.dataset.slideIndex}`);
-      slide.replaceChildren(
+        throw new Error(`Missing SPA fragment ${selector}`);
+      target.replaceChildren(
         ...Array.from(source.childNodes).map((node) => node.cloneNode(true)),
       );
-      slide.querySelectorAll("script").forEach((script) => {
+      target.querySelectorAll("script").forEach((script) => {
         const executable = document.createElement("script");
         for (const attribute of script.attributes)
           executable.setAttribute(attribute.name, attribute.value);
         executable.textContent = script.textContent;
         script.replaceWith(executable);
       });
-      slide.dataset.loadState = "loaded";
+      target.dataset.loadState = "loaded";
     };
-    const loadSlide = async (index) => {
+    const fetchFragment = (url) =>
+      fetch(url, { headers: { "X-Spa-Fragment": "1" } }).then((response) => {
+        if (!response.ok)
+          throw new Error(`Section request failed: ${response.status}`);
+        return response.text();
+      });
+    const loadSlide = async (index, url) => {
       const slide = slides[index];
       if (!(slide instanceof HTMLElement) || index === 0) return;
       if (slide.dataset.loadState === "loaded") return;
       if (slide.__loadPromise) return slide.__loadPromise;
+      const source = url ?? slide.dataset.sectionUrl;
+      if (!source) return;
       slide.dataset.loadState = "loading";
-      const url = slide.dataset.sectionUrl;
-      if (!url) return;
-      slide.__loadPromise = fetch(url, {
-        headers: { "X-Spa-Fragment": "1" },
-      })
-        .then((response) => {
-          if (!response.ok)
-            throw new Error(`Section request failed: ${response.status}`);
-          return response.text();
-        })
+      slide.__loadPromise = fetchFragment(source)
         .then((html) => {
-          copySectionContent(
+          copyContent(
             slide,
             new DOMParser().parseFromString(html, "text/html"),
+            `[data-spa-root] [data-slide-index="${index}"]`,
           );
         })
         .catch((error) => {
           slide.dataset.loadState = "error";
           slide.innerHTML =
             '<div class="spa-section-error" role="alert">页面加载失败，请刷新后重试。</div>';
+          throw error;
+        });
+      return slide.__loadPromise;
+    };
+    const loadLifeSlide = async (lifeIndex) => {
+      if (lifeIndex <= 0) return;
+      const slide = lifeSlideAt(lifeIndex);
+      if (!(slide instanceof HTMLElement)) return;
+      if (slide.dataset.loadState === "loaded") return;
+      if (slide.__loadPromise) return slide.__loadPromise;
+      const url = slide.dataset.sectionUrl;
+      const key = slide.dataset.lifeSlide;
+      if (!url || !key) return;
+      slide.dataset.loadState = "loading";
+      slide.__loadPromise = fetchFragment(url)
+        .then((html) => {
+          copyContent(
+            slide,
+            new DOMParser().parseFromString(html, "text/html"),
+            `[data-spa-root] [data-life-slide="${key}"]`,
+          );
+        })
+        .catch((error) => {
+          slide.dataset.loadState = "error";
+          slide.innerHTML =
+            '<div class="life-slide__error" role="alert">页面加载失败，请刷新后重试。</div>';
           throw error;
         });
       return slide.__loadPromise;
@@ -279,35 +426,37 @@ if (initialIndex === 4)
 
     const stripLocale = (pathname) => {
       const parts = pathname.split("/").filter(Boolean);
-      if (["en", "ja", "zh-TW"].includes(parts[0])) parts.shift();
+      if (localePrefixes.includes(parts[0])) parts.shift();
       const path = `/${parts.join("/")}/`.replace("//", "/");
       return path === "//" ? "/" : path;
     };
-    const indexForPath = (pathname) =>
-      PRIMARY_ROUTES.indexOf(stripLocale(pathname));
-    const syncDocument = (index) => {
-      const label =
-        index === 0
-          ? "last4ev4r"
-          : `${PRIMARY_ROUTES[index].split("/")[1][0].toUpperCase()}${PRIMARY_ROUTES[index].split("/")[1].slice(1)}`;
-      document.title = label;
+    const locationForPath = (pathname) => {
+      const path = stripLocale(pathname);
+      const life = lifeRoutes.indexOf(path);
+      if (life >= 0) return { top: lifeTopIndex, life };
+      return { top: topRoutes.indexOf(path), life: 0 };
+    };
+    const localizedPathFor = (top, life) =>
+      top === lifeTopIndex
+        ? localizedLifeRoutes[life] ?? localizedLifeRoutes[0]
+        : localizedTopRoutes[top];
+    const syncDocument = (top, life) => {
+      document.title =
+        top === lifeTopIndex ? lifeTitles[life] ?? lifeTitles[0] : topTitles[top];
       document.querySelectorAll("a[data-primary-route]").forEach((link) => {
         if (!(link instanceof HTMLAnchorElement)) return;
-        const active = indexForPath(new URL(link.href).pathname) === index;
-        if (active && index !== 0) link.setAttribute("aria-current", "page");
+        const target = locationForPath(new URL(link.href).pathname);
+        // Inside Life the parent link stays marked alongside the open section.
+        const active =
+          target.top === top &&
+          (top !== lifeTopIndex || target.life === life || target.life === 0);
+        if (active && top !== 0) link.setAttribute("aria-current", "page");
         else link.removeAttribute("aria-current");
       });
       window.dispatchEvent(new Event("spa:nav-sync"));
     };
-    const setActive = async (index, path, push = true) => {
-      if (index < 0 || index >= slides.length) return;
-      if (index > 0) {
-        try {
-          await loadSlide(index);
-        } catch {
-          return;
-        }
-      }
+
+    const applyTopState = (index) => {
       root.dataset.transitioning = "true";
       root.dataset.activeIndex = String(index);
       track.style.transform = `translate3d(${-index * 100}%, 0, 0)`;
@@ -316,19 +465,177 @@ if (initialIndex === 4)
         slide.dataset.active = String(active);
         slide.setAttribute("aria-hidden", String(!active));
       });
+    };
+    const applyLifeState = (lifeIndex, { animate = true } = {}) => {
+      const container = lifeRoot();
+      if (!(container instanceof HTMLElement)) return;
+      const lifeTrack = container.querySelector("[data-life-track]");
+      if (!animate) container.dataset.lifeInstant = "true";
+      container.dataset.transitioning = "true";
+      container.dataset.activeLifeIndex = String(lifeIndex);
+      if (lifeTrack instanceof HTMLElement)
+        lifeTrack.style.transform = `translate3d(${-lifeIndex * 100}%, 0, 0)`;
+      container.querySelectorAll("[data-life-slide]").forEach((slide) => {
+        if (!(slide instanceof HTMLElement)) return;
+        const active = Number(slide.dataset.lifeIndex) === lifeIndex;
+        slide.dataset.active = String(active);
+        slide.setAttribute("aria-hidden", String(!active));
+      });
+      if (!animate)
+        requestAnimationFrame(() => {
+          delete container.dataset.lifeInstant;
+        });
+      window.setTimeout(() => {
+        container.dataset.transitioning = "false";
+      }, animate && !reducedMotion() ? 700 : 0);
+    };
+
+    /* The Life home deck doubles as the entry animation: its blurred cover
+       stack flies apart and lands on the real covers of the section grid. */
+    const captureDeck = (lifeType) => {
+      const home = lifeSlideAt(0);
+      const deck = home?.querySelector(`[data-life-deck="${lifeType}"]`);
+      if (!(deck instanceof HTMLElement)) return undefined;
+      const cards = Array.from(deck.querySelectorAll("[data-life-card]"));
+      if (!cards.length) return undefined;
+      return cards.map((card) => {
+        const rect = card.getBoundingClientRect();
+        const matrix = new DOMMatrixReadOnly(getComputedStyle(card).transform);
+        return {
+          image: card.querySelector("img"),
+          width: card.offsetWidth,
+          height: card.offsetHeight,
+          centerX: rect.left + rect.width / 2,
+          centerY: rect.top + rect.height / 2,
+          rotation: (Math.atan2(matrix.b, matrix.a) * 180) / Math.PI,
+        };
+      });
+    };
+    const runDeckExpand = (deck, lifeIndex) => {
+      const slide = lifeSlideAt(lifeIndex);
+      const covers = Array.from(
+        slide?.querySelectorAll("[data-life-cover]") ?? [],
+      ).filter((cover) => cover.getClientRects().length > 0);
+      if (!covers.length) return;
+      const overlay = document.createElement("div");
+      overlay.className = "life-flip-overlay";
+      document.body.append(overlay);
+      const animations = deck.slice(0, covers.length).map((card, index) => {
+        const target = covers[index].getBoundingClientRect();
+        const clone = document.createElement("span");
+        clone.className = "life-flip-card";
+        clone.style.left = `${card.centerX - card.width / 2}px`;
+        clone.style.top = `${card.centerY - card.height / 2}px`;
+        clone.style.width = `${card.width}px`;
+        clone.style.height = `${card.height}px`;
+        if (card.image) clone.append(card.image.cloneNode(true));
+        overlay.append(clone);
+        return clone.animate(
+          [
+            {
+              transform: `rotate(${card.rotation}deg)`,
+              filter: "blur(2.4px)",
+              opacity: 1,
+            },
+            {
+              transform: `translate3d(${target.left + target.width / 2 - card.centerX}px, ${target.top + target.height / 2 - card.centerY}px, 0) scale(${target.width / card.width}, ${target.height / card.height})`,
+              filter: "blur(0px)",
+              opacity: 1,
+              offset: 0.88,
+            },
+            {
+              transform: `translate3d(${target.left + target.width / 2 - card.centerX}px, ${target.top + target.height / 2 - card.centerY}px, 0) scale(${target.width / card.width}, ${target.height / card.height})`,
+              filter: "blur(0px)",
+              opacity: 0,
+            },
+          ],
+          {
+            duration: 620,
+            delay: index * 55,
+            easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+            fill: "both",
+          },
+        );
+      });
+      slide?.animate(
+        [
+          { opacity: 0, transform: "translate3d(0, 1.25rem, 0)" },
+          { opacity: 1, transform: "translate3d(0, 0, 0)" },
+        ],
+        { duration: 460, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
+      );
+      void Promise.allSettled(
+        animations.map((animation) => animation.finished),
+      ).then(() => overlay.remove());
+    };
+
+    const setActive = async (index, lifeIndex = 0, path, push = true) => {
+      if (index < 0 || index >= slides.length) return;
+      const targetLife = index === lifeTopIndex ? lifeIndex : 0;
+      if (index > 0) {
+        try {
+          await loadSlide(
+            index,
+            index === lifeTopIndex && targetLife > 0
+              ? localizedLifeRoutes[targetLife]
+              : undefined,
+          );
+        } catch {
+          return;
+        }
+      }
+      if (index === lifeTopIndex) {
+        try {
+          await loadLifeSlide(targetLife);
+        } catch {
+          return;
+        }
+      }
+
+      const expanding =
+        activated &&
+        index === lifeTopIndex &&
+        activeIndex === lifeTopIndex &&
+        activeLifeIndex === 0 &&
+        targetLife > 0 &&
+        !reducedMotion();
+      window.scrollTo({ top: 0, behavior: "instant" });
+      const deck = expanding
+        ? captureDeck(lifeRoutes[targetLife].split("/")[2])
+        : undefined;
+
+      applyTopState(index);
+      if (index === lifeTopIndex) applyLifeState(targetLife, { animate: !deck });
       if (push && window.location.pathname !== path)
         history.pushState({}, "", path);
       activeIndex = index;
-      window.scrollTo({ top: 0, behavior: "instant" });
-      syncDocument(index);
-      const reducedMotion = matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-      if (reducedMotion) root.dataset.transitioning = "false";
+      activeLifeIndex = targetLife;
+      syncDocument(index, targetLife);
+      if (deck) runDeckExpand(deck, targetLife);
+      if (reducedMotion()) root.dataset.transitioning = "false";
       else
         window.setTimeout(() => {
           root.dataset.transitioning = "false";
         }, 760);
+    };
+    const navigate = (target, push = true) =>
+      setActive(
+        target.top,
+        target.life,
+        localizedPathFor(target.top, target.life),
+        push,
+      );
+    const step = (direction) => {
+      if (activeIndex === lifeTopIndex) {
+        const next = activeLifeIndex + direction;
+        if (next >= 0 && next < lifeRoutes.length)
+          return { top: lifeTopIndex, life: next };
+        if (next < 0) return { top: lifeTopIndex - 1, life: 0 };
+        return undefined;
+      }
+      const next = activeIndex + direction;
+      if (next < 0 || next >= slides.length) return undefined;
+      return { top: next, life: 0 };
     };
 
     track.addEventListener(
@@ -339,40 +646,51 @@ if (initialIndex === 4)
       },
       { signal },
     );
-    document.querySelectorAll("a[data-primary-route]").forEach((link) => {
-      const preloadFromLink = () => {
-        if (!(link instanceof HTMLAnchorElement)) return;
-        const index = indexForPath(new URL(link.href).pathname);
-        if (index > 0) void loadSlide(index).catch(() => {});
-      };
-      link.addEventListener("pointerenter", preloadFromLink, { signal });
-      link.addEventListener("focusin", preloadFromLink, { signal });
-      link.addEventListener("touchstart", preloadFromLink, {
-        passive: true,
-        signal,
-      });
-      link.addEventListener(
-        "click",
-        (event) => {
-          if (!(link instanceof HTMLAnchorElement)) return;
-          const url = new URL(link.href);
-          const index = indexForPath(url.pathname);
-          if (url.origin !== location.origin || index < 0) return;
-          event.preventDefault();
-          void setActive(index, url.pathname);
-        },
-        { signal },
-      );
+    /* Delegated so links inside lazily injected sections stay interactive. */
+    const spaLink = (event) =>
+      event.target instanceof Element
+        ? event.target.closest("a[data-primary-route]")
+        : null;
+    const preloadFor = (link) => {
+      if (!(link instanceof HTMLAnchorElement)) return;
+      const target = locationForPath(new URL(link.href).pathname);
+      if (target.top > 0) void loadSlide(target.top).catch(() => {});
+      if (target.top === lifeTopIndex && target.life > 0 && lifeRoot())
+        void loadLifeSlide(target.life).catch(() => {});
+    };
+    document.addEventListener(
+      "pointerover",
+      (event) => preloadFor(spaLink(event)),
+      { signal },
+    );
+    document.addEventListener("focusin", (event) => preloadFor(spaLink(event)), {
+      signal,
     });
+    document.addEventListener(
+      "touchstart",
+      (event) => preloadFor(spaLink(event)),
+      { passive: true, signal },
+    );
+    document.addEventListener(
+      "click",
+      (event) => {
+        if (event.defaultPrevented || event.button !== 0) return;
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
+          return;
+        const link = spaLink(event);
+        if (!(link instanceof HTMLAnchorElement) || link.target === "_blank")
+          return;
+        const url = new URL(link.href);
+        const target = locationForPath(url.pathname);
+        if (url.origin !== location.origin || target.top < 0) return;
+        event.preventDefault();
+        void setActive(target.top, target.life, url.pathname);
+      },
+      { signal },
+    );
     window.addEventListener(
       "popstate",
-      () => {
-        void setActive(
-          indexForPath(location.pathname),
-          location.pathname,
-          false,
-        );
-      },
+      () => void navigate(locationForPath(location.pathname), false),
       { signal },
     );
     root.addEventListener(
@@ -389,11 +707,8 @@ if (initialIndex === 4)
         const dx = event.clientX - pointerStartX;
         const dy = event.clientY - pointerStartY;
         if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
-        const next = Math.min(
-          slides.length - 1,
-          Math.max(0, activeIndex + (dx < 0 ? 1 : -1)),
-        );
-        if (next !== activeIndex) void setActive(next, localizedRoutes[next]);
+        const next = step(dx < 0 ? 1 : -1);
+        if (next) void navigate(next);
       },
       { signal },
     );
@@ -406,13 +721,10 @@ if (initialIndex === 4)
         clearTimeout(wheelTimer);
         wheelTimer = setTimeout(() => {
           if (Math.abs(wheelDelta) > 80) {
-            const next = Math.min(
-              slides.length - 1,
-              Math.max(0, activeIndex + (wheelDelta > 0 ? 1 : -1)),
-            );
-            if (next !== activeIndex) {
+            const next = step(wheelDelta > 0 ? 1 : -1);
+            if (next) {
               wheelLocked = true;
-              void setActive(next, localizedRoutes[next]);
+              void navigate(next);
               window.setTimeout(() => {
                 wheelLocked = false;
               }, 700);
@@ -451,7 +763,14 @@ if (initialIndex === 4)
     });
 
     const activateInitial = async () => {
-      await setActive(activeIndex, location.pathname, false);
+      const initial = locationForPath(location.pathname);
+      await setActive(
+        activeIndex,
+        initial.top === lifeTopIndex ? initial.life : 0,
+        location.pathname,
+        false,
+      );
+      activated = true;
       scheduleAdjacentSlides();
       scheduleRemainingSlides();
     };

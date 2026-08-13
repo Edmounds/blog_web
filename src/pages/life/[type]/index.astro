@@ -1,0 +1,37 @@
+---
+import SpaLayout from "../../../layouts/SpaLayout.astro";
+import { getPublicArtItems, type ArtType } from "../../../lib/art";
+import { getPublicGameItems } from "../../../lib/games";
+import { getLocalizedSite } from "../../../lib/localized-content";
+import { getRuntimeEnv } from "../../../lib/runtime";
+import { isLifeType } from "../../../lib/spa-routes";
+import { listNeteaseRanking } from "../../../server/netease-music.js";
+
+export const prerender = false;
+const type = Astro.params.type;
+if (!isLifeType(type)) return Astro.redirect("/life/", 302);
+
+const site = await getLocalizedSite("zh-CN");
+const db = getRuntimeEnv().DB;
+const artTypes: ArtType[] =
+  type === "screen" ? ["movie", "series", "anime"] : type === "game" ? [] : [type];
+const [artItems, gameItems, weekly, total] = await Promise.all([
+  getPublicArtItems(db, "zh-CN", artTypes),
+  type === "game" ? getPublicGameItems(db) : Promise.resolve([]),
+  type === "music" ? listNeteaseRanking(db, "weekly") : Promise.resolve([]),
+  type === "music" ? listNeteaseRanking(db, "total") : Promise.resolve([]),
+]);
+Astro.response.headers.set(
+  "Cache-Control",
+  "public, max-age=0, s-maxage=0, must-revalidate",
+);
+---
+
+<SpaLayout
+  title={site.labels[type]}
+  description={site.page[`${type}Description`]}
+  initialPath={`/life/${type}/`}
+  artItems={artItems}
+  gameItems={gameItems}
+  ranking={{ weekly, total }}
+/>

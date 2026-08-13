@@ -1,0 +1,13 @@
+---
+import SpaLayout from "../../layouts/SpaLayout.astro";
+import { getLocalizedSite } from "../../lib/localized-content";
+
+export const prerender = true;
+const site = await getLocalizedSite("zh-CN");
+---
+
+<SpaLayout
+  title={site.labels.art}
+  description={site.page.lifeDescription}
+  initialPath="/life/"
+/>

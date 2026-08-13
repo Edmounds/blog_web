@@ -79,7 +79,8 @@
       "musicDescription": "音乐收藏",
       "bookDescription": "书籍收藏",
       "screenDescription": "电影、剧集与番剧收藏",
-      "gameDescription": "按游玩时长排列的游戏收藏"
+      "gameDescription": "按游玩时长排列的游戏收藏",
+      "lifeDescription": "书籍、音乐、影视与游戏的收藏总览"
     }
   }
 }
