@@ -94,10 +94,13 @@ const articleJsonLd = JSON.stringify({
           {
             item.tags.length > 0 && (
               <p
-                class="article-page__meta-line entrance-rise"
+                class="article-page__meta-line article-page__meta-line--tags entrance-rise"
                 style="--entrance-delay: 160ms"
               >
-                <span>Type:</span> <strong>{item.tags.join(" / ")}</strong>
+                <span>Type:</span>
+                {item.tags.map((tag) => (
+                  <span class="article-page__tag">#{tag}</span>
+                ))}
               </p>
             )
           }
@@ -107,7 +110,7 @@ const articleJsonLd = JSON.stringify({
           >
             <span>Created:</span>
             <strong>{dateLabel}</strong>
-            <i>/</i>
+            <i>·</i>
             <span>Updated:</span>
             <strong>{updatedLabel}</strong>
           </p>
@@ -117,7 +120,7 @@ const articleJsonLd = JSON.stringify({
           >
             <span>{labels.blogMetaRead}:</span>
             <strong>{item.readingTime}</strong>
-            <i>/</i>
+            <i>·</i>
             <span>Words:</span>
             <strong>{words.toLocaleString(localeDefinition.dateLocale)}</strong>
           </p>
@@ -185,6 +188,7 @@ const articleJsonLd = JSON.stringify({
   }
   .article-page__main {
     grid-column: 2;
+    grid-row: 1;
     min-width: 0;
   }
   .article-page__back {
@@ -250,11 +254,28 @@ const articleJsonLd = JSON.stringify({
     color: var(--text-faint);
     font-style: normal;
   }
+  .article-page__meta-line--tags {
+    align-items: center;
+    gap: 0.25rem 0.4rem;
+  }
+  .article-page__tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1rem 0.6rem;
+    color: var(--accent);
+    font-size: var(--type-xs);
+    font-style: normal;
+    font-weight: 500;
+    background: var(--accent-soft);
+    border-radius: 999px;
+  }
   .article-page__toc {
     position: sticky;
     top: 6.25rem;
-    grid-column: 3;
+    grid-column: 1;
+    grid-row: 1;
     align-self: start;
+    justify-self: end;
     width: clamp(
       10rem,
       15vw,
@@ -262,7 +283,7 @@ const articleJsonLd = JSON.stringify({
     );
     max-height: calc(100vh - 7.25rem);
     max-height: calc(100dvh - 7.25rem);
-    margin-left: var(--detail-layout-column-gap);
+    margin-right: var(--detail-layout-column-gap);
   }
   .article-prose {
     min-width: 0;
