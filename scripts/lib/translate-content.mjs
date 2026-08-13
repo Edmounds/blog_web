@@ -79,3 +79,26 @@ export const replaceMarkdownSegments = (markdown, translations) => {
 
 export const translationFingerprint = (source, version = TRANSLATION_ALGORITHM_VERSION) =>
   createHash("sha256").update(`${version}\0${source}`).digest("hex");
+
+// The journal is appended one JSONL line at a time, so a crash can leave a
+// truncated final line. Skip lines that do not parse instead of failing every
+// later run.
+export const parseTranslationJournal = (content, { warn = console.warn } = {}) => {
+  const entries = {};
+  for (const line of content.split("\n")) {
+    if (!line.trim()) continue;
+    let parsed;
+    try {
+      parsed = JSON.parse(line);
+    } catch (error) {
+      warn(`Skipping corrupt translation journal line (${error.message}): ${line.slice(0, 80)}`);
+      continue;
+    }
+    if (!Array.isArray(parsed) || typeof parsed[0] !== "string") {
+      warn(`Skipping malformed translation journal line: ${line.slice(0, 80)}`);
+      continue;
+    }
+    entries[parsed[0]] = parsed[1];
+  }
+  return entries;
+};

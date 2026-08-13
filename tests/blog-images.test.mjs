@@ -153,6 +153,22 @@ test("migrates a v1 manifest and defers stale object deletion", async () => {
   });
 });
 
+test("sync keeps managed responsive variant keys referenced in article bodies", async () => {
+  const { root, contentDir } = await createFixture();
+  const variantKey = `blog/${"c".repeat(64)}-w640.webp`;
+  await writeManifest(root, { version: 1, keys: [variantKey] });
+  await writeFile(
+    path.join(contentDir, "post.md"),
+    `${bom}---\ntitle: Test\n---\n\nSee <https://img.muelsyse.us/${variantKey}> for details.\n`,
+  );
+
+  const result = await syncBlogImages({ root, upload: async () => assert.fail("no upload expected") });
+  const manifest = await readManifest(root);
+  assert.equal(result.pendingDeletion, 0);
+  assert.deepEqual(manifest.keys, [variantKey]);
+  assert.deepEqual(manifest.pendingDeletion, []);
+});
+
 test("cleanup deletes only pending manifest-owned keys", async () => {
   const { root } = await createFixture();
   const activeKey = `blog/${"a".repeat(64)}.webp`;

@@ -271,7 +271,7 @@ const rewriteSource = (source, references, imagesByPath) => {
 };
 
 const managedKeyPattern = (publicUrl) => new RegExp(
-  `${publicUrl.replace(/\/$/, "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/(blog/[a-f0-9]{64}(?:-w\d+)?\\.(?:avif|gif|jpe?g|png|svg|webp))`,
+  `${publicUrl.replace(/\/$/, "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/(blog/[a-f0-9]{64}(?:-w\\d+)?\\.(?:avif|gif|jpe?g|png|svg|webp))`,
   "gi",
 );
 

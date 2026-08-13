@@ -2,6 +2,18 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { createOpenAITranslateClient } from "../scripts/lib/openai-translate.mjs";
+import { parseTranslationJournal } from "../scripts/lib/translate-content.mjs";
+
+test("translation journal recovery skips a truncated final line", () => {
+  const warnings = [];
+  const entries = parseTranslationJournal(
+    `${JSON.stringify(["en:one", { translation: "One" }])}\n["en:two",`,
+    { warn: (message) => warnings.push(message) },
+  );
+
+  assert.deepEqual(entries, { "en:one": { translation: "One" } });
+  assert.equal(warnings.length, 1);
+});
 
 test("OpenAI-compatible client sends a Chat Completions request", async () => {
   let request;

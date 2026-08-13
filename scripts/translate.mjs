@@ -8,6 +8,7 @@ import { createGoogleTranslateClient } from "./lib/google-translate.mjs";
 import { createOpenAITranslateClient } from "./lib/openai-translate.mjs";
 import {
   collectMarkdownSegments,
+  parseTranslationJournal,
   replaceMarkdownSegments,
   TRANSLATION_ALGORITHM_VERSION,
   translationFingerprint,
@@ -64,13 +65,7 @@ const readJson = async (filePath, fallback) => {
 const readJournal = async () => {
   try {
     const content = await readFile(JOURNAL_PATH, "utf8");
-    const entries = {};
-    for (const line of content.split("\n")) {
-      if (!line.trim()) continue;
-      const [key, value] = JSON.parse(line);
-      entries[key] = value;
-    }
-    return entries;
+    return parseTranslationJournal(content);
   } catch (error) {
     if (error?.code === "ENOENT") return {};
     throw error;
