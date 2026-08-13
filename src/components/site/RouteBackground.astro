@@ -312,16 +312,24 @@ const drops = Array.from({ length: 60 }, (_, index) => ({
       },
       { passive: true, signal: controller.signal },
     );
-    window.addEventListener(
-      "pointerleave",
-      () => {
-        state.pointer.active = false;
-      },
-      { passive: true, signal: controller.signal },
-    );
-    document.addEventListener("visibilitychange", refreshAnimation, {
+    const resetPointer = () => {
+      state.pointer.active = false;
+    };
+    document.documentElement.addEventListener("pointerleave", resetPointer, {
+      passive: true,
       signal: controller.signal,
     });
+    window.addEventListener("blur", resetPointer, {
+      signal: controller.signal,
+    });
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+        if (document.visibilityState !== "visible") resetPointer();
+        refreshAnimation();
+      },
+      { signal: controller.signal },
+    );
 
     resize();
     refreshAnimation();
