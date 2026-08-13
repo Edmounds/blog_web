@@ -55,13 +55,13 @@ The generated Astro deployment adds `SESSION` even though it is not declared dir
 
 | Resource | Snapshot |
 | --- | --- |
-| D1 `blog_web` | 12 tables, 266,240 bytes, primary region WNAM; read-only `SELECT 1` succeeded |
+| D1 `blog_web` | 13 tables, 266,240 bytes, primary region WNAM; read-only `SELECT 1` succeeded |
 | R2 `blog-images` | 79 objects, 8.66 MB, APAC, Standard storage |
 | R2 public access | `img.muelsyse.us` active; `r2.dev` disabled; representative object returned `200 image/webp` |
 
 The D1 and R2 counts are volatile. Do not treat this snapshot as a quota or invariant.
 
-The pending NetEase session migration adds `netease_auth_state`, bringing D1 to 13 tables after deployment. It has not been applied to the live snapshot above.
+The NetEase session migration (`schema/netease_music.sql`) was applied remotely on 2026-08-13, adding `netease_auth_state` and bringing D1 to 13 tables.
 
 ## Secret Names
 
