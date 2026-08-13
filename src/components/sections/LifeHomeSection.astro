@@ -20,12 +20,11 @@ const site = await getLocalizedSite(locale);
 const sections = lifeCovers.sections as Record<LifeType, Cover[]>;
 
 /**
- * The deck is anchored at its left edge and slides open along one axis, so a
- * card only needs a start and end offset expressed in card widths. CSS turns
- * those into pixels at the rendered deck size.
+ * Idle cards sit in a tight stack at the left edge, measured in card widths.
+ * Opening spreads them across the deck's own width, which CSS resolves from
+ * the space the row has left over.
  */
-const DECK_IDLE_STEP = 0.1;
-const DECK_OPEN_STEP = 1.06;
+const DECK_IDLE_STEP = 0.18;
 
 const entries = LIFE_TYPES.map((type, index) => ({
   type,
@@ -35,7 +34,6 @@ const entries = LIFE_TYPES.map((type, index) => ({
   covers: (sections[type] ?? []).map((cover, coverIndex) => ({
     ...cover,
     idleX: (coverIndex * DECK_IDLE_STEP).toFixed(3),
-    openX: (coverIndex * DECK_OPEN_STEP).toFixed(3),
   })),
 }));
 ---
@@ -58,12 +56,17 @@ const entries = LIFE_TYPES.map((type, index) => ({
           >
             <span class="life-entry__ordinal">{entry.ordinal}</span>
             <span class="life-entry__label">{entry.label}</span>
-            <span class="life-entry__deck" data-life-deck={entry.type} aria-hidden="true">
+            <span
+              class="life-entry__deck"
+              data-life-deck={entry.type}
+              aria-hidden="true"
+              style={`--n:${Math.max(entry.covers.length, 2)}`}
+            >
               {entry.covers.map((cover, index) => (
                 <span
                   class="life-deck__card"
                   data-life-card={index}
-                  style={`--i:${index};--card-ratio:${(cover.width / cover.height).toFixed(4)};--idle-x:${cover.idleX};--open-x:${cover.openX}`}
+                  style={`--i:${index};--idle-x:${cover.idleX}`}
                 >
                   <img
                     src={cover.thumbnail}
@@ -94,20 +97,18 @@ const entries = LIFE_TYPES.map((type, index) => ({
   }
   .life-entries {
     display: grid;
-    margin-top: clamp(2rem, 5vh, 3.5rem);
+    margin-top: clamp(1.5rem, 4vh, 3rem);
     border-top: 1px solid var(--border-soft);
   }
   .life-entry {
-    --deck-height: clamp(3.25rem, 5.5vw, 5rem);
+    --deck-height: clamp(4rem, 7vw, 7rem);
     --deck-spread: 0;
-    /* Reserve the opened footprint so hovering never reflows the row. */
-    --deck-width: calc(var(--deck-height) * var(--deck-ratio, 0.667) * 4.2);
     position: relative;
     display: grid;
     grid-template-columns: 3rem minmax(0, auto) minmax(0, 1fr) 2rem;
     align-items: center;
     gap: clamp(1rem, 2.5vw, 2.25rem);
-    padding-block: clamp(1.1rem, 2.4vh, 1.9rem);
+    padding-block: clamp(0.9rem, 2vh, 1.5rem);
     border-bottom: 1px solid var(--border-soft);
     color: var(--foreground);
     text-decoration: none;
@@ -145,11 +146,11 @@ const entries = LIFE_TYPES.map((type, index) => ({
   .life-entry__label {
     color: var(--outline-title-fill);
     font-family: var(--font-ui);
-    font-size: var(--type-page-title);
+    font-size: var(--type-xl);
     font-weight: 500;
     line-height: 1.05;
     white-space: nowrap;
-    -webkit-text-stroke: 1.15px var(--foreground);
+    -webkit-text-stroke: 1px var(--foreground);
     paint-order: stroke fill;
     transition: color var(--dur-fade) var(--ease-out-soft);
   }
@@ -158,19 +159,26 @@ const entries = LIFE_TYPES.map((type, index) => ({
     color: var(--foreground);
   }
   .life-entry__deck {
+    /* Cards spread over the whole deck, but never past a half-card gap, so a
+       wide row keeps the stack reading as one object instead of a sparse strip. */
+    --card-width: calc(var(--deck-height) * var(--deck-ratio, 0.667));
     position: relative;
     display: block;
-    width: var(--deck-width);
-    max-width: 100%;
+    width: min(100%, calc(var(--card-width) * (1 + (var(--n) - 1) * 1.5)));
     height: var(--deck-height);
     justify-self: start;
   }
   .life-deck__card {
+    --idle-left: calc(var(--card-width) * var(--idle-x));
+    --open-left: calc(var(--i) * (100% - var(--card-width)) / (var(--n) - 1));
     position: absolute;
     top: 0;
-    left: 0;
+    left: calc(
+      var(--idle-left) + (var(--open-left) - var(--idle-left)) *
+        var(--deck-spread)
+    );
     display: block;
-    width: calc(var(--deck-height) * var(--card-ratio));
+    width: var(--card-width);
     height: var(--deck-height);
     overflow: hidden;
     border: 1px solid var(--border-soft);
@@ -178,18 +186,10 @@ const entries = LIFE_TYPES.map((type, index) => ({
     background: var(--surface-soft);
     box-shadow: 0 0.35rem 1.1rem
       color-mix(in srgb, var(--foreground) 12%, transparent);
-    transform: translate3d(
-      calc(
-        var(--deck-height) * var(--card-ratio) *
-          (var(--idle-x) + (var(--open-x) - var(--idle-x)) * var(--deck-spread))
-      ),
-      0,
-      0
-    );
     transition:
-      transform 520ms var(--ease-out-soft),
+      left 520ms var(--ease-out-soft),
       box-shadow 380ms ease;
-    transition-delay: calc(var(--i) * 45ms);
+    transition-delay: calc(var(--i) * 40ms);
   }
   .life-entry:hover .life-deck__card,
   .life-entry:focus-visible .life-deck__card {
@@ -232,7 +232,7 @@ const entries = LIFE_TYPES.map((type, index) => ({
       padding-block-start: 2.5rem;
     }
     .life-entry {
-      --deck-height: 2.5rem;
+      --deck-height: 3.25rem;
       grid-template-columns: minmax(0, auto) minmax(0, 1fr);
       gap: 1rem;
     }
