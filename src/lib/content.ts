@@ -58,7 +58,7 @@ const summarize = (entry: ContentEntry, section: ContentSection, locale: Locale)
   };
 };
 
-export const getPublishedContent = async (section: ContentSection, locale: Locale = defaultLocale) => {
+const loadPublishedContent = async (section: ContentSection, locale: Locale) => {
   const entries = locale === defaultLocale
     ? await getCollection(section, ({ data }) => data.published)
     : await getCollection("translations", (entry) =>
@@ -66,6 +66,20 @@ export const getPublishedContent = async (section: ContentSection, locale: Local
       );
 
   return (entries as ContentEntry[]).sort(compareEntries).map((entry) => summarize(entry, section, locale));
+};
+
+// Collections are build-time static, so summaries can be cached for the
+// lifetime of the module just like getSiteSettings below.
+const publishedContentCache = new Map<string, Promise<ContentSummary[]>>();
+
+export const getPublishedContent = (section: ContentSection, locale: Locale = defaultLocale) => {
+  const key = `${section}:${locale}`;
+  let promise = publishedContentCache.get(key);
+  if (!promise) {
+    promise = loadPublishedContent(section, locale);
+    publishedContentCache.set(key, promise);
+  }
+  return promise;
 };
 
 export const getAllPublishedContent = async (locale: Locale = defaultLocale) => {

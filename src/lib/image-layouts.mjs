@@ -501,18 +501,24 @@ export const createObsidianWikiImagePlugin = (configuration = {}) => {
       if (!node.value.includes("![[")) return;
       const children = [];
       let offset = 0;
+      let replacedEmbed = false;
       for (const match of node.value.matchAll(/!\[\[([^\]]+)\]\]/g)) {
         if (match.index > offset) children.push({ type: "text", value: node.value.slice(offset, match.index) });
+        offset = match.index + match[0].length;
         const parsed = parseLayoutImageLine(match[0]);
-        if (!parsed) continue;
-        const resolved = resolver.resolvePath(parsed.link, ctx.fileURL);
-        const extension = path.posix.extname(parsed.link).slice(1).toLowerCase();
-        if (!resolved.resolved && !IMAGE_EXTENSIONS.has(extension)) continue;
+        const resolved = parsed && resolver.resolvePath(parsed.link, ctx.fileURL);
+        const extension = parsed ? path.posix.extname(parsed.link).slice(1).toLowerCase() : "";
+        if (!parsed || (!resolved.resolved && !IMAGE_EXTENSIONS.has(extension))) {
+          // Keep unresolvable or non-image embeds as literal text so the
+          // surrounding prose is emitted exactly once.
+          children.push({ type: "text", value: match[0] });
+          continue;
+        }
         const size = [parsed.alt, parsed.width && `${parsed.width}${parsed.height ? `x${parsed.height}` : ""}`].filter(Boolean).join("|");
         children.push({ type: "image", url: resolved.link, alt: size, title: null });
-        offset = match.index + match[0].length;
+        replacedEmbed = true;
       }
-      if (!children.length) return;
+      if (!replacedEmbed) return;
       if (offset < node.value.length) children.push({ type: "text", value: node.value.slice(offset) });
       ctx.insertBefore(node, children);
       ctx.removeNode(node);

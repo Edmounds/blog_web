@@ -185,6 +185,10 @@ test("Wiki images, folder images, pipe sizes, sorting, reverse, and limit resolv
   const noteEmbed = await resolved.render("![[Another note]]", { fileURL: writingFileUrl });
   assert.match(noteEmbed.code, /!\[\[Another note\]\]/);
   assert.doesNotMatch(noteEmbed.code, /<img/);
+
+  const mixedEmbeds = await resolved.render("Before ![[Another note]] after ![[attachments/one.png]] end.", { fileURL: writingFileUrl });
+  assert.match(mixedEmbeds.code, /Before !\[\[Another note\]\] after <img[^>]*src="https:\/\/img\.test\/one\.webp"[^>]*> end\./);
+  assert.equal((mixedEmbeds.code.match(/Before/g) ?? []).length, 1);
 });
 
 test("layout options honor precedence and reject unsafe CSS values", async () => {
