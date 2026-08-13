@@ -180,7 +180,6 @@ const latestBlocks = [
                         )}
                       >
                         <span>{item.title}</span>
-                        <span aria-hidden="true">-&gt;</span>
                       </a>
                     </li>
                   ))}
@@ -366,8 +365,6 @@ const latestBlocks = [
   .latest-year a {
     display: flex;
     min-width: 0;
-    justify-content: space-between;
-    gap: 1rem;
     color: var(--foreground);
     text-decoration: none;
   }
