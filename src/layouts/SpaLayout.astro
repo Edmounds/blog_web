@@ -649,7 +649,7 @@ const spaConfig = {
     /* Delegated so links inside lazily injected sections stay interactive. */
     const spaLink = (event) =>
       event.target instanceof Element
-        ? event.target.closest("a[data-primary-route]")
+        ? event.target.closest("a[data-primary-route], a[data-life-route]")
         : null;
     const preloadFor = (link) => {
       if (!(link instanceof HTMLAnchorElement)) return;
@@ -686,7 +686,7 @@ const spaConfig = {
         event.preventDefault();
         void setActive(target.top, target.life, url.pathname);
       },
-      { signal },
+      { capture: true, signal },
     );
     window.addEventListener(
       "popstate",
