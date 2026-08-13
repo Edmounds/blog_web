@@ -1,5 +1,6 @@
 ---
 import GameCard from "../cards/GameCard.astro";
+import LifeBackLink from "../domain/LifeBackLink.astro";
 import type { GameItem } from "../../lib/games";
 import type { Locale } from "../../lib/i18n";
 import { getLocalizedSite } from "../../lib/localized-content";
@@ -14,10 +15,11 @@ const formatPlaytime = (minutes: number) => {
 };
 ---
 
-<div class="detail-layout-outer py-12 md:py-20">
+<div class="life-section detail-layout-outer">
   <div class="detail-layout-inner">
-    <div class="mb-8 border-b border-[var(--border-soft)] pb-8 md:mb-12">
+    <div class="life-section__header mb-8 border-b border-[var(--border-soft)] pb-8 md:mb-12">
       <h1 class="ui-page-title">{site.labels.game}</h1>
+      <LifeBackLink locale={locale} />
     </div>
     {items.length > 0 ? (
       <div class="grid grid-cols-2 gap-x-4 gap-y-9 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6" data-reveal-group>

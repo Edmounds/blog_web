@@ -19,17 +19,11 @@ const {
 } = Astro.props;
 const routePath = stripLocaleFromPath(currentPath).pathname;
 const primary = [
-  { label: "Blog", href: "/blog/", primaryRoute: true },
-  { label: "Note", href: "/note/", primaryRoute: true },
-  { label: "Links", href: "/links/", primaryRoute: true },
-  { label: "About", href: "/about/", primaryRoute: true },
-];
-const lifeHome = "/life/";
-const life = [
-  { label: "Books", href: "/life/book/" },
-  { label: "Music", href: "/life/music/" },
-  { label: "Screen", href: "/life/screen/" },
-  { label: "Game", href: "/life/game/" },
+  { label: "Blog", href: "/blog/" },
+  { label: "Note", href: "/note/" },
+  { label: "Links", href: "/links/" },
+  { label: "About", href: "/about/" },
+  { label: "Life", href: "/life/" },
 ];
 const isActive = (href: string) =>
   routePath === href || routePath.startsWith(href);
@@ -67,36 +61,13 @@ const isActive = (href: string) =>
           primary.map((item) => (
             <a
               href={localizePath(item.href, locale)}
-              data-primary-route={item.primaryRoute ? true : undefined}
+              data-primary-route
               aria-current={isActive(item.href) ? "page" : undefined}
             >
               {item.label}
             </a>
           ))
         }
-        <div class="life-menu">
-          <a
-            href={localizePath(lifeHome, locale)}
-            data-primary-route
-            aria-haspopup="true"
-            aria-expanded="false"
-            aria-current={isActive(lifeHome) ? "page" : undefined}
-            data-life-trigger>Life</a
-          >
-          <div class="life-menu__items" data-life-menu>
-            {
-              life.map((item) => (
-                <a
-                  href={localizePath(item.href, locale)}
-                  data-primary-route
-                  aria-current={isActive(item.href) ? "page" : undefined}
-                >
-                  {item.label}
-                </a>
-              ))
-            }
-          </div>
-        </div>
       </nav>
     </div>
 
@@ -131,33 +102,13 @@ const isActive = (href: string) =>
         primary.map((item) => (
           <a
             href={localizePath(item.href, locale)}
-            data-primary-route={item.primaryRoute ? true : undefined}
+            data-primary-route
             aria-current={isActive(item.href) ? "page" : undefined}
           >
             {item.label}
           </a>
         ))
       }
-      <a
-        href={localizePath(lifeHome, locale)}
-        data-primary-route
-        aria-current={isActive(lifeHome) ? "page" : undefined}
-      >
-        Life
-      </a>
-      <div class="mobile-menu__sub">
-        {
-          life.map((item) => (
-            <a
-              href={localizePath(item.href, locale)}
-              data-primary-route
-              aria-current={isActive(item.href) ? "page" : undefined}
-            >
-              {item.label}
-            </a>
-          ))
-        }
-      </div>
     </div>
   </nav>
 </header>
@@ -181,8 +132,6 @@ const isActive = (href: string) =>
     const frameStart = header.querySelector("[data-content-frame-start]");
     const signatureMark = header.querySelector("[data-site-signature-mark]");
     const frameEnd = header.querySelector("[data-content-frame-end]");
-    const lifeTrigger = header.querySelector("[data-life-trigger]");
-    const lifeMenu = header.querySelector("[data-life-menu]");
     const desktopLayout = matchMedia("(min-width: 64.0625rem)");
     if (
       !(desktopNavRegion instanceof HTMLElement) ||
@@ -240,15 +189,12 @@ const isActive = (href: string) =>
     frameObserver.observe(signatureMark);
     frameObserver.observe(frameEnd);
     frameObserver.observe(header);
-    const lifeIsOpen = () =>
-      lifeTrigger?.getAttribute("aria-expanded") === "true";
     const navHasFocus = () => desktopNav.contains(document.activeElement);
     const setHidden = (hidden: boolean) => {
       const nextHidden =
         hidden &&
         desktopLayout.matches &&
         window.scrollY > 0 &&
-        !lifeIsOpen() &&
         !pointerInsideNavRegion &&
         !navHasFocus();
       desktopNav.dataset.hidden = String(nextHidden);
@@ -269,13 +215,6 @@ const isActive = (href: string) =>
       mobileMenu.hidden = true;
       syncAfterMenuChange();
     };
-    const setLifeOpen = (open: boolean) => {
-      lifeTrigger?.setAttribute("aria-expanded", String(open));
-      if (lifeMenu instanceof HTMLElement) lifeMenu.dataset.open = String(open);
-      if (open) setHidden(false);
-      else syncAfterMenuChange();
-    };
-    const closeLife = () => setLifeOpen(false);
     mobileTrigger?.addEventListener(
       "click",
       () => {
@@ -299,31 +238,10 @@ const isActive = (href: string) =>
       .forEach((link) =>
         link.addEventListener("click", closeMobile, { signal }),
       );
-    // The trigger navigates to the Life home, so the submenu follows hover and
-    // focus instead of a click toggle.
-    const lifeMenuRoot = lifeMenu?.parentElement;
-    lifeMenuRoot?.addEventListener("pointerenter", () => setLifeOpen(true), {
-      signal,
-    });
-    lifeMenuRoot?.addEventListener("pointerleave", closeLife, { signal });
-    lifeMenuRoot?.addEventListener("focusin", () => setLifeOpen(true), {
-      signal,
-    });
-    document.addEventListener(
-      "pointerdown",
-      (event) => {
-        if (!lifeMenuRoot?.contains(event.target as Node)) closeLife();
-      },
-      { signal },
-    );
     header.addEventListener(
       "keydown",
       (event) => {
-        if (event.key === "Escape") {
-          closeMobile();
-          closeLife();
-          if (lifeTrigger instanceof HTMLElement) lifeTrigger.focus();
-        }
+        if (event.key === "Escape") closeMobile();
       },
       { signal },
     );
@@ -349,12 +267,7 @@ const isActive = (href: string) =>
       "scroll",
       () => {
         const currentScrollY = window.scrollY;
-        if (
-          currentScrollY <= 0 ||
-          lifeIsOpen() ||
-          pointerInsideNavRegion ||
-          navHasFocus()
-        )
+        if (currentScrollY <= 0 || pointerInsideNavRegion || navHasFocus())
           setHidden(false);
         else setHidden(true);
       },
@@ -396,8 +309,6 @@ const isActive = (href: string) =>
 
 <style>
   .site-header {
-    --life-submenu-gap: clamp(0.75rem, 1.5vw, 1.5rem);
-    --life-submenu-color: var(--text-faint);
     position: sticky;
     top: 0;
     z-index: 50;
@@ -450,9 +361,7 @@ const isActive = (href: string) =>
     transform: translateY(-100%);
     pointer-events: none;
   }
-  .desktop-nav > a,
-  .life-menu > a,
-  .life-menu__items a {
+  .desktop-nav > a {
     position: relative;
     color: var(--text-muted);
     font-family: var(--font-ui);
@@ -462,9 +371,7 @@ const isActive = (href: string) =>
     text-decoration: none;
     transition: color var(--dur-hover) ease;
   }
-  .desktop-nav > a::after,
-  .life-menu > a::after,
-  .life-menu__items a::after {
+  .desktop-nav > a::after {
     position: absolute;
     right: 0;
     bottom: -0.12em;
@@ -476,52 +383,12 @@ const isActive = (href: string) =>
     transition: transform var(--dur-hover) var(--ease-out-soft);
   }
   .desktop-nav > a:hover::after,
-  .desktop-nav > a[aria-current="page"]::after,
-  .life-menu > a:hover::after,
-  .life-menu > a[aria-current="page"]::after,
-  .life-menu:focus-within > a::after,
-  .life-menu__items a:hover::after,
-  .life-menu__items a[aria-current="page"]::after {
+  .desktop-nav > a[aria-current="page"]::after {
     transform: scaleX(1);
   }
-  .desktop-nav :is(a, button):hover,
+  .desktop-nav a:hover,
   .desktop-nav a[aria-current="page"] {
     color: var(--foreground);
-  }
-  .life-menu {
-    position: relative;
-  }
-  .life-menu__items {
-    position: absolute;
-    top: 50%;
-    left: 100%;
-    display: flex;
-    align-items: center;
-    gap: var(--life-submenu-gap);
-    width: max-content;
-    padding-left: var(--life-submenu-gap);
-    visibility: hidden;
-    opacity: 0;
-    transform: translate(-0.25rem, -50%);
-    transition:
-      opacity 160ms ease,
-      transform 160ms ease;
-    pointer-events: none;
-    white-space: nowrap;
-  }
-  .life-menu__items[data-open="true"],
-  .life-menu:hover .life-menu__items,
-  .life-menu:focus-within .life-menu__items {
-    visibility: visible;
-    opacity: 1;
-    transform: translate(0, -50%);
-    pointer-events: auto;
-  }
-  .life-menu__items a {
-    padding: 0.2rem 0;
-    color: var(--life-submenu-color);
-    font-size: var(--type-base);
-    text-align: left;
   }
   .site-header__tools {
     display: flex;
@@ -564,31 +431,6 @@ const isActive = (href: string) =>
     color: var(--foreground);
     font-size: var(--type-lg);
     text-decoration: none;
-  }
-  .mobile-menu__sub {
-    display: grid;
-    padding-left: 1.25rem;
-  }
-  .mobile-menu__sub a {
-    color: var(--text-muted);
-    font-size: var(--type-base);
-  }
-  @media (min-width: 64.0625rem) and (max-width: 78rem) {
-    .life-menu__items {
-      top: 100%;
-      left: 0;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--life-submenu-gap);
-      padding-top: var(--life-submenu-gap);
-      padding-left: 0;
-      transform: translateY(-0.25rem);
-    }
-    .life-menu__items[data-open="true"],
-    .life-menu:hover .life-menu__items,
-    .life-menu:focus-within .life-menu__items {
-      transform: translateY(0);
-    }
   }
   @media (max-width: 64rem) {
     .site-header {
@@ -636,10 +478,7 @@ const isActive = (href: string) =>
   }
   @media (prefers-reduced-motion: reduce) {
     .desktop-nav,
-    .life-menu__items,
-    .desktop-nav > a::after,
-    .life-menu > button::after,
-    .life-menu__items a::after {
+    .desktop-nav > a::after {
       transition: none;
     }
   }

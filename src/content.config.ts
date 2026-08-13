@@ -41,7 +41,7 @@ const site = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/config/site" }),
   schema: z.object({
     brand: z.string(), htmlLang: z.string(), dateLocale: z.string(), seo: z.object({ defaultDescription: z.string(), titleSeparator: z.string() }),
-    nav: z.array(z.object({ label: z.string(), href: z.string(), match: z.enum(["exact", "prefix"]).optional(), children: z.array(z.object({ label: z.string(), href: z.string(), match: z.enum(["exact", "prefix"]).optional() })).optional() })),
+    nav: z.array(z.object({ label: z.string(), href: z.string(), match: z.enum(["exact", "prefix"]).optional() })),
     footerLinks: z.array(z.object({ label: z.string(), href: z.string() })), copy: z.record(z.string(), z.string()),
   }),
 });

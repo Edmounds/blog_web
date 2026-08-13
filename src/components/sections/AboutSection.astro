@@ -13,7 +13,8 @@ const profile = locale === "zh-CN" ? await getAboutProfile() : await getLocalize
 const { Content } = await render(profile);
 ---
 
-<div class="about-shell content-container">
+<div class="about-shell detail-layout-outer">
+  <div class="detail-layout-inner">
   <article class="about-article" aria-label={site.labels.about}>
     <header class="about-article__title">
       <h1>About</h1>
@@ -27,10 +28,13 @@ const { Content } = await render(profile);
       <CommentsSection contentId="about/profile" locale={locale} labels={site.copy} />
     </div>
   </article>
+  </div>
 </div>
 
 <style>
-  .about-article { width: 100%; max-width: 52rem; min-height: calc(100vh - 4.5rem); min-height: calc(100dvh - 4.5rem); margin-inline: auto; padding-block: clamp(4rem, 8vh, 7rem) 6rem; --image-layout-carousel-height: 18rem; }
+  /* Left-aligned inside the shared detail column so the title lines up with the
+     archive pages instead of centring on its own narrower measure. */
+  .about-article { width: 100%; max-width: 52rem; min-height: calc(100vh - 4.5rem); min-height: calc(100dvh - 4.5rem); padding-block: clamp(3.5rem, 7vh, 6rem) 6rem; --image-layout-carousel-height: 18rem; }
   .about-article__title { margin-bottom: clamp(2.5rem, 5vw, 4rem); padding-bottom: clamp(0.75rem, 1.5vw, 1.25rem); border-bottom: 1px solid var(--border-soft); }
   .about-article__title h1 { margin: 0; color: var(--outline-title-fill); font-family: var(--font-ui); font-size: var(--type-page-title); font-weight: 400; line-height: 1.05; letter-spacing: 0; overflow-wrap: anywhere; -webkit-text-stroke: 1px var(--foreground); paint-order: stroke fill; }
   .about-article__body :global(img:not(.obsidian-image-size):not(.image-layout__image)) { width: auto; border: 0; border-radius: 0; }

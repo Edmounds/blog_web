@@ -312,6 +312,26 @@ html:lang(ja) .article-prose > p {
   margin-inline: auto;
 }
 
+/* Life sections keep the archive pages' vertical rhythm so every page title
+   starts at the same place. */
+.life-section {
+  padding-block: clamp(3.5rem, 7vh, 6rem) 5rem;
+}
+
+.life-section__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+}
+
+@media (max-width: 40rem) {
+  .life-section {
+    padding-block-start: 2.5rem;
+  }
+}
+
 @media (max-width: 64rem) {
   .content-container,
   .detail-layout-outer {
