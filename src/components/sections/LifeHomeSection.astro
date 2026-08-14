@@ -19,22 +19,12 @@ const { locale = "zh-CN" } = Astro.props;
 const site = await getLocalizedSite(locale);
 const sections = lifeCovers.sections as Record<LifeType, Cover[]>;
 
-/**
- * Idle cards sit in a tight stack at the left edge, measured in card widths.
- * Opening spreads them across the deck's own width, which CSS resolves from
- * the space the row has left over.
- */
-const DECK_IDLE_STEP = 0.18;
-
 const entries = LIFE_TYPES.map((type, index) => ({
   type,
   href: localizePath(`/life/${type}/`, locale),
   label: site.labels[type],
   ordinal: String(index + 1).padStart(2, "0"),
-  covers: (sections[type] ?? []).map((cover, coverIndex) => ({
-    ...cover,
-    idleX: (coverIndex * DECK_IDLE_STEP).toFixed(3),
-  })),
+  covers: sections[type] ?? [],
 }));
 ---
 
@@ -66,7 +56,7 @@ const entries = LIFE_TYPES.map((type, index) => ({
                 <span
                   class="life-deck__card"
                   data-life-card={index}
-                  style={`--i:${index};--idle-x:${cover.idleX}`}
+                  style={`--i:${index}`}
                 >
                   <img
                     src={cover.thumbnail}
@@ -102,10 +92,9 @@ const entries = LIFE_TYPES.map((type, index) => ({
   }
   .life-entry {
     --deck-height: clamp(4rem, 7vw, 7rem);
-    --deck-spread: 0;
     position: relative;
     display: grid;
-    grid-template-columns: 3rem minmax(0, auto) minmax(0, 1fr) 2rem;
+    grid-template-columns: 3rem clamp(5rem, 8vw, 7rem) minmax(0, 1fr) 2rem;
     align-items: center;
     gap: clamp(1rem, 2.5vw, 2.25rem);
     padding-block: clamp(0.9rem, 2vh, 1.5rem);
@@ -125,9 +114,7 @@ const entries = LIFE_TYPES.map((type, index) => ({
     opacity: 0;
     transition: opacity var(--dur-fade) ease;
   }
-  .life-entry:hover,
   .life-entry:focus-visible {
-    --deck-spread: 1;
     outline: none;
   }
   .life-entry:hover::before,
@@ -159,24 +146,19 @@ const entries = LIFE_TYPES.map((type, index) => ({
     color: var(--foreground);
   }
   .life-entry__deck {
-    /* Cards spread over the whole deck, but never past a half-card gap, so a
-       wide row keeps the stack reading as one object instead of a sparse strip. */
     --card-width: calc(var(--deck-height) * var(--deck-ratio, 0.667));
     position: relative;
     display: block;
-    width: min(100%, calc(var(--card-width) * (1 + (var(--n) - 1) * 1.5)));
+    width: 100%;
     height: var(--deck-height);
     justify-self: start;
   }
   .life-deck__card {
-    --idle-left: calc(var(--card-width) * var(--idle-x));
-    --open-left: calc(var(--i) * (100% - var(--card-width)) / (var(--n) - 1));
+    /* All rows use the square music cover as their shared horizontal step. */
+    --open-left: calc(var(--i) * (100% - var(--deck-height)) / (var(--n) - 1));
     position: absolute;
     top: 0;
-    left: calc(
-      var(--idle-left) + (var(--open-left) - var(--idle-left)) *
-        var(--deck-spread)
-    );
+    left: var(--open-left);
     display: block;
     width: var(--card-width);
     height: var(--deck-height);
@@ -186,10 +168,7 @@ const entries = LIFE_TYPES.map((type, index) => ({
     background: var(--surface-soft);
     box-shadow: 0 0.35rem 1.1rem
       color-mix(in srgb, var(--foreground) 12%, transparent);
-    transition:
-      left 520ms var(--ease-out-soft),
-      box-shadow 380ms ease;
-    transition-delay: calc(var(--i) * 40ms);
+    transition: box-shadow 380ms ease;
   }
   .life-entry:hover .life-deck__card,
   .life-entry:focus-visible .life-deck__card {
@@ -215,13 +194,13 @@ const entries = LIFE_TYPES.map((type, index) => ({
     color: var(--foreground);
     transform: translateX(0.35rem);
   }
-  /* Music covers are square, so their deck needs a wider footprint. */
+  /* Music covers remain square while the other collections stay portrait. */
   .life-entry[data-life-type="music"] {
     --deck-ratio: 1;
   }
   @media (max-width: 64rem) {
     .life-entry {
-      grid-template-columns: 2.5rem minmax(0, auto) minmax(0, 1fr);
+      grid-template-columns: 2.5rem clamp(5rem, 10vw, 7rem) minmax(0, 1fr);
     }
     .life-entry__arrow {
       display: none;
@@ -233,7 +212,7 @@ const entries = LIFE_TYPES.map((type, index) => ({
     }
     .life-entry {
       --deck-height: 3.25rem;
-      grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+      grid-template-columns: 5rem minmax(0, 1fr);
       gap: 1rem;
     }
     .life-entry__ordinal {
@@ -241,7 +220,6 @@ const entries = LIFE_TYPES.map((type, index) => ({
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .life-deck__card,
     .life-entry__arrow,
     .life-entry__label,
     .life-entry::before {

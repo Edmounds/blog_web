@@ -1,5 +1,7 @@
 ---
+import { ArrowLeft } from "lucide-static";
 import { localizePath, type Locale } from "../../lib/i18n";
+import Icon from "../ui/Icon.astro";
 
 interface Props {
   locale?: Locale;
@@ -9,7 +11,7 @@ const { locale = "zh-CN" } = Astro.props;
 ---
 
 <a class="life-back" href={localizePath("/life/", locale)} data-primary-route>
-  <span class="life-back__arrow" aria-hidden="true">&lt;-</span>
+  <Icon svg={ArrowLeft} />
   <span>Life</span>
 </a>
 
@@ -18,28 +20,30 @@ const { locale = "zh-CN" } = Astro.props;
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    font-size: var(--type-xs);
-    letter-spacing: 0.08em;
+    padding: 0.48rem 0.7rem;
+    color: var(--foreground-soft);
+    font-size: var(--type-sm);
     text-decoration: none;
-    text-transform: uppercase;
-    transition: color var(--dur-hover) ease;
+    background: color-mix(in srgb, var(--foreground) 3.5%, transparent);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-control);
+    transition:
+      color 180ms ease,
+      transform 180ms ease,
+      border-color 180ms ease;
   }
   .life-back:hover,
   .life-back:focus-visible {
     color: var(--foreground);
+    border-color: var(--border-strong);
+    transform: translateX(-0.12rem);
   }
-  .life-back__arrow {
-    transition: transform var(--dur-hover) var(--ease-out-soft);
-  }
-  .life-back:hover .life-back__arrow,
-  .life-back:focus-visible .life-back__arrow {
-    transform: translateX(-0.25rem);
+  .life-back :global(svg) {
+    width: 1rem;
+    height: 1rem;
   }
   @media (prefers-reduced-motion: reduce) {
-    .life-back,
-    .life-back__arrow {
+    .life-back {
       transition: none;
     }
   }
