@@ -255,6 +255,9 @@ const spaConfig = {
     height: 100%;
     object-fit: cover;
   }
+  .life-root[data-life-returning="true"] [data-life-slide="home"] [data-life-card] {
+    opacity: 0;
+  }
 </style>
 
 <script>
@@ -490,8 +493,8 @@ const spaConfig = {
       }, animate && !reducedMotion() ? 700 : 0);
     };
 
-    /* The Life home deck doubles as the entry animation: its blurred cover
-       stack flies apart and lands on the real covers of the section grid. */
+    /* The Life home deck doubles as the transition surface: its preview cards
+       fly to the collection grid and return to the same slots on the way back. */
     const captureDeck = (lifeType) => {
       const home = lifeSlideAt(0);
       const deck = home?.querySelector(`[data-life-deck="${lifeType}"]`);
@@ -511,41 +514,62 @@ const spaConfig = {
         };
       });
     };
-    const runDeckExpand = (deck, lifeIndex) => {
+    const captureSectionCovers = (lifeIndex) => {
       const slide = lifeSlideAt(lifeIndex);
-      const covers = Array.from(
+      return Array.from(
         slide?.querySelectorAll("[data-life-cover]") ?? [],
-      ).filter((cover) => cover.getClientRects().length > 0);
-      if (!covers.length) return;
+      )
+        .filter((cover) => cover.getClientRects().length > 0)
+        .map((cover) => {
+          const rect = cover.getBoundingClientRect();
+          return {
+            image: cover.querySelector("img:last-of-type"),
+            width: rect.width,
+            height: rect.height,
+            centerX: rect.left + rect.width / 2,
+            centerY: rect.top + rect.height / 2,
+          };
+        });
+    };
+    const runDeckFlight = (
+      sources,
+      targets,
+      { startBlur, endBlur, onFinish },
+    ) => {
+      if (!sources.length || !targets.length) {
+        onFinish?.();
+        return;
+      }
       const overlay = document.createElement("div");
       overlay.className = "life-flip-overlay";
       document.body.append(overlay);
-      const animations = deck.slice(0, covers.length).map((card, index) => {
-        const target = covers[index].getBoundingClientRect();
+      const animations = sources.slice(0, targets.length).map((source, index) => {
+        const target = targets[index];
+        const translate = `translate3d(${target.centerX - source.centerX}px, ${target.centerY - source.centerY}px, 0) scale(${target.width / source.width}, ${target.height / source.height})`;
         const clone = document.createElement("span");
         clone.className = "life-flip-card";
-        clone.style.left = `${card.centerX - card.width / 2}px`;
-        clone.style.top = `${card.centerY - card.height / 2}px`;
-        clone.style.width = `${card.width}px`;
-        clone.style.height = `${card.height}px`;
-        if (card.image) clone.append(card.image.cloneNode(true));
+        clone.style.left = `${source.centerX - source.width / 2}px`;
+        clone.style.top = `${source.centerY - source.height / 2}px`;
+        clone.style.width = `${source.width}px`;
+        clone.style.height = `${source.height}px`;
+        if (source.image) clone.append(source.image.cloneNode(true));
         overlay.append(clone);
         return clone.animate(
           [
             {
-              transform: `rotate(${card.rotation}deg)`,
-              filter: "blur(2.4px)",
+              transform: `rotate(${source.rotation ?? 0}deg)`,
+              filter: `blur(${startBlur}px)`,
               opacity: 1,
             },
             {
-              transform: `translate3d(${target.left + target.width / 2 - card.centerX}px, ${target.top + target.height / 2 - card.centerY}px, 0) scale(${target.width / card.width}, ${target.height / card.height})`,
-              filter: "blur(0px)",
+              transform: translate,
+              filter: `blur(${endBlur}px)`,
               opacity: 1,
               offset: 0.88,
             },
             {
-              transform: `translate3d(${target.left + target.width / 2 - card.centerX}px, ${target.top + target.height / 2 - card.centerY}px, 0) scale(${target.width / card.width}, ${target.height / card.height})`,
-              filter: "blur(0px)",
+              transform: translate,
+              filter: `blur(${endBlur}px)`,
               opacity: 0,
             },
           ],
@@ -557,6 +581,19 @@ const spaConfig = {
           },
         );
       });
+      void Promise.allSettled(
+        animations.map((animation) => animation.finished),
+      ).then(() => {
+        overlay.remove();
+        onFinish?.();
+      });
+    };
+    const runDeckExpand = (deck, lifeIndex) => {
+      const slide = lifeSlideAt(lifeIndex);
+      runDeckFlight(deck, captureSectionCovers(lifeIndex), {
+        startBlur: 2.4,
+        endBlur: 0,
+      });
       slide?.animate(
         [
           { opacity: 0, transform: "translate3d(0, 1.25rem, 0)" },
@@ -564,14 +601,37 @@ const spaConfig = {
         ],
         { duration: 460, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
       );
-      void Promise.allSettled(
-        animations.map((animation) => animation.finished),
-      ).then(() => overlay.remove());
+    };
+    const runDeckCollapse = (covers, lifeIndex) => {
+      const container = lifeRoot();
+      const home = lifeSlideAt(0);
+      const lifeType = lifeRoutes[lifeIndex]?.split("/")[2];
+      const deck = captureDeck(lifeType);
+      if (!(container instanceof HTMLElement) || !deck?.length) {
+        if (container instanceof HTMLElement)
+          delete container.dataset.lifeReturning;
+        return;
+      }
+      runDeckFlight(covers, deck, {
+        startBlur: 0,
+        endBlur: 2.4,
+        onFinish: () => {
+          delete container.dataset.lifeReturning;
+        },
+      });
+      home?.animate(
+        [
+          { opacity: 0, transform: "translate3d(0, -1.25rem, 0)" },
+          { opacity: 1, transform: "translate3d(0, 0, 0)" },
+        ],
+        { duration: 460, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
+      );
     };
 
     const setActive = async (index, lifeIndex = 0, path, push = true) => {
       if (index < 0 || index >= slides.length) return;
       const targetLife = index === lifeTopIndex ? lifeIndex : 0;
+      const previousLife = activeLifeIndex;
       if (index > 0) {
         try {
           await loadSlide(
@@ -599,19 +659,34 @@ const spaConfig = {
         activeLifeIndex === 0 &&
         targetLife > 0 &&
         !reducedMotion();
+      const collapsing =
+        activated &&
+        index === lifeTopIndex &&
+        activeIndex === lifeTopIndex &&
+        activeLifeIndex > 0 &&
+        targetLife === 0 &&
+        !reducedMotion();
       window.scrollTo({ top: 0, behavior: "instant" });
       const deck = expanding
         ? captureDeck(lifeRoutes[targetLife].split("/")[2])
         : undefined;
+      const covers = collapsing
+        ? captureSectionCovers(activeLifeIndex)
+        : undefined;
+      const container = lifeRoot();
+      if (covers?.length && container instanceof HTMLElement)
+        container.dataset.lifeReturning = "true";
 
       applyTopState(index);
-      if (index === lifeTopIndex) applyLifeState(targetLife, { animate: !deck });
+      if (index === lifeTopIndex)
+        applyLifeState(targetLife, { animate: !deck && !covers?.length });
       if (push && window.location.pathname !== path)
         history.pushState({}, "", path);
       activeIndex = index;
       activeLifeIndex = targetLife;
       syncDocument(index, targetLife);
       if (deck) runDeckExpand(deck, targetLife);
+      if (covers?.length) runDeckCollapse(covers, previousLife);
       if (reducedMotion()) root.dataset.transitioning = "false";
       else
         window.setTimeout(() => {
