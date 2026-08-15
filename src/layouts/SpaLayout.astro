@@ -243,7 +243,7 @@ const spaConfig = {
     overflow: hidden;
     border: 1px solid var(--border-soft);
     border-radius: calc(var(--radius-control) * 0.6);
-    background: var(--surface-soft);
+    background: transparent;
     box-shadow: 0 0.65rem 1.6rem
       color-mix(in srgb, var(--foreground) 20%, transparent);
     transform-origin: 50% 50%;
@@ -254,9 +254,6 @@ const spaConfig = {
     width: 100%;
     height: 100%;
     object-fit: cover;
-  }
-  .life-root[data-life-returning="true"] [data-life-slide="home"] [data-life-card] {
-    opacity: 0;
   }
 </style>
 
@@ -534,12 +531,9 @@ const spaConfig = {
     const runDeckFlight = (
       sources,
       targets,
-      { startBlur, endBlur, onFinish },
+      { startBlur, endBlur },
     ) => {
-      if (!sources.length || !targets.length) {
-        onFinish?.();
-        return;
-      }
+      if (!sources.length || !targets.length) return;
       const overlay = document.createElement("div");
       overlay.className = "life-flip-overlay";
       document.body.append(overlay);
@@ -552,7 +546,14 @@ const spaConfig = {
         clone.style.top = `${source.centerY - source.height / 2}px`;
         clone.style.width = `${source.width}px`;
         clone.style.height = `${source.height}px`;
-        if (source.image) clone.append(source.image.cloneNode(true));
+        if (source.image) {
+          const image = source.image.cloneNode(true);
+          if (image instanceof HTMLImageElement) {
+            image.loading = "eager";
+            image.decoding = "sync";
+          }
+          clone.append(image);
+        }
         overlay.append(clone);
         return clone.animate(
           [
@@ -585,7 +586,6 @@ const spaConfig = {
         animations.map((animation) => animation.finished),
       ).then(() => {
         overlay.remove();
-        onFinish?.();
       });
     };
     const runDeckExpand = (deck, lifeIndex) => {
@@ -603,21 +603,17 @@ const spaConfig = {
       );
     };
     const runDeckCollapse = (covers, lifeIndex) => {
-      const container = lifeRoot();
       const home = lifeSlideAt(0);
       const lifeType = lifeRoutes[lifeIndex]?.split("/")[2];
       const deck = captureDeck(lifeType);
-      if (!(container instanceof HTMLElement) || !deck?.length) {
-        if (container instanceof HTMLElement)
-          delete container.dataset.lifeReturning;
-        return;
-      }
-      runDeckFlight(covers, deck, {
+      if (!deck?.length) return;
+      const returningCovers = covers.map((cover, index) => ({
+        ...cover,
+        image: deck[index]?.image ?? cover.image,
+      }));
+      runDeckFlight(returningCovers, deck, {
         startBlur: 0,
         endBlur: 2.4,
-        onFinish: () => {
-          delete container.dataset.lifeReturning;
-        },
       });
       home?.animate(
         [
@@ -673,9 +669,6 @@ const spaConfig = {
       const covers = collapsing
         ? captureSectionCovers(activeLifeIndex)
         : undefined;
-      const container = lifeRoot();
-      if (covers?.length && container instanceof HTMLElement)
-        container.dataset.lifeReturning = "true";
 
       applyTopState(index);
       if (index === lifeTopIndex)
