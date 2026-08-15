@@ -28,12 +28,8 @@ const entries = LIFE_TYPES.map((type, index) => ({
 }));
 ---
 
-<section class="life-home detail-layout-outer" aria-labelledby="life-home-title">
+<section class="life-home detail-layout-outer" aria-label="Life">
   <div class="life-home__inner detail-layout-inner">
-    <header class="life-home__header">
-      <h1 class="ui-page-title" id="life-home-title">Life</h1>
-    </header>
-
     <nav class="life-entries" aria-label={site.labels.art} data-reveal-group>
       {
         entries.map((entry) => (
@@ -81,9 +77,6 @@ const entries = LIFE_TYPES.map((type, index) => ({
     min-height: calc(100vh - 4.5rem);
     min-height: calc(100dvh - 4.5rem);
     padding-block: clamp(3.5rem, 7vh, 6rem) 5rem;
-  }
-  .life-home__header {
-    padding-bottom: clamp(0.75rem, 1.5vw, 1.25rem);
   }
   .life-entries {
     display: grid;
