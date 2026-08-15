@@ -38,8 +38,6 @@ export const getLocalizedContentSections = async (locale: Locale, section: Conte
     posts: posts.map((item) => ({
       slug: item.slug,
       title: item.title,
-      summary: item.description,
-      readingTime: item.readingTime,
       dateLabel: formatter.format(item.createdAt),
       dateIso: item.createdAt.toISOString(),
       archiveTags: item.tags,
