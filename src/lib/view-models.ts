@@ -4,10 +4,8 @@ import type { ArchivePostSectionModel } from "../types/ui";
 interface ContentListSource {
   slug: string;
   title: string;
-  summary: string;
   dateLabel: string;
   dateIso: string;
-  readingTime: string;
   archiveTags: string[];
 }
 
@@ -24,11 +22,9 @@ export const toArchivePostSections = (
   year: group.year,
   posts: group.posts.map((post) => ({
     title: post.title,
-    summary: post.summary,
     href: localizePath(`/${contentSection}/${post.slug}/`, locale),
     dateLabel: post.dateLabel,
     dateIso: post.dateIso,
-    readingTime: post.readingTime,
     tags: post.archiveTags,
   })),
 }));

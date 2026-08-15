@@ -44,15 +44,11 @@ const years = sections.map((group) => group.year);
                             post.dateIso.slice(0, 10)) && (
                           <time datetime={post.dateIso}>{post.dateLabel}</time>
                         )}
-                        <span class="content-timeline__reading">{post.readingTime}</span>
                       </div>
                       <div class="content-timeline__entry">
                         <a href={post.href}>
                           <span>{post.title}</span>
                         </a>
-                        {post.summary && (
-                          <p class="content-timeline__summary">{post.summary}</p>
-                        )}
                       </div>
                     </li>
                   ))}
@@ -128,24 +124,10 @@ const years = sections.map((group) => group.year);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
-  .content-timeline__reading {
-    color: var(--text-faint);
-    font-size: var(--type-xs);
-    white-space: nowrap;
-  }
   .content-timeline__entry {
     display: grid;
     gap: 0.25rem;
     min-width: 0;
-  }
-  .content-timeline__summary {
-    margin: 0;
-    overflow: hidden;
-    color: var(--text-muted);
-    font-size: var(--type-sm);
-    line-height: 1.6;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
   .content-timeline a {
     display: inline-flex;

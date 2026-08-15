@@ -5,11 +5,9 @@ export interface FooterLink {
 
 export interface ArchivePostSummaryModel {
   title: string;
-  summary: string;
   href: string;
   dateLabel: string;
   dateIso: string;
-  readingTime: string;
   tags: string[];
 }
 

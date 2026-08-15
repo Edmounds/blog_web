@@ -36,8 +36,6 @@ test("all writing sections render as localized Astro-star timeline archives", as
   assert.match(section, /ArchiveActivityTimeline/);
   assert.match(section, /ArchiveTableOfContents/);
   assert.match(section, /post\.dateLabel/);
-  assert.match(section, /post\.summary/);
-  assert.match(section, /post\.readingTime/);
   assert.doesNotMatch(section, /post\.tags\.map/);
   assert.doesNotMatch(models, /\bcover\b|\bcategory\b|\bimage\b/);
   assert.match(models, /tags:\s*post\.archiveTags/);
