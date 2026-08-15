@@ -15,19 +15,38 @@ backgroundKeywords:
 ---
 
 ## About This Website
+- BLOG publishes serious technical articles
+- NOTE is for everyday ramblings
+- LINKS is for friend links
+- ABOUT is this page
+- LIFE is where I share the books, films, TV shows, music, and games I’ve experienced
 
-This is my quiet personal space—to write articles, take notes, and keep track of the books and films I've experienced.
-Everything here is handwritten text. If I use AI-generated text, I will paste it into the article as an image/
+*The writing here is all written by me. If I use AI-generated text, I’ll paste it into the article as an image.*
 ## About Me
-I like astronomy and have dabbled in planetary photography. Once I have some spare money in the future, I’d like to try deep-sky or astrophotography.
-![jupiter.png](https://img.muelsyse.us/bed/jupiter.png)
+
+A third-year student at Chongqing Shapingba Men's Vocational Technical College
+I’m interested in astronomy. I’ve dabbled in planetary photography and hope to try deep-sky or astrophotography in the future if I get the chance.
+
+```image-layout
+---
+layout: carousel
+grid: |
+  A A B
+  A A C
+---
+![jupiter](https://img.muelsyse.us/bed/jupiter.png)
 
 
-![moon.png](https://img.muelsyse.us/bed/moon.png)
+![moon](https://img.muelsyse.us/bed/moon.png)
+```
 
-As for sports, I enjoy freestyle swimming and table tennis.
-In my field, I’m currently interested in the broad area of embodied intelligence. I’m still considering whether to focus on a specific direction such as control or perception.
-During my first and second years, I mainly took part in competitions—Robocon, RoboCup, and the China Undergraduate Electronic Design Contest—where I was responsible for host-computer work such as perception and decision-making.
+I like tinkering with things such as soft routers, website development, and using AI to bring all kinds of interesting ideas to life.
+Here are several of my ROS-related open-source projects. If you find them useful, feel free to give them a star~
+https://github.com/ConQU2026/auto_serial_bridge
+https://github.com/Edmounds/robviz
+
+As for my field of study, I’m currently interested in the broad area of embodied intelligence. I’m still considering whether to focus on a specific direction such as control or perception.
+During my first and second years, I mainly participated in competitions, including Robocon, RoboCup, and the Electronics Competition, where I was responsible for work related to perception and decision-making.
 
 ## Contact Me
 [i@muelsyse.us](mailto:i@muelsyse.us)

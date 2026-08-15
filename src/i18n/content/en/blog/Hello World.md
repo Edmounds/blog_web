@@ -5,7 +5,8 @@ createdAt: 2026-01-28T00:00:00.000Z
 slug: 20260128-01
 updatedAt: 2026-08-04T00:00:00.000Z
 published: true
-tags: []
+tags:
+  - Test
 ---
 
 # Hello World
