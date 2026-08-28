@@ -26,8 +26,10 @@ test("art translation API rejects music, series, anime, and missing types", asyn
 
 test("art translation API accepts books and movies", async () => {
   const originalFetch = globalThis.fetch;
+  let sentReasoningEffort;
   globalThis.fetch = async (_url, init) => {
     const request = JSON.parse(init.body);
+    sentReasoningEffort = request.reasoning_effort;
     const fields = JSON.parse(
       request.messages[1].content.match(/JSON: (.*)$/s)[1],
     );
@@ -50,13 +52,7 @@ test("art translation API accepts books and movies", async () => {
   };
   try {
     for (const type of ["book", "movie"]) {
-      let sentReasoningEffort;
-      const originalNestedFetch = globalThis.fetch;
-      globalThis.fetch = async (_url, init) => {
-        const req = JSON.parse(init.body);
-        sentReasoningEffort = req.reasoning_effort;
-        return originalFetch(_url, init);
-      };
+      sentReasoningEffort = undefined;
       const response = await onRequestPost({
         env: {
           OPENAI_BASE_URL: "https://openai.example/v1",
@@ -71,7 +67,6 @@ test("art translation API accepts books and movies", async () => {
           extra: "备注",
         }),
       });
-      globalThis.fetch = originalNestedFetch;
       const body = await response.json();
       assert.equal(response.status, 200);
       assert.deepEqual(Object.keys(body.translations), ["zh-TW", "en", "ja"]);
