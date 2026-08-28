@@ -23,22 +23,59 @@ test("OpenAI-compatible client sends a Chat Completions request", async () => {
     model: "translation-model",
     fetchImpl: async (url, init) => {
       request = { url, init };
-      return new Response(JSON.stringify({ choices: [{ message: { content: "你好" } }] }), { status: 200 });
+      return new Response(
+        JSON.stringify({ choices: [{ message: { content: "你好" } }] }),
+        { status: 200 },
+      );
     },
   });
 
-  assert.equal(await translate({ text: "你好", sourceLang: "ZH", targetLang: "ZH-TW" }), "你好");
+  assert.equal(
+    await translate({ text: "你好", sourceLang: "ZH", targetLang: "ZH-TW" }),
+    "你好",
+  );
   assert.equal(request.url, "https://openai.example/v1/chat/completions");
   assert.equal(request.init.headers.authorization, "Bearer secret");
   const body = JSON.parse(request.init.body);
   assert.equal(body.model, "translation-model");
   assert.equal(body.stream, true);
   assert.match(body.messages[0].content, /natural, idiomatic/);
-  assert.match(body.messages[0].content, /Do not omit, summarize, add, or explain/);
+  assert.match(
+    body.messages[0].content,
+    /Do not omit, summarize, add, or explain/,
+  );
   assert.match(body.messages[0].content, /silently check/);
   assert.match(body.messages[1].content, /Traditional Chinese/);
-  assert.match(body.messages[1].content, /<source_text>\n你好\n<\/source_text>/);
+  assert.match(
+    body.messages[1].content,
+    /<source_text>\n你好\n<\/source_text>/,
+  );
   assert.match(body.messages[1].content, /你好/);
+});
+
+test("OpenAI-compatible client includes reasoning_effort when provided", async () => {
+  let requestBody;
+  const translate = createOpenAITranslateClient({
+    baseUrl: "https://openai.example/v1/",
+    apiKey: "secret",
+    model: "gpt-5.6-luna",
+    reasoningEffort: "xhigh",
+    fetchImpl: async (_url, init) => {
+      requestBody = JSON.parse(init.body);
+      return new Response(
+        JSON.stringify({ choices: [{ message: { content: "Hello" } }] }),
+        { status: 200 },
+      );
+    },
+  });
+
+  const result = await translate({
+    text: "你好",
+    sourceLang: "ZH",
+    targetLang: "EN",
+  });
+  assert.equal(result, "Hello");
+  assert.equal(requestBody.reasoning_effort, "xhigh");
 });
 
 test("OpenAI-compatible client resets its timeout while streamed translation data keeps arriving", async () => {
@@ -49,19 +86,30 @@ test("OpenAI-compatible client resets its timeout while streamed translation dat
     model: "translation-model",
     retries: 1,
     timeoutMs: 80,
-    fetchImpl: async () => new Response(new ReadableStream({
-      async start(controller) {
-        for (const content of ["A", "B", "C"]) {
-          await new Promise((resolve) => setTimeout(resolve, 45));
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ choices: [{ delta: { content } }] })}\n\n`));
-        }
-        controller.enqueue(encoder.encode("data: [DONE]\n\n"));
-        controller.close();
-      },
-    }), { status: 200, headers: { "content-type": "text/event-stream" } }),
+    fetchImpl: async () =>
+      new Response(
+        new ReadableStream({
+          async start(controller) {
+            for (const content of ["A", "B", "C"]) {
+              await new Promise((resolve) => setTimeout(resolve, 45));
+              controller.enqueue(
+                encoder.encode(
+                  `data: ${JSON.stringify({ choices: [{ delta: { content } }] })}\n\n`,
+                ),
+              );
+            }
+            controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+            controller.close();
+          },
+        }),
+        { status: 200, headers: { "content-type": "text/event-stream" } },
+      ),
   });
 
-  assert.equal(await translate({ text: "很长的文章", sourceLang: "ZH", targetLang: "EN" }), "ABC");
+  assert.equal(
+    await translate({ text: "很长的文章", sourceLang: "ZH", targetLang: "EN" }),
+    "ABC",
+  );
 });
 
 test("OpenAI-compatible client times out after streamed translation data stops arriving", async () => {
@@ -71,30 +119,47 @@ test("OpenAI-compatible client times out after streamed translation data stops a
     model: "translation-model",
     retries: 1,
     timeoutMs: 20,
-    fetchImpl: async (_url, init) => new Response(new ReadableStream({
-      start(controller) {
-        controller.enqueue(new TextEncoder().encode('data: {"choices":[{"delta":{"content":"A"}}]}\n\n'));
-        init.signal.addEventListener("abort", () => controller.error(init.signal.reason), { once: true });
-      },
-    }), { status: 200, headers: { "content-type": "text/event-stream" } }),
+    fetchImpl: async (_url, init) =>
+      new Response(
+        new ReadableStream({
+          start(controller) {
+            controller.enqueue(
+              new TextEncoder().encode(
+                'data: {"choices":[{"delta":{"content":"A"}}]}\n\n',
+              ),
+            );
+            init.signal.addEventListener(
+              "abort",
+              () => controller.error(init.signal.reason),
+              { once: true },
+            );
+          },
+        }),
+        { status: 200, headers: { "content-type": "text/event-stream" } },
+      ),
   });
 
   await assert.rejects(
-    () => translate({ text: "暂停返回的文章", sourceLang: "ZH", targetLang: "EN" }),
+    () =>
+      translate({ text: "暂停返回的文章", sourceLang: "ZH", targetLang: "EN" }),
     (error) => error?.name === "AbortError" || error?.name === "TimeoutError",
   );
 });
 
 test("OpenAI-compatible client requests one complete Markdown document translation", async () => {
   let request;
-  const source = "---\ntitle: 你好\ncreatedAt: 2026-07-24\n---\n\n第一段。\n\n第二段。";
+  const source =
+    "---\ntitle: 你好\ncreatedAt: 2026-07-24\n---\n\n第一段。\n\n第二段。";
   const translate = createOpenAITranslateClient({
     baseUrl: "https://openai.example/v1",
     apiKey: "secret",
     model: "translation-model",
     fetchImpl: async (_url, init) => {
       request = JSON.parse(init.body);
-      return new Response(JSON.stringify({ choices: [{ message: { content: source } }] }), { status: 200 });
+      return new Response(
+        JSON.stringify({ choices: [{ message: { content: source } }] }),
+        { status: 200 },
+      );
     },
   });
 
@@ -108,10 +173,19 @@ test("OpenAI-compatible client requests one complete Markdown document translati
 
   assert.match(request.messages[0].content, /complete Markdown document/);
   assert.match(request.messages[0].content, /author's meaning, tone, voice/);
-  assert.match(request.messages[0].content, /Never alter code blocks, inline code, commands, math, URLs, paths, slugs, identifiers, dates, booleans, or numbers/);
+  assert.match(
+    request.messages[0].content,
+    /Never alter code blocks, inline code, commands, math, URLs, paths, slugs, identifiers, dates, booleans, or numbers/,
+  );
   assert.match(request.messages[0].content, /image alt text/);
-  assert.match(request.messages[0].content, /placeholder alt text equal to image unchanged/);
-  assert.match(request.messages[0].content, /silently check the translation for accuracy, fluency, terminology consistency, omissions, and formatting damage/);
+  assert.match(
+    request.messages[0].content,
+    /placeholder alt text equal to image unchanged/,
+  );
+  assert.match(
+    request.messages[0].content,
+    /silently check the translation for accuracy, fluency, terminology consistency, omissions, and formatting damage/,
+  );
   assert.match(request.messages[0].content, /createdAt/);
   assert.match(request.messages[1].content, /<source_text>/);
   assert.match(request.messages[1].content, /<\/source_text>/);
@@ -120,8 +194,16 @@ test("OpenAI-compatible client requests one complete Markdown document translati
 });
 
 test("OpenAI-compatible client requires all configuration", async () => {
-  const translate = createOpenAITranslateClient({ baseUrl: "", apiKey: "", model: "", retries: 1 });
-  await assert.rejects(() => translate({ text: "你好", sourceLang: "ZH", targetLang: "EN" }), /OPENAI_BASE_URL, API_KEY, and MODEL/);
+  const translate = createOpenAITranslateClient({
+    baseUrl: "",
+    apiKey: "",
+    model: "",
+    retries: 1,
+  });
+  await assert.rejects(
+    () => translate({ text: "你好", sourceLang: "ZH", targetLang: "EN" }),
+    /OPENAI_BASE_URL, API_KEY, and MODEL/,
+  );
 });
 
 test("OpenAI-compatible client rejects malformed responses", async () => {
@@ -130,9 +212,13 @@ test("OpenAI-compatible client rejects malformed responses", async () => {
     apiKey: "secret",
     model: "translation-model",
     retries: 1,
-    fetchImpl: async () => new Response(JSON.stringify({ choices: [] }), { status: 200 }),
+    fetchImpl: async () =>
+      new Response(JSON.stringify({ choices: [] }), { status: 200 }),
   });
-  await assert.rejects(() => translate({ text: "你好", sourceLang: "ZH", targetLang: "JA" }), /invalid or empty/);
+  await assert.rejects(
+    () => translate({ text: "你好", sourceLang: "ZH", targetLang: "JA" }),
+    /invalid or empty/,
+  );
 });
 
 test("OpenAI-compatible client does not retry permanent 4xx responses", async () => {
@@ -143,9 +229,14 @@ test("OpenAI-compatible client does not retry permanent 4xx responses", async ()
     model: "translation-model",
     fetchImpl: async () => {
       requests += 1;
-      return new Response(JSON.stringify({ error: "bad request" }), { status: 400 });
+      return new Response(JSON.stringify({ error: "bad request" }), {
+        status: 400,
+      });
     },
   });
-  await assert.rejects(() => translate({ text: "你好", sourceLang: "ZH", targetLang: "EN" }), /HTTP 400/);
+  await assert.rejects(
+    () => translate({ text: "你好", sourceLang: "ZH", targetLang: "EN" }),
+    /HTTP 400/,
+  );
   assert.equal(requests, 1);
 });

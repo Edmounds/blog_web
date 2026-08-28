@@ -22,6 +22,7 @@ declare namespace Cloudflare {
     OPENAI_BASE_URL?: string;
     API_KEY?: string;
     MODEL?: string;
+    REASONING_EFFORT?: string;
     GITHUB_TOKEN?: string;
     WAKA_TIME_API_KEY?: string;
     COMMENT_HASH_SALT?: string;

@@ -4,21 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "d9c378c4731e5cd1",
+        "id": "f059e385b9da12e8",
         "type": "tabs",
         "children": [
           {
-            "id": "d4804bbcf492844b",
+            "id": "08d84a023e8d2cfb",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "blog/Hello World.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "Hello World"
+              "title": "新标签页"
             }
           }
         ]
@@ -153,21 +149,6 @@
             }
           },
           {
-            "id": "0ec9d0deb5597185",
-            "type": "leaf",
-            "state": {
-              "type": "outline",
-              "state": {
-                "file": "blog/使用GitHub Actions 实现博客自动化更新.md",
-                "followCursor": false,
-                "showSearch": false,
-                "searchQuery": ""
-              },
-              "icon": "lucide-list",
-              "title": "大纲"
-            }
-          },
-          {
             "id": "eb2a6754540c3c8c",
             "type": "leaf",
             "state": {
@@ -185,6 +166,20 @@
               "state": {},
               "icon": "bot",
               "title": "Claudian"
+            }
+          },
+          {
+            "id": "7df795287449178b",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "大纲"
             }
           }
         ],
@@ -207,15 +202,16 @@
       "realclaudian:Open Claudian": false
     }
   },
-  "active": "d4804bbcf492844b",
+  "active": "08d84a023e8d2cfb",
   "lastOpenFiles": [
-    "blog/使用GitHub Actions 实现博客自动化更新.md",
-    "blog/基于Cloudflare构建个人网站.md",
     "about/profile.md",
+    "blog/基于Cloudflare构建个人网站.md",
     "note/明日方舟和P3R联动.md",
-    "note/我对东野圭吾的印象.md",
-    "blog/Hello World.md",
     "note/Lucky~.md",
+    "note/我对东野圭吾的印象.md",
+    "note/当temu变成了形容词.md",
+    "blog/使用GitHub Actions 实现博客自动化更新.md",
+    "blog/Hello World.md",
     "Pasted image 20260808035448.png",
     "site/settings.md",
     "note/_empty.md",
