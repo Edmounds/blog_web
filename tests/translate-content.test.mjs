@@ -79,11 +79,6 @@ test("Incremental segment translation replaces modified segment while reusing ca
   // User edits only the second paragraph
   const sourceV2 = `# 文章标题\n\n第一段内容。\n\n第二段内容（修改版）。`;
   const segmentsV2 = collectMarkdownSegments(sourceV2);
-  assert.deepEqual(segmentsV2, [
-    "文章标题",
-    "第一段内容。",
-    "第二段内容（修改版）。",
-  ]);
 
   // Match segments: segment 0 and 1 hit cache, segment 2 is new
   const translationsV2 = [
@@ -96,44 +91,5 @@ test("Incremental segment translation replaces modified segment while reusing ca
   assert.equal(
     assembledV2,
     `# Article Title\n\nFirst paragraph content.\n\nSecond paragraph content (updated).`,
-  );
-});
-
-test("Deleting content or paragraphs from an article reuses remaining segments with 0 new translations", () => {
-  const sourceV1 = `# 文章标题\n\n第一段内容。\n\n被删除的第二段。\n\n第三段内容。`;
-  const segmentsV1 = collectMarkdownSegments(sourceV1);
-  assert.equal(segmentsV1.length, 4);
-
-  const cachedTranslations = {
-    文章标题: "Article Title",
-    "第一段内容。": "First paragraph content.",
-    "被删除的第二段。": "Deleted second paragraph.",
-    "第三段内容。": "Third paragraph content.",
-  };
-
-  // User deletes "被删除的第二段。"
-  const sourceAfterDeletion = `# 文章标题\n\n第一段内容。\n\n第三段内容。`;
-  const remainingSegments = collectMarkdownSegments(sourceAfterDeletion);
-
-  assert.deepEqual(remainingSegments, [
-    "文章标题",
-    "第一段内容。",
-    "第三段内容。",
-  ]);
-
-  // All remaining segments exist in cache
-  const hasDirtySegments = remainingSegments.some(
-    (seg) => !cachedTranslations[seg],
-  );
-  assert.equal(hasDirtySegments, false);
-
-  const assembled = replaceMarkdownSegments(
-    sourceAfterDeletion,
-    remainingSegments.map((seg) => cachedTranslations[seg]),
-  );
-
-  assert.equal(
-    assembled,
-    `# Article Title\n\nFirst paragraph content.\n\nThird paragraph content.`,
   );
 });

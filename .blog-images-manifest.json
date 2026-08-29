@@ -1,199 +1,6 @@
 {
   "version": 4,
   "assets": {
-    "https://img.muelsyse.us/blog/feb3225984a3c83fc03f99f546c1452877c06c5efc10ae44cdabc05488f23930-w1908.webp": {
-      "sourceDigest": "4a3df3a2b11f7b4820d43a6e19d8b23d3a0abacc576610fb897f7164a0feb804",
-      "width": 1908,
-      "height": 1080,
-      "fallback": "https://img.muelsyse.us/blog/feb3225984a3c83fc03f99f546c1452877c06c5efc10ae44cdabc05488f23930-w1908.webp",
-      "sources": {
-        "avif": [
-          {
-            "width": 640,
-            "url": "https://img.muelsyse.us/blog/feb3225984a3c83fc03f99f546c1452877c06c5efc10ae44cdabc05488f23930-w640.avif.webp",
-            "quality": 40,
-            "ssim": 0.986244,
-            "bytes": 7206
-          },
-          {
-            "width": 1280,
-            "url": "https://img.muelsyse.us/blog/feb3225984a3c83fc03f99f546c1452877c06c5efc10ae44cdabc05488f23930-w1280.avif.webp",
-            "quality": 40,
-            "ssim": 0.994621,
-            "bytes": 15963
-          },
-          {
-            "width": 1908,
-            "url": "https://img.muelsyse.us/blog/feb3225984a3c83fc03f99f546c1452877c06c5efc10ae44cdabc05488f23930-w1908.avif.webp",
-            "quality": 40,
-            "ssim": 0.996501,
-            "bytes": 26157
-          }
-        ],
-        "webp": [
-          {
-            "width": 640,
-            "url": "https://img.muelsyse.us/blog/feb3225984a3c83fc03f99f546c1452877c06c5efc10ae44cdabc05488f23930-w640.webp",
-            "quality": 70,
-            "ssim": 0.987518,
-            "bytes": 13720
-          },
-          {
-            "width": 1280,
-            "url": "https://img.muelsyse.us/blog/feb3225984a3c83fc03f99f546c1452877c06c5efc10ae44cdabc05488f23930-w1280.webp",
-            "quality": 70,
-            "ssim": 0.99483,
-            "bytes": 30804
-          },
-          {
-            "width": 1908,
-            "url": "https://img.muelsyse.us/blog/feb3225984a3c83fc03f99f546c1452877c06c5efc10ae44cdabc05488f23930-w1908.webp",
-            "quality": 70,
-            "ssim": 0.99831,
-            "bytes": 48034
-          }
-        ]
-      },
-      "kind": "responsive"
-    },
-    "https://img.muelsyse.us/blog/7ecd34ebb1c7621c63ee37d5dcff42d6b8bb6ad2cbca423e78d22d00ba12acab-w2400.webp": {
-      "sourceDigest": "e6e3a06a1bf5c1048ed8ee043b2e7af7a169443783e03d849d8acacef234f9fc",
-      "width": 2400,
-      "height": 1080,
-      "fallback": "https://img.muelsyse.us/blog/7ecd34ebb1c7621c63ee37d5dcff42d6b8bb6ad2cbca423e78d22d00ba12acab-w2400.webp",
-      "sources": {
-        "avif": [
-          {
-            "width": 640,
-            "url": "https://img.muelsyse.us/blog/7ecd34ebb1c7621c63ee37d5dcff42d6b8bb6ad2cbca423e78d22d00ba12acab-w640.avif.webp",
-            "quality": 56,
-            "ssim": 0.985137,
-            "bytes": 7608
-          },
-          {
-            "width": 1280,
-            "url": "https://img.muelsyse.us/blog/7ecd34ebb1c7621c63ee37d5dcff42d6b8bb6ad2cbca423e78d22d00ba12acab-w1280.avif.webp",
-            "quality": 40,
-            "ssim": 0.989667,
-            "bytes": 10693
-          },
-          {
-            "width": 1920,
-            "url": "https://img.muelsyse.us/blog/7ecd34ebb1c7621c63ee37d5dcff42d6b8bb6ad2cbca423e78d22d00ba12acab-w1920.avif.webp",
-            "quality": 40,
-            "ssim": 0.994467,
-            "bytes": 17127
-          },
-          {
-            "width": 2400,
-            "url": "https://img.muelsyse.us/blog/7ecd34ebb1c7621c63ee37d5dcff42d6b8bb6ad2cbca423e78d22d00ba12acab-w2400.avif.webp",
-            "quality": 40,
-            "ssim": 0.996529,
-            "bytes": 23313
-          }
-        ],
-        "webp": [
-          {
-            "width": 640,
-            "url": "https://img.muelsyse.us/blog/7ecd34ebb1c7621c63ee37d5dcff42d6b8bb6ad2cbca423e78d22d00ba12acab-w640.webp",
-            "quality": 84,
-            "ssim": 0.985098,
-            "bytes": 11376
-          },
-          {
-            "width": 1280,
-            "url": "https://img.muelsyse.us/blog/7ecd34ebb1c7621c63ee37d5dcff42d6b8bb6ad2cbca423e78d22d00ba12acab-w1280.webp",
-            "quality": 70,
-            "ssim": 0.990028,
-            "bytes": 16932
-          },
-          {
-            "width": 1920,
-            "url": "https://img.muelsyse.us/blog/7ecd34ebb1c7621c63ee37d5dcff42d6b8bb6ad2cbca423e78d22d00ba12acab-w1920.webp",
-            "quality": 70,
-            "ssim": 0.994191,
-            "bytes": 27170
-          },
-          {
-            "width": 2400,
-            "url": "https://img.muelsyse.us/blog/7ecd34ebb1c7621c63ee37d5dcff42d6b8bb6ad2cbca423e78d22d00ba12acab-w2400.webp",
-            "quality": 70,
-            "ssim": 0.998026,
-            "bytes": 36884
-          }
-        ]
-      },
-      "kind": "responsive"
-    },
-    "https://img.muelsyse.us/blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w2400.webp": {
-      "sourceDigest": "98cc0ceb21aaad94bf99ce31ef28b3ea543fd0f9767080a30caf73c97e5e1d7c",
-      "width": 2400,
-      "height": 1080,
-      "fallback": "https://img.muelsyse.us/blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w2400.webp",
-      "sources": {
-        "avif": [
-          {
-            "width": 640,
-            "url": "https://img.muelsyse.us/blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w640.avif.webp",
-            "quality": 60,
-            "ssim": 0.985065,
-            "bytes": 33263
-          },
-          {
-            "width": 1280,
-            "url": "https://img.muelsyse.us/blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w1280.avif.webp",
-            "quality": 40,
-            "ssim": 0.98722,
-            "bytes": 46293
-          },
-          {
-            "width": 1920,
-            "url": "https://img.muelsyse.us/blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w1920.avif.webp",
-            "quality": 40,
-            "ssim": 0.994867,
-            "bytes": 77210
-          },
-          {
-            "width": 2400,
-            "url": "https://img.muelsyse.us/blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w2400.avif.webp",
-            "quality": 40,
-            "ssim": 0.996983,
-            "bytes": 110479
-          }
-        ],
-        "webp": [
-          {
-            "width": 640,
-            "url": "https://img.muelsyse.us/blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w640.webp",
-            "quality": 80,
-            "ssim": 0.985827,
-            "bytes": 44952
-          },
-          {
-            "width": 1280,
-            "url": "https://img.muelsyse.us/blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w1280.webp",
-            "quality": 70,
-            "ssim": 0.993619,
-            "bytes": 98960
-          },
-          {
-            "width": 1920,
-            "url": "https://img.muelsyse.us/blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w1920.webp",
-            "quality": 70,
-            "ssim": 0.9966,
-            "bytes": 154498
-          },
-          {
-            "width": 2400,
-            "url": "https://img.muelsyse.us/blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w2400.webp",
-            "quality": 70,
-            "ssim": 0.998491,
-            "bytes": 225968
-          }
-        ]
-      },
-      "kind": "responsive"
-    },
     "https://img.muelsyse.us/bed/20260808043442545.png": {
       "kind": "responsive",
       "sourceDigest": "2d52354534fbd6879a931f795bfa3fefd575cbe6c7495780ad40fb56aa38fa2e",
@@ -511,7 +318,18 @@
     "bed/moon-w1282.avif.webp",
     "bed/moon-w1282.webp",
     "bed/moon-w640.avif.webp",
-    "bed/moon-w640.webp",
+    "bed/moon-w640.webp"
+  ],
+  "pendingDeletion": [
+    "bed/20260728123332461-w616.avif.webp",
+    "bed/20260728123332461-w616.webp",
+    "bed/20260808035823249-w1280.avif.webp",
+    "bed/20260808035823249-w1280.webp",
+    "bed/20260808035823249-w1876.avif.webp",
+    "bed/20260808035823249-w1876.webp",
+    "bed/20260808035823249-w640.avif.webp",
+    "bed/20260808035823249-w640.webp",
+    "blog/36357886a211c5a9e1f9664b9ecb190aa034a1fe9054c8cab2415e58a6783ab5.svg",
     "blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w1280.avif.webp",
     "blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w1280.webp",
     "blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w1920.avif.webp",
@@ -528,24 +346,13 @@
     "blog/7ecd34ebb1c7621c63ee37d5dcff42d6b8bb6ad2cbca423e78d22d00ba12acab-w2400.webp",
     "blog/7ecd34ebb1c7621c63ee37d5dcff42d6b8bb6ad2cbca423e78d22d00ba12acab-w640.avif.webp",
     "blog/7ecd34ebb1c7621c63ee37d5dcff42d6b8bb6ad2cbca423e78d22d00ba12acab-w640.webp",
+    "blog/aef376fcd64e4d81a4330335441b6dcd1730c9d4336a59fb861ea8e9a083ffef.svg",
+    "blog/bd64bc8d70d86e5486ed4b4b895c2cb7ce2e9b72396fdd17d878dea078a9958a.svg",
     "blog/feb3225984a3c83fc03f99f546c1452877c06c5efc10ae44cdabc05488f23930-w1280.avif.webp",
     "blog/feb3225984a3c83fc03f99f546c1452877c06c5efc10ae44cdabc05488f23930-w1280.webp",
     "blog/feb3225984a3c83fc03f99f546c1452877c06c5efc10ae44cdabc05488f23930-w1908.avif.webp",
     "blog/feb3225984a3c83fc03f99f546c1452877c06c5efc10ae44cdabc05488f23930-w1908.webp",
     "blog/feb3225984a3c83fc03f99f546c1452877c06c5efc10ae44cdabc05488f23930-w640.avif.webp",
     "blog/feb3225984a3c83fc03f99f546c1452877c06c5efc10ae44cdabc05488f23930-w640.webp"
-  ],
-  "pendingDeletion": [
-    "bed/20260728123332461-w616.avif.webp",
-    "bed/20260728123332461-w616.webp",
-    "bed/20260808035823249-w1280.avif.webp",
-    "bed/20260808035823249-w1280.webp",
-    "bed/20260808035823249-w1876.avif.webp",
-    "bed/20260808035823249-w1876.webp",
-    "bed/20260808035823249-w640.avif.webp",
-    "bed/20260808035823249-w640.webp",
-    "blog/36357886a211c5a9e1f9664b9ecb190aa034a1fe9054c8cab2415e58a6783ab5.svg",
-    "blog/aef376fcd64e4d81a4330335441b6dcd1730c9d4336a59fb861ea8e9a083ffef.svg",
-    "blog/bd64bc8d70d86e5486ed4b4b895c2cb7ce2e9b72396fdd17d878dea078a9958a.svg"
   ]
 }
