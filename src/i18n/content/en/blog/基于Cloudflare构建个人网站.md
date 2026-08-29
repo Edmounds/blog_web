@@ -1,41 +1,34 @@
 ﻿---
 title: Building a Personal Website on Cloudflare
-description: Two Workers, one SQL database, one object store. The complete structure of this site, and why it costs almost nothing beyond the domain name.
+description: "An overview of this site's architecture: two Workers, one SQL database, and one object store"
 createdAt: 2026-08-13T00:00:00.000Z
 updatedAt: 2026-08-13T00:00:00.000Z
 published: true
 tags:
-  - Web
+  - Networking
   - Site Building
   - Optimization
 slug: 20260813-02
 ---
 
-The site you are looking at appears to be a blog, but under the hood it runs two Cloudflare Workers, a SQL database, and an object store. Comments, likes, and view counts are live; the books, music, and film collections have their own admin panel; the listening chart syncs automatically in the small hours every day. And apart from the domain name, the bill is effectively zero.
+The site you're looking at now appears to be a blog, but it actually runs on two Cloudflare Workers, one SQL database, and one object store. Comments, likes, and page views are real-time; the collection of books, music, and films has its own admin panel; and listening rankings are synced automatically every day at midnight. Aside from the domain, the rest of the bill costs approximately zero.
 
-This post explains how it is put together: where requests come in, where the data lives, how images are handled, and why access from mainland China stays reasonably fast. It is not a build tutorial — think of it as a guided map. If you also want to build on Cloudflare, at the end I will point out which parts are worth copying and which are not.
-
-## The Big Picture
+This article explains its architecture: where requests enter, where data is stored, and how images are processed.
 
 ```mermaid
 flowchart LR
-  V[Visitor's browser] --> D[DNS / optimized CNAME]
+  V[Visitor's browser] --> D[DNS / Preferred CNAME]
   D --> E[Entry Worker]
   E -->|Service Binding| A[Astro SSR Worker]
   A --> S[Static assets]
   A --> Q[(D1 database)]
   A --> R[(R2 object storage)]
-  A --> X[External APIs]
+  A --> X[External API]
 
-  C[Cloudflare Access] -.protects the admin panel.-> E
-  K[Cron] -.daily scheduled sync.-> A
+  C[Cloudflare Access] -.Protects admin panel.-> E
+  K[Cron] -.Daily scheduled sync.-> A
 ```
-
-Each part's job fits in one sentence. The entry Worker catches all traffic on the public domain; the Astro SSR Worker is the actual application, rendering pages and handling the API; D1 stores all structured data; R2 stores all images; Access blocks the `/admin/` panel at Cloudflare's edge; Cron triggers a data sync once a day.
-
-There is no server in the traditional sense anywhere on this site. No fixed IP, no system to patch, no process that dies in the middle of the night and needs a restart.
-
-## What Happens on a Request
+## A Single Request's Path
 
 ```mermaid
 sequenceDiagram
@@ -47,87 +40,77 @@ sequenceDiagram
   B->>E: HTTPS request
   E->>A: Internal call (Service Binding)
   alt Static asset
-    A-->>E: Returns hashed CSS / JS / images directly
+    A-->>E: Directly returns hashed CSS / JS / image
   else Page or API
     A->>D1: Query or write
     D1-->>A: Result
     A-->>E: HTML / JSON
   end
-  E-->>B: Response with security headers added
+  E-->>B: Returns after adding security response headers
 ```
 
-Here is the single detail with the biggest impact on cost: requests that hit static assets execute no code and do not count against the Workers request quota. CSS, JS, fonts, and local images all fall into this category — they are free and unlimited. The only things consuming the 100,000 free requests per day are HTML rendering and API calls, the requests that actually run code.
+There is one detail here with the greatest impact on cost: requests for static assets do not execute code or count toward the Workers request quota. CSS, JS, fonts, and local images all fall into this category; they are free and unlimited. The only requests that consume the daily free quota of 100,000 are HTML rendering and API calls that require code to run.
 
-So my principle is to let as many requests as possible stop at the static layer. Only paths that must be handled dynamically, like `/api/*` and `/admin/*`, are configured to go through the Worker first.
+So my principle is to keep as many requests as possible at the static layer. Only paths such as `/api/*` and `/admin/*`, which must be handled dynamically, are configured to pass through the Worker first.
 
-## Why Two Workers
+## Two-Worker Design
 
-The entry Worker is very thin — under a hundred lines in total. It checks that the request's Host is my domain, rejects obvious cross-site write requests, forwards to the application Worker, and finally adds security response headers such as HSTS.
+The entry Worker exists for decoupling, not performance. My public domain uses a preferred domestic entry point, and that route may be replaced with another solution in the future; the application Worker, meanwhile, is deployed almost every day. Forwarding uses Service Bindings—in other words, internal calls between Workers that do not pass through a public URL. As a result, the application Worker does not need to expose any address that could be used to bypass the entry point for direct access.
 
-It exists for decoupling, not performance. My public domain goes through an optimized entry route for mainland China (more on that later), and that link may be replaced with another approach someday; the application Worker, meanwhile, gets deployed almost every day. With the two split apart, changing either side never touches the other. Forwarding uses a Service Binding — an internal call between Workers that never goes through a public URL and costs nothing extra — which also means the application Worker exposes no address that could be reached by bypassing the entry.
+If your site does not need to tinker with the entry route, you can omit this layer entirely.
 
-If your site does not need a custom entry route, you can skip this layer entirely.
+## Database
 
-## Where the Data Lives
+D1 is Cloudflare's managed SQLite database, storing all the structured data for this site: comments, likes, page views, metadata for the book, music, and film collection, and so on.
 
-D1 is Cloudflare's managed SQLite, and it holds all of this site's structured data: comments, likes, view counts, the metadata of the book, music, and film collections, game records, and listening charts.
+Before using D1, I had never paid attention to one metric: rows read. D1's free quota is 5 million rows per day, but it is calculated based on the number of rows scanned, not the number returned. A query that returns 20 comments may scan the entire table and count tens of thousands of rows if it does not use an index. Creating indexes for frequently filtered fields and paginating lists are optimizations that make the greatest possible use of D1's free quota.
 
-Before D1 I had never paid attention to one metric: rows read. The free tier allows five million rows per day, but it counts rows scanned, not rows returned. A query that returns 20 comments may be counted as tens of thousands of rows if it scans the whole table instead of using an index. Indexing frequently filtered columns and paginating lists — the same old textbook advice — directly determines how much quota you have left on D1.
+R2 stores all images: illustrations in the body of articles and collection cover images. The main reason for choosing it is that outbound traffic is free—traffic fees are what image hosting is most vulnerable to. R2 stores only the files, while the metadata corresponding to those files is kept in D1; the two are linked through object keys.
+## Image Pipeline
 
-R2 stores all images: article illustrations and collection covers. The decisive reason for choosing it is free egress; bandwidth fees are what an image host fears most. R2 stores only the files; metadata such as where a file came from and what owns it lives in D1, with the two sides linked by object key.
+I write articles in Obsidian. The moment I paste an image, the image-hosting plugin uploads it directly to R2, leaving an online URL in the Markdown. There are no binary image files in the repository at any point, so the Git history never grows bloated.
 
-Cron fires once a day at 4 a.m. Beijing time: first it renews the NetEase Cloud Music login cookie, then fetches the weekly and all-time charts and writes them into D1. If any step fails, the previous successful result is kept, so the music page never goes blank because one sync failed.
+During the build, a script generates multiple width variants of AVIF and WebP for each image the first time it appears (640 / 1280 / 1920), uploads them back to the same directory in R2, and writes the mappings to the manifest. When rendered, the URL in the Markdown remains unchanged, but the resulting HTML contains a complete `<picture>`: the browser chooses the smallest file that is sufficient for the viewport and pixel density; the first image in the article is loaded with high priority, while the rest are lazy-loaded. The original image URL always remains valid as a fallback.
+## Pay Attention to Free Quota Limits
 
-## The Image Pipeline
+The claim of zero cost needs one qualification: aside from the domain, the bill is approximately zero as long as traffic and data volume remain within the free quotas. The specific quotas are the official figures checked in July 2026:
 
-I write my posts in Obsidian. The moment I paste an image, the image-hosting plugin uploads it straight to R2, and what lands in the Markdown is an online URL. No image binary ever enters the repository, so the git history never bloats.
+| Item           | Free quota               |
+| ------------ | ------------------ |
+| Workers dynamic requests | 100,000 per day, shared across the account       |
+| Static asset requests       | Free, unlimited             |
+| D1           | 5 million rows read/day, 100,000 rows written/day |
+| R2           | 10 GB storage, free outbound traffic    |
 
-At build time, a script generates AVIF and WebP versions at several widths (640 / 1280 / 1920) for every image appearing for the first time, uploads them back to the same R2 directory, and writes the mapping into a manifest. The URL in the Markdown never changes, but the rendered HTML is a full `<picture>` element: the browser picks the smallest sufficient file for its viewport and pixel density, the first image above the fold loads with high priority, and the rest lazy-load. The original URL stays valid forever as the fallback.
+There are two points that are easy to misunderstand: 100,000 requests is the free daily limit for the entire account, not 100,000 for each Worker; and, especially, D1 counts scanned rows, so queries without indexes can consume the quota faster than you might imagine.
 
-One detail that made me laugh and cry: AVIF files are stored in R2 under keys ending in `.avif.webp`, while the returned MIME type is still `image/avif`. Something along the image host's domain wrongly blocks the `.avif` suffix, and changing the extension to route around it was easier than debugging that chain.
+## Accelerating Access from Mainland China
 
-## The Real Limits of the Free Tier
+Cloudflare's default entry point is Anycast, with routing determined by BGP, which is not always friendly to China's three major carriers. For the same site, China Telecom may be fast, while China Mobile may take a detour and lose packets during the evening peak.
 
-"Zero cost" needs qualifiers: beyond the domain name, and while traffic and data stay within the free tier, the bill is effectively zero. The exact numbers (official figures checked in July 2026):
+My approach is to use a preferred CNAME: point the domain's CNAME to a target domain that continuously measures speeds and updates the DNS resolution results. To be clear about what this is: it only improves the first segment of the route—“which Cloudflare entry point the browser connects to.” The TLS certificate is still mine, the Host is still my domain, and the content does not pass through any third party for decryption. It is not a mainland CDN, not a registered node, and does not guarantee faster speeds in every region at every time. Third-party services may fail at any time, so I keep a fallback plan that can switch back to the default DNS within one minute.
 
-| Item | Free tier | How I use it |
-| --- | --- | --- |
-| Workers dynamic requests | 100k/day, shared across the account | Static assets don't count; only SSR and the API consume it |
-| Static asset requests | Free, unlimited | Most requests stop at this layer |
-| D1 | 5M rows read/day, 100k rows written/day | Indexes + pagination, no full-table scans |
-| R2 | 10 GB storage, free egress | Image host and cover library, nowhere near full |
+After a request enters the site, speed depends on layered caching, with rules determined by how often the content changes:
 
-Two things that are easy to misunderstand: the 100k requests are a daily cap for the whole account, not 100k per Worker; and D1 counts scanned rows, so an unindexed query eats through the quota faster than you would expect.
+- CSS / JS / fonts with content hashes: cached for one year with `immutable`. When a file changes, its URL changes, so an old file will never be read.
+- HTML: `no-cache`; it can be stored, but must be revalidated each time, ensuring that after deployment it will not retain an old page referencing resources that have already disappeared.
+- Dynamic APIs such as comments and statistics: cached at the edge for 15 seconds; write requests always use `no-store`.
+- The GitHub heatmap is cached for 6 hours, and WakaTime is cached for 15 minutes. TTL follows the actual frequency at which the data changes.
 
-My strategy compresses into one sentence: keep static requests out of the script, make scripted requests scan fewer rows, and finish image processing at build time.
+Finally, there is the perceived-performance layer. The homepage is an SPA made up of five horizontal pages: the current page is rendered directly, adjacent pages are prefetched when the browser is idle, and hovering over a navigation item immediately prefetches the corresponding page. The overlay shown during the initial load waits for only two things: the page to complete two frames of rendering and the first image in the viewport to finish decoding. It does not wait for `window.load`, because the latter can be held up by lazy-loaded images and analytics requests.
 
-## Access from Mainland China
+## Keep It Simple
 
-Cloudflare's default entry is Anycast, with routing decided by BGP, and it is not always friendly to the three major Chinese carriers. The same site can be fast on China Telecom while taking a lossy detour on China Mobile during the evening peak.
+If your site is a purely static blog, Astro plus static asset hosting is enough; you do not need a Worker at all. The architecture should grow with the requirements, not with the article.
 
-My approach is an optimized CNAME: pointing my domain's CNAME at a target domain that keeps measuring speeds and updating its resolution results. To be clear about what it is: it only improves the first leg — which Cloudflare entry point the browser connects to. The TLS certificate is still mine, the Host is still my domain, and the content is never decrypted by any third party. It is not a Chinese CDN, not an ICP-filed node, and it does not guarantee better speed in every region at every hour. A third-party service can fail at any time, so I keep a fallback plan that switches back to default DNS within a minute.
+If you need comments, an admin panel, and scheduled tasks, D1 plus an SSR Worker is the lowest-maintenance combination I have used in personal projects. Remember to watch the number of rows read.
 
-Once inside the site, speed relies on layered caching, with rules set by how often the content changes:
 
-- CSS / JS / fonts with content hashes: cached for a year, `immutable`. When a file changes its URL changes, so a stale file can never be served.
-- HTML: `no-cache` — it may be stored but must be revalidated every time, ensuring that after a deployment no old page keeps referencing assets that no longer exist.
-- Dynamic APIs like comments and stats: 15 seconds of edge caching; write requests are always `no-store`.
-- The GitHub heatmap is cached for 6 hours, WakaTime for 15 minutes. TTLs follow how often the data actually changes.
-
-Finally, the perceptual layer. The home page is a SPA of five horizontal pages: the current page is rendered directly, adjacent pages are prefetched when the browser is idle, and hovering over a nav item immediately prefetches the corresponding page. The first-load overlay waits for exactly two things — the page finishing two frames of paint and the first above-the-fold image finishing decode. It does not wait for `window.load`, because that gets dragged out by lazy-loaded images and analytics requests.
-
-## What's Worth Copying
-
-If your site is a purely static blog, Astro plus static asset hosting is enough — you don't need a single Worker. Architecture should grow with your needs, not with blog posts.
-
-If you need comments, an admin panel, and scheduled tasks, D1 plus an SSR Worker is the lowest-maintenance combination I have used in a personal project. Remember to watch rows read.
-
-If access speed from mainland China bothers you, spend one evening measuring per carrier first, then decide whether to adopt an optimized entry. Either way, keep the fallback path ready.
 
 ## References
 
 - [Workers platform limits](https://developers.cloudflare.com/workers/platform/limits/)
-- [Static assets billing](https://developers.cloudflare.com/workers/static-assets/billing-and-limitations/)
+- [Static asset billing rules](https://developers.cloudflare.com/workers/static-assets/billing-and-limitations/)
 - [Service Bindings](https://developers.cloudflare.com/workers/runtime-apis/bindings/service-bindings/)
 - [D1 pricing](https://developers.cloudflare.com/d1/platform/pricing/)
 - [R2 pricing](https://developers.cloudflare.com/r2/pricing/)
