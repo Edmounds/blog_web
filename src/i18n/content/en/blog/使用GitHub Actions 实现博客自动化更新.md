@@ -34,7 +34,7 @@ The three components each handle one part. Obsidian only handles writing, Git on
 
 The writing side doesn't need to know anything about the build side. That's what I like most about the whole workflow: when I'm writing, I'm simply writing in an ordinary Obsidian vault.
 
-## Obsidian Configuration
+## Obsidian Setup
 
 Two plugins are required.
 

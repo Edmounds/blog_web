@@ -997,10 +997,6 @@
       "fingerprint": "7c8a3ef2b002516c365cb8623eda2af1235d073c57f011ad08ea705127ca1f60",
       "translation": "---\ntitle: 當 temu 變成了形容詞\ncreatedAt: 2026-08-18\ntags:\n  - 💦\nslug: 20260818-01\npublished: true\n---\n## 原貼是這個😆\n```image-layout\n---\nlayout: masonry-2\n---\n![image.png|475](https://img.muelsyse.us/bed/20260818133658883.png)\n\n![image.png](https://img.muelsyse.us/bed/20260818133808372.png)\n```\n\n\n## 看看 temu Tibo😆\n這位哥們的頭像也是「temu」\n```image-layout\n---\nlayout: masonry-2\n---\n![image.png](https://img.muelsyse.us/bed/20260818133835704.png)\n![image.png](https://img.muelsyse.us/bed/20260818133840028.png)\n```"
     },
-    "ja:content.about.profile.md.frontmatter.motto": {
-      "fingerprint": "7e8f962188957c5260e9550f25ac0a0cd47ca8c767cce0e6d5328c1b8630a241",
-      "translation": "シンプルにしろ、バカ"
-    },
     "en:content.blog.Hello World.md.segment:b0b689e1bb03b01a0c6eb953ad615bceb1eb81e18b34caeb3bf59f10c5aa441f": {
       "fingerprint": "b0b689e1bb03b01a0c6eb953ad615bceb1eb81e18b34caeb3bf59f10c5aa441f",
       "translation": "Hello World"
@@ -2124,10 +2120,6 @@
     "zh-TW:content.about.profile.md.segment:fd0f443dd03d4d82b318611017c85e7f76ea62555fd871857dcca02cee729dfb": {
       "fingerprint": "fd0f443dd03d4d82b318611017c85e7f76ea62555fd871857dcca02cee729dfb",
       "translation": "本站使用以下服務/API"
-    },
-    "zh-TW:content.about.profile.md.frontmatter.motto": {
-      "fingerprint": "7e8f962188957c5260e9550f25ac0a0cd47ca8c767cce0e6d5328c1b8630a241",
-      "translation": "簡單點，笨蛋"
     }
   }
 }
