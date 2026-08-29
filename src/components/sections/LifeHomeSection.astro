@@ -1,7 +1,7 @@
 ---
 import lifeCovers from "../../data/life-covers.json";
 import { localizePath, type Locale } from "../../lib/i18n";
-import { LIFE_TYPES, type LifeType } from "../../lib/spa-routes";
+import { LIFE_TYPES, LIFE_TITLES, type LifeType } from "../../lib/spa-routes";
 import { getLocalizedSite } from "../../lib/localized-content";
 
 interface Props {
@@ -22,7 +22,7 @@ const sections = lifeCovers.sections as Record<LifeType, Cover[]>;
 const entries = LIFE_TYPES.map((type, index) => ({
   type,
   href: localizePath(`/life/${type}/`, locale),
-  label: site.labels[type],
+  label: LIFE_TITLES[type],
   ordinal: String(index + 1).padStart(2, "0"),
   covers: sections[type] ?? [],
 }));
@@ -40,8 +40,10 @@ const entries = LIFE_TYPES.map((type, index) => ({
             data-life-type={entry.type}
             data-reveal
           >
-            <span class="life-entry__ordinal">{entry.ordinal}</span>
-            <span class="life-entry__label">{entry.label}</span>
+            <div class="life-entry__lead">
+              <span class="life-entry__ordinal">{entry.ordinal}</span>
+              <span class="life-entry__label">{entry.label}</span>
+            </div>
             <span
               class="life-entry__deck"
               data-life-deck={entry.type}
@@ -64,7 +66,9 @@ const entries = LIFE_TYPES.map((type, index) => ({
                 </span>
               ))}
             </span>
-            <span class="life-entry__arrow" aria-hidden="true">-&gt;</span>
+            <span class="life-entry__arrow" aria-hidden="true">
+              -&gt;
+            </span>
           </a>
         ))
       }
@@ -87,10 +91,10 @@ const entries = LIFE_TYPES.map((type, index) => ({
     --deck-height: clamp(4rem, 7vw, 7rem);
     position: relative;
     display: grid;
-    grid-template-columns: 3rem clamp(5rem, 8vw, 7rem) minmax(0, 1fr) 2rem;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    gap: clamp(1rem, 2.5vw, 2.25rem);
-    padding-block: clamp(0.9rem, 2vh, 1.5rem);
+    gap: clamp(1rem, 2vw, 2.25rem);
+    padding-block: clamp(1.5rem, 3.5vh, 2.5rem);
     border-bottom: 1px solid var(--border-soft);
     color: var(--foreground);
     text-decoration: none;
@@ -117,6 +121,12 @@ const entries = LIFE_TYPES.map((type, index) => ({
   .life-entry > * {
     position: relative;
   }
+  .life-entry__lead {
+    display: flex;
+    align-items: baseline;
+    gap: clamp(0.75rem, 1.5vw, 1.5rem);
+    justify-self: start;
+  }
   .life-entry__ordinal {
     color: var(--text-faint);
     font-family: var(--font-mono);
@@ -142,9 +152,9 @@ const entries = LIFE_TYPES.map((type, index) => ({
     --card-width: calc(var(--deck-height) * var(--deck-ratio, 0.667));
     position: relative;
     display: block;
-    width: 100%;
+    width: clamp(18rem, 42vw, 36rem);
     height: var(--deck-height);
-    justify-self: start;
+    justify-self: center;
   }
   .life-deck__card {
     /* All rows use the square music cover as their shared horizontal step. */
@@ -193,7 +203,12 @@ const entries = LIFE_TYPES.map((type, index) => ({
   }
   @media (max-width: 64rem) {
     .life-entry {
-      grid-template-columns: 2.5rem clamp(5rem, 10vw, 7rem) minmax(0, 1fr);
+      grid-template-columns: auto 1fr;
+      gap: 1.25rem;
+    }
+    .life-entry__deck {
+      width: 100%;
+      justify-self: stretch;
     }
     .life-entry__arrow {
       display: none;
@@ -205,8 +220,9 @@ const entries = LIFE_TYPES.map((type, index) => ({
     }
     .life-entry {
       --deck-height: 3.25rem;
-      grid-template-columns: 5rem minmax(0, 1fr);
+      grid-template-columns: auto 1fr;
       gap: 1rem;
+      padding-block: 1rem;
     }
     .life-entry__ordinal {
       display: none;

@@ -5,7 +5,7 @@ import { getPublicGameItems } from "../../../../lib/games";
 import { type Locale } from "../../../../lib/i18n";
 import { getLocalizedSite } from "../../../../lib/localized-content";
 import { getRuntimeEnv } from "../../../../lib/runtime";
-import { isLifeType } from "../../../../lib/spa-routes";
+import { isLifeType, LIFE_TITLES } from "../../../../lib/spa-routes";
 import { listNeteaseRanking } from "../../../../server/netease-music.js";
 
 export const prerender = false;
@@ -18,7 +18,11 @@ if (!["zh-TW", "en", "ja"].includes(locale) || !isLifeType(type)) {
 const site = await getLocalizedSite(locale);
 const db = getRuntimeEnv().DB;
 const artTypes: ArtType[] =
-  type === "screen" ? ["movie", "series", "anime"] : type === "game" ? [] : [type];
+  type === "screen"
+    ? ["movie", "series", "anime"]
+    : type === "game"
+      ? []
+      : [type];
 const [artItems, gameItems, weekly, total] = await Promise.all([
   getPublicArtItems(db, locale, artTypes),
   type === "game" ? getPublicGameItems(db) : Promise.resolve([]),
@@ -32,7 +36,7 @@ Astro.response.headers.set(
 ---
 
 <SpaLayout
-  title={site.labels[type]}
+  title={LIFE_TITLES[type]}
   description={site.page[`${type}Description`]}
   initialPath={`/${Astro.params.locale}/life/${type}/`}
   locale={locale}

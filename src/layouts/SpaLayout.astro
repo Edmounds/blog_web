@@ -8,6 +8,7 @@ import { localizePath } from "../lib/i18n";
 import { getLocalizedSite } from "../lib/localized-content";
 import {
   LIFE_ROUTES,
+  LIFE_TITLES,
   LIFE_TOP_INDEX,
   TOP_ROUTES,
   resolveSpaLocation,
@@ -79,10 +80,10 @@ const spaConfig = {
   topTitles: ["last4ev4r", "Blog", "Note", "Links", "About", site.labels.art],
   lifeTitles: [
     site.labels.art,
-    site.labels.book,
-    site.labels.music,
-    site.labels.screen,
-    site.labels.game,
+    LIFE_TITLES.book,
+    LIFE_TITLES.music,
+    LIFE_TITLES.screen,
+    LIFE_TITLES.game,
   ],
 };
 ---
@@ -438,11 +439,13 @@ const spaConfig = {
     };
     const localizedPathFor = (top, life) =>
       top === lifeTopIndex
-        ? localizedLifeRoutes[life] ?? localizedLifeRoutes[0]
+        ? (localizedLifeRoutes[life] ?? localizedLifeRoutes[0])
         : localizedTopRoutes[top];
     const syncDocument = (top, life) => {
       document.title =
-        top === lifeTopIndex ? lifeTitles[life] ?? lifeTitles[0] : topTitles[top];
+        top === lifeTopIndex
+          ? (lifeTitles[life] ?? lifeTitles[0])
+          : topTitles[top];
       document.querySelectorAll("a[data-primary-route]").forEach((link) => {
         if (!(link instanceof HTMLAnchorElement)) return;
         const target = locationForPath(new URL(link.href).pathname);
@@ -485,9 +488,12 @@ const spaConfig = {
         requestAnimationFrame(() => {
           delete container.dataset.lifeInstant;
         });
-      window.setTimeout(() => {
-        container.dataset.transitioning = "false";
-      }, animate && !reducedMotion() ? 700 : 0);
+      window.setTimeout(
+        () => {
+          container.dataset.transitioning = "false";
+        },
+        animate && !reducedMotion() ? 700 : 0,
+      );
     };
 
     /* The Life home deck doubles as the transition surface: its preview cards
@@ -513,9 +519,7 @@ const spaConfig = {
     };
     const captureSectionCovers = (lifeIndex) => {
       const slide = lifeSlideAt(lifeIndex);
-      return Array.from(
-        slide?.querySelectorAll("[data-life-cover]") ?? [],
-      )
+      return Array.from(slide?.querySelectorAll("[data-life-cover]") ?? [])
         .filter((cover) => cover.getClientRects().length > 0)
         .map((cover) => {
           const rect = cover.getBoundingClientRect();
@@ -528,60 +532,58 @@ const spaConfig = {
           };
         });
     };
-    const runDeckFlight = (
-      sources,
-      targets,
-      { startBlur, endBlur },
-    ) => {
+    const runDeckFlight = (sources, targets, { startBlur, endBlur }) => {
       if (!sources.length || !targets.length) return;
       const overlay = document.createElement("div");
       overlay.className = "life-flip-overlay";
       document.body.append(overlay);
-      const animations = sources.slice(0, targets.length).map((source, index) => {
-        const target = targets[index];
-        const translate = `translate3d(${target.centerX - source.centerX}px, ${target.centerY - source.centerY}px, 0) scale(${target.width / source.width}, ${target.height / source.height})`;
-        const clone = document.createElement("span");
-        clone.className = "life-flip-card";
-        clone.style.left = `${source.centerX - source.width / 2}px`;
-        clone.style.top = `${source.centerY - source.height / 2}px`;
-        clone.style.width = `${source.width}px`;
-        clone.style.height = `${source.height}px`;
-        if (source.image) {
-          const image = source.image.cloneNode(true);
-          if (image instanceof HTMLImageElement) {
-            image.loading = "eager";
-            image.decoding = "sync";
+      const animations = sources
+        .slice(0, targets.length)
+        .map((source, index) => {
+          const target = targets[index];
+          const translate = `translate3d(${target.centerX - source.centerX}px, ${target.centerY - source.centerY}px, 0) scale(${target.width / source.width}, ${target.height / source.height})`;
+          const clone = document.createElement("span");
+          clone.className = "life-flip-card";
+          clone.style.left = `${source.centerX - source.width / 2}px`;
+          clone.style.top = `${source.centerY - source.height / 2}px`;
+          clone.style.width = `${source.width}px`;
+          clone.style.height = `${source.height}px`;
+          if (source.image) {
+            const image = source.image.cloneNode(true);
+            if (image instanceof HTMLImageElement) {
+              image.loading = "eager";
+              image.decoding = "sync";
+            }
+            clone.append(image);
           }
-          clone.append(image);
-        }
-        overlay.append(clone);
-        return clone.animate(
-          [
+          overlay.append(clone);
+          return clone.animate(
+            [
+              {
+                transform: `rotate(${source.rotation ?? 0}deg)`,
+                filter: `blur(${startBlur}px)`,
+                opacity: 1,
+              },
+              {
+                transform: translate,
+                filter: `blur(${endBlur}px)`,
+                opacity: 1,
+                offset: 0.88,
+              },
+              {
+                transform: translate,
+                filter: `blur(${endBlur}px)`,
+                opacity: 0,
+              },
+            ],
             {
-              transform: `rotate(${source.rotation ?? 0}deg)`,
-              filter: `blur(${startBlur}px)`,
-              opacity: 1,
+              duration: 620,
+              delay: index * 55,
+              easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+              fill: "both",
             },
-            {
-              transform: translate,
-              filter: `blur(${endBlur}px)`,
-              opacity: 1,
-              offset: 0.88,
-            },
-            {
-              transform: translate,
-              filter: `blur(${endBlur}px)`,
-              opacity: 0,
-            },
-          ],
-          {
-            duration: 620,
-            delay: index * 55,
-            easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-            fill: "both",
-          },
-        );
-      });
+          );
+        });
       void Promise.allSettled(
         animations.map((animation) => animation.finished),
       ).then(() => {
@@ -731,9 +733,13 @@ const spaConfig = {
       (event) => preloadFor(spaLink(event)),
       { signal },
     );
-    document.addEventListener("focusin", (event) => preloadFor(spaLink(event)), {
-      signal,
-    });
+    document.addEventListener(
+      "focusin",
+      (event) => preloadFor(spaLink(event)),
+      {
+        signal,
+      },
+    );
     document.addEventListener(
       "touchstart",
       (event) => preloadFor(spaLink(event)),

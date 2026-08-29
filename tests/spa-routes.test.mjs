@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   LIFE_ROUTES,
+  LIFE_TITLES,
   LIFE_TOP_INDEX,
   TOP_ROUTES,
   isLifeType,
@@ -14,25 +15,51 @@ test("top-level routes resolve to their slide index", () => {
   assert.deepEqual(resolveSpaLocation("/"), { top: 0, life: 0 });
   assert.deepEqual(resolveSpaLocation("/blog/"), { top: 1, life: 0 });
   assert.deepEqual(resolveSpaLocation("/about/"), { top: 4, life: 0 });
-  assert.deepEqual(resolveSpaLocation("/life/"), { top: LIFE_TOP_INDEX, life: 0 });
+  assert.deepEqual(resolveSpaLocation("/life/"), {
+    top: LIFE_TOP_INDEX,
+    life: 0,
+  });
 });
 
 test("Life sub-sections resolve to the Life slide plus a nested index", () => {
-  assert.deepEqual(resolveSpaLocation("/life/book/"), { top: LIFE_TOP_INDEX, life: 1 });
-  assert.deepEqual(resolveSpaLocation("/life/music/"), { top: LIFE_TOP_INDEX, life: 2 });
-  assert.deepEqual(resolveSpaLocation("/life/screen/"), { top: LIFE_TOP_INDEX, life: 3 });
-  assert.deepEqual(resolveSpaLocation("/life/game/"), { top: LIFE_TOP_INDEX, life: 4 });
+  assert.deepEqual(resolveSpaLocation("/life/book/"), {
+    top: LIFE_TOP_INDEX,
+    life: 1,
+  });
+  assert.deepEqual(resolveSpaLocation("/life/music/"), {
+    top: LIFE_TOP_INDEX,
+    life: 2,
+  });
+  assert.deepEqual(resolveSpaLocation("/life/screen/"), {
+    top: LIFE_TOP_INDEX,
+    life: 3,
+  });
+  assert.deepEqual(resolveSpaLocation("/life/game/"), {
+    top: LIFE_TOP_INDEX,
+    life: 4,
+  });
 });
 
 test("locale prefixes and missing trailing slashes resolve to the same slide", () => {
-  assert.deepEqual(resolveSpaLocation("/en/life/music/"), { top: LIFE_TOP_INDEX, life: 2 });
+  assert.deepEqual(resolveSpaLocation("/en/life/music/"), {
+    top: LIFE_TOP_INDEX,
+    life: 2,
+  });
   assert.deepEqual(resolveSpaLocation("/ja/blog/"), { top: 1, life: 0 });
-  assert.deepEqual(resolveSpaLocation("/zh-TW/life"), { top: LIFE_TOP_INDEX, life: 0 });
+  assert.deepEqual(resolveSpaLocation("/zh-TW/life"), {
+    top: LIFE_TOP_INDEX,
+    life: 0,
+  });
   assert.deepEqual(resolveSpaLocation("/en/"), { top: 0, life: 0 });
 });
 
 test("paths outside the SPA report no slide", () => {
-  for (const path of ["/blog/20260128-01/", "/admin/art/", "/life/movie/", "/art/book/"]) {
+  for (const path of [
+    "/blog/20260128-01/",
+    "/admin/art/",
+    "/life/movie/",
+    "/art/book/",
+  ]) {
     assert.equal(resolveSpaLocation(path).top, -1, path);
   }
 });
@@ -59,4 +86,13 @@ test("only the four collections count as Life types", () => {
   assert.ok(["book", "music", "screen", "game"].every(isLifeType));
   assert.ok(!isLifeType("movie"));
   assert.ok(!isLifeType(undefined));
+});
+
+test("life titles use capitalized English names", () => {
+  assert.deepEqual(LIFE_TITLES, {
+    book: "BOOKS",
+    music: "MUSIC",
+    screen: "MOVIES",
+    game: "GAMES",
+  });
 });

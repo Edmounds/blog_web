@@ -344,6 +344,142 @@
           }
         ]
       }
+    },
+    "https://img.muelsyse.us/bed/20260818133658883.png": {
+      "kind": "responsive",
+      "sourceDigest": "4e7eca35098e6e2bbcc77ec144303e1090593d2602cb85463290c4f0e1ffa09d",
+      "width": 1178,
+      "height": 1120,
+      "fallback": "https://img.muelsyse.us/bed/20260818133658883-w1178.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/20260818133658883-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.997286,
+            "bytes": 15922
+          },
+          {
+            "width": 1178,
+            "url": "https://img.muelsyse.us/bed/20260818133658883-w1178.avif.webp",
+            "quality": 40,
+            "ssim": 0.999554,
+            "bytes": 26026
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/20260818133658883-w640.webp",
+            "quality": 70,
+            "ssim": 0.996103,
+            "bytes": 25902
+          },
+          {
+            "width": 1178,
+            "url": "https://img.muelsyse.us/bed/20260818133658883-w1178.webp",
+            "quality": 70,
+            "ssim": 0.999052,
+            "bytes": 55740
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/20260818133808372.png": {
+      "kind": "responsive",
+      "sourceDigest": "1a5ce3185d706f2eb18c0b012f4a2cc10c31c37f8d19784c1c86d07151098038",
+      "width": 1057,
+      "height": 1200,
+      "fallback": "https://img.muelsyse.us/bed/20260818133808372-w1057.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/20260818133808372-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.998844,
+            "bytes": 14964
+          },
+          {
+            "width": 1057,
+            "url": "https://img.muelsyse.us/bed/20260818133808372-w1057.avif.webp",
+            "quality": 40,
+            "ssim": 0.99935,
+            "bytes": 25740
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/20260818133808372-w640.webp",
+            "quality": 70,
+            "ssim": 0.998728,
+            "bytes": 26076
+          },
+          {
+            "width": 1057,
+            "url": "https://img.muelsyse.us/bed/20260818133808372-w1057.webp",
+            "quality": 70,
+            "ssim": 0.999188,
+            "bytes": 44946
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/20260818133835704.png": {
+      "kind": "responsive",
+      "sourceDigest": "242f1b4f78a0e9d0abe66e417785fd89b286befee9424042e9448cfcced1821c",
+      "width": 400,
+      "height": 400,
+      "fallback": "https://img.muelsyse.us/bed/20260818133835704-w400.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 400,
+            "url": "https://img.muelsyse.us/bed/20260818133835704-w400.avif.webp",
+            "quality": 40,
+            "ssim": 0.988949,
+            "bytes": 3364
+          }
+        ],
+        "webp": [
+          {
+            "width": 400,
+            "url": "https://img.muelsyse.us/bed/20260818133835704-w400.webp",
+            "quality": 70,
+            "ssim": 0.989176,
+            "bytes": 5240
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/20260818133840028.png": {
+      "kind": "responsive",
+      "sourceDigest": "986852e193385196b693e16fa69d55eaa81627711869f9a0aead9b11c495136e",
+      "width": 400,
+      "height": 400,
+      "fallback": "https://img.muelsyse.us/bed/20260818133840028-w400.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 400,
+            "url": "https://img.muelsyse.us/bed/20260818133840028-w400.avif.webp",
+            "quality": 40,
+            "ssim": 0.988606,
+            "bytes": 3838
+          }
+        ],
+        "webp": [
+          {
+            "width": 400,
+            "url": "https://img.muelsyse.us/bed/20260818133840028-w400.webp",
+            "quality": 70,
+            "ssim": 0.989541,
+            "bytes": 6218
+          }
+        ]
+      }
     }
   },
   "vaultAssets": {},
@@ -354,6 +490,18 @@
     "bed/20260808043442545-w1876.webp",
     "bed/20260808043442545-w640.avif.webp",
     "bed/20260808043442545-w640.webp",
+    "bed/20260818133658883-w1178.avif.webp",
+    "bed/20260818133658883-w1178.webp",
+    "bed/20260818133658883-w640.avif.webp",
+    "bed/20260818133658883-w640.webp",
+    "bed/20260818133808372-w1057.avif.webp",
+    "bed/20260818133808372-w1057.webp",
+    "bed/20260818133808372-w640.avif.webp",
+    "bed/20260818133808372-w640.webp",
+    "bed/20260818133835704-w400.avif.webp",
+    "bed/20260818133835704-w400.webp",
+    "bed/20260818133840028-w400.avif.webp",
+    "bed/20260818133840028-w400.webp",
     "bed/jupiter-w1280.avif.webp",
     "bed/jupiter-w1280.webp",
     "bed/jupiter-w640.avif.webp",

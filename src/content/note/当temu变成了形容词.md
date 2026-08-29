@@ -3,10 +3,10 @@ title: 当temu变成了形容词
 createdAt: 2026-08-18
 tags:
   - 💦
-slug: 202608018-01
+slug: 20260818-01
 published: true
 ---
-## 😆
+## 原帖是这个😆
 ```image-layout
 ---
 layout: masonry-2
@@ -18,6 +18,7 @@ layout: masonry-2
 
 
 ## 看看temu Tibo😆
+这个哥们的头像也是"temu"
 ```image-layout
 ---
 layout: masonry-2

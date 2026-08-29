@@ -4,6 +4,13 @@ export const LIFE_TYPES = ["book", "music", "screen", "game"] as const;
 
 export type LifeType = (typeof LIFE_TYPES)[number];
 
+export const LIFE_TITLES: Record<LifeType, string> = {
+  book: "BOOKS",
+  music: "MUSIC",
+  screen: "MOVIES",
+  game: "GAMES",
+};
+
 export const LIFE_HOME_ROUTE = "/life/";
 
 export const TOP_ROUTES = [

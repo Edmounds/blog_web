@@ -5,7 +5,7 @@ import LifeHomeSection from "./LifeHomeSection.astro";
 import type { ArtItem } from "../../lib/art";
 import type { GameItem } from "../../lib/games";
 import { localizePath, type Locale } from "../../lib/i18n";
-import { LIFE_ROUTES, LIFE_TYPES } from "../../lib/spa-routes";
+import { LIFE_ROUTES, LIFE_TYPES, LIFE_TITLES } from "../../lib/spa-routes";
 import { getLocalizedSite } from "../../lib/localized-content";
 
 interface RankingItem {
@@ -38,7 +38,7 @@ const slides = LIFE_ROUTES.map((route, index) => ({
   index,
   route,
   key: index === 0 ? "home" : LIFE_TYPES[index - 1],
-  label: index === 0 ? site.labels.art : site.labels[LIFE_TYPES[index - 1]],
+  label: index === 0 ? site.labels.art : LIFE_TITLES[LIFE_TYPES[index - 1]],
   url: localizePath(route, locale),
 }));
 ---
@@ -59,7 +59,9 @@ const slides = LIFE_ROUTES.map((route, index) => ({
             data-path={slide.route}
             data-section-url={slide.index === 0 ? undefined : slide.url}
             data-load-state={
-              slide.index === 0 || slide.index === activeIndex ? "loaded" : "idle"
+              slide.index === 0 || slide.index === activeIndex
+                ? "loaded"
+                : "idle"
             }
           >
             {slide.index === 0 && <LifeHomeSection locale={locale} />}
