@@ -22,7 +22,6 @@ const USER_AGENT = "blog-web-life-cover-snapshot/1.0";
 const FETCH_TIMEOUT_MS = 15_000;
 
 const { values } = parseArgs({
-  options: { local: { type: "boolean", default: false } },
   options: {
     local: { type: "boolean", default: false },
     force: { type: "boolean", default: false },
@@ -47,15 +46,6 @@ let totalFresh = 0;
 
 for (const section of LIFE_COVER_SECTIONS) {
   const box = LIFE_COVER_BOXES[section];
-  sections[section] = [];
-  for (const source of sources[section]) {
-    sections[section].push({
-      id: source.id,
-      width: box.width,
-      height: box.height,
-      thumbnail: await renderThumbnail(source, box),
-    });
-  }
   const { covers, stats } = await resolveSectionCovers({
     sources: sources[section],
     existingCovers: existingSnapshot?.sections?.[section],
@@ -82,7 +72,6 @@ if (
 const snapshot = { generatedAt: new Date().toISOString(), sections };
 await writeFile(OUTPUT_PATH, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
 console.log(
-  `Snapshotted Life covers: ${LIFE_COVER_SECTIONS.map((section) => `${section} ${sections[section].length}`).join(", ")}.`,
   `Snapshotted Life covers (${totalFresh} generated, ${totalCached} cached): ${LIFE_COVER_SECTIONS.map((section) => `${section} ${sections[section].length}`).join(", ")}.`,
 );
 

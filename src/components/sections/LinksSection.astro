@@ -14,6 +14,7 @@ const copy = {
     apply: "申请友链",
     detail: "请按以下格式发送邮件至",
     ending: "。",
+    info: "如果想添加我为友链可以直接使用下面的信息：",
   },
   "zh-TW": {
     title: "Links",
@@ -21,6 +22,7 @@ const copy = {
     apply: "申請友鏈",
     detail: "請依照以下格式傳送郵件至",
     ending: "。",
+    info: "如果想添加我為友鏈可以直接使用以下資訊：",
   },
   en: {
     title: "Links",
@@ -28,6 +30,7 @@ const copy = {
     apply: "Apply",
     detail: "Email your application in the following format to",
     ending: ".",
+    info: "If you want to add me to your friend links, feel free to use the information below:",
   },
   ja: {
     title: "Links",
@@ -35,6 +38,7 @@ const copy = {
     apply: "リンク申請",
     detail: "以下の形式で申請メールを送信してください：",
     ending: "。",
+    info: "当サイトをリンクに追加する場合は、以下の情報をご利用ください：",
   },
 }[locale];
 
@@ -71,6 +75,7 @@ const application: ReadonlyArray<{
         {copy.detail}
         <a href="mailto:i@muelsyse.us">i@muelsyse.us</a>{copy.ending}
       </p>
+      <p>{copy.info}</p>
       <dl class="links-application">
         {
           application.map((item) => (
