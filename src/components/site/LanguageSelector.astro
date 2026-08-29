@@ -1,7 +1,11 @@
 ---
 import { Check, Globe2 } from "lucide-static";
 
-import { localeDefinitions, switchLocaleInUrl, type Locale } from "../../lib/i18n";
+import {
+  localeDefinitions,
+  switchLocaleInUrl,
+  type Locale,
+} from "../../lib/i18n";
 import Icon from "../ui/Icon.astro";
 
 interface Props {
@@ -23,58 +27,301 @@ const { locale, currentPath, label = "选择语言" } = Astro.props;
     aria-expanded="false"
     data-language-trigger
   >
-    <span class="inline-flex size-5 [&>svg]:size-full"><Icon svg={Globe2} /></span>
+    <span class="inline-flex size-5 [&>svg]:size-full"
+      ><Icon svg={Globe2} /></span
+    >
   </button>
   <div
     class="absolute right-0 z-50 mt-2 hidden max-h-80 w-52 overflow-y-auto rounded-[var(--radius-control)] border border-[var(--border-strong)] bg-[var(--surface-panel)] p-1 shadow-[var(--shadow-soft)] backdrop-blur-md"
     role="menu"
     data-language-menu
   >
-    {localeDefinitions.map((definition) => (
-      <a
-        href={switchLocaleInUrl(currentPath, definition.code)}
-        role="menuitemradio"
-        aria-checked={definition.code === locale}
-        class="flex min-h-11 items-center justify-between gap-3 rounded-[var(--radius-control)] px-3 py-2 text-sm text-[var(--text-muted)] hover:bg-[var(--surface-soft)] hover:text-[var(--text-main)]"
-      >
-        <span lang={definition.htmlLang} dir={definition.dir}>{definition.label}</span>
-        {definition.code === locale && <span class="size-4 text-[var(--foreground)]"><Icon svg={Check} /></span>}
-      </a>
-    ))}
+    {
+      localeDefinitions.map((definition) => (
+        <a
+          href={switchLocaleInUrl(currentPath, definition.code)}
+          role="menuitemradio"
+          aria-checked={definition.code === locale}
+          data-locale-code={definition.code}
+          class="flex min-h-11 items-center justify-between gap-3 rounded-[var(--radius-control)] px-3 py-2 text-sm text-[var(--text-muted)] hover:bg-[var(--surface-soft)] hover:text-[var(--text-main)]"
+        >
+          <span lang={definition.htmlLang} dir={definition.dir}>
+            {definition.label}
+          </span>
+          {definition.code === locale && (
+            <span class="size-4 text-[var(--foreground)]" data-check>
+              <Icon svg={Check} />
+            </span>
+          )}
+        </a>
+      ))
+    }
   </div>
 </div>
 
 <script>
-  function bindLanguageSelectors() {
-    document.querySelectorAll<HTMLElement>("[data-language-selector]").forEach((root) => {
-      if (root.dataset.bound === "true") return;
-      root.dataset.bound = "true";
-      const trigger = root.querySelector<HTMLButtonElement>("[data-language-trigger]");
-      const menu = root.querySelector<HTMLElement>("[data-language-menu]");
-      if (!trigger || !menu) return;
+  import {
+    isLocale,
+    stripLocaleFromPath,
+    switchLocaleInUrl,
+    type Locale,
+  } from "../../lib/i18n";
 
-      const controller = new AbortController();
-      const { signal } = controller;
-      const close = (restoreFocus = false) => {
-        menu.classList.add("hidden");
-        trigger.setAttribute("aria-expanded", "false");
-        if (restoreFocus) trigger.focus();
-      };
-      const open = () => {
-        menu.classList.remove("hidden");
-        trigger.setAttribute("aria-expanded", "true");
-        menu.querySelector<HTMLElement>("[aria-checked='true']")?.focus();
-      };
-      trigger.addEventListener("click", () => menu.classList.contains("hidden") ? open() : close(), { signal });
-      root.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") close(true);
-      }, { signal });
-      document.addEventListener("pointerdown", (event) => {
-        if (!root.contains(event.target as Node)) close();
-      }, { signal });
-      document.addEventListener("astro:before-swap", () => controller.abort(), { once: true });
-    });
+  function createCheckSvg(): HTMLElement {
+    const span = document.createElement("span");
+    span.className = "size-4 text-[var(--foreground)]";
+    span.dataset.check = "";
+    span.innerHTML = `<svg aria-hidden="true" focusable="false" class="lucide lucide-check size-full" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>`;
+    return span;
   }
+
+  function syncLanguageLinks(root: HTMLElement) {
+    const currentUrl =
+      window.location.pathname + window.location.search + window.location.hash;
+    const { locale: currentLocale } = stripLocaleFromPath(
+      window.location.pathname,
+    );
+    root
+      .querySelectorAll<HTMLAnchorElement>("a[data-locale-code]")
+      .forEach((link) => {
+        const code = link.dataset.localeCode as Locale;
+        if (!isLocale(code)) return;
+        link.href = switchLocaleInUrl(currentUrl, code);
+        const isCurrent = code === currentLocale;
+        link.setAttribute("aria-checked", String(isCurrent));
+
+        const checks = link.querySelectorAll("[data-check]");
+        if (isCurrent) {
+          if (checks.length === 0) {
+            link.appendChild(createCheckSvg());
+          } else {
+            // Keep only the first checkmark if multiple exist
+            for (let i = 1; i < checks.length; i++) {
+              checks[i].remove();
+            }
+          }
+        } else {
+          checks.forEach((el) => el.remove());
+        }
+      });
+  }
+
+  async function switchLocaleInPlace(targetLocale: Locale, targetUrl: string) {
+    const scrollY = window.scrollY;
+    let targetDoc: Document;
+    try {
+      const response = await fetch(targetUrl);
+      if (!response.ok) {
+        window.location.href = targetUrl;
+        return;
+      }
+      const html = await response.text();
+      targetDoc = new DOMParser().parseFromString(html, "text/html");
+    } catch {
+      window.location.href = targetUrl;
+      return;
+    }
+
+    document.title = targetDoc.title || document.title;
+    document.documentElement.lang =
+      targetDoc.documentElement.lang || targetLocale;
+    document.documentElement.dir = targetDoc.documentElement.dir || "ltr";
+
+    const targetHeader = targetDoc.querySelector("[data-site-header]");
+    const currentHeader = document.querySelector("[data-site-header]");
+    if (targetHeader && currentHeader) {
+      const targetNav = targetHeader.querySelector("[data-desktop-nav]");
+      const currentNav = currentHeader.querySelector("[data-desktop-nav]");
+      if (targetNav && currentNav) {
+        currentNav.innerHTML = targetNav.innerHTML;
+      }
+      const targetMobile = targetHeader.querySelector(
+        "[data-mobile-menu] .mobile-menu__inner",
+      );
+      const currentMobile = currentHeader.querySelector(
+        "[data-mobile-menu] .mobile-menu__inner",
+      );
+      if (targetMobile && currentMobile) {
+        currentMobile.innerHTML = targetMobile.innerHTML;
+      }
+      const targetSig = targetHeader.querySelector(
+        "[data-content-frame-start]",
+      );
+      const currentSig = currentHeader.querySelector(
+        "[data-content-frame-start]",
+      );
+      if (
+        targetSig instanceof HTMLAnchorElement &&
+        currentSig instanceof HTMLAnchorElement
+      ) {
+        currentSig.href = targetSig.href;
+      }
+    }
+
+    const spaRoot = document.querySelector<HTMLElement>("[data-spa-root]");
+    const articleRoot = document.querySelector<HTMLElement>(
+      "[data-article-page]",
+    );
+    const spaHandler = (
+      window as unknown as {
+        __spaInPlaceLocaleUpdate?: (doc: Document) => Promise<boolean>;
+      }
+    ).__spaInPlaceLocaleUpdate;
+
+    if (spaRoot && typeof spaHandler === "function") {
+      await spaHandler(targetDoc);
+    } else if (articleRoot) {
+      const form = document.querySelector<HTMLFormElement>(
+        "[data-comment-form]",
+      );
+      const nameVal = (
+        form?.elements.namedItem("name") as HTMLInputElement | null
+      )?.value;
+      const contentVal = (
+        form?.elements.namedItem("content") as HTMLTextAreaElement | null
+      )?.value;
+      const websiteVal = (
+        form?.elements.namedItem("website") as HTMLInputElement | null
+      )?.value;
+
+      const newArticle = targetDoc.querySelector("[data-article-page]");
+      if (newArticle) {
+        articleRoot.replaceWith(newArticle);
+        const newForm = document.querySelector<HTMLFormElement>(
+          "[data-comment-form]",
+        );
+        if (newForm) {
+          if (nameVal)
+            (newForm.elements.namedItem("name") as HTMLInputElement).value =
+              nameVal;
+          if (contentVal)
+            (
+              newForm.elements.namedItem("content") as HTMLTextAreaElement
+            ).value = contentVal;
+          if (websiteVal)
+            (newForm.elements.namedItem("website") as HTMLInputElement).value =
+              websiteVal;
+          newForm.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+      }
+    } else {
+      const currentMain = document.querySelector("main");
+      const targetMain = targetDoc.querySelector("main");
+      if (currentMain && targetMain) {
+        currentMain.innerHTML = targetMain.innerHTML;
+      }
+    }
+
+    const currentFooter = document.querySelector("footer");
+    const targetFooter = targetDoc.querySelector("footer");
+    if (currentFooter && targetFooter) {
+      currentFooter.innerHTML = targetFooter.innerHTML;
+    }
+
+    history.replaceState({}, "", targetUrl);
+    document
+      .querySelectorAll<HTMLElement>("[data-language-selector]")
+      .forEach(syncLanguageLinks);
+    window.dispatchEvent(new Event("spa:nav-sync"));
+    window.scrollTo({ top: scrollY, behavior: "instant" });
+  }
+
+  function bindLanguageSelectors() {
+    document
+      .querySelectorAll<HTMLElement>("[data-language-selector]")
+      .forEach((root) => {
+        if (root.dataset.bound === "true") {
+          syncLanguageLinks(root);
+          return;
+        }
+        root.dataset.bound = "true";
+        const trigger = root.querySelector<HTMLButtonElement>(
+          "[data-language-trigger]",
+        );
+        const menu = root.querySelector<HTMLElement>("[data-language-menu]");
+        if (!trigger || !menu) return;
+
+        const controller = new AbortController();
+        const { signal } = controller;
+        const close = (restoreFocus = false) => {
+          menu.classList.add("hidden");
+          trigger.setAttribute("aria-expanded", "false");
+          if (restoreFocus) trigger.focus();
+        };
+        const open = () => {
+          syncLanguageLinks(root);
+          menu.classList.remove("hidden");
+          trigger.setAttribute("aria-expanded", "true");
+          menu.querySelector<HTMLElement>("[aria-checked='true']")?.focus();
+        };
+        trigger.addEventListener(
+          "click",
+          () => (menu.classList.contains("hidden") ? open() : close()),
+          { signal },
+        );
+        root.addEventListener(
+          "keydown",
+          (event) => {
+            if (event.key === "Escape") close(true);
+          },
+          { signal },
+        );
+        document.addEventListener(
+          "pointerdown",
+          (event) => {
+            if (!root.contains(event.target as Node)) close();
+          },
+          { signal },
+        );
+
+        menu
+          .querySelectorAll<HTMLAnchorElement>("a[data-locale-code]")
+          .forEach((link) => {
+            link.addEventListener(
+              "click",
+              async (event) => {
+                if (
+                  event.metaKey ||
+                  event.ctrlKey ||
+                  event.shiftKey ||
+                  event.altKey
+                )
+                  return;
+                event.preventDefault();
+                const targetLocale = link.dataset.localeCode as Locale;
+                if (!isLocale(targetLocale)) return;
+                const { locale: currentLocale } = stripLocaleFromPath(
+                  window.location.pathname,
+                );
+                if (targetLocale === currentLocale) {
+                  close();
+                  return;
+                }
+                close();
+                await switchLocaleInPlace(targetLocale, link.href);
+              },
+              { signal },
+            );
+          });
+
+        document.addEventListener(
+          "astro:before-swap",
+          () => controller.abort(),
+          { once: true },
+        );
+      });
+  }
+
   bindLanguageSelectors();
   document.addEventListener("astro:page-load", bindLanguageSelectors);
+  window.addEventListener("spa:nav-sync", () => {
+    document
+      .querySelectorAll<HTMLElement>("[data-language-selector]")
+      .forEach(syncLanguageLinks);
+  });
+  window.addEventListener("popstate", () => {
+    document
+      .querySelectorAll<HTMLElement>("[data-language-selector]")
+      .forEach(syncLanguageLinks);
+  });
 </script>

@@ -1,5 +1,9 @@
 ---
-interface Heading { depth: number; slug: string; text: string; }
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
 interface Props {
   headings: Heading[];
   labels?: { title: string };
@@ -12,67 +16,100 @@ const {
   showTitle = true,
 } = Astro.props;
 const minimumDepth = Math.min(2, ...headings.map((heading) => heading.depth));
-const items = headings.map((heading) => ({ ...heading, depth: Math.min(6, Math.max(1, heading.depth - minimumDepth + 1)) }));
+const items = headings.map((heading) => ({
+  ...heading,
+  depth: Math.min(6, Math.max(1, heading.depth - minimumDepth + 1)),
+}));
 ---
 
 <section class="toc-desktop" data-toc>
   {showTitle && <h2>{labels.title}</h2>}
   <div class="toc-list-frame">
-    <span class="toc-progress" data-toc-progress aria-hidden="true"><span></span></span>
+    <span class="toc-progress" data-toc-progress aria-hidden="true"
+      ><span></span></span
+    >
     <nav class="toc-nav" aria-label={labels.title}>
-      {items.map((item) => (
-        <a
-          href={`#${item.slug}`}
-          class={`toc-link toc-link--depth-${item.depth}`}
-          style={`--toc-depth: ${item.depth - 1};`}
-          data-toc-link={item.slug}
-        >{item.text}</a>
-      ))}
+      {
+        items.map((item) => (
+          <a
+            href={`#${item.slug}`}
+            class={`toc-link toc-link--depth-${item.depth}`}
+            style={`--toc-depth: ${item.depth - 1};`}
+            data-toc-link={item.slug}
+          >
+            {item.text}
+          </a>
+        ))
+      }
     </nav>
   </div>
 </section>
 
 <script>
   const initToc = () => {
-    document.querySelectorAll<HTMLElement>("[data-toc]:not([data-initialized])").forEach((root) => {
-      root.dataset.initialized = "true";
-      const links = Array.from(root.querySelectorAll<HTMLAnchorElement>("[data-toc-link]"));
-      const progress = root.querySelector<HTMLElement>("[data-toc-progress] span");
-      const listFrame = root.querySelector<HTMLElement>(".toc-list-frame");
-      const headings = links.map((link) => {
-        const slug = link.dataset.tocLink ?? "";
-        return { link, heading: document.getElementById(slug) };
-      }).filter((entry): entry is { link: HTMLAnchorElement; heading: HTMLElement } => Boolean(entry.heading));
+    document
+      .querySelectorAll<HTMLElement>("[data-toc]:not([data-initialized])")
+      .forEach((root) => {
+        root.dataset.initialized = "true";
+        const links = Array.from(
+          root.querySelectorAll<HTMLAnchorElement>("[data-toc-link]"),
+        );
+        const progress = root.querySelector<HTMLElement>(
+          "[data-toc-progress] span",
+        );
+        const listFrame = root.querySelector<HTMLElement>(".toc-list-frame");
+        const headings = links
+          .map((link) => {
+            const slug = link.dataset.tocLink ?? "";
+            return { link, heading: document.getElementById(slug) };
+          })
+          .filter(
+            (
+              entry,
+            ): entry is { link: HTMLAnchorElement; heading: HTMLElement } =>
+              Boolean(entry.heading),
+          );
 
-      const update = () => {
-        let active = headings[0];
-        for (const entry of headings) {
-          if (entry.heading.getBoundingClientRect().top <= 150) active = entry;
-          else break;
-        }
-        links.forEach((link) => {
-          const selected = link === active?.link;
-          link.classList.toggle("is-active", selected);
-          if (selected) link.setAttribute("aria-current", "location");
-          else link.removeAttribute("aria-current");
-        });
-        if (active && progress && listFrame) {
-          const frameRect = listFrame.getBoundingClientRect();
-          const linkRect = active.link.getBoundingClientRect();
-          progress.style.setProperty("--toc-progress-top", `${linkRect.top - frameRect.top + listFrame.scrollTop}px`);
-          progress.style.setProperty("--toc-progress-height", `${linkRect.height}px`);
-          active.link.scrollIntoView({ block: "nearest" });
-        }
-      };
+        const update = () => {
+          let active = headings[0];
+          for (const entry of headings) {
+            if (entry.heading.getBoundingClientRect().top <= 150)
+              active = entry;
+            else break;
+          }
+          links.forEach((link) => {
+            const selected = link === active?.link;
+            link.classList.toggle("is-active", selected);
+            if (selected) link.setAttribute("aria-current", "location");
+            else link.removeAttribute("aria-current");
+          });
+          if (active && progress && listFrame) {
+            const frameRect = listFrame.getBoundingClientRect();
+            const linkRect = active.link.getBoundingClientRect();
+            progress.style.setProperty(
+              "--toc-progress-top",
+              `${linkRect.top - frameRect.top + listFrame.scrollTop}px`,
+            );
+            progress.style.setProperty(
+              "--toc-progress-height",
+              `${linkRect.height}px`,
+            );
+            active.link.scrollIntoView({ block: "nearest" });
+          }
+        };
 
-      window.addEventListener("scroll", update, { passive: true });
-      window.addEventListener("resize", update);
-      update();
-      document.addEventListener("astro:before-swap", () => {
-        window.removeEventListener("scroll", update);
-        window.removeEventListener("resize", update);
-      }, { once: true });
-    });
+        window.addEventListener("scroll", update, { passive: true });
+        window.addEventListener("resize", update);
+        update();
+        document.addEventListener(
+          "astro:before-swap",
+          () => {
+            window.removeEventListener("scroll", update);
+            window.removeEventListener("resize", update);
+          },
+          { once: true },
+        );
+      });
   };
   initToc();
   document.addEventListener("astro:page-load", initToc);

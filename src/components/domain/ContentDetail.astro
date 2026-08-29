@@ -78,7 +78,10 @@ const articleJsonLd = JSON.stringify({
         </a>
 
         <header class="article-page__header">
-          <h1 class="ui-page-title entrance-rise" style="--entrance-delay: 60ms">
+          <h1
+            class="ui-page-title entrance-rise"
+            style="--entrance-delay: 60ms"
+          >
             {item.title}
           </h1>
           {
@@ -276,11 +279,7 @@ const articleJsonLd = JSON.stringify({
     grid-row: 1;
     align-self: start;
     justify-self: end;
-    width: clamp(
-      10rem,
-      15vw,
-      var(--detail-layout-toc-max-width)
-    );
+    width: clamp(10rem, 15vw, var(--detail-layout-toc-max-width));
     max-height: calc(100vh - 7.25rem);
     max-height: calc(100dvh - 7.25rem);
     margin-right: var(--detail-layout-column-gap);

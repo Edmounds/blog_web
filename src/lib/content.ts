@@ -1,4 +1,4 @@
-﻿import { getCollection, type CollectionEntry } from "astro:content";
+import { getCollection, type CollectionEntry } from "astro:content";
 
 import { defaultLocale, type Locale } from "./i18n";
 

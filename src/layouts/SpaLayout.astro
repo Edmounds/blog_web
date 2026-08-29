@@ -95,7 +95,12 @@ const spaConfig = {
   locale={locale}
   showFooter={false}
 >
-  <div class="spa-root" data-spa-root data-active-index={initialIndex}>
+  <div
+    class="spa-root"
+    data-spa-root
+    data-active-index={initialIndex}
+    data-spa-config={JSON.stringify(spaConfig)}
+  >
     <div class="spa-viewport">
       <div
         class="spa-track"
@@ -823,6 +828,84 @@ const spaConfig = {
       { signal },
     );
 
+    browserWindow.__spaGetState = () => ({
+      activeIndex,
+      activeLifeIndex,
+    });
+
+    browserWindow.__spaInPlaceLocaleUpdate = async (targetDoc) => {
+      const targetRoot = targetDoc.querySelector("[data-spa-root]");
+      if (!(targetRoot instanceof HTMLElement)) return false;
+
+      if (targetRoot.dataset.spaConfig) {
+        try {
+          const newConfig = JSON.parse(targetRoot.dataset.spaConfig);
+          Object.assign(spaConfig, newConfig);
+        } catch {}
+      }
+
+      const curActiveIndex = activeIndex;
+      const curActiveLifeIndex = activeLifeIndex;
+
+      const targetSlides = Array.from(
+        targetDoc.querySelectorAll("[data-slide-index]"),
+      );
+      targetSlides.forEach((targetSlide) => {
+        if (!(targetSlide instanceof HTMLElement)) return;
+        const slideIndex = Number(targetSlide.dataset.slideIndex);
+        const curSlide = slides[slideIndex];
+        if (!(curSlide instanceof HTMLElement)) return;
+
+        if (targetSlide.dataset.sectionUrl) {
+          curSlide.dataset.sectionUrl = targetSlide.dataset.sectionUrl;
+        }
+
+        if (
+          slideIndex === curActiveIndex ||
+          (slideIndex === 0 && curActiveIndex !== 0)
+        ) {
+          copyContent(
+            curSlide,
+            targetDoc,
+            `[data-spa-root] [data-slide-index="${slideIndex}"]`,
+          );
+          curSlide.dataset.loadState = "loaded";
+          delete curSlide.__loadPromise;
+        } else {
+          curSlide.dataset.loadState = "idle";
+          delete curSlide.__loadPromise;
+          if (slideIndex !== 0) {
+            curSlide.innerHTML =
+              '<div class="spa-section-loading" role="status"><span aria-hidden="true"></span></div>';
+          }
+        }
+      });
+
+      if (curActiveIndex === lifeTopIndex) {
+        const container = lifeRoot();
+        if (container instanceof HTMLElement) {
+          container.dataset.activeLifeIndex = String(curActiveLifeIndex);
+          const lifeTrack = container.querySelector("[data-life-track]");
+          if (lifeTrack instanceof HTMLElement) {
+            lifeTrack.style.transform = `translate3d(${-curActiveLifeIndex * 100}%, 0, 0)`;
+          }
+          container.querySelectorAll("[data-life-slide]").forEach((slide) => {
+            if (!(slide instanceof HTMLElement)) return;
+            const lifeIndex = Number(slide.dataset.lifeIndex);
+            const active = lifeIndex === curActiveLifeIndex;
+            slide.dataset.active = String(active);
+            slide.setAttribute("aria-hidden", String(!active));
+          });
+        }
+      }
+
+      applyTopState(curActiveIndex);
+      root.dataset.transitioning = "false";
+      syncDocument(curActiveIndex, curActiveLifeIndex);
+      scheduleAdjacentSlides();
+      return true;
+    };
+
     browserWindow.__spaCleanup = () => {
       controller.abort();
       clearTimeout(wheelTimer);
@@ -830,6 +913,8 @@ const spaConfig = {
       if ("cancelIdleCallback" in window && idleHandle)
         window.cancelIdleCallback(idleHandle);
       else if (idleHandle) window.clearTimeout(idleHandle);
+      delete browserWindow.__spaGetState;
+      delete browserWindow.__spaInPlaceLocaleUpdate;
     };
     document.addEventListener("astro:before-swap", browserWindow.__spaCleanup, {
       once: true,
