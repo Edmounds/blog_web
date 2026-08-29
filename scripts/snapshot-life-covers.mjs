@@ -8,27 +8,43 @@ import {
   LIFE_COVER_BOXES,
   LIFE_COVER_QUERIES,
   LIFE_COVER_SECTIONS,
+  areLifeCoverSectionsEqual,
+  resolveSectionCovers,
   selectLifeCoverSources,
 } from "./lib/life-covers.mjs";
 
 const OUTPUT_PATH = new URL("../src/data/life-covers.json", import.meta.url);
-const PLACEHOLDER_PATH = new URL("../public/images/placeholders/default-cover.webp", import.meta.url);
+const PLACEHOLDER_PATH = new URL(
+  "../public/images/placeholders/default-cover.webp",
+  import.meta.url,
+);
 const USER_AGENT = "blog-web-life-cover-snapshot/1.0";
 const FETCH_TIMEOUT_MS = 15_000;
 
 const { values } = parseArgs({
   options: { local: { type: "boolean", default: false } },
+  options: {
+    local: { type: "boolean", default: false },
+    force: { type: "boolean", default: false },
+  },
   strict: true,
 });
 
+const existingSnapshot = await readExistingSnapshot();
+
 const rowsBySection = readSectionRows();
 if (!rowsBySection) {
-  console.warn("Could not read Life covers from D1; keeping the committed snapshot.");
+  console.warn(
+    "Could not read Life covers from D1; keeping the committed snapshot.",
+  );
   process.exit(0);
 }
 
 const sources = selectLifeCoverSources(rowsBySection);
 const sections = {};
+let totalCached = 0;
+let totalFresh = 0;
+
 for (const section of LIFE_COVER_SECTIONS) {
   const box = LIFE_COVER_BOXES[section];
   sections[section] = [];
@@ -40,16 +56,49 @@ for (const section of LIFE_COVER_SECTIONS) {
       thumbnail: await renderThumbnail(source, box),
     });
   }
+  const { covers, stats } = await resolveSectionCovers({
+    sources: sources[section],
+    existingCovers: existingSnapshot?.sections?.[section],
+    box,
+    renderThumbnail: (source) => renderThumbnail(source, box),
+    force: values.force,
+  });
+  sections[section] = covers;
+  totalCached += stats.cached;
+  totalFresh += stats.fresh;
+}
+
+if (
+  !values.force &&
+  existingSnapshot?.sections &&
+  areLifeCoverSectionsEqual(existingSnapshot.sections, sections)
+) {
+  console.log(
+    `Life covers are up to date (${totalCached} cached across ${LIFE_COVER_SECTIONS.length} sections); skipped writing.`,
+  );
+  process.exit(0);
 }
 
 const snapshot = { generatedAt: new Date().toISOString(), sections };
 await writeFile(OUTPUT_PATH, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
 console.log(
   `Snapshotted Life covers: ${LIFE_COVER_SECTIONS.map((section) => `${section} ${sections[section].length}`).join(", ")}.`,
+  `Snapshotted Life covers (${totalFresh} generated, ${totalCached} cached): ${LIFE_COVER_SECTIONS.map((section) => `${section} ${sections[section].length}`).join(", ")}.`,
 );
 
+async function readExistingSnapshot() {
+  try {
+    const raw = await readFile(OUTPUT_PATH, "utf8");
+    return JSON.parse(raw);
+  } catch {
+    return undefined;
+  }
+}
+
 function readSectionRows() {
-  const command = LIFE_COVER_SECTIONS.map((section) => LIFE_COVER_QUERIES[section]).join(";\n");
+  const command = LIFE_COVER_SECTIONS.map(
+    (section) => LIFE_COVER_QUERIES[section],
+  ).join(";\n");
   const child = spawnSync(
     process.execPath,
     [
@@ -71,12 +120,18 @@ function readSectionRows() {
     return undefined;
   }
   const payload = parseWranglerJson(child.stdout);
-  if (!Array.isArray(payload) || payload.length !== LIFE_COVER_SECTIONS.length) {
+  if (
+    !Array.isArray(payload) ||
+    payload.length !== LIFE_COVER_SECTIONS.length
+  ) {
     console.warn("Unexpected wrangler d1 output shape.");
     return undefined;
   }
   return Object.fromEntries(
-    LIFE_COVER_SECTIONS.map((section, index) => [section, payload[index]?.results ?? []]),
+    LIFE_COVER_SECTIONS.map((section, index) => [
+      section,
+      payload[index]?.results ?? [],
+    ]),
   );
 }
 
@@ -91,7 +146,8 @@ function parseWranglerJson(stdout) {
 }
 
 async function renderThumbnail(source, box) {
-  const bytes = (await downloadCover(source)) ?? (await readFile(PLACEHOLDER_PATH));
+  const bytes =
+    (await downloadCover(source)) ?? (await readFile(PLACEHOLDER_PATH));
   const webp = await sharp(bytes)
     .resize(box.width, box.height, { fit: "cover" })
     .webp({ quality: 52, effort: 6 })
@@ -108,7 +164,9 @@ async function downloadCover({ url, referer }) {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     return Buffer.from(await response.arrayBuffer());
   } catch (error) {
-    console.warn(`Falling back to the placeholder for ${url}: ${error instanceof Error ? error.message : error}`);
+    console.warn(
+      `Falling back to the placeholder for ${url}: ${error instanceof Error ? error.message : error}`,
+    );
     return undefined;
   }
 }
