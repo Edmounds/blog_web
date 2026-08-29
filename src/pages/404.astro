@@ -1,5 +1,10 @@
 ---
-import { defaultLocale, getLocaleDefinition, localizePath, stripLocaleFromPath } from "../lib/i18n";
+import {
+  defaultLocale,
+  getLocaleDefinition,
+  localizePath,
+  stripLocaleFromPath,
+} from "../lib/i18n";
 
 const { locale } = stripLocaleFromPath(Astro.url.pathname);
 const homeLabels = {
@@ -21,10 +26,17 @@ Astro.response.statusText = "Not Found";
 <html lang={htmlLang}>
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
     <meta name="robots" content="noindex" />
     <meta name="theme-color" content="#18191b" />
-    <link rel="icon" type="image/webp" href="/images/content/about/profile-8646bdb863b8-w160.webp?v=1" />
+    <link
+      rel="icon"
+      type="image/webp"
+      href="/images/content/about/profile-f5f8abc7eda1-w160.webp?v=1"
+    />
     <link rel="stylesheet" href="/anthropic-fonts.css" />
     <title>404 | Page Not Found</title>
   </head>
@@ -66,7 +78,9 @@ Astro.response.statusText = "Not Found";
             loading="eager"
             decoding="async"
           />
-          <a href={homeHref}>{homeLabel}<span aria-hidden="true">&nbsp;→</span></a>
+          <a href={homeHref}
+            >{homeLabel}<span aria-hidden="true">&nbsp;→</span></a
+          >
         </section>
 
         <picture class="not-found__character" aria-hidden="true">
@@ -112,7 +126,13 @@ Astro.response.statusText = "Not Found";
 
   body {
     color: #f5f3ed;
-    font-family: var(--font-ui, "Biotif", "PingFang SC", "Noto Sans SC", sans-serif);
+    font-family: var(
+      --font-ui,
+      "Biotif",
+      "PingFang SC",
+      "Noto Sans SC",
+      sans-serif
+    );
   }
 
   .not-found {
@@ -151,7 +171,13 @@ Astro.response.statusText = "Not Found";
   .not-found__shade {
     z-index: -2;
     background:
-      linear-gradient(90deg, rgba(12, 13, 15, 0.76) 0%, rgba(15, 16, 18, 0.31) 47%, rgba(12, 13, 15, 0.15) 72%, rgba(12, 13, 15, 0.46) 100%),
+      linear-gradient(
+        90deg,
+        rgba(12, 13, 15, 0.76) 0%,
+        rgba(15, 16, 18, 0.31) 47%,
+        rgba(12, 13, 15, 0.15) 72%,
+        rgba(12, 13, 15, 0.46) 100%
+      ),
       linear-gradient(180deg, rgba(9, 10, 12, 0.14), rgba(9, 10, 12, 0.36));
   }
 
@@ -165,8 +191,7 @@ Astro.response.statusText = "Not Found";
     width: min(100%, 120rem);
     height: 100%;
     margin-inline: auto;
-    padding:
-      max(2.5rem, env(safe-area-inset-top))
+    padding: max(2.5rem, env(safe-area-inset-top))
       max(3rem, env(safe-area-inset-right))
       max(2rem, env(safe-area-inset-bottom))
       max(4rem, env(safe-area-inset-left));
@@ -288,12 +313,20 @@ Astro.response.statusText = "Not Found";
   @media (max-width: 40rem) {
     .not-found__shade {
       background:
-        linear-gradient(90deg, rgba(10, 11, 13, 0.88) 0%, rgba(12, 13, 15, 0.45) 48%, rgba(12, 13, 15, 0.12) 100%),
+        linear-gradient(
+          90deg,
+          rgba(10, 11, 13, 0.88) 0%,
+          rgba(12, 13, 15, 0.45) 48%,
+          rgba(12, 13, 15, 0.12) 100%
+        ),
         linear-gradient(180deg, rgba(9, 10, 12, 0.18), rgba(9, 10, 12, 0.43));
     }
 
     .not-found__stage {
-      padding: max(1rem, env(safe-area-inset-top)) max(0.5rem, env(safe-area-inset-right)) max(0.75rem, env(safe-area-inset-bottom)) max(1.25rem, env(safe-area-inset-left));
+      padding: max(1rem, env(safe-area-inset-top))
+        max(0.5rem, env(safe-area-inset-right))
+        max(0.75rem, env(safe-area-inset-bottom))
+        max(1.25rem, env(safe-area-inset-left));
     }
 
     .not-found__message {

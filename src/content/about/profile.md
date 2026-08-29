@@ -1,7 +1,7 @@
 ---
 name: Last4ev3r
 motto: Keep it Simple,Stupid
-portrait: /images/content/about/profile-8646bdb863b8-w320.webp
+portrait: /images/content/about/profile-f5f8abc7eda1-w320.webp
 backgroundKeywords:
   - C++
   - ROS2

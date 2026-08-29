@@ -7,7 +7,7 @@ slug: 20260818-01
 published: true
 ---
 
-## 元の投稿はこちら😆
+## 元の投稿はこれ😆
 ```image-layout
 ---
 layout: masonry-2

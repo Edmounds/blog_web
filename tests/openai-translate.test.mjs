@@ -78,6 +78,35 @@ test("OpenAI-compatible client includes reasoning_effort when provided", async (
   assert.equal(requestBody.reasoning_effort, "xhigh");
 });
 
+test("OpenAI-compatible client includes context when provided", async () => {
+  let requestBody;
+  const translate = createOpenAITranslateClient({
+    baseUrl: "https://openai.example/v1/",
+    apiKey: "secret",
+    model: "translation-model",
+    fetchImpl: async (_url, init) => {
+      requestBody = JSON.parse(init.body);
+      return new Response(
+        JSON.stringify({ choices: [{ message: { content: "Cloudflare" } }] }),
+        { status: 200 },
+      );
+    },
+  });
+
+  const result = await translate({
+    text: "基于Cloudflare构建个人网站",
+    sourceLang: "ZH",
+    targetLang: "EN",
+    format: "markdown-segment",
+    context: "Title: 基于Cloudflare构建个人网站\nSummary: 介绍技术架构",
+  });
+
+  assert.equal(result, "Cloudflare");
+  assert.match(requestBody.messages[1].content, /<context>\nTitle: 基于Cloudflare构建个人网站/);
+  assert.match(requestBody.messages[1].content, /<source_text>\n基于Cloudflare构建个人网站\n<\/source_text>/);
+  assert.match(requestBody.messages[0].content, /reference to maintain consistent terminology/);
+});
+
 test("OpenAI-compatible client resets its timeout while streamed translation data keeps arriving", async () => {
   const encoder = new TextEncoder();
   const translate = createOpenAITranslateClient({

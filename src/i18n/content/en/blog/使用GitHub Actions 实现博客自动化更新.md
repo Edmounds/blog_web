@@ -3,7 +3,7 @@ title: Automating Blog Updates with GitHub Actions
 createdAt: 2026-08-13T00:00:00.000Z
 published: true
 updatedAt: 2026-08-13T00:00:00.000Z
-description: Write an article in Obsidian and press commit once. Testing, slug generation, image processing, multilingual translation, and deployment are all handled automatically.
+description: Write an article in Obsidian and make a single commit. Testing, slug generation, image processing, multilingual translation, and deployment are all handled automatically.
 tags:
   - automation
   - obsidian
@@ -11,15 +11,15 @@ tags:
 slug: 20260813-01
 ---
 
-Publishing an article involves just one action: I finish writing it in Obsidian and press commit. A few minutes later, the article appears on the website with an automatically generated URL, responsive images, and English, Japanese, and Traditional Chinese translations. There are no manual steps in between—I don't even need to open a terminal.
+All I do to publish an article is finish writing it in Obsidian and click Commit once. A few minutes later, the article appears on the site with an automatically generated URL, responsive images, and translations in English, Japanese, and Traditional Chinese. There are no manual steps in between; I don't even need to open a terminal.
 
-This workflow isn't complicated to set up. This article explains how it works and how to configure it.
+Setting up this workflow isn't complicated. This article explains how it works and how to configure it.
 
 ## How It Works
 
-The core decision is simple: open Obsidian's vault directly in the content directory of the blog repository. In my repository, `src/content/` is the vault itself, so creating a new note in Obsidian is equivalent to creating a new Markdown file in the repository.
+The whole setup hinges on one decision: open Obsidian's vault directly in the content directory of the blog repository. In my repository, `src/content/` is the vault itself; creating a new note in Obsidian is equivalent to creating a Markdown file in the repository.
 
-This decision turns the entire process into a git pipeline:
+This turns the entire workflow into a Git pipeline:
 
 ```mermaid
 flowchart LR
@@ -30,21 +30,21 @@ flowchart LR
   B --> D[部署到 Cloudflare]
 ```
 
-The three components each handle one part. Obsidian is only responsible for writing, git is only responsible for transport, and CI is only responsible for building and deploying. Images don't go through git (more on that later), so the repository contains only text and its history stays lightweight forever.
+The three components each handle one part. Obsidian only handles writing, Git only handles transport, and CI only handles building and deploying. Images bypass Git, as I'll explain later, so the repository contains only text and its history stays lightweight forever.
 
-The writing side doesn't need to understand any of the build-side details. This is what I like most about the whole process: when I'm writing, I'm simply typing in an ordinary Obsidian vault.
+The writing side doesn't need to know anything about the build side. That's what I like most about the whole workflow: when I'm writing, I'm simply writing in an ordinary Obsidian vault.
 
 ## Obsidian Configuration
 
 Two plugins are required.
 
-The first is obsidian-git. It provides commit and push functionality within Obsidian.
+The first is obsidian-git. It adds commit and push functionality to Obsidian.
 
-The second is obsidian-image-auto-upload-plugin, used together with the PicGo image hosting service. When I paste an image into an article, it uploads the image directly to my R2, leaving an online URL in the Markdown. No image binaries ever appear in the repository. The build process later uses that URL to automatically generate AVIF/WebP versions at multiple widths, so there's nothing to worry about while writing.
+The second is obsidian-image-auto-upload-plugin, used with PicGo for image hosting. When I paste an image into an article, it uploads the image directly to my R2, leaving an online URL in the Markdown. The repository never contains image binaries; later, the build process automatically generates AVIF/WebP variants at multiple widths from this URL, so I don't need to worry about it while writing.
 
-I only commit the theme and basic configuration from the `.obsidian` directory. The plugin itself is included in `.gitignore`; there's no need to put third-party code in the repository.
+I only commit the theme and basic configuration in the `.obsidian` directory. The plugins themselves are added to `.gitignore`, since there is no need to put third-party code in the repository.
 
-I use a fixed frontmatter template:
+The frontmatter uses a fixed template:
 
 ```yaml
 ---
@@ -57,15 +57,15 @@ tags:
 ---
 ```
 
-Two design choices mean I hardly need to think while writing:
+Two design choices mean I barely have to think while writing:
 
-The filename can be anything, including Chinese, because it isn't used in the URL. The URL comes from the `slug` in the frontmatter, and drafts don't need a slug at all. When an article is changed to `published: true` for the first time, the build process automatically generates an identifier such as `20260802-01` based on the creation date and writes it back to the frontmatter. Multiple articles on the same day are incremented automatically. Once generated, it never changes; editing the title or filename has no effect on the URL.
+The filename can be anything, including Chinese characters; it doesn't affect the URL. The URL comes from `slug` in the frontmatter, and drafts don't need a slug at all. When an article is first set to `published: true`, the build process automatically generates an identifier such as `20260802-01` based on the creation date and writes it back into the frontmatter. Multiple articles on the same day are automatically numbered sequentially. Once generated, it never changes; changing the title or filename has no effect on the URL.
 
-Drafts with `published: false` can safely be pushed to the repository. They are filtered out during the build and will never appear online. I can commit unfinished work at any time as a backup, without any psychological burden.
+Drafts with `published: false` can safely be pushed to the repository. They are filtered out during the build and will never appear on the live site. I can commit work in progress whenever I want for safekeeping, without a second thought.
 
 ## GitHub Repository Actions Configuration
 
-There is only one workflow file. Its complete contents are as follows:
+The workflow consists of a single file, shown in full below:
 
 ```yaml
 name: Deploy Astro SSR Worker
@@ -110,22 +110,22 @@ jobs:
           PUBLIC_BUILD_ID: ${{ github.sha }}
 ```
 
-Configure the secrets in the repository settings. Use a custom token for `CLOUDFLARE_API_TOKEN`, granting only the Workers, D1, and R2 permissions required for deployment—do not use the Global API Key. The last three are credentials for the translation service; if you don't need multilingual support, you can leave them unconfigured.
+Configure the secrets in the repository settings. Use a custom token for `CLOUDFLARE_API_TOKEN`, granting it only the Workers, D1, and R2 permissions required for deployment. Do not use the Global API Key. The last three are credentials for the translation service; if you don't need multilingual support, you can leave them unset.
 
-`npm test` acts as a gate before deployment. If there are problems with content encoding, frontmatter formatting, or the route structure, the push will fail at the testing stage and the bad content won't reach production.
+`npm test` acts as a gate before deployment. If there are problems with content encoding, frontmatter format, or route structure, the push will fail during this test step, and bad content cannot reach production.
 
-The actual pipeline is hidden inside `npm run deploy`. Expanded, it consists of these steps:
+The real pipeline is hidden inside `npm run deploy`; expanded, it consists of these steps:
 
-1. Content preparation: Generate slugs for newly published articles and write them back to the frontmatter, while synchronizing the content IDs used for interaction data.
-2. Image synchronization: Scan the body for new image-hosting URLs, generate AVIF/WebP versions at multiple widths, upload them back to R2, and write them to the manifest. Images that have already been processed are skipped.
-3. Incremental translation: Translate Chinese content into English, Japanese, and Traditional Chinese. Each article has a fingerprint cache, so unchanged articles make zero API calls; during a normal build, only the newly written article is translated.
-4. Astro build, producing static assets and an SSR Worker.
+1. Content preparation: generate slugs for newly published articles and write them back into the frontmatter; synchronize the content IDs used for interaction data.
+2. Image synchronization: scan the body for new image-hosting URLs, generate AVIF/WebP variants at multiple widths, upload them back to R2, and write the results to the manifest. Images that have already been processed are skipped.
+3. Incremental translation: translate Chinese content into English, Japanese, and Traditional Chinese. A fingerprint cache is maintained for each article, so unchanged articles make zero API calls; a normal build only translates the one that was just written.
+4. Run the Astro build, producing static assets and an SSR Worker.
 5. Deploy to Cloudflare with `wrangler deploy`.
 
-It takes about three minutes from push to going live, with translation and building accounting for most of the time. If the translation service is occasionally unavailable and the build fails, just rerun the workflow. The cache makes the cost of a retry very small.
+From push to going live takes about three minutes, with translation and the build taking most of the time. If the translation service is occasionally unavailable, the build will fail. Just rerun the workflow; the cache makes reruns inexpensive.
 
 ## Finally
 
-The biggest change after using this workflow is that writing and publishing have become completely decoupled. In the past, publishing an article was a whole task involving image processing, coming up with a URL, deployment, and checking the result. Now it is simply one commit. The cost of publishing has become negligible, and I actually write more frequently as a result.
+After using this workflow, the biggest change is that writing and publishing have become completely decoupled. Previously, publishing an article was a task in itself: handling images, figuring out a URL, deploying, and checking the result. Now it's just one commit; publishing costs so little that I can ignore it, and I actually write more often as a result.
 
-If you want to adopt this workflow, tailor it to your needs: if you don't need multilingual support, remove the translation step; if you don't have many images, using local images with git LFS is also perfectly acceptable; for a purely static site with no dynamic features at all, replace `npm run deploy` with the deployment command for any static hosting provider. The core idea can be summed up in one sentence: make the repository the single source of truth and let CI handle all the repetitive work.
+If you want to replicate this workflow, trim it to suit your needs: if you don't need multilingual support, remove the translation step; if you don't have many images, using local images with Git LFS is also fine; for a purely static site with no dynamic features, replacing `npm run deploy` with the deployment command for any static host works just as well. The core idea is simple: make the repository the single source of truth and let CI handle all the repetitive work.

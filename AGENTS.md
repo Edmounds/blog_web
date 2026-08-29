@@ -1,36 +1,30 @@
-# Repository Guidelines
+# 项目规则
 
-## Project Overview & Architecture
-An Astro 7 content site (migrated from Astro-star 0.16.25) with React 19 islands, Tailwind v4, and Cloudflare Workers SSR.
+## 构建和测试
+- 本地开发：`npm run dev`（前置自动执行内容准备与图片同步）
+- 类型检查：`npm run check`（执行 Astro 与 TypeScript 检查）
+- 单元测试：`npm test`（执行 `node --test tests/*.test.mjs`）
+- 格式与校验：`npm run check:encoding`（UTF-8 编码）、`npm run check:content-ids`（文章 ID 与 slug）
+- 生产构建：`npm run build`（自动执行内容准备、翻译、封面快照、图片同步与校验打包）
+- 本地 Worker 联调：`npm run cf:dev`
 
-- `src/pages/`: Route files (blog, note, life, links, about, admin).
-- `src/components/`: Grouped by role (`site/`, `sections/`, `cards/`, `domain/`, `links/`, `ui/`).
-- `src/content/`: Content collections (`blog/`, `note/`, `about/`, `site/`).
-- `src/lib/`: Shared helpers for routing, i18n, content, theme, and view models.
-- `src/server/`: Worker server logic; `workers/`: standalone Cloudflare Workers.
-- `tests/`: `node --test` suites; `scripts/`: build, content, and deployment tooling.
+## 编码规范
+- 基础格式：2 空格缩进，LF 换行符，UTF-8 编码且无 BOM。
+- 组件选型：页面与静态标记优先使用 Astro 组件（`.astro`）；仅交互/状态/动效岛屿使用 React（`.tsx`）。
+- 目录职责：UI 原语放 `src/components/ui/`，业务组件按角色放 `src/components/{site,sections,cards,domain,links}/`。
+- Slug 命名：统一小写 kebab-case，日期文章格式为 `YYYYMMDD-NN`（如 `20260803-01`）。
+- 测试编写：必须断言输入、输出与副作用等具体行为，严禁对源码文件正则匹配；统一扩展 `tests/*.test.mjs`。
+- 开发隔离：新功能开发统一使用独立 Git Worktree（位于 `.worktrees/`），开发完成后解决冲突并合并入主分支
 
-## Commands & Verification
-- `npm run dev`: Start Astro dev server (predev runs `content:prepare` and `images:sync`).
-- `npm run check`: Astro and TypeScript type-checks (`astro check`).
-- `npm test`: Run behavior-based unit tests (`node --test tests/*.test.mjs`).
-- `npm run check:encoding`: Verify Markdown UTF-8 encoding.
-- `npm run check:content-ids`: Verify published content IDs and `src/lib/post-slugs.ts`.
-- `npm run build`: Production build with encoding/bundle checks and prerendering.
+## 禁止事项
+- 严禁在代码、日志、组件或仓库中硬编码任何 Secret（如 `COMMENT_HASH_SALT`、`NETEASE_COOKIE_KEY`、`WAKA_TIME_API_KEY` 等），本地仅存未追踪的 `.env`。
+- 禁止将国内可直连稳定的上游 HTTPS 资源（网易云 `p*.music.126.net`、豆瓣 `*.doubanio.com`）重复搬运/上传至 R2。
+- 禁止在默认分支 `master` 存在未提交更改时未经确认直接覆盖代码。
+- 禁止在 `new-blog-ssr` 中重复声明生产域名 `blog.muelsyse.us/*`（由 `blog-preferred-proxy` 统一持有）。
+- 禁止在 Markdown 正文中引用本地绝对路径图片，必须统一使用 `https://img.muelsyse.us/bed/...`。
 
-## Coding & Testing Conventions
-- 2-space indentation, LF endings, UTF-8 without BOM.
-- Prefer Astro components for markup; React `.tsx` only for interactive/animated islands.
-- UI primitives go to `src/components/ui/`; site compositions stay outside.
-- Slugs use lowercase kebab-case (`YYYYMMDD-NN` format for dated posts).
-- Tests must assert behavior (inputs/outputs/effects), never regex source code strings. Extend existing domain suites instead of creating disposable test files.
-
-## Worktrees & Git Workflow
-- Use isolated worktrees for feature work (`.worktrees/` is gitignored).
-- Run checks in the worktree before merging into default branch (`master`).
-- If default branch has uncommitted changes, do not overwrite without user confirmation.
-
-## Static Asset & Cloudflare Policy
-- Prefer stable official/domestic HTTPS upstream assets (e.g. NetEase `p*.music.126.net`, Douban `*.doubanio.com`); do not duplicate stable domestic assets into R2.
-- Use Cloudflare R2 (`blog-images`) for user uploads, owned assets, or sources unreachable in mainland China.
-- Never commit secrets or log secret values. Local `.env` syncs via `npm run cf:secrets:sync`.
+## 联动规则
+- 改动数据库表结构：同步修改 `schema/*.sql`，并分别执行 `npm run db:migrate:local` 与 `npm run db:migrate:remote`。
+- 改动环境变量或密钥：本地修改 `.env` 后，执行 `npm run cf:secrets:sync` 同步至 Cloudflare Secrets。
+- 修改已发布文章 Slug：必须同步配置旧 URL 301 重定向并在 D1 迁移历史互动数据。
+- 内容、封面与新图片资产：均由 `npm run build` 自动编排；新图片衍生图与 manifest 同步由 GitHub Actions 在部署时自动处理并回写仓库，无需本地手动同步。

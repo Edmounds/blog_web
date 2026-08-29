@@ -1,5 +1,5 @@
 ﻿---
-title: 當temu變成了形容詞
+title: 當 temu 變成了形容詞
 createdAt: 2026-08-18T00:00:00.000Z
 tags:
   - 💦
@@ -7,7 +7,7 @@ slug: 20260818-01
 published: true
 ---
 
-## 原貼文是這個😆
+## 原貼是這個😆
 ```image-layout
 ---
 layout: masonry-2
@@ -18,8 +18,8 @@ layout: masonry-2
 ```
 
 
-## 看看temu Tibo😆
-這位老哥的頭像也是"temu"
+## 看看 temu Tibo😆
+這位哥們的頭像也是「temu」
 ```image-layout
 ---
 layout: masonry-2

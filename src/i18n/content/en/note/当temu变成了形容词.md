@@ -1,5 +1,5 @@
 ﻿---
-title: When temu Became an Adjective
+title: When “temu” becomes an adjective
 createdAt: 2026-08-18T00:00:00.000Z
 tags:
   - 💦
@@ -18,8 +18,8 @@ layout: masonry-2
 ```
 
 
-## Let's take a look at temu Tibo 😆
-This guy's profile picture is also "temu"
+## Check out temu Tibo 😆
+This guy's profile picture is also “temu”
 ```image-layout
 ---
 layout: masonry-2

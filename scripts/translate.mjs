@@ -45,20 +45,26 @@ const provider = {
   }),
 };
 const googleTranslate = createGoogleTranslateClient();
-const translateMarkdownSegment = async ({ text, targetLang }) => {
-  return provider.translate({ text, sourceLang: "ZH", targetLang });
+const translateMarkdownSegment = async ({ text, targetLang, context }) => {
+  return provider.translate({
+    text,
+    sourceLang: "ZH",
+    targetLang,
+    format: "markdown-segment",
+    context,
+  });
 };
 const pendingByFingerprint = new Map();
 const activeManifestKeys = new Set();
 const waiters = [];
 let activeRequests = 0;
 const configuredConcurrency = Number.parseInt(
-  process.env.TRANSLATION_CONCURRENCY ?? "3",
+  process.env.TRANSLATION_CONCURRENCY ?? "4",
   10,
 );
 const concurrency = Number.isFinite(configuredConcurrency)
   ? Math.min(12, Math.max(1, configuredConcurrency))
-  : 3;
+  : 4;
 
 const runLimited = async (task) => {
   if (activeRequests >= concurrency)
@@ -144,6 +150,7 @@ const translateText = async ({
   seed,
   format = "text",
   preserveFrontmatterKeys = [],
+  context,
   translate,
 }) => {
   if (!source.trim()) return source;
@@ -181,6 +188,7 @@ const translateText = async ({
                   targetLang,
                   format,
                   preserveFrontmatterKeys,
+                  context,
                 });
                 return { translation, mode: "fresh" };
               } catch (error) {
@@ -231,6 +239,7 @@ const translateValue = async ({
   targetLang,
   manifest,
   seed,
+  context,
   translate,
 }) => {
   if (typeof value === "string") {
@@ -242,6 +251,7 @@ const translateValue = async ({
       source: value,
       manifest,
       seed,
+      context,
       translate,
     });
   }
@@ -256,6 +266,7 @@ const translateValue = async ({
           targetLang,
           manifest,
           seed,
+          context,
           translate,
         }),
       ),
@@ -273,6 +284,7 @@ const translateValue = async ({
           targetLang,
           manifest,
           seed,
+          context,
           translate,
         });
       }),
@@ -335,82 +347,198 @@ const parseTranslatedDocument = (source, translation, keyPrefix) => {
   };
 };
 
+const indexDocumentSegments = (keyPrefix, locale, source, parsed, manifest) => {
+  const sourceSegments = collectMarkdownSegments(source.content);
+  const translatedSegments = collectMarkdownSegments(parsed.body);
+  if (sourceSegments.length === translatedSegments.length) {
+    for (let i = 0; i < sourceSegments.length; i += 1) {
+      const fingerprint = translationFingerprint(sourceSegments[i]);
+      const segmentKey = `${locale}:${keyPrefix}.segment:${fingerprint}`;
+      activeManifestKeys.add(segmentKey);
+      if (
+        !manifest.entries[segmentKey] ||
+        manifest.entries[segmentKey].fingerprint !== fingerprint
+      ) {
+        manifest.entries[segmentKey] = {
+          fingerprint,
+          translation: translatedSegments[i],
+        };
+      }
+    }
+  }
+};
+
 const translateDocument = async ({
   raw,
   keyPrefix,
   locale,
   targetLang,
   manifest,
+  seed,
 }) => {
   const sourceDocument = raw.replace(/^\uFEFF/, "");
   const source = matter(sourceDocument);
   const preserveFrontmatterKeys = Object.keys(source.data).filter(
     (key) => !shouldTranslateKey(key),
   );
-  try {
-    const translation = await translateText({
-      locale,
-      targetLang,
-      key: `${keyPrefix}.document`,
-      source: sourceDocument,
-      manifest,
-      format: "markdown-document",
-      preserveFrontmatterKeys,
-    });
-    return parseTranslatedDocument(source, translation, keyPrefix);
-  } catch (error) {
-    console.warn(
-      `${provider.name} document translation failed for ${locale}; using segment fallback (${error.message})`,
+  const docFingerprint = translationFingerprint(
+    `markdown-document-v1\0${sourceDocument}`,
+  );
+  const docManifestKey = `${locale}:${keyPrefix}.document`;
+  activeManifestKeys.add(docManifestKey);
+
+  const cachedDoc = manifest.entries[docManifestKey];
+  const hasValidCachedDoc =
+    cachedDoc?.fingerprint === docFingerprint &&
+    typeof cachedDoc?.translation === "string" &&
+    cachedDoc.fallback !== true;
+
+  if (hasValidCachedDoc) {
+    const parsed = parseTranslatedDocument(
+      source,
+      cachedDoc.translation,
+      keyPrefix,
     );
-    const translatedData = await translateValue({
-      value: source.data,
-      keyPath: `${keyPrefix}.frontmatter`,
-      fieldName: "frontmatter",
-      locale,
-      targetLang,
-      manifest,
-      translate: translateMarkdownSegment,
-    });
-    const segments = collectMarkdownSegments(source.content);
-    const translatedSegments = await Promise.all(
-      segments.map((text, index) =>
-        translateText({
-          locale,
-          targetLang,
-          key: `${keyPrefix}.body[${index}]`,
-          source: text,
-          manifest,
-          format: "markdown-segment",
-          translate: translateMarkdownSegment,
-        }),
-      ),
-    );
-    const translatedBody = replaceMarkdownSegments(
-      source.content,
-      translatedSegments,
-    );
-    const yaml = stringifyYaml(
-      mergeTranslatedData(source.data, translatedData),
-      { lineWidth: 0 },
-    ).trimEnd();
-    const translation = `---\n${yaml}\n---\n\n${translatedBody}`;
-    const parsed = parseTranslatedDocument(source, translation, keyPrefix);
-    const manifestKey = `${locale}:${keyPrefix}.document`;
-    const entry = {
-      fingerprint: translationFingerprint(
-        `markdown-document-v1\0${sourceDocument}`,
-      ),
-      translation,
-      fallback: true,
-    };
-    manifest.entries[manifestKey] = entry;
-    await checkpointTranslation(manifestKey, entry);
-    manifest.updated += 1;
-    console.log(
-      `[translate] ${manifest.updated} updated: ${manifestKey} (segment fallback).`,
-    );
+    indexDocumentSegments(keyPrefix, locale, source, parsed, manifest);
     return parsed;
   }
+
+  // If we have an existing translation for this document from a prior run,
+  // seed the segment cache so unchanged segments and invariant edits require 0 API calls
+  if (cachedDoc?.translation && typeof cachedDoc.translation === "string") {
+    try {
+      const prevParsed = matter(unwrapMarkdownFence(cachedDoc.translation));
+      const prevSegments = collectMarkdownSegments(prevParsed.content);
+      const currentSegments = collectMarkdownSegments(source.content);
+      if (prevSegments.length === currentSegments.length) {
+        for (let i = 0; i < currentSegments.length; i += 1) {
+          const fingerprint = translationFingerprint(currentSegments[i]);
+          const segmentKey = `${locale}:${keyPrefix}.segment:${fingerprint}`;
+          if (!manifest.entries[segmentKey]) {
+            manifest.entries[segmentKey] = {
+              fingerprint,
+              translation: prevSegments[i],
+            };
+          }
+        }
+      }
+    } catch {
+      // Ignore parse failure of stale translation
+    }
+  }
+
+  // Check individual translatable segments
+  const sourceSegments = collectMarkdownSegments(source.content);
+  const segmentEntries = sourceSegments.map((text) => {
+    const fingerprint = translationFingerprint(text);
+    const segmentKey = `${locale}:${keyPrefix}.segment:${fingerprint}`;
+    activeManifestKeys.add(segmentKey);
+    const cached = manifest.entries[segmentKey];
+    const cachedTranslation =
+      typeof cached?.translation === "string" && cached.fallback !== true
+        ? cached.translation
+        : undefined;
+    return {
+      text,
+      fingerprint,
+      segmentKey,
+      cachedTranslation,
+    };
+  });
+
+  const dirtySegments = segmentEntries.filter((s) => !s.cachedTranslation);
+  const dirtyRatio =
+    sourceSegments.length > 0
+      ? dirtySegments.length / sourceSegments.length
+      : 0;
+  const isFreshDocument = !cachedDoc?.translation;
+
+  // Fresh document with major changes (>60% dirty): use full document translation for best fluency
+  if (isFreshDocument && (dirtyRatio > 0.6 || sourceSegments.length === 0)) {
+    try {
+      const translation = await translateText({
+        locale,
+        targetLang,
+        key: `${keyPrefix}.document`,
+        source: sourceDocument,
+        manifest,
+        seed,
+        format: "markdown-document",
+        preserveFrontmatterKeys,
+      });
+      const parsed = parseTranslatedDocument(source, translation, keyPrefix);
+      indexDocumentSegments(keyPrefix, locale, source, parsed, manifest);
+      return parsed;
+    } catch (error) {
+      console.warn(
+        `${provider.name} full document translation failed for ${locale}; falling back to segment mode (${error.message})`,
+      );
+    }
+  }
+
+  // Incremental / Invariant Passthrough mode:
+  const documentContext = [
+    source.data.title ? `Title: ${source.data.title}` : "",
+    source.data.summary ? `Summary: ${source.data.summary}` : "",
+    source.data.description ? `Description: ${source.data.description}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  const translatedData = await translateValue({
+    value: source.data,
+    keyPath: `${keyPrefix}.frontmatter`,
+    fieldName: "frontmatter",
+    locale,
+    targetLang,
+    manifest,
+    seed,
+    context: documentContext,
+    translate: translateMarkdownSegment,
+  });
+
+  if (dirtySegments.length > 0) {
+    await Promise.all(
+      dirtySegments.map(async (segment) => {
+        segment.cachedTranslation = await translateText({
+          locale,
+          targetLang,
+          key: `${keyPrefix}.segment:${segment.fingerprint}`,
+          source: segment.text,
+          manifest,
+          seed,
+          format: "markdown-segment",
+          context: documentContext,
+          translate: translateMarkdownSegment,
+        });
+      }),
+    );
+  }
+
+  const allTranslatedSegments = segmentEntries.map((s) => s.cachedTranslation);
+  const translatedBody = replaceMarkdownSegments(
+    source.content,
+    allTranslatedSegments,
+  );
+  const mergedData = mergeTranslatedData(source.data, translatedData);
+  const yaml = stringifyYaml(mergedData, { lineWidth: 0 }).trimEnd();
+  const translation = `---\n${yaml}\n---\n\n${translatedBody}`;
+  const parsed = parseTranslatedDocument(source, translation, keyPrefix);
+
+  const docEntry = {
+    fingerprint: docFingerprint,
+    translation,
+    ...(dirtySegments.some((s) => manifest.entries[s.segmentKey]?.fallback)
+      ? { fallback: true }
+      : {}),
+  };
+  manifest.entries[docManifestKey] = docEntry;
+  await checkpointTranslation(docManifestKey, docEntry);
+  manifest.updated += 1;
+  console.log(
+    `[translate] ${manifest.updated} updated: ${docManifestKey} (${dirtySegments.length === 0 ? "invariant passthrough / 0 API calls" : `incremental: ${dirtySegments.length}/${sourceSegments.length} segments translated`}).`,
+  );
+  return parsed;
 };
 
 const writeMarkdown = async (filePath, data, body) => {
@@ -424,7 +552,12 @@ const writeMarkdown = async (filePath, data, body) => {
   );
 };
 
-const translateContentFiles = async ({ locale, targetLang, manifest }) => {
+const translateContentFiles = async ({
+  locale,
+  targetLang,
+  manifest,
+  seed,
+}) => {
   for (const group of CONTENT_GROUPS) {
     const sourceDir = path.join(ROOT, "src/content", group);
     const outputDir = path.join(GENERATED_ROOT, locale, group);
@@ -442,6 +575,7 @@ const translateContentFiles = async ({ locale, targetLang, manifest }) => {
           locale,
           targetLang,
           manifest,
+          seed,
         });
         await writeMarkdown(path.join(outputDir, fileName), data, body);
         written.add(fileName);
@@ -520,7 +654,7 @@ const main = async () => {
         `${JSON.stringify(translatedMessages, null, 2)}\n`,
         "utf8",
       );
-      await translateContentFiles({ locale, targetLang, manifest });
+      await translateContentFiles({ locale, targetLang, manifest, seed });
       console.log(`[translate] ${locale} complete.`);
     }
   } finally {
