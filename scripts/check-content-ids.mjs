@@ -3,7 +3,7 @@ import path from "node:path";
 
 import matter from "gray-matter";
 
-const groups = ["blog", "note"];
+const groups = ["blog", "note", "project"];
 const contentIds = [];
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -51,10 +51,14 @@ function parseContentIds(source, file) {
 
 async function walk(directory) {
   const files = [];
-  for (const entry of await readdir(directory, { withFileTypes: true })) {
-    const fullPath = path.join(directory, entry.name);
-    if (entry.isDirectory()) files.push(...await walk(fullPath));
-    else files.push(fullPath);
+  try {
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+      const fullPath = path.join(directory, entry.name);
+      if (entry.isDirectory()) files.push(...await walk(fullPath));
+      else files.push(fullPath);
+    }
+  } catch (error) {
+    if (error?.code !== "ENOENT") throw error;
   }
   return files;
 }

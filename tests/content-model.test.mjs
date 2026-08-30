@@ -89,3 +89,16 @@ test("site configuration and translations stay outside content while About owns 
   assert.equal(await exists("src/content/site"), false);
   assert.equal(await exists("src/content/translations"), false);
 });
+
+test("CONTENT_SECTIONS contains blog, project, and note in order", async () => {
+  const content = await read("src/lib/content.ts");
+  const schema = await read("src/content.config.ts");
+  const localized = await read("src/lib/localized-content.ts");
+
+  assert.match(content, /export const CONTENT_SECTIONS = \["blog", "project", "note"\] as const;/);
+  assert.match(schema, /const project = defineCollection/);
+  assert.match(schema, /github:\s*z\.string/);
+  assert.match(localized, /getLocalizedProjectEntries/);
+  assert.match(localized, /getLocalizedProjectEntry/);
+  assert.match(localized, /getLocalizedProjectSections/);
+});

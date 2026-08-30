@@ -5,7 +5,7 @@ import { pathToFileURL } from "node:url";
 import matter from "gray-matter";
 import { parseDocument } from "yaml";
 
-const CONTENT_GROUPS = ["blog", "note"];
+const CONTENT_GROUPS = ["blog", "note", "project"];
 const UTF8_BOM = Buffer.from([0xef, 0xbb, 0xbf]);
 const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -17,10 +17,14 @@ const hasUtf8Bom = (buffer) =>
 
 const walk = async (directory) => {
   const files = [];
-  for (const entry of await readdir(directory, { withFileTypes: true })) {
-    const fullPath = path.join(directory, entry.name);
-    if (entry.isDirectory()) files.push(...await walk(fullPath));
-    else files.push(fullPath);
+  try {
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+      const fullPath = path.join(directory, entry.name);
+      if (entry.isDirectory()) files.push(...await walk(fullPath));
+      else files.push(fullPath);
+    }
+  } catch (error) {
+    if (error?.code !== "ENOENT") throw error;
   }
   return files;
 };

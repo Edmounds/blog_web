@@ -9,6 +9,9 @@ nav:
   - label: Blog
     href: /blog/
     match: prefix
+  - label: Project
+    href: /project/
+    match: prefix
   - label: Note
     href: /note/
     match: prefix

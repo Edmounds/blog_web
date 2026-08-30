@@ -1,0 +1,211 @@
+---
+import { Star } from "lucide-static";
+import Icon from "../ui/Icon.astro";
+import { parseGitHubRepoUrl } from "../../lib/github-repository";
+
+interface Props {
+  url: string;
+  fallbackDescription?: string;
+}
+
+const { url, fallbackDescription = "" } = Astro.props;
+const parsed = parseGitHubRepoUrl(url);
+const initialName = parsed ? `${parsed.owner}/${parsed.repo}` : url;
+const githubIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>`;
+---
+
+<div class="github-repo-card-wrapper entrance-rise" style="--entrance-delay: 180ms">
+  <a
+    class="github-repo-card"
+    href={url}
+    target="_blank"
+    rel="noreferrer"
+    data-github-repo-card
+    data-repo-url={url}
+    data-state="loading"
+    aria-label={`GitHub repository ${initialName}`}
+  >
+    <div class="github-repo-card__header">
+      <div class="github-repo-card__title-group">
+        <span class="github-repo-card__icon" aria-hidden="true">
+          <Icon svg={githubIconSvg} />
+        </span>
+        <span class="github-repo-card__name" data-repo-name>{initialName}</span>
+      </div>
+      <div class="github-repo-card__stars" data-repo-stars-container aria-label="GitHub stars">
+        <span class="github-repo-card__star-icon" aria-hidden="true">
+          <Icon svg={Star} />
+        </span>
+        <span class="github-repo-card__stars-count" data-repo-stars>--</span>
+      </div>
+    </div>
+    <p class="github-repo-card__description" data-repo-description data-fallback-description={fallbackDescription}>
+      {fallbackDescription}
+    </p>
+  </a>
+</div>
+
+<script>
+  interface GitHubRepoPayload {
+    url?: string;
+    name?: string;
+    fullName?: string;
+    description?: string | null;
+    stars?: number | null;
+    state: "ready" | "fallback";
+  }
+
+  function bindGitHubRepoCards() {
+    document.querySelectorAll("[data-github-repo-card]").forEach((root) => {
+      if (!(root instanceof HTMLAnchorElement) || root.dataset.bound === "true") return;
+      root.dataset.bound = "true";
+
+      const repoUrl = root.dataset.repoUrl;
+      if (!repoUrl) return;
+
+      const nameEl = root.querySelector("[data-repo-name]");
+      const descEl = root.querySelector("[data-repo-description]");
+      const starsEl = root.querySelector("[data-repo-stars]");
+      const fallbackDesc = descEl?.getAttribute("data-fallback-description") ?? "";
+
+      const load = () => {
+        fetch(`/api/github-repository.json?url=${encodeURIComponent(repoUrl)}`, {
+          headers: { accept: "application/json" },
+        })
+          .then((res) => (res.ok ? (res.json() as Promise<GitHubRepoPayload>) : Promise.reject()))
+          .then((data) => {
+            root.dataset.state = data.state;
+            if (data.url) root.href = data.url;
+            if (nameEl && data.fullName) nameEl.textContent = data.fullName;
+            if (descEl) {
+              descEl.textContent = data.description || fallbackDesc;
+            }
+            if (starsEl) {
+              starsEl.textContent =
+                typeof data.stars === "number"
+                  ? data.stars.toLocaleString("en-US")
+                  : "--";
+            }
+          })
+          .catch(() => {
+            root.dataset.state = "fallback";
+            if (descEl && !descEl.textContent?.trim()) {
+              descEl.textContent = fallbackDesc;
+            }
+            if (starsEl) starsEl.textContent = "--";
+          });
+      };
+
+      const schedule = () => {
+        const requestIdle = window.requestIdleCallback?.bind(window);
+        if (requestIdle) requestIdle(load, { timeout: 1600 });
+        else window.setTimeout(load, 0);
+      };
+
+      const overlay = document.querySelector('[data-loading-overlay][data-state]:not([data-state="idle"])');
+      if (overlay) window.addEventListener("loading-overlay:hidden", schedule, { once: true });
+      else requestAnimationFrame(() => requestAnimationFrame(schedule));
+    });
+  }
+
+  bindGitHubRepoCards();
+  document.addEventListener("astro:page-load", bindGitHubRepoCards);
+</script>
+
+<style>
+  .github-repo-card-wrapper {
+    margin-block: 1.5rem 2rem;
+  }
+  .github-repo-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.1rem 1.25rem;
+    color: var(--foreground);
+    text-decoration: none;
+    background: color-mix(in srgb, var(--foreground) 2.5%, transparent);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-card, 0.75rem);
+    transition:
+      border-color 180ms ease,
+      background-color 180ms ease,
+      transform 180ms ease;
+  }
+  .github-repo-card:hover,
+  .github-repo-card:focus-visible {
+    background: color-mix(in srgb, var(--foreground) 5%, transparent);
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+  }
+  .github-repo-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .github-repo-card__title-group {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+  }
+  .github-repo-card__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--foreground);
+  }
+  .github-repo-card__icon :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  .github-repo-card__name {
+    font-size: var(--type-md);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--foreground);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .github-repo-card__stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-shrink: 0;
+    padding: 0.2rem 0.6rem;
+    font-size: var(--type-sm);
+    color: var(--foreground-soft);
+    background: color-mix(in srgb, var(--foreground) 4%, transparent);
+    border: 1px solid var(--border-soft);
+    border-radius: 999px;
+  }
+  .github-repo-card__star-icon {
+    display: inline-flex;
+    align-items: center;
+    color: var(--accent, #e3b341);
+  }
+  .github-repo-card__star-icon :global(svg) {
+    width: 0.95rem;
+    height: 0.95rem;
+    fill: currentColor;
+  }
+  .github-repo-card__stars-count {
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+  .github-repo-card__description {
+    margin: 0;
+    font-size: var(--type-sm);
+    line-height: 1.55;
+    color: var(--text-muted);
+    overflow-wrap: anywhere;
+  }
+  .github-repo-card__description:empty {
+    display: none;
+  }
+  .github-repo-card[data-state="loading"] .github-repo-card__stars-count {
+    opacity: 0.5;
+  }
+</style>

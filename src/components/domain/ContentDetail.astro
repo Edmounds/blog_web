@@ -6,6 +6,7 @@ import { getLocaleDefinition, localizePath, type Locale } from "../../lib/i18n";
 import { getLocalizedSite } from "../../lib/localized-content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import CommentsSection from "./CommentsSection.astro";
+import GitHubRepoCard from "./GitHubRepoCard.astro";
 import PostEngagement from "./PostEngagement.astro";
 import TableOfContents from "./TableOfContents.astro";
 import Icon from "../ui/Icon.astro";
@@ -30,6 +31,7 @@ const labels = site.copy;
 const hasMath = /(^|\n)\s*\$\$?|\\\(|\\\[/.test(item.entry.body ?? "");
 const sectionLabels = {
   blog: "Blog",
+  project: "Project",
   note: "Note",
 } as const;
 const sectionLabel = sectionLabels[item.section];
@@ -128,6 +130,15 @@ const articleJsonLd = JSON.stringify({
             <strong>{words.toLocaleString(localeDefinition.dateLocale)}</strong>
           </p>
         </header>
+
+        {
+          item.section === "project" && item.github && (
+            <GitHubRepoCard
+              url={item.github}
+              fallbackDescription={item.description}
+            />
+          )
+        }
 
         <div class="article-prose ui-prose"><Content /></div>
         <div class="article-page__interaction">

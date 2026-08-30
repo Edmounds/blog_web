@@ -12,8 +12,15 @@ const contentSchema = z.object({
   tags: z.array(z.string()).default([]),
 });
 
+const GITHUB_REPO_URL_REGEX = /^https:\/\/github\.com\/[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+(?:\/)?(?:[?#].*)?$/;
+
+const projectSchema = contentSchema.extend({
+  github: z.string().regex(GITHUB_REPO_URL_REGEX, "Must be a valid public GitHub repository URL (https://github.com/owner/repo)").optional(),
+});
+
 const blog = defineCollection({ loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/blog" }), schema: contentSchema });
 const note = defineCollection({ loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/note" }), schema: contentSchema });
+const project = defineCollection({ loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/project" }), schema: projectSchema });
 const about = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/about" }),
   schema: z.object({
@@ -34,6 +41,7 @@ const translations = defineCollection({
     createdAt: z.coerce.date().optional(), updatedAt: z.coerce.date().optional(), published: z.boolean().optional(),
     slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).optional(),
     tags: z.array(z.string()).optional(),
+    github: z.string().optional(),
     name: z.string().optional(), motto: z.string().optional(), portrait: z.string().optional(),
   }),
 });
@@ -46,4 +54,4 @@ const site = defineCollection({
   }),
 });
 
-export const collections = { blog, note, about, site, translations };
+export const collections = { blog, note, project, about, site, translations };

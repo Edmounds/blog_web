@@ -5,6 +5,7 @@
     "nav": {
       "home": "ホームページ",
       "blog": "ブログ",
+      "project": "プロジェクト",
       "note": "メモ",
       "art": "お気に入りに追加",
       "music": "音楽",
@@ -74,6 +75,7 @@
       "homeTitle": "ホームページ",
       "homeDescription": "デザインに関する思索、記事、エッセイ。",
       "blogsDescription": "文章のアーカイブと随筆の記録。",
+      "projectsDescription": "オープンソースプロジェクトと実践。",
       "notesDescription": "短いメモと折々の考え。",
       "aboutDescription": "chasenに関する経験、関心分野、そして個人的なストーリー。",
       "musicDescription": "音楽コレクション",

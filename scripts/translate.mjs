@@ -28,7 +28,7 @@ const LOCALES = [
   ["ja", "JA"],
   ["zh-TW", "ZH-TW"],
 ];
-const CONTENT_GROUPS = ["blog", "note", "about"];
+const CONTENT_GROUPS = ["blog", "note", "project", "about"];
 const GENERATED_ROOT = path.join(ROOT, "src/i18n/content");
 const MESSAGE_SOURCE = path.join(ROOT, "src/i18n/source.json");
 const MESSAGE_OUTPUT = path.join(ROOT, "src/i18n/generated");
@@ -119,6 +119,7 @@ const shouldTranslateKey = (key) =>
     "backgroundKeywords",
     "name",
     "href",
+    "github",
     "icon",
     "id",
     "type",
@@ -592,18 +593,22 @@ const translateContentFiles = async ({
 
 const walkContentFiles = async (directory, prefix = "") => {
   const files = [];
-  for (const entry of await readdir(directory, { withFileTypes: true })) {
-    const relative = path.join(prefix, entry.name);
-    if (entry.isDirectory())
-      files.push(
-        ...(await walkContentFiles(path.join(directory, entry.name), relative)),
-      );
-    else if (
-      /\.(md|mdx)$/.test(entry.name) &&
-      entry.name !== "_empty.md" &&
-      entry.name !== "_empty.mdx"
-    )
-      files.push(relative);
+  try {
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+      const relative = path.join(prefix, entry.name);
+      if (entry.isDirectory())
+        files.push(
+          ...(await walkContentFiles(path.join(directory, entry.name), relative)),
+        );
+      else if (
+        /\.(md|mdx)$/.test(entry.name) &&
+        entry.name !== "_empty.md" &&
+        entry.name !== "_empty.mdx"
+      )
+        files.push(relative);
+    }
+  } catch (error) {
+    if (error?.code !== "ENOENT") throw error;
   }
   return files.sort();
 };

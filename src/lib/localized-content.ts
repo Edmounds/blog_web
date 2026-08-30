@@ -57,6 +57,9 @@ export const getLocalizedAbout = async (locale: Locale) => {
 export const getLocalizedBlogEntries = (locale: Locale) => getLocalizedContentEntries(locale, "blog");
 export const getLocalizedBlogEntry = (locale: Locale, slug: string) => getLocalizedContentEntry(locale, "blog", slug);
 export const getLocalizedBlogSections = (locale: Locale) => getLocalizedContentSections(locale, "blog");
+export const getLocalizedProjectEntries = (locale: Locale) => getLocalizedContentEntries(locale, "project");
+export const getLocalizedProjectEntry = (locale: Locale, slug: string) => getLocalizedContentEntry(locale, "project", slug);
+export const getLocalizedProjectSections = (locale: Locale) => getLocalizedContentSections(locale, "project");
 export const getLocalizedNextPost = async (locale: Locale, slug: string) => {
   const entries = await getPublishedContent("blog", locale);
   const index = entries.findIndex((entry) => entry.slug === slug);

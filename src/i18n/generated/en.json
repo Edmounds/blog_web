@@ -5,6 +5,7 @@
     "nav": {
       "home": "Home page",
       "blog": "Blog",
+      "project": "Projects",
       "note": "Notes",
       "art": "Favorites",
       "music": "Music",
@@ -74,6 +75,7 @@
       "homeTitle": "Home page",
       "homeDescription": "Design thoughts, articles, and essays.",
       "blogsDescription": "Article archives and notes.",
+      "projectsDescription": "Open-source projects and experiments.",
       "notesDescription": "Short notes and interim thoughts.",
       "aboutDescription": "Experiences with chasen, areas of interest, and personal stories.",
       "musicDescription": "Music Collection",

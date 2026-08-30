@@ -79,6 +79,7 @@ test("Incremental segment translation replaces modified segment while reusing ca
   // User edits only the second paragraph
   const sourceV2 = `# 文章标题\n\n第一段内容。\n\n第二段内容（修改版）。`;
   const segmentsV2 = collectMarkdownSegments(sourceV2);
+  assert.deepEqual(segmentsV2, ["文章标题", "第一段内容。", "第二段内容（修改版）。"]);
 
   // Match segments: segment 0 and 1 hit cache, segment 2 is new
   const translationsV2 = [

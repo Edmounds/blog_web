@@ -2,7 +2,7 @@ import { getCollection, type CollectionEntry } from "astro:content";
 
 import { defaultLocale, type Locale } from "./i18n";
 
-export const CONTENT_SECTIONS = ["blog", "note"] as const;
+export const CONTENT_SECTIONS = ["blog", "project", "note"] as const;
 export type ContentSection = (typeof CONTENT_SECTIONS)[number];
 export type ContentEntry = CollectionEntry<ContentSection>;
 
@@ -18,6 +18,7 @@ export interface ContentSummary {
   createdAt: Date;
   updatedAt?: Date;
   readingTime: string;
+  github?: string;
   entry: ContentEntry;
 }
 
@@ -54,6 +55,7 @@ const summarize = (entry: ContentEntry, section: ContentSection, locale: Locale)
     createdAt: entry.data.createdAt,
     updatedAt: entry.data.updatedAt,
     readingTime: readingTimeForBody(entry.body, locale),
+    github: "github" in entry.data && typeof entry.data.github === "string" ? entry.data.github : undefined,
     entry,
   };
 };
