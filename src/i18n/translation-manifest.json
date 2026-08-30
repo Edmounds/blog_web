@@ -1976,6 +1976,106 @@
     "zh-TW:content.about.profile.md.segment:fd0f443dd03d4d82b318611017c85e7f76ea62555fd871857dcca02cee729dfb": {
       "fingerprint": "fd0f443dd03d4d82b318611017c85e7f76ea62555fd871857dcca02cee729dfb",
       "translation": "本站使用以下服務/API"
+    },
+    "en:messages.site.page.projectsDescription": {
+      "fingerprint": "ce16d4a23caa4cdfa2875a3b93fde97c120a6b1c65125508c121da9f747734c2",
+      "translation": "Open-source projects and practices."
+    },
+    "en:messages.site.nav.project": {
+      "fingerprint": "bf63e3f6c42dd1aaafa03ceeb2d0ea4db552b8793c53fc4faa2734665dc20c76",
+      "translation": "Project"
+    },
+    "en:content.project.robviz.md.document": {
+      "fingerprint": "d583d22ec7e85d1b52951f34b82de39c1e8658f53393adb933bf31e887ff4b21",
+      "translation": "---\ntitle: robviz Robot Visualization Tool\ndescription: A lightweight ROS2-based 2D robot pose and map visualization tool.\ncreatedAt: 2026-08-30\npublished: true\nslug: 20260830-01\ngithub: https://github.com/Edmounds/robviz\ntags:\n  - ros2\n  - visualization\n---\n\n## Project Overview\n\nrobviz is a lightweight ROS2-based 2D robot pose and map visualization tool designed to provide a real-time debugging view with extremely low resource usage.\n\n## Features\n\n- Minimal dependencies; relies only on the core ROS2 libraries\n- Real-time subscription to the `/map` and `/tf` coordinate frames\n- Support for custom robot outlines and LiDAR point-cloud layers"
+    },
+    "en:content.project.robviz.md.segment:8fbeafcf9896780277f941f2428a34a1082951f8b448395c8f81aa4b23d3db47": {
+      "fingerprint": "8fbeafcf9896780277f941f2428a34a1082951f8b448395c8f81aa4b23d3db47",
+      "translation": "Project Overview"
+    },
+    "en:content.project.robviz.md.segment:ee953cac1fb8cff86ee9d24843d13d104e220090d3e829c682c1240dd9e414aa": {
+      "fingerprint": "ee953cac1fb8cff86ee9d24843d13d104e220090d3e829c682c1240dd9e414aa",
+      "translation": "robviz is a lightweight ROS2-based 2D robot pose and map visualization tool designed to provide a real-time debugging view with extremely low resource usage."
+    },
+    "en:content.project.robviz.md.segment:f14170e54b485df3f027b24bf090b91b46db4ec5d955cb6b3f6a1117baeab525": {
+      "fingerprint": "f14170e54b485df3f027b24bf090b91b46db4ec5d955cb6b3f6a1117baeab525",
+      "translation": "Features"
+    },
+    "en:content.project.robviz.md.segment:26a1797c885ecf117c742fead23ee31dffc76b7ae8267ebc0ca7ba61c1921c1c": {
+      "fingerprint": "26a1797c885ecf117c742fead23ee31dffc76b7ae8267ebc0ca7ba61c1921c1c",
+      "translation": "Minimal dependencies; relies only on the core ROS2 libraries"
+    },
+    "en:content.project.robviz.md.segment:9bb8c66a1a576abe10871fbb4375a9e79ea2fa4960c7ecaf8dbd26108ecec38b": {
+      "fingerprint": "9bb8c66a1a576abe10871fbb4375a9e79ea2fa4960c7ecaf8dbd26108ecec38b",
+      "translation": "Real-time subscription to the "
+    },
+    "en:content.project.robviz.md.segment:09d4d269b188ff548c0baeb785f7258e59ac54b51764ffa4006035e4d0c115c0": {
+      "fingerprint": "09d4d269b188ff548c0baeb785f7258e59ac54b51764ffa4006035e4d0c115c0",
+      "translation": " and "
+    },
+    "en:content.project.robviz.md.segment:87d595a8a83ce9a95a8416e9f05dd9ac493c8609c9fc697eb239d3d554e6a786": {
+      "fingerprint": "87d595a8a83ce9a95a8416e9f05dd9ac493c8609c9fc697eb239d3d554e6a786",
+      "translation": " coordinate frames"
+    },
+    "en:content.project.robviz.md.segment:c3655f50e311bc95194c441a884c43689671abce67a2b8dfec172f0ae78191e0": {
+      "fingerprint": "c3655f50e311bc95194c441a884c43689671abce67a2b8dfec172f0ae78191e0",
+      "translation": "Support for custom robot outlines and LiDAR point-cloud layers"
+    },
+    "ja:messages.site.page.projectsDescription": {
+      "fingerprint": "ce16d4a23caa4cdfa2875a3b93fde97c120a6b1c65125508c121da9f747734c2",
+      "translation": "オープンソースプロジェクトと実践。"
+    },
+    "ja:messages.site.nav.project": {
+      "fingerprint": "bf63e3f6c42dd1aaafa03ceeb2d0ea4db552b8793c53fc4faa2734665dc20c76",
+      "translation": "プロジェクト"
+    },
+    "ja:content.project.robviz.md.document": {
+      "fingerprint": "d583d22ec7e85d1b52951f34b82de39c1e8658f53393adb933bf31e887ff4b21",
+      "translation": "---\ntitle: robviz ロボット可視化ツール\ndescription: ROS2 ベースの軽量な 2D ロボット姿勢・地図可視化ツール。\ncreatedAt: 2026-08-30\npublished: true\nslug: 20260830-01\ngithub: https://github.com/Edmounds/robviz\ntags:\n  - ros2\n  - visualization\n---\n\n## プロジェクト概要\n\nrobviz は、ROS2 ベースの軽量な 2D ロボット姿勢・地図可視化ツールです。リソース消費を極めて抑えたリアルタイムデバッグビューの提供を目的としています。\n\n## 特徴\n\n- 依存関係を最小限に抑え、ROS2 のコア基盤ライブラリのみに依存\n- `/map` と `/tf` の座標フレームをリアルタイムで購読\n- カスタムのロボット輪郭と LiDAR 点群レイヤーに対応"
+    },
+    "zh-TW:messages.site.page.projectsDescription": {
+      "fingerprint": "ce16d4a23caa4cdfa2875a3b93fde97c120a6b1c65125508c121da9f747734c2",
+      "translation": "開源專案與實務。"
+    },
+    "zh-TW:messages.site.nav.project": {
+      "fingerprint": "bf63e3f6c42dd1aaafa03ceeb2d0ea4db552b8793c53fc4faa2734665dc20c76",
+      "translation": "專案"
+    },
+    "zh-TW:content.project.robviz.md.document": {
+      "fingerprint": "d583d22ec7e85d1b52951f34b82de39c1e8658f53393adb933bf31e887ff4b21",
+      "translation": "---\ntitle: robviz 機器人視覺化工具\ndescription: 基於 ROS2 的輕量級 2D 機器人位姿與地圖視覺化工具。\ncreatedAt: 2026-08-30\npublished: true\nslug: 20260830-01\ngithub: https://github.com/Edmounds/robviz\ntags:\n  - ros2\n  - visualization\n---\n\n## 專案簡介\n\nrobviz 是一個基於 ROS2 的輕量級 2D 機器人位姿與地圖視覺化工具，旨在提供資源占用極低的即時除錯視圖。\n\n## 功能特色\n\n- 極簡相依套件，僅依賴核心 ROS2 基礎函式庫\n- 即時訂閱 `/map` 與 `/tf` 座標系\n- 支援自訂機器人輪廓與雷射雷達點雲圖層"
+    },
+    "zh-TW:content.project.robviz.md.segment:8fbeafcf9896780277f941f2428a34a1082951f8b448395c8f81aa4b23d3db47": {
+      "fingerprint": "8fbeafcf9896780277f941f2428a34a1082951f8b448395c8f81aa4b23d3db47",
+      "translation": "專案簡介"
+    },
+    "zh-TW:content.project.robviz.md.segment:ee953cac1fb8cff86ee9d24843d13d104e220090d3e829c682c1240dd9e414aa": {
+      "fingerprint": "ee953cac1fb8cff86ee9d24843d13d104e220090d3e829c682c1240dd9e414aa",
+      "translation": "robviz 是一個基於 ROS2 的輕量級 2D 機器人位姿與地圖視覺化工具，旨在提供資源占用極低的即時除錯視圖。"
+    },
+    "zh-TW:content.project.robviz.md.segment:f14170e54b485df3f027b24bf090b91b46db4ec5d955cb6b3f6a1117baeab525": {
+      "fingerprint": "f14170e54b485df3f027b24bf090b91b46db4ec5d955cb6b3f6a1117baeab525",
+      "translation": "功能特色"
+    },
+    "zh-TW:content.project.robviz.md.segment:26a1797c885ecf117c742fead23ee31dffc76b7ae8267ebc0ca7ba61c1921c1c": {
+      "fingerprint": "26a1797c885ecf117c742fead23ee31dffc76b7ae8267ebc0ca7ba61c1921c1c",
+      "translation": "極簡相依套件，僅依賴核心 ROS2 基礎函式庫"
+    },
+    "zh-TW:content.project.robviz.md.segment:9bb8c66a1a576abe10871fbb4375a9e79ea2fa4960c7ecaf8dbd26108ecec38b": {
+      "fingerprint": "9bb8c66a1a576abe10871fbb4375a9e79ea2fa4960c7ecaf8dbd26108ecec38b",
+      "translation": "即時訂閱 "
+    },
+    "zh-TW:content.project.robviz.md.segment:09d4d269b188ff548c0baeb785f7258e59ac54b51764ffa4006035e4d0c115c0": {
+      "fingerprint": "09d4d269b188ff548c0baeb785f7258e59ac54b51764ffa4006035e4d0c115c0",
+      "translation": " 與 "
+    },
+    "zh-TW:content.project.robviz.md.segment:87d595a8a83ce9a95a8416e9f05dd9ac493c8609c9fc697eb239d3d554e6a786": {
+      "fingerprint": "87d595a8a83ce9a95a8416e9f05dd9ac493c8609c9fc697eb239d3d554e6a786",
+      "translation": " 座標系"
+    },
+    "zh-TW:content.project.robviz.md.segment:c3655f50e311bc95194c441a884c43689671abce67a2b8dfec172f0ae78191e0": {
+      "fingerprint": "c3655f50e311bc95194c441a884c43689671abce67a2b8dfec172f0ae78191e0",
+      "translation": "支援自訂機器人輪廓與雷射雷達點雲圖層"
     }
   }
 }

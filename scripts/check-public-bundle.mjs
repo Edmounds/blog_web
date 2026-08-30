@@ -1,19 +1,24 @@
-import { existsSync } from "node:fs";
 import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 
 const root = new URL("../dist/client/", import.meta.url);
-const publicPages = ["index.html", "about/index.html", "blog/index.html", "note/index.html", "blog/20260128-01/index.html"];
+const publicPages = [
+  "index.html",
+  "about/index.html",
+  "blog/index.html",
+  "project/index.html",
+  "note/index.html",
+  "blog/20260128-01/index.html",
+];
 const forbidden = [/motion\/react/i];
-
-if (existsSync(new URL("project/", root))) {
-  throw new Error("dist/client/project/ must not exist after the Project section removal.");
-}
 
 for (const page of publicPages) {
   const html = await readFile(new URL(page, root), "utf8");
   for (const pattern of forbidden) {
-    if (pattern.test(html)) throw new Error(`${page} contains forbidden public client code: ${pattern}`);
+    if (pattern.test(html))
+      throw new Error(
+        `${page} contains forbidden public client code: ${pattern}`,
+      );
   }
 }
 
@@ -21,7 +26,10 @@ const astroDir = new URL("_astro/", root);
 for (const file of await readdir(astroDir)) {
   if (!file.endsWith(".js")) continue;
   const source = await readFile(join(astroDir.pathname, file), "utf8");
-  if (forbidden.some((pattern) => pattern.test(source)) && publicPages.some((page) => source.includes(page))) {
+  if (
+    forbidden.some((pattern) => pattern.test(source)) &&
+    publicPages.some((page) => source.includes(page))
+  ) {
     throw new Error(`${file} couples a public page to forbidden client code.`);
   }
 }

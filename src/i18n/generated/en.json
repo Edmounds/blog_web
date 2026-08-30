@@ -2,21 +2,6 @@
   "site": {
     "brand": "chasen",
     "defaultDescription": "Personal blog and design reflections.",
-    "nav": {
-      "home": "Home page",
-      "blog": "Blog",
-      "project": "Projects",
-      "note": "Notes",
-      "art": "Favorites",
-      "music": "Music",
-      "book": "Books",
-      "screen": "Film and television",
-      "game": "Game",
-      "film": "Film",
-      "series": "TV series",
-      "anime": "Anime series",
-      "about": "About"
-    },
     "copy": {
       "blogMetaPublished": "Published on",
       "blogMetaRead": "Reading time",
@@ -75,14 +60,29 @@
       "homeTitle": "Home page",
       "homeDescription": "Design thoughts, articles, and essays.",
       "blogsDescription": "Article archives and notes.",
-      "projectsDescription": "Open-source projects and experiments.",
       "notesDescription": "Short notes and interim thoughts.",
       "aboutDescription": "Experiences with chasen, areas of interest, and personal stories.",
       "musicDescription": "Music Collection",
       "bookDescription": "Book Collection",
       "screenDescription": "Movie, TV Series, and Anime Collection",
       "gameDescription": "Game Collection Sorted by Playtime",
-      "lifeDescription": "Overview of Book, Music, Film, TV, and Game Collections"
+      "lifeDescription": "Overview of Book, Music, Film, TV, and Game Collections",
+      "projectsDescription": "Open-source projects and practices."
+    },
+    "nav": {
+      "home": "Home page",
+      "blog": "Blog",
+      "note": "Notes",
+      "art": "Favorites",
+      "music": "Music",
+      "book": "Books",
+      "screen": "Film and television",
+      "game": "Game",
+      "film": "Film",
+      "series": "TV series",
+      "anime": "Anime series",
+      "about": "About",
+      "project": "Project"
     }
   }
 }

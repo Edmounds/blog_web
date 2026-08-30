@@ -2,21 +2,6 @@
   "site": {
     "brand": "茶筅",
     "defaultDescription": "個人ブログとデザインに関する考察。",
-    "nav": {
-      "home": "ホームページ",
-      "blog": "ブログ",
-      "project": "プロジェクト",
-      "note": "メモ",
-      "art": "お気に入りに追加",
-      "music": "音楽",
-      "book": "書籍",
-      "screen": "映画・テレビ",
-      "game": "ゲーム",
-      "film": "映画",
-      "series": "ドラマ",
-      "anime": "アニメ作品",
-      "about": "概要"
-    },
     "copy": {
       "blogMetaPublished": "公開日",
       "blogMetaRead": "読了時間",
@@ -75,14 +60,29 @@
       "homeTitle": "ホームページ",
       "homeDescription": "デザインに関する思索、記事、エッセイ。",
       "blogsDescription": "文章のアーカイブと随筆の記録。",
-      "projectsDescription": "オープンソースプロジェクトと実践。",
       "notesDescription": "短いメモと折々の考え。",
       "aboutDescription": "chasenに関する経験、関心分野、そして個人的なストーリー。",
       "musicDescription": "音楽コレクション",
       "bookDescription": "書籍コレクション",
       "screenDescription": "映画・ドラマ・アニメのコレクション",
       "gameDescription": "プレイ時間順のゲームコレクション",
-      "lifeDescription": "書籍、音楽、映画・映像作品、ゲームのコレクション一覧"
+      "lifeDescription": "書籍、音楽、映画・映像作品、ゲームのコレクション一覧",
+      "projectsDescription": "オープンソースプロジェクトと実践。"
+    },
+    "nav": {
+      "home": "ホームページ",
+      "blog": "ブログ",
+      "note": "メモ",
+      "art": "お気に入りに追加",
+      "music": "音楽",
+      "book": "書籍",
+      "screen": "映画・テレビ",
+      "game": "ゲーム",
+      "film": "映画",
+      "series": "ドラマ",
+      "anime": "アニメ作品",
+      "about": "概要",
+      "project": "プロジェクト"
     }
   }
 }
