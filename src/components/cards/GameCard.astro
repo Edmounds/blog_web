@@ -16,7 +16,6 @@ const coverFallback = item.steamAppId
 <article class="group flex min-w-0 flex-col gap-3 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5" data-reveal>
   <CoverTag
     class="block aspect-[2/3] w-full overflow-hidden rounded-[var(--radius-control)] border border-[var(--border-soft)] bg-[var(--surface-soft)]"
-    data-life-cover
     href={item.storeUrl ?? undefined}
     target={item.storeUrl ? "_blank" : undefined}
     rel={item.storeUrl ? "noreferrer" : undefined}
@@ -36,6 +35,22 @@ const coverFallback = item.steamAppId
     <p class="mt-1 text-sm text-[var(--text-muted)]">{playtime}</p>
   </div>
 </article>
+
+<script>
+  function bindGameCoverFallbacks() {
+    document.querySelectorAll<HTMLImageElement>("[data-game-cover]").forEach((image) => {
+      if (image.dataset.bound === "true") return;
+      image.dataset.bound = "true";
+      image.addEventListener("error", () => {
+        const fallback = image.dataset.gameCoverFallback ?? "/images/placeholders/default-cover.webp";
+        delete image.dataset.gameCoverFallback;
+        if (image.src !== new URL(fallback, location.href).href) image.src = fallback;
+      });
+    });
+  }
+  bindGameCoverFallbacks();
+  document.addEventListener("astro:page-load", bindGameCoverFallbacks);
+</script>
 
 <style>
   .game-card__title { overflow-wrap: anywhere; }

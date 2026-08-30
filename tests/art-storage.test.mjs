@@ -9,7 +9,7 @@ import { onRequestGet as previewCover } from "../src/server/api/admin/art/cover-
 import { onRequestGet as proxyDoubanCover } from "../src/server/api/art/douban-cover.js";
 import { onRequestDelete as deleteCover, onRequestPost as uploadCover } from "../src/server/api/admin/art/covers.js";
 import { onRequestGet as listItems, onRequestPost as createItem } from "../src/server/api/admin/art/items.js";
-import { artCoverSource, selectCoverSources } from "../scripts/lib/life-covers.mjs";
+import { artCoverSource, selectCoverSources } from "../scripts/lib/cover-sources.mjs";
 
 test("art input validates types, dates, translations, and required covers", () => {
   const result = validateArtItemInput({

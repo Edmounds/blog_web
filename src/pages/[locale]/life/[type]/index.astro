@@ -1,46 +1,76 @@
 ---
-import SpaLayout from "../../../../layouts/SpaLayout.astro";
+import NotFound from "../../../404.astro";
+import ArtSection from "../../../../components/sections/ArtSection.astro";
+import GameSection from "../../../../components/sections/GameSection.astro";
+import BaseLayout from "../../../../layouts/BaseLayout.astro";
 import { getPublicArtItems, type ArtType } from "../../../../lib/art";
 import { getPublicGameItems } from "../../../../lib/games";
 import { type Locale } from "../../../../lib/i18n";
 import { getLocalizedSite } from "../../../../lib/localized-content";
 import { getRuntimeEnv } from "../../../../lib/runtime";
-import { isLifeType, LIFE_TITLES } from "../../../../lib/spa-routes";
+import { isLifeType, LIFE_TITLES, type LifeType } from "../../../../lib/life";
 import { listNeteaseRanking } from "../../../../server/netease-music.js";
 
 export const prerender = false;
-const locale = Astro.params.locale as Locale;
-const type = Astro.params.type;
-if (!["zh-TW", "en", "ja"].includes(locale) || !isLifeType(type)) {
-  return Astro.redirect("/", 302);
+const rawLocale = Astro.params.locale;
+const rawType = Astro.params.type;
+const isValidLocale = ["zh-TW", "en", "ja"].includes(rawLocale as string);
+const isValidType = isLifeType(rawType);
+const isValid = isValidLocale && isValidType;
+
+if (!isValid) {
+  Astro.response.status = 404;
+  Astro.response.statusText = "Not Found";
 }
 
+const locale = (isValidLocale ? rawLocale : "zh-CN") as Locale;
+const type = (isValidType ? rawType : "book") as LifeType;
+
 const site = await getLocalizedSite(locale);
-const db = getRuntimeEnv().DB;
-const artTypes: ArtType[] =
+const title = LIFE_TITLES[type];
+const description = site.page[`${type}Description`];
+const types: ArtType[] =
   type === "screen"
     ? ["movie", "series", "anime"]
     : type === "game"
       ? []
       : [type];
-const [artItems, gameItems, weekly, total] = await Promise.all([
-  getPublicArtItems(db, locale, artTypes),
-  type === "game" ? getPublicGameItems(db) : Promise.resolve([]),
-  type === "music" ? listNeteaseRanking(db, "weekly") : Promise.resolve([]),
-  type === "music" ? listNeteaseRanking(db, "total") : Promise.resolve([]),
-]);
-Astro.response.headers.set(
-  "Cache-Control",
-  "public, max-age=0, s-maxage=0, must-revalidate",
-);
+const db = getRuntimeEnv().DB;
+const gameItems = isValid && type === "game" ? await getPublicGameItems(db) : [];
+const [artItems, weekly, total] = !isValid || type === "game"
+  ? [[], [], []]
+  : await Promise.all([
+      getPublicArtItems(db, locale, types),
+      type === "music" ? listNeteaseRanking(db, "weekly") : Promise.resolve([]),
+      type === "music" ? listNeteaseRanking(db, "total") : Promise.resolve([]),
+    ]);
+const ranking = { weekly, total };
+if (isValid) {
+  Astro.response.headers.set(
+    "Cache-Control",
+    "public, max-age=0, s-maxage=0, must-revalidate",
+  );
+}
 ---
 
-<SpaLayout
-  title={LIFE_TITLES[type]}
-  description={site.page[`${type}Description`]}
-  initialPath={`/${Astro.params.locale}/life/${type}/`}
-  locale={locale}
-  artItems={artItems}
-  gameItems={gameItems}
-  ranking={{ weekly, total }}
-/>
+{!isValid ? (
+  <NotFound />
+) : (
+  <BaseLayout
+    title={title}
+    description={description}
+    currentPath={`/${locale}/life/${type}/`}
+    locale={locale}
+  >
+    {type === "game" ? (
+      <GameSection items={gameItems} locale={locale} />
+    ) : (
+      <ArtSection
+        type={type}
+        items={artItems}
+        ranking={ranking}
+        locale={locale}
+      />
+    )}
+  </BaseLayout>
+)}

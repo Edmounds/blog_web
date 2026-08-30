@@ -1,41 +1,69 @@
 ---
-import SpaLayout from "../../../layouts/SpaLayout.astro";
+import NotFound from "../../404.astro";
+import ArtSection from "../../../components/sections/ArtSection.astro";
+import GameSection from "../../../components/sections/GameSection.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
 import { getPublicArtItems, type ArtType } from "../../../lib/art";
 import { getPublicGameItems } from "../../../lib/games";
 import { getLocalizedSite } from "../../../lib/localized-content";
 import { getRuntimeEnv } from "../../../lib/runtime";
-import { isLifeType, LIFE_TITLES } from "../../../lib/spa-routes";
+import { isLifeType, LIFE_TITLES, type LifeType } from "../../../lib/life";
 import { listNeteaseRanking } from "../../../server/netease-music.js";
 
 export const prerender = false;
-const type = Astro.params.type;
-if (!isLifeType(type)) return Astro.redirect("/life/", 302);
+const rawType = Astro.params.type;
+const isValid = isLifeType(rawType);
+if (!isValid) {
+  Astro.response.status = 404;
+  Astro.response.statusText = "Not Found";
+}
+const type = (isValid ? rawType : "book") as LifeType;
 
 const site = await getLocalizedSite("zh-CN");
+const title = LIFE_TITLES[type];
+const description = site.page[`${type}Description`];
 const db = getRuntimeEnv().DB;
-const artTypes: ArtType[] =
+const types: ArtType[] =
   type === "screen"
     ? ["movie", "series", "anime"]
     : type === "game"
       ? []
       : [type];
-const [artItems, gameItems, weekly, total] = await Promise.all([
-  getPublicArtItems(db, "zh-CN", artTypes),
-  type === "game" ? getPublicGameItems(db) : Promise.resolve([]),
-  type === "music" ? listNeteaseRanking(db, "weekly") : Promise.resolve([]),
-  type === "music" ? listNeteaseRanking(db, "total") : Promise.resolve([]),
-]);
-Astro.response.headers.set(
-  "Cache-Control",
-  "public, max-age=0, s-maxage=0, must-revalidate",
-);
+const gameItems = isValid && type === "game" ? await getPublicGameItems(db) : [];
+const [artItems, weekly, total] = !isValid || type === "game"
+  ? [[], [], []]
+  : await Promise.all([
+      getPublicArtItems(db, "zh-CN", types),
+      type === "music" ? listNeteaseRanking(db, "weekly") : Promise.resolve([]),
+      type === "music" ? listNeteaseRanking(db, "total") : Promise.resolve([]),
+    ]);
+const ranking = { weekly, total };
+if (isValid) {
+  Astro.response.headers.set(
+    "Cache-Control",
+    "public, max-age=0, s-maxage=0, must-revalidate",
+  );
+}
 ---
 
-<SpaLayout
-  title={LIFE_TITLES[type]}
-  description={site.page[`${type}Description`]}
-  initialPath={`/life/${type}/`}
-  artItems={artItems}
-  gameItems={gameItems}
-  ranking={{ weekly, total }}
-/>
+{!isValid ? (
+  <NotFound />
+) : (
+  <BaseLayout
+    title={title}
+    description={description}
+    currentPath={`/life/${type}/`}
+    locale="zh-CN"
+  >
+    {type === "game" ? (
+      <GameSection items={gameItems} locale="zh-CN" />
+    ) : (
+      <ArtSection
+        type={type}
+        items={artItems}
+        ranking={ranking}
+        locale="zh-CN"
+      />
+    )}
+  </BaseLayout>
+)}

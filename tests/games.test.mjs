@@ -6,7 +6,7 @@ import {
 } from "../src/server/games.js";
 import { onRequestGet as listAdminGames } from "../src/server/api/admin/games/index.js";
 import { onRequestGet as resolveSteamCover } from "../src/server/api/game/steam-cover.js";
-import { gameCoverSource, selectCoverSources } from "../scripts/lib/life-covers.mjs";
+import { gameCoverSource, selectCoverSources } from "../scripts/lib/cover-sources.mjs";
 
 test("Steam request includes app info and played free games and parses minutes", async () => {
   let requested;

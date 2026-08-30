@@ -4,10 +4,10 @@
 
 ## 站点结构
 
-- 横向主界面：`/`、`/blog/`、`/note/`、`/links/`、`/about/`、`/life/`
+- 横向主界面：`/`、`/blog/`、`/note/`、`/links/`、`/about/`
 - 内容详情：`/blog/[slug]/`、`/note/[slug]/`
 - Blog / Note 分类：`/[section]-archive/` 与 `.../[archiveSlug]/`
-- Life 收藏：`/life/` 封面导航页，子栏目 `/life/book/`、`/life/music/`、`/life/screen/`、`/life/game/`（旧的 `/art/*` 会 301 到对应地址）
+- Life 收藏：`/life/book/`、`/life/music/`、`/life/screen/`、`/life/game/`
 - 管理后台：评论 `/admin/comments/`、收藏 `/admin/art/`
 - RSS：`/rss.xml` 及三个语言前缀下的 `/rss.xml`
 
@@ -66,7 +66,7 @@ npm run db:migrate:remote
 
 `schema/content_ids.sql` 会幂等地把旧 Blog 裸 slug 和历史文件名 slug 迁移为当前 contentId。URL 收藏封面由独立的 `blog-art-cover-fetcher` Worker 获取，并同时检查 IPv4/IPv6 DNS 结果；先执行 `wrangler deploy --config wrangler.art-cover-fetcher.jsonc`。
 
-博客和笔记正文使用 Obsidian 图床插件直接上传至 `blog-images` R2，Markdown 始终保存原始 `https://img.muelsyse.us/bed/...` 在线地址。开发和构建会为首次出现的栅格图生成同目录的 AVIF/WebP 多分辨率版本，并把映射写入 manifest；Markdown URL 不变，渲染时自动输出响应式 `<picture>`。AVIF 对象使用 `.avif.webp` 存储键，但响应 MIME 仍为 `image/avif`，用于避开图床域名针对 `.avif` 后缀的错误拦截。Life 收藏元数据通过 D1 和 `/admin/art/` 管理；封面按上述国内源直连或 R2 策略保存。`npm run life:covers` 会在构建前从远端 D1 取每个 Life 栏目最新的四张封面，压成 56px 级的 WebP data URI 写入 `src/data/life-covers.json`，让 `/life/` 的封面堆动画完全预渲染、运行时零图片请求；取不到凭证时保留已提交的快照。
+博客和笔记正文使用 Obsidian 图床插件直接上传至 `blog-images` R2，Markdown 始终保存原始 `https://img.muelsyse.us/bed/...` 在线地址。开发和构建会为首次出现的栅格图生成同目录的 AVIF/WebP 多分辨率版本，并把映射写入 manifest；Markdown URL 不变，渲染时自动输出响应式 `<picture>`。AVIF 对象使用 `.avif.webp` 存储键，但响应 MIME 仍为 `image/avif`，用于避开图床域名针对 `.avif` 后缀的错误拦截。Life 收藏元数据通过 D1 和 `/admin/art/` 管理；封面按上述国内源直连或 R2 策略保存。
 
 历史 `blog/` 图片也通过同一套 manifest 渲染。旧的本地绝对路径仍会先上传并改写为在线地址；已有在线地址不会被改写。常用命令：
 

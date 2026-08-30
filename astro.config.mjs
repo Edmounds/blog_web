@@ -35,7 +35,7 @@ const hastPlugins = /** @type {any} */ ([
 // Routes serving prerendered HTML. Early-hint Link headers let browsers fetch
 // the render-blocking stylesheet and body font before HTML parsing starts,
 // which saves a round trip on high-latency (e.g. mainland China) connections.
-const HTML_ROUTES = ["/", "/about/*", "/links/*", "/blog/*", "/note/*", "/life/", "/en/*", "/ja/*", "/zh-TW/*"];
+const HTML_ROUTES = ["/", "/about/*", "/links/*", "/blog/*", "/note/*", "/en/*", "/ja/*", "/zh-TW/*"];
 
 const deploymentVersion = {
   name: "deployment-version",

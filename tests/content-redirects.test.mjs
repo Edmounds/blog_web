@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-import { getLegacyArtRedirect, getLegacyContentRedirect } from "../src/lib/content-redirects.ts";
+import { getLegacyContentRedirect } from "../src/lib/content-redirects.ts";
 
 test("legacy content URLs redirect to date slugs in every locale", () => {
   assert.equal(
@@ -23,31 +23,12 @@ test("legacy content URLs redirect to date slugs in every locale", () => {
   );
 });
 
-test("current and unrelated URLs do not redirect", () => {
+test("current, unrelated, and art URLs do not redirect", () => {
   assert.equal(getLegacyContentRedirect(new URL("https://blog.example/blog/20260128-01/")), undefined);
   assert.equal(getLegacyContentRedirect(new URL("https://blog.example/about/")), undefined);
-});
-
-test("legacy /art/ collection URLs redirect to their /life/ counterparts", () => {
-  assert.equal(
-    getLegacyArtRedirect(new URL("https://blog.example/art/book/"))?.href,
-    "https://blog.example/life/book/",
-  );
-  assert.equal(
-    getLegacyArtRedirect(new URL("https://blog.example/ja/art/game"))?.href,
-    "https://blog.example/ja/life/game/",
-  );
-  assert.equal(
-    getLegacyArtRedirect(new URL("https://blog.example/art/?ref=feed"))?.href,
-    "https://blog.example/life/?ref=feed",
-  );
-});
-
-test("only real collection types redirect away from /art/", () => {
-  assert.equal(getLegacyArtRedirect(new URL("https://blog.example/art/movie/")), undefined);
-  assert.equal(getLegacyArtRedirect(new URL("https://blog.example/admin/art/")), undefined);
-  assert.equal(getLegacyArtRedirect(new URL("https://blog.example/api/art/douban-cover/x")), undefined);
-  assert.equal(getLegacyArtRedirect(new URL("https://blog.example/life/book/")), undefined);
+  assert.equal(getLegacyContentRedirect(new URL("https://blog.example/art/book/")), undefined);
+  assert.equal(getLegacyContentRedirect(new URL("https://blog.example/art/game/")), undefined);
+  assert.equal(getLegacyContentRedirect(new URL("https://blog.example/art/")), undefined);
 });
 
 test("Astro middleware returns permanent redirects for legacy content", async () => {

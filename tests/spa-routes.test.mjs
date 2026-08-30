@@ -2,90 +2,68 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
-  LIFE_ROUTES,
-  LIFE_TITLES,
-  LIFE_TOP_INDEX,
-  TOP_ROUTES,
-  isLifeType,
-  resolveSpaLocation,
-  spaPathFor,
+  PRIMARY_ROUTES,
+  isPrimaryRoute,
+  primaryPathFor,
+  resolvePrimaryIndex,
 } from "../src/lib/spa-routes.ts";
+import {
+  LIFE_TITLES,
+  LIFE_TYPES,
+  isLifeType,
+} from "../src/lib/life.ts";
 
-test("top-level routes resolve to their slide index", () => {
-  assert.deepEqual(resolveSpaLocation("/"), { top: 0, life: 0 });
-  assert.deepEqual(resolveSpaLocation("/blog/"), { top: 1, life: 0 });
-  assert.deepEqual(resolveSpaLocation("/about/"), { top: 4, life: 0 });
-  assert.deepEqual(resolveSpaLocation("/life/"), {
-    top: LIFE_TOP_INDEX,
-    life: 0,
-  });
+test("primary routes resolve to their slide index", () => {
+  assert.equal(resolvePrimaryIndex("/"), 0);
+  assert.equal(resolvePrimaryIndex("/blog/"), 1);
+  assert.equal(resolvePrimaryIndex("/note/"), 2);
+  assert.equal(resolvePrimaryIndex("/links/"), 3);
+  assert.equal(resolvePrimaryIndex("/about/"), 4);
 });
 
-test("Life sub-sections resolve to the Life slide plus a nested index", () => {
-  assert.deepEqual(resolveSpaLocation("/life/book/"), {
-    top: LIFE_TOP_INDEX,
-    life: 1,
-  });
-  assert.deepEqual(resolveSpaLocation("/life/music/"), {
-    top: LIFE_TOP_INDEX,
-    life: 2,
-  });
-  assert.deepEqual(resolveSpaLocation("/life/screen/"), {
-    top: LIFE_TOP_INDEX,
-    life: 3,
-  });
-  assert.deepEqual(resolveSpaLocation("/life/game/"), {
-    top: LIFE_TOP_INDEX,
-    life: 4,
-  });
+test("locale prefixes and missing trailing slashes resolve to the same primary slide", () => {
+  assert.equal(resolvePrimaryIndex("/en/"), 0);
+  assert.equal(resolvePrimaryIndex("/ja/blog/"), 1);
+  assert.equal(resolvePrimaryIndex("/zh-TW/note"), 2);
+  assert.equal(resolvePrimaryIndex("/en/links"), 3);
+  assert.equal(resolvePrimaryIndex("/ja/about/"), 4);
 });
 
-test("locale prefixes and missing trailing slashes resolve to the same slide", () => {
-  assert.deepEqual(resolveSpaLocation("/en/life/music/"), {
-    top: LIFE_TOP_INDEX,
-    life: 2,
-  });
-  assert.deepEqual(resolveSpaLocation("/ja/blog/"), { top: 1, life: 0 });
-  assert.deepEqual(resolveSpaLocation("/zh-TW/life"), {
-    top: LIFE_TOP_INDEX,
-    life: 0,
-  });
-  assert.deepEqual(resolveSpaLocation("/en/"), { top: 0, life: 0 });
-});
-
-test("paths outside the SPA report no slide", () => {
+test("paths outside the SPA report -1 index", () => {
   for (const path of [
+    "/life/",
+    "/life/book/",
+    "/life/music/",
+    "/life/screen/",
+    "/life/game/",
     "/blog/20260128-01/",
     "/admin/art/",
-    "/life/movie/",
     "/art/book/",
   ]) {
-    assert.equal(resolveSpaLocation(path).top, -1, path);
+    assert.equal(resolvePrimaryIndex(path), -1, path);
+    assert.equal(isPrimaryRoute(path), false, path);
   }
 });
 
-test("every slide index maps back to the path that resolves to it", () => {
-  for (const [top] of TOP_ROUTES.entries()) {
-    if (top === LIFE_TOP_INDEX) continue;
-    assert.deepEqual(resolveSpaLocation(spaPathFor(top)), { top, life: 0 });
-  }
-  for (const [life] of LIFE_ROUTES.entries()) {
-    assert.deepEqual(resolveSpaLocation(spaPathFor(LIFE_TOP_INDEX, life)), {
-      top: LIFE_TOP_INDEX,
-      life,
-    });
+test("every slide index maps back to its primary path", () => {
+  for (const [index, path] of PRIMARY_ROUTES.entries()) {
+    assert.equal(resolvePrimaryIndex(path), index);
+    assert.equal(primaryPathFor(index), path);
+    assert.equal(isPrimaryRoute(path), true);
   }
 });
 
-test("out-of-range indexes fall back to a real path", () => {
-  assert.equal(spaPathFor(99), "/");
-  assert.equal(spaPathFor(LIFE_TOP_INDEX, 99), "/life/");
+test("out-of-range indexes fall back to root", () => {
+  assert.equal(primaryPathFor(99), "/");
+  assert.equal(primaryPathFor(-1), "/");
 });
 
 test("only the four collections count as Life types", () => {
+  assert.deepEqual(LIFE_TYPES, ["book", "music", "screen", "game"]);
   assert.ok(["book", "music", "screen", "game"].every(isLifeType));
   assert.ok(!isLifeType("movie"));
   assert.ok(!isLifeType(undefined));
+  assert.ok(!isLifeType(""));
 });
 
 test("life titles use capitalized English names", () => {

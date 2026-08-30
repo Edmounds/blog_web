@@ -1,7 +1,7 @@
 import { defineMiddleware } from "astro:middleware";
 
 import { verifyAccess } from "./server/access.js";
-import { getLegacyArtRedirect, getLegacyContentRedirect } from "./lib/content-redirects";
+import { getLegacyContentRedirect } from "./lib/content-redirects";
 import { getRuntimeEnv } from "./lib/runtime";
 
 export const onRequest = defineMiddleware(async ({ request }, next) => {
@@ -24,7 +24,7 @@ export const onRequest = defineMiddleware(async ({ request }, next) => {
   }
 
   const redirectUrl = request.method === "GET"
-    ? getLegacyContentRedirect(requestUrl) ?? getLegacyArtRedirect(requestUrl)
+    ? getLegacyContentRedirect(requestUrl)
     : undefined;
   const response = redirectUrl ? Response.redirect(redirectUrl, 301) : await next();
   const secured = new Response(response.body, response);

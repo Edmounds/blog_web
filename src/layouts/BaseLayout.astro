@@ -231,14 +231,11 @@ if (!Astro.response.headers.has("Cache-Control"))
     </script>
 
     <script>
-      import { resolveSpaLocation } from "../lib/spa-routes";
+      import { stripLocaleFromPath } from "../lib/i18n";
 
-      // Life sub-sections sort after the Life slide itself, so a full-page
-      // navigation between them still animates in the direction it moves.
-      const routeIndex = (path: string) => {
-        const { top, life } = resolveSpaLocation(path);
-        return top < 0 ? -1 : top * 10 + life;
-      };
+      const PRIMARY_ROUTES = ["/", "/blog/", "/note/", "/links/", "/about/"];
+      const routeIndex = (path: string) =>
+        PRIMARY_ROUTES.indexOf(stripLocaleFromPath(path).pathname);
       document.addEventListener("astro:before-preparation", (event) => {
         const from = routeIndex(event.from.pathname);
         const to = routeIndex(event.to.pathname);

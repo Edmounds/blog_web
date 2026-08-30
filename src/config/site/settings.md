@@ -1,4 +1,4 @@
-﻿---
+---
 brand: chasen
 htmlLang: zh-CN
 dateLocale: en-US
@@ -19,8 +19,21 @@ nav:
     href: /about/
     match: prefix
   - label: Life
-    href: /life/
+    href: /life/book/
     match: prefix
+    children:
+      - label: Books
+        href: /life/book/
+        match: prefix
+      - label: Music
+        href: /life/music/
+        match: prefix
+      - label: Screen
+        href: /life/screen/
+        match: prefix
+      - label: Game
+        href: /life/game/
+        match: prefix
 footerLinks:
   - label: Blog
     href: /blog/
