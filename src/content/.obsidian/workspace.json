@@ -11,14 +11,10 @@
             "id": "b3fcd60c669b7a49",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "note/明日方舟和P3R联动.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "明日方舟和P3R联动"
+              "title": "新标签页"
             }
           }
         ]
@@ -178,7 +174,6 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "note/明日方舟和P3R联动.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
