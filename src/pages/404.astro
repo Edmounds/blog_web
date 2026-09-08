@@ -23,7 +23,7 @@ Astro.response.statusText = "Not Found";
 ---
 
 <!doctype html>
-<html lang={htmlLang}>
+<html lang={htmlLang} class="not-found-html">
   <head>
     <meta charset="UTF-8" />
     <meta
@@ -40,7 +40,7 @@ Astro.response.statusText = "Not Found";
     <link rel="stylesheet" href="/anthropic-fonts.css" />
     <title>404 | Page Not Found</title>
   </head>
-  <body>
+  <body class="not-found-body">
     <main class="not-found">
       <picture class="not-found__background" aria-hidden="true">
         <source
@@ -109,12 +109,14 @@ Astro.response.statusText = "Not Found";
 </html>
 
 <style is:global>
-  * {
+  .not-found-html *,
+  .not-found-html *::before,
+  .not-found-html *::after {
     box-sizing: border-box;
   }
 
-  html,
-  body {
+  html.not-found-html,
+  body.not-found-body {
     width: 100%;
     min-width: 20rem;
     height: 100%;
@@ -124,7 +126,7 @@ Astro.response.statusText = "Not Found";
     background: #18191b;
   }
 
-  body {
+  body.not-found-body {
     color: #f5f3ed;
     font-family: var(
       --font-ui,
