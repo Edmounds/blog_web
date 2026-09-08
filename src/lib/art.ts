@@ -23,6 +23,7 @@ export interface ArtRecord {
   coverSourceUrl: string;
   coverUrl: string;
   collectedOn: string;
+  rating: number | null;
   isVisible: boolean;
   createdAt: string;
   updatedAt: string;
@@ -36,6 +37,7 @@ export interface ArtItem {
   title: string;
   creator: string;
   extra: string;
+  rating: number | null;
   cover: string;
   coverFallback: string | null;
 }

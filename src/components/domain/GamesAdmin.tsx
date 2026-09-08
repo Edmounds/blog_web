@@ -1,10 +1,11 @@
 import { Eye, EyeOff, ImagePlus, LoaderCircle, RefreshCw, RotateCcw, Search, Trash2, Upload } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import StarRatingInput from "../ui/StarRatingInput";
 
 type GameSource = "steam" | "manual";
 interface GameItem {
   id: string; source: GameSource; steamAppId: number | null; title: string; steamPlaytimeMinutes: number;
-  customPlaytimeMinutes: number | null; playtimeMinutes: number; isVisible: boolean; coverKey: string | null;
+  customPlaytimeMinutes: number | null; playtimeMinutes: number; rating: number | null; isVisible: boolean; coverKey: string | null;
   cover: string; defaultCover: string; lastSeenAt: string | null;
 }
 interface SyncState { lastAttemptAt: string | null; lastSuccessAt: string | null; lastSyncedCount: number; lastError: string | null }
@@ -22,6 +23,7 @@ export default function GamesAdmin() {
   const [message, setMessage] = useState("");
   const [title, setTitle] = useState("");
   const [hours, setHours] = useState("0");
+  const [rating, setRating] = useState<number | null>(null);
   const [cover, setCover] = useState<{ key: string; url: string } | null>(null);
   const coverRef = useRef<{ key: string; url: string } | null>(null);
 
@@ -70,9 +72,9 @@ export default function GamesAdmin() {
     if (!cover) { setMessage("请先上传竖版封面。"); return; }
     setBusy("create"); setMessage("");
     try {
-      const data = await fetchJson<{ item: GameItem }>("/api/admin/games", jsonInit("POST", { title, customPlaytimeHours: hours, coverKey: cover.key, isVisible: true }));
+      const data = await fetchJson<{ item: GameItem }>("/api/admin/games", jsonInit("POST", { title, customPlaytimeHours: hours, coverKey: cover.key, rating, isVisible: true }));
       setItems((current) => [...current, data.item].sort(sortGames));
-      setTitle(""); setHours("0"); setCover(null); coverRef.current = null;
+      setTitle(""); setHours("0"); setRating(null); setCover(null); coverRef.current = null;
       setMessage("手动游戏已添加。");
     } catch (error) { setMessage(errorMessage(error)); }
     finally { setBusy(null); }
@@ -126,12 +128,18 @@ export default function GamesAdmin() {
 
       <section className="grid gap-4 border-b border-[var(--border-soft)] pb-8">
         <h2 className="text-lg font-semibold">新增手动游戏</h2>
-        <form className="grid gap-4 md:grid-cols-[1fr_10rem_auto]" onSubmit={(event) => void addManual(event)}>
+        <form className="grid gap-4 md:grid-cols-[1fr_10rem_auto_auto]" onSubmit={(event) => void addManual(event)}>
           <label className="grid gap-1 text-sm"><span>标题</span><input className={input} value={title} onChange={(event) => setTitle(event.target.value)} required /></label>
           <label className="grid gap-1 text-sm"><span>时长（小时）</span><input className={input} value={hours} onChange={(event) => setHours(event.target.value)} inputMode="decimal" required /></label>
+          <div className="grid gap-1 text-sm">
+            <span>评分</span>
+            <div className="flex min-h-10 items-center">
+              <StarRatingInput value={rating} onChange={setRating} showText />
+            </div>
+          </div>
           <label className={`${button} mt-auto cursor-pointer`}><Upload size={16} />{busy === "upload" ? "上传中" : cover ? "更换封面" : "上传封面"}<input className="sr-only" type="file" accept="image/jpeg,image/png,image/webp,image/avif" onChange={(event) => { const file = event.target.files?.[0]; if (file) void uploadCover(file); event.currentTarget.value = ""; }} /></label>
           {cover && <img className="h-32 w-24 rounded-[var(--radius-control)] object-cover" src={cover.url} alt="待添加游戏封面" />}
-          <button className={`${button} md:col-start-3`} type="submit" disabled={busy !== null || !cover}><ImagePlus size={16} />添加游戏</button>
+          <button className={`${button} md:col-span-full lg:col-span-1`} type="submit" disabled={busy !== null || !cover}><ImagePlus size={16} />添加游戏</button>
         </form>
       </section>
 
@@ -157,6 +165,14 @@ function GameRow({ item, busy, patch, replaceCover, remove }: { item: GameItem; 
       <img className="aspect-[2/3] w-20 rounded-[var(--radius-control)] object-cover" src={item.cover} alt={item.title} onError={(event) => { event.currentTarget.src = "/images/placeholders/default-cover.webp"; }} />
       <div className="grid min-w-0 gap-3">
         <div className="flex flex-wrap items-center gap-2"><strong className="break-words">{item.title}</strong><span className="text-xs text-[var(--text-faint)]">{item.source === "steam" ? `Steam ${item.steamAppId}` : "手动"}</span></div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-[var(--text-muted)]">评分</span>
+          <StarRatingInput
+            value={item.rating}
+            size="sm"
+            onChange={(nextRating) => void patch(item.id, { rating: nextRating })}
+          />
+        </div>
         <div className="grid gap-3 sm:grid-cols-2">
           {item.source === "manual" && <label className="grid gap-1 text-xs"><span>标题</span><input className={input} value={title} onChange={(event) => setTitle(event.target.value)} onBlur={() => { if (title !== item.title) void patch(item.id, { title }); }} /></label>}
           <label className="grid gap-1 text-xs"><span>{item.source === "steam" ? `覆盖时长（Steam ${formatHours(item.steamPlaytimeMinutes)} 小时）` : "时长（小时）"}</span><input className={input} value={hours} onChange={(event) => setHours(event.target.value)} placeholder={item.source === "steam" ? "使用 Steam 时长" : undefined} onBlur={() => { const value = hours.trim(); const original = item.customPlaytimeMinutes == null ? "" : formatHours(item.customPlaytimeMinutes); if (value !== original) void patch(item.id, { customPlaytimeHours: value }); }} /></label>

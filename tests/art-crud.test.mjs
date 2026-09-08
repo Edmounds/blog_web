@@ -126,6 +126,31 @@ test("art schema allows manual items without source IDs and rejects duplicate so
   assert.match(schema, /WHERE source_id IS NOT NULL/);
   assert.match(schema, /cover_key TEXT,/);
   assert.doesNotMatch(schema, /cover_key TEXT NOT NULL/);
+  assert.match(schema, /rating INTEGER CHECK \(rating IS NULL OR \(rating >= 1 AND rating <= 5\)\)/);
+});
+
+test("art rating validation accepts integers 1 to 5, clears on null/empty/0, and persists via CRUD", async () => {
+  assert.equal(validateArtItemInput({ rating: 5 }, { partial: true }).value.rating, 5);
+  assert.equal(validateArtItemInput({ rating: null }, { partial: true }).value.rating, null);
+  assert.equal(validateArtItemInput({ rating: 0 }, { partial: true }).value.rating, null);
+  assert.equal(validateArtItemInput({ rating: "" }, { partial: true }).value.rating, null);
+  assert.equal(validateArtItemInput({ rating: 6 }, { partial: true }).ok, false);
+  assert.equal(validateArtItemInput({ rating: 2.5 }, { partial: true }).ok, false);
+  assert.equal(validateArtItemInput({ rating: "bad" }, { partial: true }).ok, false);
+
+  const db = new FakeD1();
+  const created = await createArtItem(db, {
+    type: "book", source: "legacy", sourceId: "", isbn: "", originalTitle: "", releaseDate: "",
+    collectedOn: "2026-07-23", rating: 5, isVisible: true,
+    translations: { "zh-CN": { title: "评分书", creator: "作者", extra: "" } },
+  }, { key: "art/rated/a.jpg", sourceUrl: "" }, { id: "rated" });
+  assert.equal(created.rating, 5);
+
+  const updated = await updateArtItem(db, "rated", created, { rating: 3 });
+  assert.equal(updated.rating, 3);
+
+  const cleared = await updateArtItem(db, "rated", updated, { rating: null });
+  assert.equal(cleared.rating, null);
 });
 
 class FakeD1 {
@@ -141,8 +166,8 @@ class FakeStatement {
   bind(...args) { this.args = args; return this; }
   async run() {
     if (this.sql.startsWith("INSERT INTO art_items")) {
-      const [id, type, music_kind, source, source_id, isbn, original_title, release_date, cover_key, cover_source_url, collected_on, is_visible, created_at, updated_at] = this.args;
-      this.db.items.set(id, { id, type, music_kind, source, source_id, isbn, original_title, release_date, cover_key, cover_source_url, collected_on, is_visible, created_at, updated_at });
+      const [id, type, music_kind, source, source_id, isbn, original_title, release_date, cover_key, cover_source_url, collected_on, rating, is_visible, created_at, updated_at] = this.args;
+      this.db.items.set(id, { id, type, music_kind, source, source_id, isbn, original_title, release_date, cover_key, cover_source_url, collected_on, rating, is_visible, created_at, updated_at });
       return { meta: { changes: 1 } };
     }
     if (this.sql.startsWith("INSERT INTO art_item_translations")) {
@@ -151,8 +176,8 @@ class FakeStatement {
       return { meta: { changes: 1 } };
     }
     if (this.sql.startsWith("UPDATE art_items SET")) {
-      const [type, music_kind, source, source_id, isbn, original_title, release_date, cover_key, cover_source_url, collected_on, is_visible, updated_at, id] = this.args;
-      const item = this.db.items.get(id); this.db.items.set(id, { ...item, type, music_kind, source, source_id, isbn, original_title, release_date, cover_key, cover_source_url, collected_on, is_visible, updated_at });
+      const [type, music_kind, source, source_id, isbn, original_title, release_date, cover_key, cover_source_url, collected_on, rating, is_visible, updated_at, id] = this.args;
+      const item = this.db.items.get(id); this.db.items.set(id, { ...item, type, music_kind, source, source_id, isbn, original_title, release_date, cover_key, cover_source_url, collected_on, rating, is_visible, updated_at });
       return { meta: { changes: item ? 1 : 0 } };
     }
     if (this.sql.startsWith("DELETE FROM art_item_translations")) {

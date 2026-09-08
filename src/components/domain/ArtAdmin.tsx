@@ -3,6 +3,7 @@ import {
   Trash2, Tv2, Upload, X,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import StarRatingInput from "../ui/StarRatingInput";
 
 type ArtType = "book" | "music" | "movie" | "series" | "anime";
 type MusicKind = "album" | "single";
@@ -32,6 +33,7 @@ interface ArtItem {
   releaseDate: string;
   coverUrl: string;
   collectedOn: string;
+  rating: number | null;
   isVisible: boolean;
   translations: Partial<Record<Locale, Translation>>;
 }
@@ -45,6 +47,7 @@ interface FormState {
   originalTitle: string;
   releaseDate: string;
   collectedOn: string;
+  rating: number | null;
   isVisible: boolean;
   coverUrl: string;
   cover: { kind: "url"; url: string } | { kind: "stored"; key: string } | null;
@@ -147,7 +150,7 @@ export default function ArtAdmin() {
     setIsSaving(true); setMessage(""); setSaveMessage("");
     const body: Record<string, unknown> = {
       type: form.type, musicKind: form.musicKind, source: form.source, sourceId: form.sourceId, isbn: form.isbn, originalTitle: form.originalTitle,
-      releaseDate: form.releaseDate, collectedOn: form.collectedOn, isVisible: form.isVisible, translations: translationsForType(form.type, form.translations),
+      releaseDate: form.releaseDate, collectedOn: form.collectedOn, rating: form.rating, isVisible: form.isVisible, translations: translationsForType(form.type, form.translations),
     };
     if (form.cover) body.cover = form.cover;
     try {
@@ -165,10 +168,25 @@ export default function ArtAdmin() {
     discardPendingCover();
     setForm({
       id: item.id, type: item.type, musicKind: item.musicKind, source: item.source, sourceId: item.sourceId, isbn: item.isbn, originalTitle: item.originalTitle,
-      releaseDate: item.releaseDate, collectedOn: item.collectedOn, isVisible: item.isVisible, coverUrl: item.coverUrl, cover: null,
+      releaseDate: item.releaseDate, collectedOn: item.collectedOn, rating: item.rating, isVisible: item.isVisible, coverUrl: item.coverUrl, cover: null,
       translations: Object.fromEntries(LOCALES.map(({ id }) => [id, item.translations[id] ?? emptyTranslation()])) as Record<Locale, Translation>,
     });
     setLocale("zh-CN"); setSaveMessage(""); window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  async function patchRating(item: ArtItem, nextRating: number | null) {
+    try {
+      setItems((current) => current.map((entry) => entry.id === item.id ? { ...entry, rating: nextRating } : entry));
+      if (form.id === item.id) setForm((prev) => ({ ...prev, rating: nextRating }));
+      await fetchJson<{ item: ArtItem }>(`/api/admin/art/items/${item.id}`, {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ rating: nextRating }),
+      });
+    } catch (error) {
+      setMessage(errorMessage(error));
+      void loadItems(type, musicKind);
+    }
   }
 
   async function toggle(item: ArtItem) {
@@ -266,6 +284,16 @@ export default function ArtAdmin() {
             <div className="min-w-0 space-y-5">
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="space-y-1.5 text-sm"><span>收藏日期</span><input type="date" className={inputClass} value={form.collectedOn} onChange={(e) => setForm({ ...form, collectedOn: e.target.value })} /></label>
+                <div className="space-y-1.5 text-sm">
+                  <span>我的评分</span>
+                  <div className="flex min-h-[42px] items-center">
+                    <StarRatingInput
+                      value={form.rating}
+                      onChange={(rating) => setForm({ ...form, rating })}
+                      showText
+                    />
+                  </div>
+                </div>
                 <label className="flex items-end gap-2 pb-2 text-sm"><input type="checkbox" checked={form.isVisible} onChange={(e) => setForm({ ...form, isVisible: e.target.checked })} />公开显示</label>
                 <label className="space-y-1.5 text-sm"><span>原名</span><input className={inputClass} value={form.originalTitle} onChange={(e) => setForm({ ...form, originalTitle: e.target.value })} maxLength={300} /></label>
                 <label className="space-y-1.5 text-sm"><span>发行日期</span><input className={inputClass} value={form.releaseDate} onChange={(e) => setForm({ ...form, releaseDate: e.target.value })} maxLength={40} /></label>
@@ -291,6 +319,13 @@ export default function ArtAdmin() {
           {items.map((item) => { const text = display(item); return <article key={item.id} className="grid grid-cols-[4rem_minmax(0,1fr)] gap-3 border-b border-[var(--border-soft)] pb-4">
             {type === "music" ? <AlbumCover src={item.coverUrl} alt="" /> : <PosterCover src={item.coverUrl} alt="" />}
             <div className="min-w-0"><p className="truncate font-medium text-[var(--foreground)]">{text.title}</p><p className="truncate text-sm text-[var(--text-muted)]">{text.creator}</p><p className="mt-1 flex items-center gap-1 text-xs text-[var(--text-faint)]"><CalendarDays className="size-3" />{item.collectedOn}</p>
+              <div className="mt-1.5 flex items-center">
+                <StarRatingInput
+                  value={item.rating}
+                  size="sm"
+                  onChange={(newRating) => void patchRating(item, newRating)}
+                />
+              </div>
               <div className="mt-3 flex gap-1"><button className={iconButton} title="编辑" aria-label={`编辑 ${text.title}`} onClick={() => edit(item)}><ImagePlus className="size-4" /></button><button className={iconButton} title={item.isVisible ? "隐藏" : "显示"} aria-label={`${item.isVisible ? "隐藏" : "显示"} ${text.title}`} onClick={() => void toggle(item)}>{item.isVisible ? <Eye className="size-4" /> : <EyeOff className="size-4" />}</button><button className={iconButton} title="永久删除" aria-label={`永久删除 ${text.title}`} onClick={() => void remove(item)}><Trash2 className="size-4" /></button></div>
             </div>
           </article>; })}
@@ -321,7 +356,7 @@ function selection(id: AdminType): { id: AdminType; type: ArtType; musicKind: Mu
   return { id, type: id, musicKind: null };
 }
 function blankForm(type: ArtType, musicKind: MusicKind | null = null): FormState {
-  return { type, musicKind, source: musicKind === "single" ? "netease_track" : type === "music" ? "netease_album" : ["movie", "series", "anime"].includes(type) ? "tmdb" : "apple_books", sourceId: "", isbn: "", originalTitle: "", releaseDate: "", collectedOn: today(), isVisible: true, coverUrl: "", cover: null, translations: Object.fromEntries(LOCALES.map(({ id }) => [id, emptyTranslation()])) as Record<Locale, Translation> };
+  return { type, musicKind, source: musicKind === "single" ? "netease_track" : type === "music" ? "netease_album" : ["movie", "series", "anime"].includes(type) ? "tmdb" : "apple_books", sourceId: "", isbn: "", originalTitle: "", releaseDate: "", collectedOn: today(), rating: null, isVisible: true, coverUrl: "", cover: null, translations: Object.fromEntries(LOCALES.map(({ id }) => [id, emptyTranslation()])) as Record<Locale, Translation> };
 }
 function candidateKey(item: Pick<Candidate, "source" | "sourceId">) { return `${item.source}:${item.sourceId}`; }
 function previewUrl(url: string) { return url.startsWith("/") || url.startsWith("https://img.muelsyse.us/") ? url : `/api/admin/art/cover-preview?url=${encodeURIComponent(url)}`; }

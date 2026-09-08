@@ -169,6 +169,17 @@ export function validateArtItemInput(value, { partial = false, currentType, curr
     if (!isValidDate(collectedOn)) return invalid("INVALID_COLLECTED_DATE", "收藏日期无效。");
     result.collectedOn = collectedOn;
   }
+  if (!partial || Object.hasOwn(value, "rating")) {
+    if (value.rating == null || value.rating === "" || value.rating === 0) {
+      result.rating = null;
+    } else {
+      const rating = Number(value.rating);
+      if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+        return invalid("INVALID_RATING", "评分必须是 1 到 5 的整数星。");
+      }
+      result.rating = rating;
+    }
+  }
   if (!partial || Object.hasOwn(value, "isVisible")) {
     if (typeof value.isVisible !== "boolean") return invalid("INVALID_VISIBILITY", "显示状态无效。");
     result.isVisible = value.isVisible;
@@ -464,10 +475,10 @@ export async function createArtItem(db, input, storedCover, { id = crypto.random
   const statements = [
     db.prepare(
       `INSERT INTO art_items
-       (id, type, music_kind, source, source_id, isbn, original_title, release_date, cover_key, cover_source_url, collected_on, is_visible, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       (id, type, music_kind, source, source_id, isbn, original_title, release_date, cover_key, cover_source_url, collected_on, rating, is_visible, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     ).bind(id, input.type, input.type === "music" ? input.musicKind : null, input.source, input.sourceId || null, input.isbn || null, input.originalTitle || null,
-      input.releaseDate || null, storedCover.key, storedCover.sourceUrl || null, input.collectedOn, input.isVisible ? 1 : 0, createdAt, createdAt),
+      input.releaseDate || null, storedCover.key, storedCover.sourceUrl || null, input.collectedOn, input.rating ?? null, input.isVisible ? 1 : 0, createdAt, createdAt),
     ...translationStatements(db, id, translations),
   ];
   await db.batch(statements);
@@ -484,6 +495,7 @@ export async function updateArtItem(db, id, current, input, storedCover, now = n
     originalTitle: input.originalTitle ?? current.originalTitle,
     releaseDate: input.releaseDate ?? current.releaseDate,
     collectedOn: input.collectedOn ?? current.collectedOn,
+    rating: Object.hasOwn(input, "rating") ? input.rating : current.rating,
     isVisible: input.isVisible ?? current.isVisible,
     translations: input.translations ?? current.translations,
   };
@@ -494,9 +506,9 @@ export async function updateArtItem(db, id, current, input, storedCover, now = n
   const statements = [
     db.prepare(
       `UPDATE art_items SET type = ?, music_kind = ?, source = ?, source_id = ?, isbn = ?, original_title = ?, release_date = ?,
-       cover_key = ?, cover_source_url = ?, collected_on = ?, is_visible = ?, updated_at = ? WHERE id = ?`,
+       cover_key = ?, cover_source_url = ?, collected_on = ?, rating = ?, is_visible = ?, updated_at = ? WHERE id = ?`,
     ).bind(merged.type, merged.musicKind, merged.source, merged.sourceId || null, merged.isbn || null, merged.originalTitle || null,
-      merged.releaseDate || null, coverKey, coverSourceUrl || null, merged.collectedOn, merged.isVisible ? 1 : 0, now.toISOString(), id),
+      merged.releaseDate || null, coverKey, coverSourceUrl || null, merged.collectedOn, merged.rating ?? null, merged.isVisible ? 1 : 0, now.toISOString(), id),
     db.prepare("DELETE FROM art_item_translations WHERE item_id = ?").bind(id),
     ...translationStatements(db, id, merged.translations),
   ];
@@ -515,7 +527,7 @@ export function localizeArtItems(items, locale) {
     const cover = resolveArtCoverDelivery(item);
     return {
       id: item.id, type: item.type, musicKind: item.musicKind, title: translation.title, creator: translation.creator,
-      extra: translation.extra, cover: cover.primary, coverFallback: cover.fallback,
+      extra: translation.extra, rating: item.rating ?? null, cover: cover.primary, coverFallback: cover.fallback,
     };
   });
 }
@@ -604,7 +616,7 @@ function groupArtRows(rows) {
         originalTitle: row.original_title ?? "", releaseDate: row.release_date ?? "", coverKey: row.cover_key ?? null,
         coverSourceUrl: row.cover_source_url ?? "", coverUrl: resolveArtCoverDelivery({
           id: row.id, source: row.source, coverKey: row.cover_key, coverSourceUrl: row.cover_source_url,
-        }).primary, collectedOn: row.collected_on,
+        }).primary, collectedOn: row.collected_on, rating: row.rating == null ? null : Number(row.rating),
         isVisible: Number(row.is_visible) === 1, createdAt: row.created_at, updatedAt: row.updated_at, translations: {},
       };
       items.set(row.id, item);

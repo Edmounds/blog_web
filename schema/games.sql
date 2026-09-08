@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS game_items (
   custom_playtime_minutes INTEGER CHECK (custom_playtime_minutes IS NULL OR custom_playtime_minutes >= 0),
   is_visible INTEGER NOT NULL DEFAULT 1 CHECK (is_visible IN (0, 1)),
   cover_key TEXT,
+  rating INTEGER CHECK (rating IS NULL OR (rating >= 1 AND rating <= 5)),
   last_seen_at TEXT,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL,

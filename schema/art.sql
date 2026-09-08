@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS art_items (
   cover_key TEXT,
   cover_source_url TEXT,
   collected_on TEXT NOT NULL,
+  rating INTEGER CHECK (rating IS NULL OR (rating >= 1 AND rating <= 5)),
   is_visible INTEGER NOT NULL DEFAULT 1 CHECK (is_visible IN (0, 1)),
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL

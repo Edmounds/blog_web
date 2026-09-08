@@ -119,7 +119,7 @@ const rankingTabs = [
         data-music-kind={item.musicKind ?? undefined}
         class={(type === "screen" && item.type !== "movie") || (type === "music" && item.musicKind !== "album") ? "hidden" : undefined}
       >
-        <ArtCard item={item} />
+        <ArtCard item={item} locale={locale} />
       </div>
     ))}
     {type === "screen" && screenTabs.map((tab) => (

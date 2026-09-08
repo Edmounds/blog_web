@@ -128,10 +128,12 @@ test("public localization falls back to simplified Chinese and carries music cla
   const item = {
     id: "1", type: "music", musicKind: "single", source: "netease_track", coverKey: null,
     coverSourceUrl: "https://p3.music.126.net/song.jpg?size=large",
+    rating: 4,
     translations: { "zh-CN": { title: "歌曲", creator: "歌手", extra: "备注" } },
   };
   assert.deepEqual(localizeArtItems([item], "ja"), [{
     id: "1", type: "music", musicKind: "single", title: "歌曲", creator: "歌手", extra: "备注",
+    rating: 4,
     cover: "https://p1.music.126.net/song.jpg?size=large", coverFallback: "/images/placeholders/default-cover.webp",
   }]);
 });

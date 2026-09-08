@@ -10,6 +10,7 @@ export interface GameItem {
   steamPlaytimeMinutes: number;
   customPlaytimeMinutes: number | null;
   playtimeMinutes: number;
+  rating: number | null;
   isVisible: boolean;
   coverKey: string | null;
   cover: string;

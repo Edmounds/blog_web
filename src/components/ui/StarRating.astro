@@ -1,0 +1,58 @@
+---
+interface Props {
+  rating?: number | null;
+  locale?: string;
+}
+
+const { rating = null, locale = "zh-CN" } = Astro.props;
+const numericRating = typeof rating === "number" && rating >= 1 && rating <= 5 ? Math.round(rating) : null;
+
+const label = numericRating
+  ? locale === "en"
+    ? `${numericRating} out of 5 stars`
+    : `评分：${numericRating} 星`
+  : locale === "en"
+    ? "Unrated"
+    : "未评分";
+
+const stars = [1, 2, 3, 4, 5].map((star) => ({
+  star,
+  isFilled: numericRating !== null && star <= numericRating,
+}));
+---
+
+<div class="inline-flex items-center gap-0.5" aria-label={label} title={label}>
+  {stars.map(({ isFilled }) =>
+    isFilled ? (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        class="size-3.5 fill-current text-[var(--foreground)]"
+        aria-hidden="true"
+      >
+        <polygon
+          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    ) : (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        class="size-3.5 fill-none text-[var(--border-strong)] opacity-60"
+        aria-hidden="true"
+      >
+        <polygon
+          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    )
+  )}
+</div>
