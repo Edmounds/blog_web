@@ -1,5 +1,9 @@
 ---
-import { getAboutProfile, getPublishedContent } from "../../lib/content";
+import {
+  getAboutProfile,
+  getPublishedContent,
+  getSiteSettings,
+} from "../../lib/content";
 import { getLocalizedAbout } from "../../lib/localized-content";
 import { localizePath, type Locale } from "../../lib/i18n";
 import GitHubHeatmap from "../domain/GitHubHeatmap.astro";
@@ -8,6 +12,8 @@ interface Props {
   locale?: Locale;
 }
 const { locale = "zh-CN" } = Astro.props;
+const siteSettings = await getSiteSettings();
+const socialLinks = siteSettings.socialLinks ?? [];
 const about =
   locale === "zh-CN"
     ? await getAboutProfile()
@@ -59,53 +65,55 @@ const latestBlocks = [
     </div>
     <h1>{profile.name}</h1>
     <nav aria-label="Social links">
-      <a
-        href="https://github.com/Edmounds"
-        target="_blank"
-        rel="noreferrer"
-        aria-label="GitHub"
-      >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path
-            d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"
-          ></path>
-          <path d="M9 18c-4.51 2-5-2-7-2"></path>
-        </svg>
-      </a>
-      <a
-        href="https://space.bilibili.com/397591871"
-        target="_blank"
-        rel="noreferrer"
-        aria-label="Bilibili"
-      >
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path
-            d="M17.813 4.653a.85.85 0 0 1 .15.15l1.637 1.865c.1.116.195.234.287.355l.129.176.082.133V17.5a2.5 2.5 0 0 1-2.5 2.5H6.5A2.5 2.5 0 0 1 4 17.5V7.332l.081-.133.129-.176a3.01 3.01 0 0 1 .287-.355l1.637-1.865a.91.91 0 0 1 .15-.15l.215-.164.21-.133.228-.105.235-.078.24-.047.245-.02.25-.003.245.02.24.047.235.078.228.105.21.133.215.164.673.473.674-.473.215-.164.21-.133.228-.105.235-.078.24-.047.245-.02.25-.003.245.02.24.047.235.078.228.105.21.133.215.164.673.473.674-.473zM7.5 9.332a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1zm9 0a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1z"
-          ></path>
-        </svg>
-      </a>
-      <a href="mailto:i@muelsyse.us" aria-label="Email">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-        </svg>
-      </a>
+      {
+        socialLinks.map((link) => (
+          <a
+            href={link.href}
+            target={link.href.startsWith("mailto:") ? undefined : "_blank"}
+            rel={link.href.startsWith("mailto:") ? undefined : "noreferrer"}
+            aria-label={link.name}
+          >
+            {link.icon === "github" && (
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                <path d="M9 18c-4.51 2-5-2-7-2" />
+              </svg>
+            )}
+            {link.icon === "bilibili" && (
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M17.813 4.653a.85.85 0 0 1 .15.15l1.637 1.865c.1.116.195.234.287.355l.129.176.082.133V17.5a2.5 2.5 0 0 1-2.5 2.5H6.5A2.5 2.5 0 0 1 4 17.5V7.332l.081-.133.129-.176a3.01 3.01 0 0 1 .287-.355l1.637-1.865a.91.91 0 0 1 .15-.15l.215-.164.21-.133.228-.105.235-.078.24-.047.245-.02.25-.003.245.02.24.047.235.078.228.105.21.133.215.164.673.473.674-.473.215-.164.21-.133.228-.105.235-.078.24-.047.245-.02.25-.003.245.02.24.047.235.078.228.105.21.133.215.164.673.473.674-.473zM7.5 9.332a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1zm9 0a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1z" />
+              </svg>
+            )}
+            {link.icon === "email" && (
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect width="20" height="16" x="2" y="4" rx="2" />
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+              </svg>
+            )}
+            {link.icon === "telegram" && (
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="m20.665 3.717-17.73 6.837c-1.21.486-1.203 1.161-.222 1.462l4.552 1.42 10.532-6.645c.498-.303.953-.14.579.192l-8.533 7.701h-.002l-.313 4.673c.46 0 .663-.211.921-.46l2.211-2.15 4.599 3.397c.848.467 1.457.227 1.668-.785l3.019-14.228c.309-1.239-.473-1.8-1.282-1.414z" />
+              </svg>
+            )}
+          </a>
+        ))
+      }
     </nav>
     <p class="profile-card__intro">{profile.motto}</p>
     <div class="profile-metrics">

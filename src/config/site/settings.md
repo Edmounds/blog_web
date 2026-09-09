@@ -42,6 +42,19 @@ footerLinks:
     href: /blog/
   - label: About
     href: /about/
+socialLinks:
+  - name: GitHub
+    href: https://github.com/Edmounds
+    icon: github
+  - name: Bilibili
+    href: https://space.bilibili.com/397591871
+    icon: bilibili
+  - name: Email
+    href: mailto:i@muelsyse.us
+    icon: email
+  - name: Telegram
+    href: https://t.me/Lust4ev3r
+    icon: telegram
 copy:
   blogMetaPublished: Published
   blogMetaRead: Read

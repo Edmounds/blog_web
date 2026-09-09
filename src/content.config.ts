@@ -51,6 +51,15 @@ const site = defineCollection({
     brand: z.string(), htmlLang: z.string(), dateLocale: z.string(), seo: z.object({ defaultDescription: z.string(), titleSeparator: z.string() }),
     nav: z.array(z.object({ label: z.string(), href: z.string(), match: z.enum(["exact", "prefix"]).optional() })),
     footerLinks: z.array(z.object({ label: z.string(), href: z.string() })), copy: z.record(z.string(), z.string()),
+    socialLinks: z
+      .array(
+        z.object({
+          name: z.string(),
+          href: z.string(),
+          icon: z.enum(["github", "bilibili", "email", "telegram"]),
+        }),
+      )
+      .default([]),
   }),
 });
 
