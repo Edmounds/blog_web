@@ -212,7 +212,6 @@ const i18nConfig = {
         <span class="global-search__result-title" title="${item.title.replace(/"/g, "&quot;")}">
           ${item.title}
         </span>
-        <time class="global-search__result-date">${item.date}</time>
       </a>
     `;
   }
@@ -274,8 +273,14 @@ const i18nConfig = {
         }
       };
 
+      const openDropdown = () => {
+        if (dropdown) dropdown.hidden = false;
+        if (box) box.dataset.hasDropdown = "true";
+      };
+
       const closeDropdown = () => {
         if (dropdown) dropdown.hidden = true;
+        if (box) box.dataset.hasDropdown = "false";
         activeIndex = -1;
       };
 
@@ -322,7 +327,7 @@ const i18nConfig = {
           return;
         }
 
-        if (targetDropdown) targetDropdown.hidden = false;
+        if (targetDropdown) openDropdown();
         targetContainer.innerHTML = `
           <div class="global-search__status-message">${loadingLabel}</div>
         `;
@@ -519,11 +524,17 @@ const i18nConfig = {
   }
 
   .global-search__box[data-expanded="true"] {
-    width: clamp(14rem, 20vw, 17.5rem);
+    width: 16rem;
     border-color: var(--border-strong);
     background: var(--surface-panel);
     backdrop-filter: blur(12px);
     box-shadow: var(--shadow-soft);
+  }
+
+  .global-search__box[data-expanded="true"][data-has-dropdown="true"] {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-color: var(--border-soft);
   }
 
   .global-search__trigger-btn {
@@ -601,14 +612,22 @@ const i18nConfig = {
   /* Dropdown styling */
   .global-search__dropdown {
     position: absolute;
-    top: calc(100% + 0.5rem);
+    top: 100%;
+    left: 0;
     right: 0;
     z-index: 60;
-    width: max(100%, 22rem);
+    width: 100%;
+    box-sizing: border-box;
     max-height: 22rem;
     overflow-y: auto;
-    border-radius: var(--radius-control);
-    border: 1px solid var(--border-strong);
+    border-top: none;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: var(--radius-control);
+    border-bottom-right-radius: var(--radius-control);
+    border-left: 1px solid var(--border-strong);
+    border-right: 1px solid var(--border-strong);
+    border-bottom: 1px solid var(--border-strong);
     background: var(--surface-panel);
     box-shadow: var(--shadow-soft);
     backdrop-filter: blur(12px);
@@ -686,13 +705,6 @@ const i18nConfig = {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  :global(.global-search__result-date) {
-    font-size: var(--type-xs);
-    font-family: var(--font-mono);
-    color: var(--text-muted);
-    flex-shrink: 0;
   }
 
   /* Mobile search overlay */
