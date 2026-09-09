@@ -36,17 +36,6 @@ test("playtime validation accepts one decimal, clears Steam overrides, and rejec
   assert.equal(validateGameUpdate({ customPlaytimeHours: "" }, { source: "steam" }).value.customPlaytimeMinutes, null);
 });
 
-test("game rating validation accepts integers 1 to 5, clears on null/empty, and rejects out-of-range", () => {
-  assert.equal(validateGameCreate({ title: "G", customPlaytimeHours: "0", coverKey: "game/1.webp", rating: 5, isVisible: true }).value.rating, 5);
-  assert.equal(validateGameCreate({ title: "G", customPlaytimeHours: "0", coverKey: "game/1.webp", rating: null, isVisible: true }).value.rating, null);
-  assert.equal(validateGameCreate({ title: "G", customPlaytimeHours: "0", coverKey: "game/1.webp", rating: 0, isVisible: true }).value.rating, null);
-  assert.equal(validateGameCreate({ title: "G", customPlaytimeHours: "0", coverKey: "game/1.webp", rating: 6, isVisible: true }).ok, false);
-  assert.equal(validateGameCreate({ title: "G", customPlaytimeHours: "0", coverKey: "game/1.webp", rating: 3.5, isVisible: true }).ok, false);
-  assert.equal(validateGameUpdate({ rating: 4 }, { source: "steam" }).value.rating, 4);
-  assert.equal(validateGameUpdate({ rating: null }, { source: "steam" }).value.rating, null);
-  assert.equal(validateGameUpdate({ rating: 7 }, { source: "steam" }).ok, false);
-});
-
 test("manual games require title, non-negative time, cover, and visibility", () => {
   const valid = validateGameCreate({ title: "Console Game", customPlaytimeHours: "0", coverKey: "game/11111111-1111-4111-8111-111111111111.webp", isVisible: true });
   assert.equal(valid.ok, true);
@@ -200,7 +189,7 @@ function steamCoverEnv(game = { id: "game" }) {
 }
 
 function row(overrides) {
-  return { id: crypto.randomUUID(), source: "steam", steam_app_id: null, title: "Game", steam_playtime_minutes: 0, custom_playtime_minutes: null, rating: null, is_visible: 1, cover_key: null, last_seen_at: null, created_at: "2026-01-01T00:00:00.000Z", updated_at: "2026-01-01T00:00:00.000Z", ...overrides };
+  return { id: crypto.randomUUID(), source: "steam", steam_app_id: null, title: "Game", steam_playtime_minutes: 0, custom_playtime_minutes: null, is_visible: 1, cover_key: null, last_seen_at: null, created_at: "2026-01-01T00:00:00.000Z", updated_at: "2026-01-01T00:00:00.000Z", ...overrides };
 }
 
 class FakeD1 {

@@ -1,14 +1,12 @@
 ---
-import StarRating from "../ui/StarRating.astro";
 import type { GameItem } from "../../lib/games";
 
 interface Props {
   item: GameItem;
   playtime: string;
-  locale?: string;
 }
 
-const { item, playtime, locale = "zh-CN" } = Astro.props;
+const { item, playtime } = Astro.props;
 const CoverTag = item.storeUrl ? "a" : "div";
 const coverFallback = item.steamAppId
   ? `/api/game/steam-cover/${item.steamAppId}`
@@ -34,9 +32,6 @@ const coverFallback = item.steamAppId
   </CoverTag>
   <div class="min-w-0">
     <h2 class="game-card__title text-[var(--type-base)] font-semibold leading-tight text-[var(--foreground)]">{item.title}</h2>
-    <div class="mt-1">
-      <StarRating rating={item.rating} locale={locale} />
-    </div>
     <p class="mt-1 text-sm text-[var(--text-muted)]">{playtime}</p>
   </div>
 </article>

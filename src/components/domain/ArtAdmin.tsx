@@ -128,7 +128,7 @@ export default function ArtAdmin() {
     next.source = candidate.source; next.sourceId = candidate.sourceId; next.isbn = candidate.isbn ?? isbn;
     next.originalTitle = candidate.originalTitle ?? candidate.title; next.releaseDate = candidate.releaseDate ?? "";
     next.coverUrl = candidate.coverUrl; next.cover = { kind: "url", url: candidate.coverUrl };
-    next.translations["zh-CN"] = { title: candidate.title, creator: candidate.creator || "待填写", extra: musicKind === "single" ? "" : candidate.description?.slice(0, 120) ?? "" };
+    next.translations["zh-CN"] = { title: candidate.title, creator: candidate.creator || "待填写", extra: "" };
     setForm(next); setLocale("zh-CN"); setMessage(""); setSaveMessage("");
   }
 
@@ -304,7 +304,6 @@ export default function ArtAdmin() {
               <div className="grid gap-4">
                 <label className="space-y-1.5 text-sm"><span>标题</span><input className={inputClass} value={activeTranslation.title} onChange={(e) => updateTranslation(setForm, form, locale, "title", e.target.value)} maxLength={200} /></label>
                 <label className="space-y-1.5 text-sm"><span>作者 / 导演 / 艺人</span><input className={inputClass} value={activeTranslation.creator} onChange={(e) => updateTranslation(setForm, form, locale, "creator", e.target.value)} maxLength={200} /></label>
-                <label className="space-y-1.5 text-sm"><span>一句备注</span><textarea className={`${inputClass} min-h-24 resize-y`} value={activeTranslation.extra} onChange={(e) => updateTranslation(setForm, form, locale, "extra", e.target.value)} maxLength={500} /></label>
               </div>
               <div className="flex flex-wrap gap-3">{TRANSLATED_TYPES.has(type) && <button type="button" className={quietButton} onClick={() => void translate()} disabled={isTranslating || isSaving}><Languages className="size-4" />{isTranslating ? "翻译中" : "生成翻译草稿"}</button>}<button type="button" className={primaryButton} onClick={() => void save()} disabled={!canSave || isSaving || isTranslating || isUploading}>{isSaving && <LoaderCircle className="size-4 animate-spin" />}{isSaving ? (form.id ? "保存中" : "添加中") : form.id ? "保存修改" : "添加收藏"}</button></div>
               <p aria-live="polite" role="status" className={`min-h-5 text-sm ${saveMessage ? "text-[var(--text-muted)]" : "sr-only"}`}>{saveMessage || "等待保存结果"}</p>

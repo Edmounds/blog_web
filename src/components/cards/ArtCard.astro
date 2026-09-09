@@ -49,7 +49,6 @@ const { item, locale = "zh-CN" } = Astro.props;
     <div class="pt-0.5">
       <StarRating rating={item.rating} locale={locale} />
     </div>
-    {item.extra && item.musicKind !== "single" && <p class="text-xs text-[var(--text-muted)]">{item.extra}</p>}
   </div>
 </article>
 

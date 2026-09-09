@@ -86,15 +86,7 @@ export function validateGameCreate(value) {
   const coverKey = normalizeStoredGameCoverKey(value.coverKey);
   if (!coverKey) return invalid("MANUAL_COVER_REQUIRED", "手动游戏必须上传竖版封面。");
   if (typeof value.isVisible !== "boolean") return invalid("INVALID_VISIBILITY", "显示状态无效。");
-  let rating = null;
-  if (Object.hasOwn(value, "rating") && value.rating != null && value.rating !== "" && value.rating !== 0) {
-    const parsedRating = Number(value.rating);
-    if (!Number.isInteger(parsedRating) || parsedRating < 1 || parsedRating > 5) {
-      return invalid("INVALID_RATING", "评分必须是 1 到 5 的整数星。");
-    }
-    rating = parsedRating;
-  }
-  return { ok: true, value: { title, customPlaytimeMinutes: customPlaytimeMinutes.value, coverKey, rating, isVisible: value.isVisible } };
+  return { ok: true, value: { title, customPlaytimeMinutes: customPlaytimeMinutes.value, coverKey, isVisible: value.isVisible } };
 }
 
 export function validateGameUpdate(value, current) {
@@ -119,17 +111,6 @@ export function validateGameUpdate(value, current) {
       const coverKey = normalizeStoredGameCoverKey(value.coverKey);
       if (!coverKey) return invalid("INVALID_STORED_COVER", "已上传封面无效。");
       result.coverKey = coverKey;
-    }
-  }
-  if (Object.hasOwn(value, "rating")) {
-    if (value.rating == null || value.rating === "" || value.rating === 0) {
-      result.rating = null;
-    } else {
-      const parsedRating = Number(value.rating);
-      if (!Number.isInteger(parsedRating) || parsedRating < 1 || parsedRating > 5) {
-        return invalid("INVALID_RATING", "评分必须是 1 到 5 的整数星。");
-      }
-      result.rating = parsedRating;
     }
   }
   if (Object.hasOwn(value, "isVisible")) {
@@ -279,16 +260,16 @@ export async function createManualGame(db, input, { id = crypto.randomUUID(), no
   const createdAt = now.toISOString();
   await db.prepare(
     `INSERT INTO game_items
-     (id, source, steam_app_id, title, steam_playtime_minutes, custom_playtime_minutes, rating, is_visible, cover_key, last_seen_at, created_at, updated_at)
-     VALUES (?, 'manual', NULL, ?, 0, ?, ?, ?, ?, NULL, ?, ?)`,
-  ).bind(id, input.title, input.customPlaytimeMinutes, input.rating ?? null, input.isVisible ? 1 : 0, input.coverKey, createdAt, createdAt).run();
+     (id, source, steam_app_id, title, steam_playtime_minutes, custom_playtime_minutes, is_visible, cover_key, last_seen_at, created_at, updated_at)
+     VALUES (?, 'manual', NULL, ?, 0, ?, ?, ?, NULL, ?, ?)`,
+  ).bind(id, input.title, input.customPlaytimeMinutes, input.isVisible ? 1 : 0, input.coverKey, createdAt, createdAt).run();
   return getGame(db, id);
 }
 
 export async function updateGame(db, id, input, now = new Date()) {
   const sets = [];
   const args = [];
-  for (const [field, column] of [["title", "title"], ["customPlaytimeMinutes", "custom_playtime_minutes"], ["coverKey", "cover_key"], ["rating", "rating"]]) {
+  for (const [field, column] of [["title", "title"], ["customPlaytimeMinutes", "custom_playtime_minutes"], ["coverKey", "cover_key"]]) {
     if (Object.hasOwn(input, field)) { sets.push(`${column} = ?`); args.push(input[field]); }
   }
   if (Object.hasOwn(input, "isVisible")) { sets.push("is_visible = ?"); args.push(input.isVisible ? 1 : 0); }
@@ -338,7 +319,6 @@ function toGameItem(row) {
     steamPlaytimeMinutes,
     customPlaytimeMinutes,
     playtimeMinutes: customPlaytimeMinutes ?? steamPlaytimeMinutes,
-    rating: row.rating == null ? null : Number(row.rating),
     isVisible: Number(row.is_visible) === 1,
     coverKey,
     cover: coverKey ? getGameCoverUrl(coverKey) : steamAppId ? getSteamCoverUrl(steamAppId) : "/images/placeholders/default-cover.webp",
