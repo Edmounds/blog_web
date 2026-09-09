@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-static";
 import { localizePath, stripLocaleFromPath, type Locale } from "../../lib/i18n";
 import ThemeToggle from "./ThemeToggle.astro";
 import LanguageSelector from "./LanguageSelector.astro";
+import GlobalSearch from "./GlobalSearch.astro";
 import Icon from "../ui/Icon.astro";
 
 interface Props {
@@ -102,23 +103,26 @@ const isLifeActive = routePath.startsWith("/life/");
       </nav>
     </div>
 
-    <div class="site-header__tools" data-content-frame-end>
-      <LanguageSelector
-        locale={locale}
-        currentPath={currentPath}
-        label={languageLabel}
-      />
-      <ThemeToggle />
-      <button
-        class="mobile-menu-button"
-        type="button"
-        aria-label="Open menu"
-        aria-expanded="false"
-        data-mobile-menu-trigger
-      >
-        <span class="menu-open-icon"><Icon svg={Menu} /></span>
-        <span class="menu-close-icon"><Icon svg={X} /></span>
-      </button>
+    <div class="site-header__tools">
+      <GlobalSearch locale={locale} />
+      <div class="site-header__fixed-tools" data-content-frame-end>
+        <LanguageSelector
+          locale={locale}
+          currentPath={currentPath}
+          label={languageLabel}
+        />
+        <ThemeToggle />
+        <button
+          class="mobile-menu-button"
+          type="button"
+          aria-label="Open menu"
+          aria-expanded="false"
+          data-mobile-menu-trigger
+        >
+          <span class="menu-open-icon"><Icon svg={Menu} /></span>
+          <span class="menu-close-icon"><Icon svg={X} /></span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -531,6 +535,11 @@ const isLifeActive = routePath.startsWith("/life/");
     align-items: center;
     gap: 0.35rem;
   }
+  .site-header__fixed-tools {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
   :global(.site-header__tools [data-language-trigger]),
   :global(.site-header__tools [data-theme-toggle]) {
     border-color: transparent;
@@ -621,7 +630,8 @@ const isLifeActive = routePath.startsWith("/life/");
     .site-header__inner {
       gap: 0.35rem;
     }
-    .site-header__tools {
+    .site-header__tools,
+    .site-header__fixed-tools {
       gap: 0;
     }
     :global(.site-header__tools [data-language-trigger]),
