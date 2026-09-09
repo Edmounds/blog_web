@@ -107,6 +107,14 @@ const { locale, currentPath, label = "选择语言" } = Astro.props;
   }
 
   async function switchLocaleInPlace(targetLocale: Locale, targetUrl: string) {
+    const articleRoot = document.querySelector<HTMLElement>(
+      "[data-article-page]",
+    );
+    if (!articleRoot) {
+      window.location.href = targetUrl;
+      return;
+    }
+
     const scrollY = window.scrollY;
     let targetDoc: Document;
     try {
@@ -158,57 +166,37 @@ const { locale, currentPath, label = "选择语言" } = Astro.props;
       }
     }
 
-    const spaRoot = document.querySelector<HTMLElement>("[data-spa-root]");
-    const articleRoot = document.querySelector<HTMLElement>(
-      "[data-article-page]",
+    const form = document.querySelector<HTMLFormElement>(
+      "[data-comment-form]",
     );
-    const spaHandler = (
-      window as unknown as {
-        __spaInPlaceLocaleUpdate?: (doc: Document) => Promise<boolean>;
-      }
-    ).__spaInPlaceLocaleUpdate;
+    const nameVal = (
+      form?.elements.namedItem("name") as HTMLInputElement | null
+    )?.value;
+    const contentVal = (
+      form?.elements.namedItem("content") as HTMLTextAreaElement | null
+    )?.value;
+    const websiteVal = (
+      form?.elements.namedItem("website") as HTMLInputElement | null
+    )?.value;
 
-    if (spaRoot && typeof spaHandler === "function") {
-      await spaHandler(targetDoc);
-    } else if (articleRoot) {
-      const form = document.querySelector<HTMLFormElement>(
+    const newArticle = targetDoc.querySelector("[data-article-page]");
+    if (newArticle) {
+      articleRoot.replaceWith(newArticle);
+      const newForm = document.querySelector<HTMLFormElement>(
         "[data-comment-form]",
       );
-      const nameVal = (
-        form?.elements.namedItem("name") as HTMLInputElement | null
-      )?.value;
-      const contentVal = (
-        form?.elements.namedItem("content") as HTMLTextAreaElement | null
-      )?.value;
-      const websiteVal = (
-        form?.elements.namedItem("website") as HTMLInputElement | null
-      )?.value;
-
-      const newArticle = targetDoc.querySelector("[data-article-page]");
-      if (newArticle) {
-        articleRoot.replaceWith(newArticle);
-        const newForm = document.querySelector<HTMLFormElement>(
-          "[data-comment-form]",
-        );
-        if (newForm) {
-          if (nameVal)
-            (newForm.elements.namedItem("name") as HTMLInputElement).value =
-              nameVal;
-          if (contentVal)
-            (
-              newForm.elements.namedItem("content") as HTMLTextAreaElement
-            ).value = contentVal;
-          if (websiteVal)
-            (newForm.elements.namedItem("website") as HTMLInputElement).value =
-              websiteVal;
-          newForm.dispatchEvent(new Event("input", { bubbles: true }));
-        }
-      }
-    } else {
-      const currentMain = document.querySelector("main");
-      const targetMain = targetDoc.querySelector("main");
-      if (currentMain && targetMain) {
-        currentMain.innerHTML = targetMain.innerHTML;
+      if (newForm) {
+        if (nameVal)
+          (newForm.elements.namedItem("name") as HTMLInputElement).value =
+            nameVal;
+        if (contentVal)
+          (
+            newForm.elements.namedItem("content") as HTMLTextAreaElement
+          ).value = contentVal;
+        if (websiteVal)
+          (newForm.elements.namedItem("website") as HTMLInputElement).value =
+            websiteVal;
+        newForm.dispatchEvent(new Event("input", { bubbles: true }));
       }
     }
 
@@ -287,18 +275,28 @@ const { locale, currentPath, label = "选择语言" } = Astro.props;
                   event.altKey
                 )
                   return;
-                event.preventDefault();
                 const targetLocale = link.dataset.localeCode as Locale;
                 if (!isLocale(targetLocale)) return;
                 const { locale: currentLocale } = stripLocaleFromPath(
                   window.location.pathname,
                 );
                 if (targetLocale === currentLocale) {
+                  event.preventDefault();
                   close();
                   return;
                 }
+
+                const articleRoot = document.querySelector<HTMLElement>(
+                  "[data-article-page]",
+                );
+                if (articleRoot) {
+                  event.preventDefault();
+                  close();
+                  await switchLocaleInPlace(targetLocale, link.href);
+                  return;
+                }
+
                 close();
-                await switchLocaleInPlace(targetLocale, link.href);
               },
               { signal },
             );
