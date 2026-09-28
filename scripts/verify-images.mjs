@@ -10,11 +10,11 @@ import { inspectWithWrangler } from "./lib/wrangler-r2.mjs";
 const root = process.cwd();
 const errors = [];
 const requiredLocal = [
-  "public/images/content/about/profile-f5f8abc7eda1-w160.avif",
-  "public/images/content/about/profile-f5f8abc7eda1-w160.webp",
-  "public/images/content/about/profile-f5f8abc7eda1-w320.avif",
-  "public/images/content/about/profile-f5f8abc7eda1-w320.webp",
-  "public/images/content/about/profile-f5f8abc7eda1-social.webp",
+  "public/images/content/about/profile-fe4782a21dcb-w160.avif",
+  "public/images/content/about/profile-fe4782a21dcb-w160.webp",
+  "public/images/content/about/profile-fe4782a21dcb-w320.avif",
+  "public/images/content/about/profile-fe4782a21dcb-w320.webp",
+  "public/images/content/about/profile-fe4782a21dcb-social.webp",
   "public/images/404-background-w1280.avif",
   "public/images/404-background-w1280.webp",
   "public/images/404-background-w1920.avif",
@@ -116,7 +116,7 @@ const contentFiles = [
 ];
 for (const relativePath of contentFiles) {
   const source = await readFile(path.join(root, relativePath), "utf8");
-  if (!source.includes("profile-f5f8abc7eda1-w320.webp"))
+  if (!source.includes("profile-fe4782a21dcb-w320.webp"))
     errors.push(`${relativePath} still uses the unoptimized portrait`);
 }
 

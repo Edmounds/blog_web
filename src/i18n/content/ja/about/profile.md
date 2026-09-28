@@ -1,7 +1,7 @@
 ﻿---
 name: Last4ev3r
 motto: シンプルにしろ、バカ
-portrait: /images/content/about/profile-f5f8abc7eda1-w320.webp
+portrait: /images/content/about/profile-fe4782a21dcb-w320.webp
 backgroundKeywords:
   - C++
   - ROS2

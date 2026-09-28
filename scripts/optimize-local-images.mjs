@@ -28,18 +28,18 @@ const replaceVariants = async ({
 const optimizeProfile = async () => {
   const sourcePath = path.join(
     publicImages,
-    "content/about/profile-f5f8abc7eda1.png",
+    "content/about/profile-fe4782a21dcb.png",
   );
   const outputDirectory = path.dirname(sourcePath);
   const variants = await replaceVariants({
     sourcePath,
     outputDirectory,
     widths: [160, 320],
-    stem: "profile-f5f8abc7eda1",
+    stem: "profile-fe4782a21dcb",
   });
   const socialPath = path.join(
     outputDirectory,
-    "profile-f5f8abc7eda1-social.webp",
+    "profile-fe4782a21dcb-social.webp",
   );
   await sharp(sourcePath)
     .rotate()
