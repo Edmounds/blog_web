@@ -1,5 +1,5 @@
 ---
-import { Check, Globe2 } from "lucide-static";
+import { Globe2 } from "lucide-static";
 
 import {
   localeDefinitions,
@@ -32,29 +32,32 @@ const { locale, currentPath, label = "选择语言" } = Astro.props;
     >
   </button>
   <div
-    class="absolute right-0 z-50 mt-2 hidden max-h-80 w-52 overflow-y-auto rounded-[var(--radius-control)] border border-[var(--border-strong)] bg-[var(--surface-panel)] p-1 shadow-[var(--shadow-soft)] backdrop-blur-md"
+    class="absolute right-0 z-50 mt-2 hidden max-h-80 w-max min-w-[6.5rem] overflow-y-auto rounded-[var(--radius-control)] border border-[var(--border-strong)] bg-[var(--surface-panel)] p-1 shadow-[var(--shadow-soft)] backdrop-blur-md"
     role="menu"
     data-language-menu
   >
     {
-      localeDefinitions.map((definition) => (
-        <a
-          href={switchLocaleInUrl(currentPath, definition.code)}
-          role="menuitemradio"
-          aria-checked={definition.code === locale}
-          data-locale-code={definition.code}
-          class="flex min-h-11 items-center justify-between gap-3 rounded-[var(--radius-control)] px-3 py-2 text-sm text-[var(--text-muted)] hover:bg-[var(--surface-soft)] hover:text-[var(--text-main)]"
-        >
-          <span lang={definition.htmlLang} dir={definition.dir}>
-            {definition.label}
-          </span>
-          {definition.code === locale && (
-            <span class="size-4 text-[var(--foreground)]" data-check>
-              <Icon svg={Check} />
+      localeDefinitions.map((definition) => {
+        const isCurrent = definition.code === locale;
+        return (
+          <a
+            href={switchLocaleInUrl(currentPath, definition.code)}
+            role="menuitemradio"
+            aria-checked={isCurrent}
+            data-locale-code={definition.code}
+            class:list={[
+              "flex min-h-9 items-center justify-center rounded-[var(--radius-control)] px-3 py-1.5 text-center text-sm transition-colors duration-150",
+              isCurrent
+                ? "bg-[var(--surface-soft)] font-medium text-[var(--foreground)]"
+                : "text-[var(--text-muted)] hover:bg-[var(--surface-soft)] hover:text-[var(--foreground)]",
+            ]}
+          >
+            <span lang={definition.htmlLang} dir={definition.dir}>
+              {definition.label}
             </span>
-          )}
-        </a>
-      ))
+          </a>
+        );
+      })
     }
   </div>
 </div>
@@ -67,13 +70,12 @@ const { locale, currentPath, label = "选择语言" } = Astro.props;
     type Locale,
   } from "../../lib/i18n";
 
-  function createCheckSvg(): HTMLElement {
-    const span = document.createElement("span");
-    span.className = "size-4 text-[var(--foreground)]";
-    span.dataset.check = "";
-    span.innerHTML = `<svg aria-hidden="true" focusable="false" class="lucide lucide-check size-full" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>`;
-    return span;
-  }
+  const ACTIVE_CLASSES = [
+    "bg-[var(--surface-soft)]",
+    "font-medium",
+    "text-[var(--foreground)]",
+  ];
+  const INACTIVE_CLASSES = ["text-[var(--text-muted)]"];
 
   function syncLanguageLinks(root: HTMLElement) {
     const currentUrl =
@@ -90,18 +92,12 @@ const { locale, currentPath, label = "选择语言" } = Astro.props;
         const isCurrent = code === currentLocale;
         link.setAttribute("aria-checked", String(isCurrent));
 
-        const checks = link.querySelectorAll("[data-check]");
         if (isCurrent) {
-          if (checks.length === 0) {
-            link.appendChild(createCheckSvg());
-          } else {
-            // Keep only the first checkmark if multiple exist
-            for (let i = 1; i < checks.length; i++) {
-              checks[i].remove();
-            }
-          }
+          link.classList.remove(...INACTIVE_CLASSES);
+          link.classList.add(...ACTIVE_CLASSES);
         } else {
-          checks.forEach((el) => el.remove());
+          link.classList.remove(...ACTIVE_CLASSES);
+          link.classList.add(...INACTIVE_CLASSES);
         }
       });
   }
