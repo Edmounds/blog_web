@@ -58,7 +58,7 @@ test("OpenAI-compatible client includes reasoning_effort when provided", async (
   const translate = createOpenAITranslateClient({
     baseUrl: "https://openai.example/v1/",
     apiKey: "secret",
-    model: "gpt-5.6-luna",
+    model: "gpt-6-luna",
     reasoningEffort: "xhigh",
     fetchImpl: async (_url, init) => {
       requestBody = JSON.parse(init.body);
