@@ -1,6 +1,6 @@
 ---
-title: robviz 机器人可视化工具
-description: 基于 ROS2 的轻量级 2D 机器人位姿与地图可视化工具。
+title: robviz 机器人可视化
+description: 我们的目标是web版的rviz2
 createdAt: 2026-08-30
 published: true
 slug: 20260830-01

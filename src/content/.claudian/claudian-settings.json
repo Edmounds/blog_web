@@ -1,13 +1,13 @@
 {
   "userName": "",
   "permissionMode": "yolo",
-  "model": "gpt-5.6-sol",
+  "model": "pi:antigravity/gemini-3.8-flash",
   "thinkingBudget": "off",
   "effortLevel": "high",
   "serviceTier": "default",
   "enableAutoTitleGeneration": true,
   "titleGenerationLocale": "zh-CN",
-  "titleGenerationModel": "gpt-5.6-terra",
+  "titleGenerationModel": "",
   "excludedTags": [],
   "mediaFolder": "",
   "systemPrompt": "",
@@ -40,7 +40,7 @@
       "environmentHash": ""
     },
     "codex": {
-      "enabled": true,
+      "enabled": false,
       "safeMode": "workspace-write",
       "cliPath": "",
       "cliPathsByHost": {
@@ -49,9 +49,185 @@
       "customModels": "",
       "discoveredModels": [
         {
+          "model": "gpt-6.1-sol",
+          "displayName": "GPT-6.1-Sol",
+          "description": "Latest workhorse model for coding and everyday work.",
+          "supportedReasoningEfforts": [
+            {
+              "value": "low",
+              "description": "Fast responses with lighter reasoning"
+            },
+            {
+              "value": "medium",
+              "description": "Balances speed and reasoning depth for everyday tasks"
+            },
+            {
+              "value": "high",
+              "description": "Greater reasoning depth for complex problems"
+            },
+            {
+              "value": "xhigh",
+              "description": "Extra high reasoning depth for complex problems"
+            },
+            {
+              "value": "max",
+              "description": "Maximum reasoning depth for the hardest problems"
+            },
+            {
+              "value": "ultra",
+              "description": "Maximum reasoning with automatic task delegation"
+            }
+          ],
+          "defaultReasoningEffort": "low",
+          "serviceTiers": [
+            {
+              "id": "priority",
+              "name": "Fast",
+              "description": "2x speed, increased usage"
+            }
+          ],
+          "defaultServiceTier": null,
+          "inputModalities": [
+            "text",
+            "image"
+          ],
+          "isDefault": true
+        },
+        {
+          "model": "gpt-6-astra",
+          "displayName": "GPT-6-Astra",
+          "description": "Frontier intelligence for the most demanding work.",
+          "supportedReasoningEfforts": [
+            {
+              "value": "low",
+              "description": "Fast responses with lighter reasoning"
+            },
+            {
+              "value": "medium",
+              "description": "Balances speed and reasoning depth for everyday tasks"
+            },
+            {
+              "value": "high",
+              "description": "Greater reasoning depth for complex problems"
+            },
+            {
+              "value": "xhigh",
+              "description": "Extra high reasoning depth for complex problems"
+            },
+            {
+              "value": "max",
+              "description": "Maximum reasoning depth for the hardest problems"
+            },
+            {
+              "value": "ultra",
+              "description": "Maximum reasoning with automatic task delegation"
+            }
+          ],
+          "defaultReasoningEffort": "low",
+          "serviceTiers": [
+            {
+              "id": "priority",
+              "name": "Fast",
+              "description": "2x speed, increased usage"
+            }
+          ],
+          "defaultServiceTier": null,
+          "inputModalities": [
+            "text",
+            "image"
+          ],
+          "isDefault": false
+        },
+        {
+          "model": "gpt-6-sol",
+          "displayName": "GPT-6-Sol",
+          "description": "Previous generation workhorse model.",
+          "supportedReasoningEfforts": [
+            {
+              "value": "low",
+              "description": "Fast responses with lighter reasoning"
+            },
+            {
+              "value": "medium",
+              "description": "Balances speed and reasoning depth for everyday tasks"
+            },
+            {
+              "value": "high",
+              "description": "Greater reasoning depth for complex problems"
+            },
+            {
+              "value": "xhigh",
+              "description": "Extra high reasoning depth for complex problems"
+            },
+            {
+              "value": "max",
+              "description": "Maximum reasoning depth for the hardest problems"
+            },
+            {
+              "value": "ultra",
+              "description": "Maximum reasoning with automatic task delegation"
+            }
+          ],
+          "defaultReasoningEffort": "medium",
+          "serviceTiers": [
+            {
+              "id": "priority",
+              "name": "Fast",
+              "description": "1.5x speed"
+            }
+          ],
+          "defaultServiceTier": "priority",
+          "inputModalities": [
+            "text",
+            "image"
+          ],
+          "isDefault": false
+        },
+        {
+          "model": "gpt-6-luna",
+          "displayName": "GPT-6-Luna",
+          "description": "Fast and affordable model for easier tasks.",
+          "supportedReasoningEfforts": [
+            {
+              "value": "low",
+              "description": "Fast responses with lighter reasoning"
+            },
+            {
+              "value": "medium",
+              "description": "Balances speed and reasoning depth for everyday tasks"
+            },
+            {
+              "value": "high",
+              "description": "Greater reasoning depth for complex problems"
+            },
+            {
+              "value": "xhigh",
+              "description": "Extra high reasoning depth for complex problems"
+            },
+            {
+              "value": "max",
+              "description": "Maximum reasoning depth for the hardest problems"
+            }
+          ],
+          "defaultReasoningEffort": "medium",
+          "serviceTiers": [
+            {
+              "id": "priority",
+              "name": "Fast",
+              "description": "1.5x speed"
+            }
+          ],
+          "defaultServiceTier": "priority",
+          "inputModalities": [
+            "text",
+            "image"
+          ],
+          "isDefault": false
+        },
+        {
           "model": "gpt-5.6-sol",
           "displayName": "GPT-5.6-Sol",
-          "description": "Latest frontier agentic coding model.",
+          "description": "Older generation workhorse model.",
           "supportedReasoningEfforts": [
             {
               "value": "low",
@@ -91,12 +267,12 @@
             "text",
             "image"
           ],
-          "isDefault": true
+          "isDefault": false
         },
         {
           "model": "gpt-5.6-terra",
           "displayName": "GPT-5.6-Terra",
-          "description": "Balanced agentic coding model for everyday work.",
+          "description": "Older balanced model for straightforward work.",
           "supportedReasoningEfforts": [
             {
               "value": "low",
@@ -141,7 +317,7 @@
         {
           "model": "gpt-5.6-luna",
           "displayName": "GPT-5.6-Luna",
-          "description": "Fast and affordable agentic coding model.",
+          "description": "Older fast and efficient model.",
           "supportedReasoningEfforts": [
             {
               "value": "low",
@@ -182,7 +358,7 @@
         {
           "model": "gpt-5.5",
           "displayName": "GPT-5.5",
-          "description": "Frontier model for complex coding, research, and real-world work.",
+          "description": "Legacy coding model.",
           "supportedReasoningEfforts": [
             {
               "value": "low",
@@ -215,37 +391,6 @@
             "image"
           ],
           "isDefault": false
-        },
-        {
-          "model": "gpt-5.2",
-          "displayName": "GPT-5.2",
-          "description": "Optimized for professional work and long-running agents.",
-          "supportedReasoningEfforts": [
-            {
-              "value": "low",
-              "description": "Balances speed with some reasoning; useful for straightforward queries and short explanations"
-            },
-            {
-              "value": "medium",
-              "description": "Provides a solid balance of reasoning depth and latency for general-purpose tasks"
-            },
-            {
-              "value": "high",
-              "description": "Maximizes reasoning depth for complex or ambiguous problems"
-            },
-            {
-              "value": "xhigh",
-              "description": "Extra high reasoning for complex problems"
-            }
-          ],
-          "defaultReasoningEffort": "medium",
-          "serviceTiers": [],
-          "defaultServiceTier": null,
-          "inputModalities": [
-            "text",
-            "image"
-          ],
-          "isDefault": false
         }
       ],
       "modelAliases": {},
@@ -258,7 +403,7 @@
       "reasoningSummary": "detailed",
       "environmentVariables": "",
       "environmentHash": "runtime-input:v1:a6db216cf6ba049c2a9641e86b4021754d5a15050672719dbc2ba9a3be694880",
-      "catalogTimestamp": 1787625964372,
+      "catalogTimestamp": 1792743403634,
       "catalogFingerprint": "2:00c3ef57a48096e58281efde2ae721f4fa493c6cf5bdf49486877ca57a1126bc",
       "installationMethodsByHost": {},
       "wslDistroOverridesByHost": {}
@@ -290,24 +435,443 @@
     "pi": {
       "cliPath": "",
       "cliPathsByHost": {},
-      "discoveredModels": [],
-      "enabled": false,
+      "discoveredModels": [
+        {
+          "api": "openai-codex-responses",
+          "contextWindow": 272000,
+          "encodedId": "pi:openai-codex/gpt-5.6-luna",
+          "id": "gpt-5.6-luna",
+          "input": [
+            "text",
+            "image"
+          ],
+          "label": "GPT-5.6 Luna",
+          "maxTokens": 128000,
+          "provider": "openai-codex",
+          "reasoning": true,
+          "thinkingLevels": [
+            "off",
+            "minimal",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        },
+        {
+          "api": "openai-codex-responses",
+          "contextWindow": 272000,
+          "encodedId": "pi:openai-codex/gpt-5.6-sol",
+          "id": "gpt-5.6-sol",
+          "input": [
+            "text",
+            "image"
+          ],
+          "label": "GPT-5.6 Sol",
+          "maxTokens": 128000,
+          "provider": "openai-codex",
+          "reasoning": true,
+          "thinkingLevels": [
+            "off",
+            "minimal",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        },
+        {
+          "api": "openai-codex-responses",
+          "contextWindow": 272000,
+          "encodedId": "pi:openai-codex/gpt-5.6-terra",
+          "id": "gpt-5.6-terra",
+          "input": [
+            "text",
+            "image"
+          ],
+          "label": "GPT-5.6 Terra",
+          "maxTokens": 128000,
+          "provider": "openai-codex",
+          "reasoning": true,
+          "thinkingLevels": [
+            "off",
+            "minimal",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        },
+        {
+          "api": "openai-codex-responses",
+          "contextWindow": 272000,
+          "encodedId": "pi:openai-codex/gpt-6-astra",
+          "id": "gpt-6-astra",
+          "input": [
+            "text",
+            "image"
+          ],
+          "label": "GPT-6 Astra",
+          "maxTokens": 128000,
+          "provider": "openai-codex",
+          "reasoning": true,
+          "thinkingLevels": [
+            "minimal",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        },
+        {
+          "api": "openai-codex-responses",
+          "contextWindow": 272000,
+          "encodedId": "pi:openai-codex/gpt-6-luna",
+          "id": "gpt-6-luna",
+          "input": [
+            "text",
+            "image"
+          ],
+          "label": "GPT-6 Luna",
+          "maxTokens": 128000,
+          "provider": "openai-codex",
+          "reasoning": true,
+          "thinkingLevels": [
+            "off",
+            "minimal",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        },
+        {
+          "api": "openai-codex-responses",
+          "contextWindow": 272000,
+          "encodedId": "pi:openai-codex/gpt-6-sol",
+          "id": "gpt-6-sol",
+          "input": [
+            "text",
+            "image"
+          ],
+          "label": "GPT-6 Sol",
+          "maxTokens": 128000,
+          "provider": "openai-codex",
+          "reasoning": true,
+          "thinkingLevels": [
+            "off",
+            "minimal",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        },
+        {
+          "api": "openai-codex-responses",
+          "contextWindow": 500000,
+          "encodedId": "pi:openai-codex/gpt-6.1-sol",
+          "id": "gpt-6.1-sol",
+          "input": [
+            "text",
+            "image"
+          ],
+          "label": "GPT-6.1 Sol",
+          "maxTokens": 128000,
+          "provider": "openai-codex",
+          "reasoning": true,
+          "thinkingLevels": [
+            "minimal",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        },
+        {
+          "api": "openai-responses",
+          "contextWindow": 272000,
+          "encodedId": "pi:spacetime/gpt-6.1-sol",
+          "id": "gpt-6.1-sol",
+          "input": [
+            "text",
+            "image"
+          ],
+          "label": "GPT-6.1 Sol",
+          "maxTokens": 128000,
+          "provider": "spacetime",
+          "reasoning": true,
+          "thinkingLevels": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        },
+        {
+          "api": "openai-responses",
+          "contextWindow": 272000,
+          "encodedId": "pi:spacetime/gpt-6-sol",
+          "id": "gpt-6-sol",
+          "input": [
+            "text",
+            "image"
+          ],
+          "label": "GPT-6 Sol",
+          "maxTokens": 128000,
+          "provider": "spacetime",
+          "reasoning": true,
+          "thinkingLevels": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        },
+        {
+          "api": "openai-responses",
+          "contextWindow": 272000,
+          "encodedId": "pi:spacetime/gpt-6-astra",
+          "id": "gpt-6-astra",
+          "input": [
+            "text",
+            "image"
+          ],
+          "label": "GPT-6 Astra",
+          "maxTokens": 128000,
+          "provider": "spacetime",
+          "reasoning": true,
+          "thinkingLevels": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        },
+        {
+          "api": "openai-responses",
+          "contextWindow": 272000,
+          "encodedId": "pi:spacetime/gpt-6-luna",
+          "id": "gpt-6-luna",
+          "input": [
+            "text",
+            "image"
+          ],
+          "label": "GPT-6 Luna",
+          "maxTokens": 128000,
+          "provider": "spacetime",
+          "reasoning": true,
+          "thinkingLevels": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        },
+        {
+          "api": "openai-responses",
+          "contextWindow": 272000,
+          "encodedId": "pi:spacetime/gpt-6",
+          "id": "gpt-6",
+          "input": [
+            "text",
+            "image"
+          ],
+          "label": "GPT-6",
+          "maxTokens": 128000,
+          "provider": "spacetime",
+          "reasoning": true,
+          "thinkingLevels": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        },
+        {
+          "api": "openai-responses",
+          "contextWindow": 272000,
+          "encodedId": "pi:spacetime/gpt-5.6-sol",
+          "id": "gpt-5.6-sol",
+          "input": [
+            "text",
+            "image"
+          ],
+          "label": "GPT-5.6 Sol",
+          "maxTokens": 128000,
+          "provider": "spacetime",
+          "reasoning": true,
+          "thinkingLevels": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        },
+        {
+          "api": "openai-responses",
+          "contextWindow": 272000,
+          "encodedId": "pi:spacetime/gpt-5.6-terra",
+          "id": "gpt-5.6-terra",
+          "input": [
+            "text",
+            "image"
+          ],
+          "label": "GPT-5.6 Terra",
+          "maxTokens": 128000,
+          "provider": "spacetime",
+          "reasoning": true,
+          "thinkingLevels": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        },
+        {
+          "api": "openai-responses",
+          "contextWindow": 272000,
+          "encodedId": "pi:spacetime/gpt-5.6-luna",
+          "id": "gpt-5.6-luna",
+          "input": [
+            "text",
+            "image"
+          ],
+          "label": "GPT-5.6 Luna",
+          "maxTokens": 128000,
+          "provider": "spacetime",
+          "reasoning": true,
+          "thinkingLevels": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        },
+        {
+          "api": "antigravity-api",
+          "contextWindow": 1048576,
+          "encodedId": "pi:antigravity/gemini-3.8-flash",
+          "id": "gemini-3.8-flash",
+          "input": [
+            "text",
+            "image"
+          ],
+          "label": "Gemini 3.8 Flash (Antigravity)",
+          "maxTokens": 65536,
+          "provider": "antigravity",
+          "reasoning": true,
+          "thinkingLevels": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        {
+          "api": "antigravity-api",
+          "contextWindow": 250000,
+          "encodedId": "pi:antigravity/claude-opus-4-6",
+          "id": "claude-opus-4-6",
+          "input": [
+            "text",
+            "image"
+          ],
+          "label": "Claude Opus 4.6 (Antigravity)",
+          "maxTokens": 64000,
+          "provider": "antigravity",
+          "reasoning": true,
+          "thinkingLevels": [
+            "high"
+          ]
+        },
+        {
+          "api": "antigravity-api",
+          "contextWindow": 250000,
+          "encodedId": "pi:antigravity/claude-sonnet-4-6",
+          "id": "claude-sonnet-4-6",
+          "input": [
+            "text",
+            "image"
+          ],
+          "label": "Claude Sonnet 4.6 (Antigravity)",
+          "maxTokens": 64000,
+          "provider": "antigravity",
+          "reasoning": true,
+          "thinkingLevels": [
+            "high"
+          ]
+        },
+        {
+          "api": "antigravity-api",
+          "contextWindow": 1048576,
+          "encodedId": "pi:antigravity/gemini-4-argon-disabled",
+          "id": "gemini-4-argon-disabled",
+          "input": [
+            "text",
+            "image"
+          ],
+          "label": "Gemini 4 Argon (Antigravity)",
+          "maxTokens": 65536,
+          "provider": "antigravity",
+          "reasoning": true,
+          "thinkingLevels": [
+            "high"
+          ]
+        },
+        {
+          "api": "antigravity-api",
+          "contextWindow": 131072,
+          "encodedId": "pi:antigravity/gpt-oss-120b",
+          "id": "gpt-oss-120b",
+          "input": [
+            "text"
+          ],
+          "label": "Gpt-Oss 120b (Antigravity)",
+          "maxTokens": 32768,
+          "provider": "antigravity",
+          "reasoning": true,
+          "thinkingLevels": [
+            "medium"
+          ]
+        }
+      ],
+      "enabled": true,
       "environmentHash": "",
       "environmentVariables": "",
       "modelAliases": {},
       "preferredThinkingByModel": {},
       "toolMode": "all",
-      "visibleModels": []
+      "visibleModels": [
+        "pi:antigravity/gemini-3.8-flash",
+        "pi:spacetime/gpt-6-luna"
+      ]
     }
   },
-  "settingsProvider": "codex",
+  "settingsProvider": "pi",
   "savedProviderModel": {
     "claude": "haiku",
-    "codex": "gpt-5.6-sol"
+    "codex": "gpt-5.6-sol",
+    "pi": "pi:antigravity/gemini-3.8-flash"
   },
   "savedProviderEffort": {
     "claude": "high",
-    "codex": "high"
+    "codex": "high",
+    "pi": "high"
   },
   "savedProviderServiceTier": {
     "codex": "default"
@@ -315,7 +879,8 @@
   "savedProviderThinkingBudget": {},
   "savedProviderPermissionMode": {
     "claude": "yolo",
-    "codex": "yolo"
+    "codex": "yolo",
+    "pi": "yolo"
   },
   "pendingProviderSessionInvalidations": {},
   "lastCustomModel": "",
