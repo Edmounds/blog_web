@@ -9,6 +9,13 @@ tags:
   - mid360
 ---
 ## 事故还原
+我的机器人同时使用了Mid360激光雷达和realsense D435if深度摄像头，Mid360通过有线网口连接，深度摄像头通过USB3.0连接。
+
+我的深度摄像头驱动和yolo推理的node通过ros2 component放在一起了，RGB以及Depth数据通过内存传输而不是通过DDS传输，注意此时摄像头发布的图像话题也只是这个推理node一个subscriber，这种情况下并不会报错。
+
+后面我干了啥导致realsense深度断流呢？
+
+我为了更好的可视化效果，我不想再用nomachine串流到小电脑上使用rviz2查看摄像头画面了，我于是继续优化我的web可视化项目robviz，这次我为了无线串流既有画质又省带宽还要流程，我选择用webRTC来串流，于是需要在ROS端写一个node订阅摄像头画面然后再用webRTC处理一下发过去给web client端
 ## 原因剖析
 
 ###  省流

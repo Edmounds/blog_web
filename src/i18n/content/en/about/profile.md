@@ -15,19 +15,17 @@ backgroundKeywords:
 ---
 
 ## About the Website
-- BLOG Publish serious technical articles
-- NOTE Daily musings
-- LINKS: Partner Links
-- ABOUT is this page.
-- LIFE Share the books, TV shows and movies, music, and games I’ve experienced.
+- BLOG: Publish serious technical articles
+- NOTE Daily Ramblings
+- LINKS Blogroll
+- ABOUT is just this page
+- LIFE Share the books, TV shows, films, music, and games I’ve experienced
 
 ## About Me
 
-Third-year student at a vocational college on Shazheng Street, Shapingba, Chongqing.
-
-Into astronomy. I’ve dabbled in planetary photography and hope to try deep-sky or wide-field astrophotography someday.
-
-Still getting skunked at lure fishing.
+Third-year student at Shazheng Street Men's Vocational Technical College, Shapingba, Chongqing
+Into astronomy; I’ve dabbled in planetary astrophotography and hope to try deep-sky and wide-field astrophotography someday
+Still getting skunked at lure fishing
 
 ```image-layout
 ---
@@ -44,13 +42,14 @@ grid: |
 
 I enjoy tinkering.
 
-Here are a few of my ROS-related open-source projects. If you find them useful, feel free to star them!
+Here are a few of my ROS-related open-source projects. If you find them useful, feel free to star them~
+
 https://github.com/ConQU2026/auto_serial_bridge
 https://github.com/Edmounds/robviz
 
 -  2026 RoboCup Finals National Champion
-- 2026 Electrical Engineering Contest Provincial First Prize
-- 2026 RoboCon Main Competition, Third Place in the National Competition
+- 2026 Electronic Design Contest — Provincial First Prize
+- 2026 RoboCon Main Competition — 3rd Place at Nationals
 
 ## Contact Me
 [i@muelsyse.us](mailto:i@muelsyse.us)

@@ -3,7 +3,7 @@ title: Automate Blog Updates with GitHub Actions
 createdAt: 2026-08-13T00:00:00.000Z
 published: true
 updatedAt: 2026-08-13T00:00:00.000Z
-description: Have GitHub Actions handle the blog’s checks, build, and Cloudflare deployment through an automated pipeline.
+description: Use a GitHub Actions pipeline to automate all blog checks, builds, and Cloudflare deployments.
 tags:
   - Automation
   - Actions
@@ -12,7 +12,7 @@ slug: 20260813-01
 ---
 
 ## Automated Pipeline Workflow
-All checks, asset processing, and deployment are handled by GitHub Actions and automatically synced to Cloudflare.
+GitHub Actions handles all checks, asset processing, and deployment, automatically syncing everything to Cloudflare.
 ```mermaid
 flowchart LR
   A[本地 Git Push] --> B[GitHub Actions]
@@ -21,14 +21,14 @@ flowchart LR
   B --> E[部署到 Cloudflare]
 ```
 
-1. **Push from Localelujara**: Push Markdown content to the GitHub repository via Git.
-2. **CI Trigger**: GitHub Actions capture`push`Trigger the event and start the build container.
-3. **Automated Processing**: Run the content checks, build static assets, and package the SSR output in sequence.
-4. **Cloudflare Deployment**: Invoke Cloudflare Wrangler to update the live service directly.
+1. **Local Push**: Push Markdown content to the GitHub repository via Git.
+2. **CI Trigger**: GitHub Actions Capture`push`event and start the build container.
+3. **Automation Workflow**: Run content checks, static asset builds, and SSR artifact packaging sequentially.
+4. **Cloudflare Deployment**: Use Cloudflare Wrangler to update the live service directly.
 
 ## GitHub Actions Configuration
 
-Create it in the repository’s root directory.`.github/workflows/deploy.yml`:
+Create it in the repository root.`.github/workflows/deploy.yml`:
 
 ```yaml
 name: Deploy to Cloudflare
@@ -66,4 +66,4 @@ jobs:
 ```
 
 ### Key Configuration Details
-In your GitHub repository settings, under`Secrets and variables -> Actions`Add`CLOUDFLARE_API_TOKEN`and`CLOUDFLARE_ACCOUNT_ID`.
+In the GitHub repository settings,`Secrets and variables -> Actions`Add`CLOUDFLARE_API_TOKEN`and`CLOUDFLARE_ACCOUNT_ID`.

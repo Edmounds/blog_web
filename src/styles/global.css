@@ -149,19 +149,20 @@ html.dark {
     color-mix(in srgb, var(--foreground) 9%, transparent);
   --shadow-image: none;
 
-  --type-xs: 0.8125rem;
-  --type-sm: 0.875rem;
-  --type-base: 1rem;
-  --type-md: 1.125rem;
-  --type-lg: 1.375rem;
-  --type-xl: 1.75rem;
-  --type-2xl: 2.25rem;
-  --type-page-title: 2.5rem;
-  --type-article-title: 2rem;
-  --type-article-title-cjk: 1.75rem;
-  --type-content-body: 1.125rem;
-  --type-content-body-cjk: 1.0625rem;
-  --type-content-code: 0.875rem;
+  --font-size-base: clamp(0.9375rem, 1.35vw, 1.8rem);
+  --type-xs: clamp(12.5px, 0.62rem + 0.08vw, 15px);
+  --type-sm: clamp(14px, 0.72rem + 0.1vw, 17px);
+  --type-base: clamp(15.5px, 0.78rem + 0.12vw, 19px);
+  --type-md: clamp(17px, 0.9rem + 0.14vw, 21px);
+  --type-lg: clamp(20px, 1.05rem + 0.2vw, 26px);
+  --type-xl: clamp(26px, 1.35rem + 0.32vw, 36px);
+  --type-2xl: clamp(31px, 1.55rem + 0.42vw, 44px);
+  --type-page-title: clamp(2.2rem, 1.8rem + 1vw, 3.5rem);
+  --type-article-title: clamp(1.75rem, 1.5rem + 0.8vw, 2.75rem);
+  --type-article-title-cjk: clamp(1.5rem, 1.3rem + 0.6vw, 2.25rem);
+  --type-content-body: clamp(17px, 15px + 0.18vw, 20px);
+  --type-content-body-cjk: clamp(16.5px, 14.8px + 0.18vw, 19.5px);
+  --type-content-code: clamp(13.8px, 12.6px + 0.08vw, 15.8px);
 
   --shell-max: min(92vw, 112.5rem);
   --space: clamp(0.1rem, 0.2vw, 1.25rem);
@@ -220,6 +221,7 @@ body {
 }
 
 html {
+  font-size: var(--font-size-base);
   scroll-behavior: smooth;
   scrollbar-gutter: stable both-edges;
   background: var(--canvas);
@@ -277,8 +279,7 @@ samp {
   display: block;
 }
 
-html:lang(zh) .article-prose > p,
-html:lang(ja) .article-prose > p {
+html:lang(zh) .article-prose > p {
   text-indent: 2em;
 }
 

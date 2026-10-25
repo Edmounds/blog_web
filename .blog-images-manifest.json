@@ -300,29 +300,29 @@
             "width": 640,
             "url": "https://img.muelsyse.us/bed/20261025165234244-w640.avif.webp",
             "quality": 40,
-            "ssim": 0.995176,
-            "bytes": 10514
+            "ssim": 0.994856,
+            "bytes": 10696
           },
           {
             "width": 1280,
             "url": "https://img.muelsyse.us/bed/20261025165234244-w1280.avif.webp",
             "quality": 40,
-            "ssim": 0.998773,
-            "bytes": 33290
+            "ssim": 0.998779,
+            "bytes": 34020
           },
           {
             "width": 1920,
             "url": "https://img.muelsyse.us/bed/20261025165234244-w1920.avif.webp",
             "quality": 40,
-            "ssim": 0.999377,
-            "bytes": 60668
+            "ssim": 0.999365,
+            "bytes": 62057
           },
           {
             "width": 4200,
             "url": "https://img.muelsyse.us/bed/20261025165234244-w4200.avif.webp",
             "quality": 40,
-            "ssim": 0.999893,
-            "bytes": 134805
+            "ssim": 0.999852,
+            "bytes": 134706
           }
         ],
         "webp": [
@@ -369,15 +369,15 @@
             "width": 640,
             "url": "https://img.muelsyse.us/bed/20261025185635532-w640.avif.webp",
             "quality": 40,
-            "ssim": 0.997461,
-            "bytes": 6860
+            "ssim": 0.997192,
+            "bytes": 7031
           },
           {
             "width": 718,
             "url": "https://img.muelsyse.us/bed/20261025185635532-w718.avif.webp",
             "quality": 40,
-            "ssim": 0.998551,
-            "bytes": 8444
+            "ssim": 0.99856,
+            "bytes": 8679
           }
         ],
         "webp": [
@@ -385,8 +385,8 @@
             "width": 640,
             "url": "https://img.muelsyse.us/bed/20261025185635532-w640.webp",
             "quality": 70,
-            "ssim": 0.997795,
-            "bytes": 11550
+            "ssim": 0.997837,
+            "bytes": 11560
           },
           {
             "width": 718,
@@ -409,30 +409,30 @@
           {
             "width": 640,
             "url": "https://img.muelsyse.us/bed/20261024151219546-w640.avif.webp",
-            "quality": 67,
-            "ssim": 0.985062,
-            "bytes": 33037
+            "quality": 68,
+            "ssim": 0.985696,
+            "bytes": 34621
           },
           {
             "width": 1280,
             "url": "https://img.muelsyse.us/bed/20261024151219546-w1280.avif.webp",
             "quality": 40,
-            "ssim": 0.990061,
-            "bytes": 34120
+            "ssim": 0.989712,
+            "bytes": 34340
           },
           {
             "width": 1920,
             "url": "https://img.muelsyse.us/bed/20261024151219546-w1920.avif.webp",
             "quality": 40,
-            "ssim": 0.993333,
-            "bytes": 54458
+            "ssim": 0.993296,
+            "bytes": 54959
           },
           {
             "width": 2272,
             "url": "https://img.muelsyse.us/bed/20261024151219546-w2272.avif.webp",
             "quality": 40,
-            "ssim": 0.995521,
-            "bytes": 65644
+            "ssim": 0.995412,
+            "bytes": 66282
           }
         ],
         "webp": [
@@ -479,15 +479,15 @@
             "width": 640,
             "url": "https://img.muelsyse.us/bed/20261024151429269-w640.avif.webp",
             "quality": 40,
-            "ssim": 0.996526,
-            "bytes": 23309
+            "ssim": 0.996492,
+            "bytes": 23696
           },
           {
             "width": 1279,
             "url": "https://img.muelsyse.us/bed/20261024151429269-w1279.avif.webp",
             "quality": 40,
-            "ssim": 0.998567,
-            "bytes": 52553
+            "ssim": 0.998572,
+            "bytes": 53540
           }
         ],
         "webp": [

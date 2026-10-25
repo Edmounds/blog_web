@@ -3,11 +3,11 @@ title: 使用 GitHub Actions 實現部落格自動更新
 createdAt: 2026-08-13T00:00:00.000Z
 published: true
 updatedAt: 2026-08-13T00:00:00.000Z
-description: 將部落格的檢查、建置與 Cloudflare 部署，全部交由 GitHub Actions 自動化流程處理。
+description: 將部落格的檢查、建置和 Cloudflare 部署全部交由 GitHub Actions 自動化流程處理。
 tags:
   - 自動化
   - Actions
-  - Cloudflare
+  - cloudflare
 slug: 20260813-01
 ---
 
@@ -21,9 +21,9 @@ flowchart LR
   B --> E[部署到 Cloudflare]
 ```
 
-1. **本機推送**：透過 git 將 Markdown 內容推送到 GitHub 儲存庫。
+1. **從本機推送**：透過 git 將 Markdown 內容推送至 GitHub 儲存庫。
 2. **CI 觸發**：GitHub Actions 捕獲`push`事件並啟動建置容器。
-3. **自動化處理**：依次執行內容檢查、靜態資源建置與 SSR 產物打包。
+3. **自動化處理**：依序執行內容檢查、靜態資源建置與 SSR 產物打包。
 4. **CF 部署**：呼叫 Cloudflare Wrangler，直接更新線上服務。
 
 ## GitHub Actions 設定
@@ -65,5 +65,5 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 ```
 
-### 關鍵設定說明
+### 重要設定說明
 在 GitHub 儲存庫設定中的`Secrets and variables -> Actions`新增`CLOUDFLARE_API_TOKEN`和`CLOUDFLARE_ACCOUNT_ID`。

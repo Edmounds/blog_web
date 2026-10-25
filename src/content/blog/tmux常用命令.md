@@ -2,7 +2,6 @@
 title: tmux常用命令
 tags:
   - 命令
-  - 💦
 published: false
 createdAt: 2026-10-25
 ---

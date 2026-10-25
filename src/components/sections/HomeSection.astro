@@ -37,19 +37,19 @@ const latestBlocks = [
 ];
 ---
 
-<section class="home-shell content-container">
+<section class="home-shell app-container">
   <div class="profile-card">
     <div class="profile-avatar-wrap">
       <picture>
         <source
           type="image/avif"
           srcset="/images/content/about/profile-fe4782a21dcb-w160.avif 160w, /images/content/about/profile-fe4782a21dcb-w320.avif 320w"
-          sizes="(max-width: 32rem) 104px, 144px"
+          sizes="(max-width: 32rem) 120px, 200px"
         />
         <source
           type="image/webp"
           srcset="/images/content/about/profile-fe4782a21dcb-w160.webp 160w, /images/content/about/profile-fe4782a21dcb-w320.webp 320w"
-          sizes="(max-width: 32rem) 104px, 144px"
+          sizes="(max-width: 32rem) 120px, 200px"
         />
         <img
           class="profile-avatar"
@@ -151,12 +151,7 @@ const latestBlocks = [
                 <ol>
                   {items.map((item) => (
                     <li data-reveal>
-                      <time>
-                        {new Intl.DateTimeFormat(locale, {
-                          month: "short",
-                          day: "numeric",
-                        }).format(item.createdAt)}
-                      </time>
+                      <time>{`${String(item.createdAt.getMonth() + 1).padStart(2, "0")}.${String(item.createdAt.getDate()).padStart(2, "0")}`}</time>
                       <a
                         href={localizePath(
                           `/${block.section}/${item.slug}/`,
@@ -217,25 +212,28 @@ const latestBlocks = [
 <style>
   .home-shell {
     display: grid;
-    grid-template-columns: minmax(18rem, 0.8fr) minmax(28rem, 1.2fr);
-    gap: clamp(3rem, 8vw, 9rem);
-    align-items: start;
-    min-height: calc(100vh - 4.5rem);
-    min-height: calc(100dvh - 4.5rem);
-    padding-block: clamp(3rem, 7vh, 6rem);
+    grid-template-columns: minmax(18rem, 0.85fr) minmax(26rem, 1.15fr);
+    gap: clamp(2.5rem, 5vw, 6.5rem);
+    align-items: center;
+    min-height: calc(100vh - 8.5rem);
+    min-height: calc(100dvh - 8.5rem);
+    padding-block: clamp(2rem, 4vh, 4rem);
+    margin-inline: auto;
   }
   .profile-card {
     display: flex;
-    width: min(100%, 38rem);
+    width: min(100%, 34rem);
     flex-direction: column;
     align-items: center;
     justify-self: center;
     text-align: center;
+    gap: clamp(0.45rem, 0.6vw, 0.85rem);
   }
   .profile-avatar-wrap {
     position: relative;
-    width: clamp(6.5rem, 10vw, 9rem);
+    width: clamp(7.5rem, 11vw, 11.5rem);
     aspect-ratio: 1;
+    margin-bottom: 0.35rem;
   }
   .profile-avatar-wrap picture {
     display: contents;
@@ -247,32 +245,46 @@ const latestBlocks = [
     object-fit: cover;
     border: 1px solid var(--border-soft);
     border-radius: 50%;
+    transition: transform var(--dur-hover) cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .profile-avatar-wrap:hover .profile-avatar {
+    transform: scale(1.03);
   }
   .profile-card h1 {
-    margin: 1.25rem 0 0.7rem;
-    font-size: var(--type-2xl);
-    line-height: 1;
+    margin: 0;
+    font-size: clamp(1.8rem, 1.4rem + 1vw, 2.6rem);
+    line-height: 1.2;
+    color: var(--foreground);
   }
   .profile-card nav {
     display: flex;
-    gap: 0.45rem;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.35rem, 0.5vw, 0.65rem);
+    margin-top: 0.2rem;
   }
   .profile-card nav a {
     display: inline-flex;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: clamp(2.2rem, 2vw, 2.7rem);
+    height: clamp(2.2rem, 2vw, 2.7rem);
     align-items: center;
     justify-content: center;
     color: var(--text-muted);
     text-decoration: none;
+    border-radius: 50%;
+    transition: color var(--dur-hover) ease, transform var(--dur-hover) ease;
+  }
+  .profile-card nav a:hover {
+    color: var(--foreground);
+    transform: translateY(-2px);
   }
   .profile-card nav svg {
-    width: 1.3rem;
-    height: 1.3rem;
+    width: clamp(1.2rem, 1.3vw, 1.5rem);
+    height: clamp(1.2rem, 1.3vw, 1.5rem);
   }
   .codetime-badge {
     display: block;
-    width: min(100%, 15rem);
+    width: min(100%, 16rem);
     height: auto;
     margin-inline: auto;
   }
@@ -280,30 +292,32 @@ const latestBlocks = [
     filter: invert(1) grayscale(1);
   }
   .profile-card__intro {
-    margin: 1rem 0 0;
+    margin: 0.2rem 0 0;
     color: var(--text-muted);
-    line-height: 1.7;
+    font-size: clamp(0.95rem, 0.85rem + 0.3vw, 1.15rem);
+    line-height: 1.6;
   }
   .profile-metrics {
     display: grid;
-    width: min(100%, 38rem);
-    gap: 2.25rem;
-    margin-top: 1rem;
+    width: 100%;
+    max-width: 34rem;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
   }
   .latest-content {
     display: grid;
-    gap: 1rem;
+    gap: clamp(1rem, 1.5vw, 2rem);
   }
   .latest-content > section {
-    padding: 0.75rem;
+    padding: clamp(0.5rem, 0.8vw, 1rem);
   }
   .latest-content > section:first-child {
     padding-top: 0;
   }
   .latest-content h2 {
-    margin: 0 0 0.6rem;
-    font-size: var(--type-page-title);
-    line-height: 1;
+    margin: 0 0 clamp(0.5rem, 0.7vw, 1rem);
+    font-size: clamp(2rem, 1.8rem + 1vw, 3.5rem);
+    line-height: 1.2;
   }
   .latest-content h2 a {
     color: var(--outline-title-fill);
@@ -312,14 +326,17 @@ const latestBlocks = [
   }
   .latest-year {
     display: grid;
-    grid-template-columns: 5rem minmax(0, 1fr);
-    gap: 1.4rem;
+    grid-template-columns: clamp(3.2rem, 2.8rem + 1.2vw, 4.6rem) minmax(0, 1fr);
+    column-gap: clamp(1.2rem, 1.5vw, 2rem);
   }
   .latest-year h3 {
-    margin: 0.75rem 0 0;
+    margin: 0.5rem 0 0;
     color: var(--outline-title-fill);
-    font-size: var(--type-lg);
+    font-size: clamp(1.2rem, 1rem + 0.8vw, 1.75rem);
+    line-height: 1;
+    font-weight: 700;
     -webkit-text-stroke: 1px var(--foreground);
+    white-space: nowrap;
   }
   .latest-year ol {
     margin: 0;
@@ -328,32 +345,42 @@ const latestBlocks = [
   }
   .latest-year li {
     position: relative;
-    display: grid;
-    grid-template-columns: 5rem minmax(0, 1fr);
-    gap: 0.8rem;
-    padding: 0.75rem 0 0.75rem 1.2rem;
+    display: flex;
+    align-items: baseline;
+    gap: clamp(0.6rem, 0.8vw, 1rem);
+    padding: 0.55rem 0 0.55rem 1.4rem;
     border-left: 1px solid var(--border-strong);
   }
   .latest-year li::before {
     position: absolute;
-    top: 1.15rem;
-    left: -0.25rem;
+    top: 50%;
+    left: -0.225rem;
     width: 0.45rem;
     height: 0.45rem;
-    background: var(--canvas);
-    border: 1px solid var(--foreground);
+    background: var(--foreground);
     border-radius: 50%;
+    transform: translateY(-50%);
     content: "";
   }
   .latest-year time {
     color: var(--text-faint);
-    font-size: var(--type-xs);
+    font-size: clamp(0.85rem, 0.75rem + 0.3vw, 1.15rem);
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
   }
   .latest-year a {
     display: flex;
     min-width: 0;
     color: var(--foreground);
+    font-size: clamp(0.95rem, 0.85rem + 0.3vw, 1.25rem);
+    line-height: 1.4;
     text-decoration: none;
+    transition: color var(--dur-hover) ease;
+  }
+  .latest-year a:hover {
+    color: var(--text-muted);
   }
   .latest-year a span:first-child {
     overflow: hidden;
@@ -365,7 +392,7 @@ const latestBlocks = [
   }
   @media (min-width: 78.0625rem) {
     .latest-content {
-      margin-top: 1.5rem;
+      margin-top: 0.5rem;
     }
   }
   @media (max-width: 78rem) {
@@ -384,7 +411,9 @@ const latestBlocks = [
       gap: 0;
     }
     .latest-year li {
-      grid-template-columns: 1fr;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.2rem;
     }
   }
 </style>

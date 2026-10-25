@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "blog/使用GitHub Actions 实现博客自动化更新.md",
+                "file": "blog/链式代理前置节点选择.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "使用GitHub Actions 实现博客自动化更新"
+              "title": "链式代理前置节点选择"
             }
           }
         ]
@@ -178,7 +178,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "blog/使用GitHub Actions 实现博客自动化更新.md",
+                "file": "blog/链式代理前置节点选择.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
@@ -192,7 +192,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 335.7265625
+    "width": 596.62890625
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -209,20 +209,20 @@
   },
   "active": "151ac95f04400403",
   "lastOpenFiles": [
+    "blog/ROS2 Cyclone DDS 组播导致realsense深度断流.md",
+    "blog/用Cloudflare R2+picgo实现免费图床.md",
+    "blog/水果采摘比赛模型推理链路设计.md",
+    "blog/使用GitHub Actions 实现博客自动化更新.md",
     "blog/链式代理前置节点选择.md",
     "blog/基于Cloudflare构建个人网站.md",
-    "blog/多AP竞争环境下的路由器优化策略.md",
-    "blog/使用GitHub Actions 实现博客自动化更新.md",
-    "blog/水果采摘比赛模型推理链路设计.md",
-    "blog/用Cloudflare R2+picgo实现免费图床.md",
-    "blog/ROS2 Cyclone DDS 组播导致realsense深度断流.md",
-    "note/我们是冠军!.md",
-    "note/当temu变成了形容词.md",
-    "note/我对东野圭吾的印象.md",
-    "about/profile.md",
     "blog/tmux常用命令.md",
-    "project/auto serial bridge让机器人上下位机通信更容易.md",
+    "blog/多AP竞争环境下的路由器优化策略.md",
+    "note/我们是冠军!.md",
+    "note/我对东野圭吾的印象.md",
+    "note/当temu变成了形容词.md",
     "project/robviz 机器人可视化工具.md",
+    "project/auto serial bridge让机器人上下位机通信更容易.md",
+    "about/profile.md",
     "blog/Hello World.md",
     "note/明日方舟和P3R联动.md",
     "note/Lucky~.md",

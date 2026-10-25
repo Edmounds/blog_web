@@ -1,6 +1,6 @@
 ﻿---
 name: Last4ev3r
-motto: 保持簡單，笨蛋！
+motto: 保持簡單，笨蛋
 portrait: /images/content/about/profile-fe4782a21dcb-w320.webp
 backgroundKeywords:
   - C++
@@ -23,9 +23,9 @@ backgroundKeywords:
 
 ## 關於我
 
-重慶沙坪壩沙正街男子職業技術學院大三在讀
-喜歡天文，稍微嘗試過行星攝影，未來有機會想試試深空攝影／星野攝影
-路亞空軍ing
+重慶沙坪壩沙正街男子職業技術學院大三生
+喜歡天文，稍微玩過行星攝影；以後有機會想試試深空攝影／星野攝影
+路亞槓龜中
 
 ```image-layout
 ---
@@ -40,14 +40,13 @@ grid: |
 ![moon](https://img.muelsyse.us/bed/moon.png)
 ```
 
-喜歡搗鼓
-
-以下是我幾個與 ROS 相關的開源專案，如果覺得好用，歡迎給個 star～
+喜歡折騰
+以下是我的幾個 ROS 相關開源專案，如果覺得好用，歡迎給個 Star～
 https://github.com/ConQU2026/auto_serial_bridge
 https://github.com/Edmounds/robviz
 
--  2026 RoboCup 決賽國家冠軍
-- 2026 電賽 省一
+-  2026 RoboCup 決賽全國冠軍
+- 2026 電賽省一
 - 2026 robocon 主賽國三
 
 ## 聯絡我
