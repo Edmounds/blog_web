@@ -2,13 +2,20 @@ import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 
 const root = new URL("../dist/client/", import.meta.url);
-const publicPages = [
+const basePages = [
   "index.html",
   "about/index.html",
   "blog/index.html",
   "project/index.html",
   "note/index.html",
-  "blog/20260128-01/index.html",
+];
+
+const blogEntries = await readdir(new URL("blog/", root), { withFileTypes: true }).catch(() => []);
+const sampleBlog = blogEntries.find((entry) => entry.isDirectory() && !entry.name.startsWith("."))?.name;
+
+const publicPages = [
+  ...basePages,
+  ...(sampleBlog ? [`blog/${sampleBlog}/index.html`] : []),
 ];
 const forbidden = [/motion\/react/i];
 
