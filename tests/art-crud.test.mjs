@@ -32,7 +32,6 @@ test("non-translated art types persist only simplified Chinese through create, e
     "zh-CN": { title: "简中标题", creator: "简中作者", extra: "简中备注" },
     "zh-TW": { title: "繁中標題", creator: "繁中作者", extra: "繁中備註" },
     en: { title: "English title", creator: "English creator", extra: "English note" },
-    ja: { title: "日本語タイトル", creator: "日本語作者", extra: "日本語メモ" },
   };
 
   const music = await createArtItem(db, {
@@ -55,7 +54,7 @@ test("non-translated art types persist only simplified Chinese through create, e
     type: "book", source: "legacy", sourceId: "", isbn: "", originalTitle: "", releaseDate: "",
     collectedOn: "2026-07-24", isVisible: true, translations: bookTranslations,
   }, { key: "art/book/a.jpg", sourceUrl: "" }, { id: "book", now: new Date("2026-07-24T00:00:00Z") });
-  assert.deepEqual(Object.keys(book.translations), ["zh-CN", "zh-TW", "en", "ja"]);
+  assert.deepEqual(Object.keys(book.translations), ["zh-CN", "zh-TW", "en"]);
 
   const changedType = await updateArtItem(db, "book", book, { type: "series" }, undefined, new Date("2026-07-25T00:00:00Z"));
   assert.deepEqual(changedType.translations, { "zh-CN": translations["zh-CN"] });

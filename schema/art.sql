@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS art_items (
 
 CREATE TABLE IF NOT EXISTS art_item_translations (
   item_id TEXT NOT NULL,
-  locale TEXT NOT NULL CHECK (locale IN ('zh-CN', 'zh-TW', 'en', 'ja')),
+  locale TEXT NOT NULL CHECK (locale IN ('zh-CN', 'zh-TW', 'en')),
   title TEXT NOT NULL,
   creator TEXT NOT NULL,
   extra TEXT NOT NULL DEFAULT '',

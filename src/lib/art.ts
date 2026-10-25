@@ -2,7 +2,7 @@ import { listArtItems, localizeArtItems } from "../server/art.js";
 
 export type ArtType = "book" | "music" | "movie" | "series" | "anime";
 export type ArtMusicKind = "album" | "single";
-export type ArtLocale = "zh-CN" | "zh-TW" | "en" | "ja";
+export type ArtLocale = "zh-CN" | "zh-TW" | "en";
 
 export interface ArtTranslation {
   title: string;

@@ -1,6 +1,6 @@
 export const ART_TYPES = ["book", "music", "movie", "series", "anime"];
 export const ART_MUSIC_KINDS = ["album", "single"];
-export const ART_LOCALES = ["zh-CN", "zh-TW", "en", "ja"];
+export const ART_LOCALES = ["zh-CN", "zh-TW", "en"];
 export const ART_TRANSLATED_TYPES = ["book", "movie"];
 export const ART_SOURCES = ["douban_books", "apple_books", "google_books", "apple_music", "netease_album", "netease_track", "tmdb", "legacy"];
 export const ART_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"];

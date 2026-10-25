@@ -25,6 +25,6 @@ test("Google fallback rejects malformed responses", async () => {
     retries: 1,
     fetchImpl: async () => new Response(JSON.stringify({ data: "wrong shape" }), { status: 200 }),
   });
-  await assert.rejects(() => translate({ text: "你好", sourceLang: "ZH", targetLang: "JA" }), /invalid response/);
+  await assert.rejects(() => translate({ text: "你好", sourceLang: "ZH", targetLang: "ZH-TW" }), /invalid response/);
 });
 

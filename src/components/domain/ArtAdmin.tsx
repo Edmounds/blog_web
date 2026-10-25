@@ -8,7 +8,7 @@ import StarRatingInput from "../ui/StarRatingInput";
 type ArtType = "book" | "music" | "movie" | "series" | "anime";
 type MusicKind = "album" | "single";
 type AdminType = "book" | "album" | "single" | "movie" | "series" | "anime";
-type Locale = "zh-CN" | "zh-TW" | "en" | "ja";
+type Locale = "zh-CN" | "zh-TW" | "en";
 
 interface Translation { title: string; creator: string; extra: string }
 interface Candidate {
@@ -63,7 +63,7 @@ const TYPES = [
   { id: "anime", label: "番剧", Icon: Tv2 },
 ] satisfies { id: AdminType; label: string; Icon: typeof BookOpen }[];
 const LOCALES: { id: Locale; label: string }[] = [
-  { id: "zh-CN", label: "简中" }, { id: "zh-TW", label: "繁中" }, { id: "en", label: "English" }, { id: "ja", label: "日本語" },
+  { id: "zh-CN", label: "简中" }, { id: "zh-TW", label: "繁中" }, { id: "en", label: "English" },
 ];
 const TRANSLATED_TYPES = new Set<ArtType>(["book", "movie"]);
 const emptyTranslation = (): Translation => ({ title: "", creator: "", extra: "" });

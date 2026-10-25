@@ -69,7 +69,7 @@ test("art translation API accepts books and movies", async () => {
       });
       const body = await response.json();
       assert.equal(response.status, 200);
-      assert.deepEqual(Object.keys(body.translations), ["zh-TW", "en", "ja"]);
+      assert.deepEqual(Object.keys(body.translations), ["zh-TW", "en"]);
       assert.deepEqual(body.warnings, []);
       assert.equal(sentReasoningEffort, "xhigh");
     }

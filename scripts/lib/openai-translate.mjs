@@ -52,7 +52,6 @@ const readStreamedTranslation = async (response, resetTimeout) => {
 
 const TARGET_LANGUAGE_NAMES = {
   EN: "English",
-  JA: "Japanese",
   "ZH-TW": "Traditional Chinese (Taiwan)",
 };
 

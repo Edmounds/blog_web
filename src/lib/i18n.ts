@@ -1,4 +1,4 @@
-export const locales = ["zh-CN", "zh-TW", "en", "ja"] as const;
+export const locales = ["zh-CN", "zh-TW", "en"] as const;
 
 export type Locale = (typeof locales)[number];
 
@@ -17,7 +17,6 @@ export const localeDefinitions: readonly LocaleDefinition[] = [
   { code: "zh-CN", path: "", label: "简体中文", htmlLang: "zh-CN", dateLocale: "zh-CN", dir: "ltr" },
   { code: "zh-TW", path: "zh-TW", label: "繁體中文", htmlLang: "zh-TW", dateLocale: "zh-TW", dir: "ltr" },
   { code: "en", path: "en", label: "English", htmlLang: "en", dateLocale: "en-US", dir: "ltr" },
-  { code: "ja", path: "ja", label: "日本語", htmlLang: "ja", dateLocale: "ja-JP", dir: "ltr" },
 ];
 
 const definitionByLocale = new Map(localeDefinitions.map((definition) => [definition.code, definition]));

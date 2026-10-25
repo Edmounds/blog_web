@@ -7,7 +7,7 @@ import {
   requireSameOriginJson,
 } from "../../../art.js";
 
-const TARGETS = { "zh-TW": "ZH-TW", en: "EN", ja: "JA" };
+const TARGETS = { "zh-TW": "ZH-TW", en: "EN" };
 const TRANSLATED_TYPES = new Set(ART_TRANSLATED_TYPES);
 
 export async function onRequestPost({ env, request }) {

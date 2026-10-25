@@ -14,7 +14,7 @@ import { listNeteaseRanking } from "../../../../server/netease-music.js";
 export const prerender = false;
 const rawLocale = Astro.params.locale;
 const rawType = Astro.params.type;
-const isValidLocale = ["zh-TW", "en", "ja"].includes(rawLocale as string);
+const isValidLocale = ["zh-TW", "en"].includes(rawLocale as string);
 const isValidType = isLifeType(rawType);
 const isValid = isValidLocale && isValidType;
 

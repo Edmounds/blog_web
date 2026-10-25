@@ -10,10 +10,6 @@ test("legacy content URLs redirect to date slugs in every locale", () => {
     "https://blog.example/blog/20260128-01/?from=rss",
   );
   assert.equal(
-    getLegacyContentRedirect(new URL("https://blog.example/ja/note/arknights-p3r/"))?.href,
-    "https://blog.example/ja/note/20260726-01/",
-  );
-  assert.equal(
     getLegacyContentRedirect(new URL("https://blog.example/zh-TW/note/dongyeguiwu-passaway"))?.href,
     "https://blog.example/zh-TW/note/20260727-01/",
   );
@@ -24,6 +20,7 @@ test("legacy content URLs redirect to date slugs in every locale", () => {
 });
 
 test("current, unrelated, and art URLs do not redirect", () => {
+  assert.equal(getLegacyContentRedirect(new URL("https://blog.example/ja/note/arknights-p3r/")), undefined);
   assert.equal(getLegacyContentRedirect(new URL("https://blog.example/blog/20260128-01/")), undefined);
   assert.equal(getLegacyContentRedirect(new URL("https://blog.example/about/")), undefined);
   assert.equal(getLegacyContentRedirect(new URL("https://blog.example/art/book/")), undefined);

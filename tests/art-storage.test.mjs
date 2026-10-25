@@ -30,7 +30,6 @@ test("art input rejects legacy Deezer album candidates", () => {
     translations: {
       "zh-CN": { title: "Abbey Road", creator: "The Beatles", extra: "" },
       en: { title: "Abbey Road", creator: "The Beatles", extra: "Classic rock" },
-      ja: { title: "アビイ・ロード", creator: "ビートルズ", extra: "" },
     },
   });
   assert.equal(result.ok, false);
@@ -69,11 +68,10 @@ test("books and movies retain all supported translation locales", () => {
         "zh-CN": { title: "标题", creator: "作者", extra: "备注" },
         "zh-TW": { title: "標題", creator: "作者", extra: "備註" },
         en: { title: "Title", creator: "Creator", extra: "Note" },
-        ja: { title: "タイトル", creator: "作者", extra: "メモ" },
       },
     });
     assert.equal(result.ok, true);
-    assert.deepEqual(Object.keys(result.value.translations), ["zh-CN", "zh-TW", "en", "ja"]);
+    assert.deepEqual(Object.keys(result.value.translations), ["zh-CN", "zh-TW", "en"]);
   }
 });
 
@@ -131,7 +129,7 @@ test("public localization falls back to simplified Chinese and carries music cla
     rating: 4,
     translations: { "zh-CN": { title: "歌曲", creator: "歌手", extra: "备注" } },
   };
-  assert.deepEqual(localizeArtItems([item], "ja"), [{
+  assert.deepEqual(localizeArtItems([item], "en"), [{
     id: "1", type: "music", musicKind: "single", title: "歌曲", creator: "歌手", extra: "备注",
     rating: 4,
     cover: "https://p1.music.126.net/song.jpg?size=large", coverFallback: "/images/placeholders/default-cover.webp",

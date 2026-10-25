@@ -39,7 +39,6 @@ export const readingTimeForBody = (body = "", locale: Locale = defaultLocale) =>
   const words = (text.replace(/[\u3400-\u9fff\uf900-\ufaff\u3040-\u30ff]/g, " ").match(/[\p{L}\p{N}]+/gu) ?? []).length;
   const minutes = Math.max(1, Math.ceil(cjk / 350 + words / 220));
   if (locale === "zh-CN" || locale === "zh-TW") return `${minutes} 分钟`;
-  if (locale === "ja") return `${minutes} 分`;
   return `${minutes} min`;
 };
 
@@ -96,7 +95,7 @@ export const getContentStaticPaths = async (section: ContentSection) =>
   (await getPublishedContent(section)).map((item) => ({ params: { slug: item.slug }, props: { item } }));
 
 export const getLocalizedContentStaticPaths = async (section: ContentSection) => {
-  const locales: Locale[] = ["en", "ja", "zh-TW"];
+  const locales: Locale[] = ["en", "zh-TW"];
   const groups = await Promise.all(locales.map(async (locale) =>
     (await getPublishedContent(section, locale)).map((item) => ({
       params: { locale, slug: item.slug },

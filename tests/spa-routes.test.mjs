@@ -24,15 +24,17 @@ test("primary routes resolve to their slide index", () => {
 
 test("locale prefixes and missing trailing slashes resolve to the same primary slide", () => {
   assert.equal(resolvePrimaryIndex("/en/"), 0);
-  assert.equal(resolvePrimaryIndex("/ja/blog/"), 1);
+  assert.equal(resolvePrimaryIndex("/en/blog/"), 1);
   assert.equal(resolvePrimaryIndex("/zh-TW/project"), 2);
   assert.equal(resolvePrimaryIndex("/zh-TW/note"), 3);
   assert.equal(resolvePrimaryIndex("/en/links"), 4);
-  assert.equal(resolvePrimaryIndex("/ja/about/"), 5);
+  assert.equal(resolvePrimaryIndex("/zh-TW/about/"), 5);
 });
 
 test("paths outside the SPA report -1 index", () => {
   for (const path of [
+    "/ja/",
+    "/ja/blog/",
     "/life/",
     "/life/book/",
     "/life/music/",

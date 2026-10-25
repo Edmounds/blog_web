@@ -245,7 +245,7 @@ test("OpenAI-compatible client rejects malformed responses", async () => {
       new Response(JSON.stringify({ choices: [] }), { status: 200 }),
   });
   await assert.rejects(
-    () => translate({ text: "你好", sourceLang: "ZH", targetLang: "JA" }),
+    () => translate({ text: "你好", sourceLang: "ZH", targetLang: "ZH-TW" }),
     /invalid or empty/,
   );
 });

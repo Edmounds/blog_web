@@ -25,7 +25,6 @@ import {
 const ROOT = process.cwd();
 const LOCALES = [
   ["en", "EN"],
-  ["ja", "JA"],
   ["zh-TW", "ZH-TW"],
 ];
 const CONTENT_GROUPS = ["blog", "note", "project", "about"];

@@ -139,7 +139,7 @@
 <script>
   // Only the server-rendered Life sub-sections; the Life home is prerendered,
   // and moves between them inside the SPA never reach the router.
-  const LIFE_ROUTE = /^\/(?:en\/|ja\/|zh-TW\/)?life\/(?:book|music|screen|game)\/?$/;
+  const LIFE_ROUTE = /^\/(?:en\/|zh-TW\/)?life\/(?:book|music|screen|game)\/?$/;
   const loaderWindow = window as typeof window & {
     __siteLoadingOverlay?: {
       show: (mode?: "initial" | "route", message?: string) => void;

@@ -291,7 +291,7 @@ if (initialIndex === 5)
 
     const stripLocale = (pathname) => {
       const parts = pathname.split("/").filter(Boolean);
-      if (["en", "ja", "zh-TW"].includes(parts[0])) parts.shift();
+      if (["en", "zh-TW"].includes(parts[0])) parts.shift();
       const path = `/${parts.join("/")}/`.replace("//", "/");
       return path === "//" ? "/" : path;
     };
