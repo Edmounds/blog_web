@@ -1,10 +1,10 @@
 ﻿---
-title: 用 Cloudflare R2 + PicGo 實現免費圖床
-description: 透過 Cloudflare R2 物件儲存與 PicGo 建置免出口流量費的圖床，讓 Obsidian 和 Typora 在寫作時即時自動上傳。
+title: 使用 Cloudflare R2 + PicGo 打造免費圖床
+description: 基於 Cloudflare R2 物件儲存與 PicGo 建立零出口流量費的圖床，實現 Obsidian 與 Typora 寫作時即時自動上傳。
 tags:
   - Cloudflare
-  - 免費蹭用
-  - 圖床
+  - 免費使用
+  - 圖片託管服務
 createdAt: 2026-10-25T00:00:00.000Z
 published: true
 slug: 20261025-01

@@ -507,6 +507,33 @@
           }
         ]
       }
+    },
+    "https://img.muelsyse.us/bed/20261025214411104.png": {
+      "kind": "responsive",
+      "sourceDigest": "bc1bac5d29314514645f923bc58cb1cff6844388f73b8e218a23feaa0c4dbd1d",
+      "width": 474,
+      "height": 349,
+      "fallback": "https://img.muelsyse.us/bed/20261025214411104-w474.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 474,
+            "url": "https://img.muelsyse.us/bed/20261025214411104-w474.avif.webp",
+            "quality": 44,
+            "ssim": 0.985183,
+            "bytes": 8227
+          }
+        ],
+        "webp": [
+          {
+            "width": 474,
+            "url": "https://img.muelsyse.us/bed/20261025214411104-w474.webp",
+            "quality": 70,
+            "ssim": 0.996028,
+            "bytes": 14582
+          }
+        ]
+      }
     }
   },
   "vaultAssets": {},
@@ -553,6 +580,8 @@
     "bed/20261025185635532-w640.webp",
     "bed/20261025185635532-w718.avif.webp",
     "bed/20261025185635532-w718.webp",
+    "bed/20261025214411104-w474.avif.webp",
+    "bed/20261025214411104-w474.webp",
     "bed/jupiter-w1280.avif.webp",
     "bed/jupiter-w1280.webp",
     "bed/jupiter-w640.avif.webp",

@@ -27,7 +27,7 @@ flowchart LR
 ---
 ## Why Choose Cloudflare R2
 
-Since it’s free, what more is there to say? The allowances are generous, and you basically won’t exceed them. It also completely eliminates egress traffic fees. For mainland China, the only drawback is that access is relatively slow without a VPN.
+It’s free—what more is there to say? You get plenty of storage and bandwidth, and you’re unlikely to exceed the limits. Best of all, egress traffic fees are completely eliminated. However, direct access from mainland China can be relatively slow.
 
 | Resource item                  | Cloudflare R2 free monthly allowance | Overage unit price          |
 | :-------------------- | :------------------ | :-------------- |
