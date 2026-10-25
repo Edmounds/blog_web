@@ -21,11 +21,11 @@ backgroundKeywords:
 - ABOUT 就是这一页
 - LIFE 分享我看过的书、影视剧、音乐、游戏
 
-*这里只有我手搓的文字，若使用AI生成文字则会以图片的形式粘贴到文章中*
 ## 关于我
 
-重庆沙坪坝男子职业技术学院大三在读
+重庆沙坪坝沙正街男子职业技术学院大三在读
 喜欢天文 浅尝过行星摄影 未来有机会尝试一下深空摄影/星野摄影
+路亚空军ing
 
 ```image-layout
 ---
@@ -45,8 +45,6 @@ grid: |
 https://github.com/ConQU2026/auto_serial_bridge
 https://github.com/Edmounds/robviz
 
-专业方面 我目前对具身智能这个大方向感兴趣 具体方向比如控制还是感知还在思考中
-大一大二做的多的就是打比赛， robocon、robocup、电赛，负责的都是感知、决策这类工作
 
 ## 联系我
 [i@muelsyse.us](mailto:i@muelsyse.us)

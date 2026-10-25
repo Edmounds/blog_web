@@ -7,7 +7,9 @@ tags:
   - 路由器
   - 优化
 published: true
+slug: 20261023-01
 ---
+
 ## 引子
 
 在 Robocon 等机器人比赛现场，网络环境往往极度复杂。
