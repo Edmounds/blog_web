@@ -1,10 +1,10 @@
 ﻿---
-title: Build a Free Image Host with Cloudflare R2 + PicGo
-description: Build an image host with no egress traffic fees based on Cloudflare R2 object storage and PicGo, enabling instant automatic uploads while writing in Obsidian and Typora.
+title: Build a Free Image Hosting Service with Cloudflare R2 + PicGo
+description: Build a zero-egress-fee image hosting service with Cloudflare R2 object storage and PicGo, enabling instant automatic uploads while writing in Obsidian and Typora.
 tags:
-  - cloudflare
-  - freebie
-  - image hosting
+  - Cloudflare
+  - Freebie
+  - Image hosting service
 createdAt: 2026-10-25T00:00:00.000Z
 published: true
 slug: 20261025-01
@@ -53,8 +53,8 @@ Since it’s free, what more is there to say? The allowances are generous, and y
 	  1. Click “Manage API Tokens” below “Account Details” to open the token page.
 	  2. Click “Create Account API token”.
 	  3. Select “Object Read & Write” under Permissions, and specify a Bucket if needed.
-	  4. Click to create it, then immediately copy and save the `Access Key ID` and `Secret Access Key` on the **final success page**.
-  > **Note**: `Secret Access Key` is displayed only once, when it is successfully generated. If you did not save the key for a previously created Token, it cannot be viewed again. You must click “Create Account API token” again to generate a new key.
+	  4. Click to create it, then immediately copy and save the ** and ** on the `Access Key ID`final success page`Secret Access Key`.
+  > **Note**:`Secret Access Key` is displayed only once, when it is successfully generated. If you did not save the key for a previously created Token, it cannot be viewed again. You must click “Create Account API token” again to generate a new key.
 
 ### Agent
 Creating a Bucket and binding a Custom Domain can also be done by an agent through the Wrangler CLI. You only need to run Wrangler oauth to link your own Cloudflare account.
@@ -83,17 +83,12 @@ Go to “Image Hosting Settings” -> “Cloudflare R2” and fill in the follow
 ### Obsidian Configuration
 Use local PicGo to automatically upload pasted images to the image host and replace their paths:
 1. Make sure PicGo is running.
-2. In Obsidian’s “Third-party plugins”, search for and install `Image auto upload Plugin`.
+2. Install in Obsidian`Image auto upload Plugin`Plugin.
 3. Configure the plugin to use the PicGo upload service.
-4. Paste or drag an image directly into Obsidian. It will be silently uploaded to R2 in the background, and the local path in the document will be automatically replaced with a remote image-hosting link.
+4. Paste or drag images directly into your notes, and they will be uploaded to the R2 image hosting service, with local paths in the content automatically replaced by remote image-hosting links.
 
 ### Typora Configuration
-Typora natively supports using the PicGo client:
-1. Open Typora and go to “Preferences” -> “Images”.
-2. Select “Upload images” when inserting an image.
-3. Check “Apply the above rules to images in local locations” and “Apply the above rules to images in network locations”.
-4. Select `PicGo (app)` as the upload service, and specify the local PicGo executable in “PicGo path”.
-5. Click “Verify image upload options”. The configuration is successful once all checks pass.
+Configure it as shown in the diagram, then click “Verify image upload settings” to test it.
 
 ![image.png](https://img.muelsyse.us/bed/20261025185635532.png)
 
@@ -104,7 +99,7 @@ Typora natively supports using the PicGo client:
 Although R2 egress traffic is free, Class B read requests exceeding 10 million per month will still incur a small charge. It is recommended that you enable CDN edge caching and protection.
 
 In the Cloudflare Dashboard, go to your domain’s “Caching” -> “Cache Rules” and add a rule:
-- **Match condition**: `Hostname equals img.yourdomain.com`
+- **Match condition**:`Hostname equals img.yourdomain.com`
 - **Edge Cache TTL**: Override the origin and set it to 1 year (31536000 seconds)
 - **Browser Cache TTL**: Set it to 1 year
 

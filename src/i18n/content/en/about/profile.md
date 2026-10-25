@@ -58,6 +58,6 @@ https://github.com/Edmounds/robviz
 
 This site is based on[Astro-star](https://github.com/hanlife02/Astro-star)Modify and Rebuild
 
-This site uses the following services/APIs
+This site uses the following services/APIs.
 
 <div class="acknowledgement-logos"><a class="acknowledgement-logo" href="https://www.cloudflare.com/"><img src="/images/cloudflare-logo.svg?v=20260728" alt="Cloudflare" width="300" height="64" loading="eager" decoding="async"></a><a class="acknowledgement-logo" href="https://www.themoviedb.org/"><img src="/images/tmdb-logo.svg?v=20260728" alt="The Movie Database" width="300" height="64" loading="eager" decoding="async"></a><a class="acknowledgement-logo" href="https://steamcommunity.com/dev"><img src="/images/steam-logo.svg?v=20260728" alt="Steam" width="240" height="64" loading="eager" decoding="async"></a></div>

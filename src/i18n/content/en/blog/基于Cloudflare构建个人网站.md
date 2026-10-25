@@ -90,7 +90,7 @@ Note that 100,000 requests is the free daily limit for your entire account, not 
 
 Important: D1 charges based on rows scanned, so queries without indexes can make your bill skyrocket.
 
-Important: D1 charges based on rows scanned. Queries without indexes can cause your bill to skyrocket.
+## Accelerating Access from Mainland China
 
 Cloudflare’s default entry point uses Anycast, with routing determined by BGP, which isn’t always ideal for China’s three major telecom carriers. The same site may load quickly on China Telecom, while China Mobile users may experience detours and packet loss during the evening rush. My approach is to use an optimized CNAME: point my domain’s CNAME record to a hostname that continuously measures performance and updates its DNS responses.
 

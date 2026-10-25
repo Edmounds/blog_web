@@ -1898,8 +1898,8 @@
       "translation": "冠軍2.jpg"
     },
     "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.document": {
-      "fingerprint": "9f199fda0fe75796a5c95c50e7b9fa0ed206552179e01ff57079e072b72d1729",
-      "translation": "---\ntitle: Build a Free Image Host with Cloudflare R2 + PicGo\ndescription: Build an image host with no egress traffic fees based on Cloudflare R2 object storage and PicGo, enabling instant automatic uploads while writing in Obsidian and Typora.\ntags:\n  - cloudflare\n  - freebie\n  - image hosting\ncreatedAt: 2026-10-25\npublished: true\nslug: 20261025-01\n---\n## Architecture\n\nUse Cloudflare R2 instead of traditional object storage as the backend for your image host.\n\n```mermaid\nflowchart LR\n  A[Obsidian / Typora] -->|本地端口 36677| B[PicGo 本地服务]\n  B -->|S3 API 上传| C[Cloudflare R2 Bucket]\n```\n\n1. Pasting an image in the editor triggers a local PicGo upload.\n2. PicGo pushes the image to R2 through an S3-compatible API.\n3. The API returns a Custom Domain link and automatically replaces the image address.\n\n---\n## Why Choose Cloudflare R2\n\nSince it’s free, what more is there to say? The allowances are generous, and you basically won’t exceed them. It also completely eliminates egress traffic fees. For mainland China, the only drawback is that access is relatively slow without a VPN.\n\n| Resource item                  | Cloudflare R2 free monthly allowance | Overage unit price          |\n| :-------------------- | :------------------ | :-------------- |\n| **Storage space**              | 10 GB / month           | $0.015 / GB / month |\n| **Class A operations (writes/listing)** | 1 million operations / month          | $4.50 / million operations     |\n| **Class B operations (reads/downloads)** | 10 million operations / month         | $0.36 / million operations     |\n| Egress traffic                  | **Free forever, with no limit**        | **$0.00**       |\n\n---\n## Setting Up and Preparing Cloudflare R2\n\n### Prerequisites\n1. Log in to the Cloudflare Dashboard and open “R2 Object Storage”.\n2. Link a credit card or PayPal to complete account verification. No charges will be incurred within the allowance.\n> If you don’t have a card, try the second-hand marketplace—you can get one for under 10 RMB.\n\n### Manual Web Configuration\n1. **Create a Bucket**: On the R2 page, click “Create bucket”, enter a name, and set Location to Automatic.\n2. **Bind a public Custom Domain**: Go to Bucket -> “Settings” -> “Public Access” -> click “Connect Domain”, then enter a subdomain (for example, `img.yourdomain.com`).\n3. **Get API credentials**:\n   - **Account ID**: On the bottom right of the R2 overview page, click “Account Details” and copy it directly.\n   - **Access Key ID and Secret Access Key**:\n\t  1. Click “Manage API Tokens” below “Account Details” to open the token page.\n\t  2. Click “Create Account API token”.\n\t  3. Select “Object Read & Write” under Permissions, and specify a Bucket if needed.\n\t  4. Click to create it, then immediately copy and save the `Access Key ID` and `Secret Access Key` on the **final success page**.\n  > **Note**: `Secret Access Key` is displayed only once, when it is successfully generated. If you did not save the key for a previously created Token, it cannot be viewed again. You must click “Create Account API token” again to generate a new key.\n\n### Agent\nCreating a Bucket and binding a Custom Domain can also be done by an agent through the Wrangler CLI. You only need to run Wrangler oauth to link your own Cloudflare account.\n\n## PicGo Client Configuration\n\n### 1. Install the Plugin\n1. Open PicGo and go to “Plugin Settings”.\n2. Search for and install `picgo-plugin-cloudflare-r2`.\n\n### 2. Configure the Parameters\nGo to “Image Hosting Settings” -> “Cloudflare R2” and fill in the following configuration items:\n\n| **Account ID**      | View it at the bottom right of the R2 overview page      |\n| :------------------ | :--------------- |\n| **AccessKey ID**    | Generated API Token    |\n| **SecretAccessKey** | Generated API Token    |\n| **Bucket name**           | Created R2 Bucket    |\n| **Storage path (optional)**        | Specify directory levels as needed         |\n| **Custom domain**           | R2 Custom Domain |\n\n---\n\n## Automatic, Seamless Upload in Editors\n\n### Obsidian Configuration\nUse local PicGo to automatically upload pasted images to the image host and replace their paths:\n1. Make sure PicGo is running.\n2. In Obsidian’s “Third-party plugins”, search for and install `Image auto upload Plugin`.\n3. Configure the plugin to use the PicGo upload service.\n4. Paste or drag an image directly into Obsidian. It will be silently uploaded to R2 in the background, and the local path in the document will be automatically replaced with a remote image-hosting link.\n\n### Typora Configuration\nTypora natively supports using the PicGo client:\n1. Open Typora and go to “Preferences” -> “Images”.\n2. Select “Upload images” when inserting an image.\n3. Check “Apply the above rules to images in local locations” and “Apply the above rules to images in network locations”.\n4. Select `PicGo (app)` as the upload service, and specify the local PicGo executable in “PicGo path”.\n5. Click “Verify image upload options”. The configuration is successful once all checks pass.\n\n![image.png](https://img.muelsyse.us/bed/20261025185635532.png)\n\n---\n\n## Cache Optimization and Anti-Abuse Strategy\n\nAlthough R2 egress traffic is free, Class B read requests exceeding 10 million per month will still incur a small charge. It is recommended that you enable CDN edge caching and protection.\n\nIn the Cloudflare Dashboard, go to your domain’s “Caching” -> “Cache Rules” and add a rule:\n- **Match condition**: `Hostname equals img.yourdomain.com`\n- **Edge Cache TTL**: Override the origin and set it to 1 year (31536000 seconds)\n- **Browser Cache TTL**: Set it to 1 year\n\nAll high-traffic images will be cached by Cloudflare CDN nodes worldwide. Subsequent requests will no longer pass through to the R2 Bucket, minimizing Class B operation usage."
+      "fingerprint": "3785a6bd99d82e28bc3da79c891968cf33a768d97c243a360b43fb4efbaefcca",
+      "translation": "---\ntitle: Build a Free Image Hosting Service with Cloudflare R2 + PicGo\ndescription: Build a zero-egress-fee image hosting service with Cloudflare R2 object storage and PicGo, enabling instant automatic uploads while writing in Obsidian and Typora.\ntags:\n  - Cloudflare\n  - Freebie\n  - Image hosting service\ncreatedAt: 2026-10-25T00:00:00.000Z\npublished: true\nslug: 20261025-01\n---\n\n## Architecture\n\nUse Cloudflare R2 instead of traditional object storage as the backend for your image host.\n\n```mermaid\nflowchart LR\n  A[Obsidian / Typora] -->|本地端口 36677| B[PicGo 本地服务]\n  B -->|S3 API 上传| C[Cloudflare R2 Bucket]\n```\n\n1. Pasting an image in the editor triggers a local PicGo upload.\n2. PicGo pushes the image to R2 through an S3-compatible API.\n3. The API returns a Custom Domain link and automatically replaces the image address.\n\n---\n## Why Choose Cloudflare R2\n\nSince it’s free, what more is there to say? The allowances are generous, and you basically won’t exceed them. It also completely eliminates egress traffic fees. For mainland China, the only drawback is that access is relatively slow without a VPN.\n\n| Resource item                  | Cloudflare R2 free monthly allowance | Overage unit price          |\n| :-------------------- | :------------------ | :-------------- |\n| **Storage space**              | 10 GB / month           | $0.015 / GB / month |\n| **Class A operations (writes/listing)** | 1 million operations / month          | $4.50 / million operations     |\n| **Class B operations (reads/downloads)** | 10 million operations / month         | $0.36 / million operations     |\n| Egress traffic                  | **Free forever, with no limit**        | **$0.00**       |\n\n---\n## Setting Up and Preparing Cloudflare R2\n\n### Prerequisites\n1. Log in to the Cloudflare Dashboard and open “R2 Object Storage”.\n2. Link a credit card or PayPal to complete account verification. No charges will be incurred within the allowance.\n> If you don’t have a card, try the second-hand marketplace—you can get one for under 10 RMB.\n\n### Manual Web Configuration\n1. **Create a Bucket**: On the R2 page, click “Create bucket”, enter a name, and set Location to Automatic.\n2. **Bind a public Custom Domain**: Go to Bucket -> “Settings” -> “Public Access” -> click “Connect Domain”, then enter a subdomain (for example, `img.yourdomain.com`).\n3. **Get API credentials**:\n   - **Account ID**: On the bottom right of the R2 overview page, click “Account Details” and copy it directly.\n   - **Access Key ID and Secret Access Key**:\n\t  1. Click “Manage API Tokens” below “Account Details” to open the token page.\n\t  2. Click “Create Account API token”.\n\t  3. Select “Object Read & Write” under Permissions, and specify a Bucket if needed.\n\t  4. Click to create it, then immediately copy and save the ** and ** on the `Access Key ID`final success page`Secret Access Key`.\n  > **Note**:`Secret Access Key` is displayed only once, when it is successfully generated. If you did not save the key for a previously created Token, it cannot be viewed again. You must click “Create Account API token” again to generate a new key.\n\n### Agent\nCreating a Bucket and binding a Custom Domain can also be done by an agent through the Wrangler CLI. You only need to run Wrangler oauth to link your own Cloudflare account.\n\n## PicGo Client Configuration\n\n### 1. Install the Plugin\n1. Open PicGo and go to “Plugin Settings”.\n2. Search for and install `picgo-plugin-cloudflare-r2`.\n\n### 2. Configure the Parameters\nGo to “Image Hosting Settings” -> “Cloudflare R2” and fill in the following configuration items:\n\n| **Account ID**      | View it at the bottom right of the R2 overview page      |\n| :------------------ | :--------------- |\n| **AccessKey ID**    | Generated API Token    |\n| **SecretAccessKey** | Generated API Token    |\n| **Bucket name**           | Created R2 Bucket    |\n| **Storage path (optional)**        | Specify directory levels as needed         |\n| **Custom domain**           | R2 Custom Domain |\n\n---\n\n## Automatic, Seamless Upload in Editors\n\n### Obsidian Configuration\nUse local PicGo to automatically upload pasted images to the image host and replace their paths:\n1. Make sure PicGo is running.\n2. Install in Obsidian`Image auto upload Plugin`Plugin.\n3. Configure the plugin to use the PicGo upload service.\n4. Paste or drag images directly into your notes, and they will be uploaded to the R2 image hosting service, with local paths in the content automatically replaced by remote image-hosting links.\n\n### Typora Configuration\nConfigure it as shown in the diagram, then click “Verify image upload settings” to test it.\n\n![image.png](https://img.muelsyse.us/bed/20261025185635532.png)\n\n---\n\n## Cache Optimization and Anti-Abuse Strategy\n\nAlthough R2 egress traffic is free, Class B read requests exceeding 10 million per month will still incur a small charge. It is recommended that you enable CDN edge caching and protection.\n\nIn the Cloudflare Dashboard, go to your domain’s “Caching” -> “Cache Rules” and add a rule:\n- **Match condition**:`Hostname equals img.yourdomain.com`\n- **Edge Cache TTL**: Override the origin and set it to 1 year (31536000 seconds)\n- **Browser Cache TTL**: Set it to 1 year\n\nAll high-traffic images will be cached by Cloudflare CDN nodes worldwide. Subsequent requests will no longer pass through to the R2 Bucket, minimizing Class B operation usage.\n"
     },
     "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.segment:4ffb8ee335229ba37e555e98dfc6deae378a10be2cbcd1e51837cd39d3b82a90": {
       "fingerprint": "4ffb8ee335229ba37e555e98dfc6deae378a10be2cbcd1e51837cd39d3b82a90",
@@ -2173,49 +2173,13 @@
       "fingerprint": "47e2b5b0e36731ec6e5e9ca27d68d04dd3d541ea5730b551fb3aaba18d40e15b",
       "translation": "Make sure PicGo is running."
     },
-    "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.segment:24b0a8b8b956d8df29cec77a5acb5baba7ed690a04d410eded491bd5dd3f3a75": {
-      "fingerprint": "24b0a8b8b956d8df29cec77a5acb5baba7ed690a04d410eded491bd5dd3f3a75",
-      "translation": "In Obsidian’s “Third-party plugins”, search for and install "
-    },
     "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.segment:eb539389afaa7d57a7699a53079ade7d57e0c36d7c504fbd1c41d82a503f8ab6": {
       "fingerprint": "eb539389afaa7d57a7699a53079ade7d57e0c36d7c504fbd1c41d82a503f8ab6",
       "translation": "Configure the plugin to use the PicGo upload service."
     },
-    "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.segment:e60464ee8874bd6212baf6e00d67af580895aea17950a1eb42deca725c75c2c0": {
-      "fingerprint": "e60464ee8874bd6212baf6e00d67af580895aea17950a1eb42deca725c75c2c0",
-      "translation": "Paste or drag an image directly into Obsidian. It will be silently uploaded to R2 in the background, and the local path in the document will be automatically replaced with a remote image-hosting link."
-    },
     "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.segment:e63da76443e2238be0d450b44a301cfc6efb7a84902b7e22c30f3be1edea4398": {
       "fingerprint": "e63da76443e2238be0d450b44a301cfc6efb7a84902b7e22c30f3be1edea4398",
       "translation": "Typora Configuration"
-    },
-    "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.segment:e92f54cfeecd28b613541b6ccc7307f83102e14330988cf88240d36cf94422c9": {
-      "fingerprint": "e92f54cfeecd28b613541b6ccc7307f83102e14330988cf88240d36cf94422c9",
-      "translation": "Typora natively supports using the PicGo client:"
-    },
-    "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.segment:537df4f519a93917bdaa4f8dd496c35dfd9e2b50e4790f5d616b7a9c91b04259": {
-      "fingerprint": "537df4f519a93917bdaa4f8dd496c35dfd9e2b50e4790f5d616b7a9c91b04259",
-      "translation": "Open Typora and go to “Preferences” -> “Images”."
-    },
-    "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.segment:ca47b055834dc150573a8c54418f868ca48c2bdf2d8ebea6e28f1814ca38b8f3": {
-      "fingerprint": "ca47b055834dc150573a8c54418f868ca48c2bdf2d8ebea6e28f1814ca38b8f3",
-      "translation": "Select “Upload images” when inserting an image."
-    },
-    "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.segment:540bb1f0a221da4beb599c7f354c614fe14a573f11606d3530aec773c72cc251": {
-      "fingerprint": "540bb1f0a221da4beb599c7f354c614fe14a573f11606d3530aec773c72cc251",
-      "translation": "Check “Apply the above rules to images in local locations” and “Apply the above rules to images in network locations”."
-    },
-    "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.segment:d77177473288d777bf06359e5c9d8fbeced5474bac8fc29a70d032311a1c02cb": {
-      "fingerprint": "d77177473288d777bf06359e5c9d8fbeced5474bac8fc29a70d032311a1c02cb",
-      "translation": "Select "
-    },
-    "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.segment:27c416e478264c6cab80ba272fa46df4f2685d8422501ea2c3bd73fedee78c0c": {
-      "fingerprint": "27c416e478264c6cab80ba272fa46df4f2685d8422501ea2c3bd73fedee78c0c",
-      "translation": " as the upload service, and specify the local PicGo executable in “PicGo path”."
-    },
-    "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.segment:471eed27fa53aea051b176a2ac8d1514db32dc409f636d96799bf9ea04fb7094": {
-      "fingerprint": "471eed27fa53aea051b176a2ac8d1514db32dc409f636d96799bf9ea04fb7094",
-      "translation": "Click “Verify image upload options”. The configuration is successful once all checks pass."
     },
     "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.segment:8736a88df86196f2ad2f18adf897d31519bce6ae6b8d41126fe9cfc123973764": {
       "fingerprint": "8736a88df86196f2ad2f18adf897d31519bce6ae6b8d41126fe9cfc123973764",
@@ -2257,26 +2221,6 @@
       "fingerprint": "35560ee112e0814cd8494c95dd09016ab278fdbe2da09352aef65f8826e484c7",
       "translation": "All high-traffic images will be cached by Cloudflare CDN nodes worldwide. Subsequent requests will no longer pass through to the R2 Bucket, minimizing Class B operation usage."
     },
-    "zh-TW:content.blog.用Cloudflare R2+picgo实现免费图床.md.frontmatter.description": {
-      "fingerprint": "7420cf9bcfbe16bede597443440187e211734f5bc4d55c568f50337d76c47021",
-      "translation": "透過 Cloudflare R2 物件儲存與 PicGo 建置免出口流量費的圖床，讓 Obsidian 和 Typora 在寫作時即時自動上傳。"
-    },
-    "zh-TW:content.blog.用Cloudflare R2+picgo实现免费图床.md.frontmatter.tags[0]": {
-      "fingerprint": "28055dc5a029e557ba2886176083ab7fd9163c085776b786b82fe381b82c307b",
-      "translation": "Cloudflare"
-    },
-    "zh-TW:content.blog.用Cloudflare R2+picgo实现免费图床.md.frontmatter.title": {
-      "fingerprint": "baef064acad779ebd2218343a400d0dee3ec2ebc1efd6f624abae1b9ad1e8035",
-      "translation": "用 Cloudflare R2 + PicGo 實現免費圖床"
-    },
-    "zh-TW:content.blog.用Cloudflare R2+picgo实现免费图床.md.frontmatter.tags[1]": {
-      "fingerprint": "3e82fbaa9e00e6eef52e4e204445d8a04471675b826e206f2ba5df736d49a8cf",
-      "translation": "免費蹭用"
-    },
-    "zh-TW:content.blog.用Cloudflare R2+picgo实现免费图床.md.frontmatter.tags[2]": {
-      "fingerprint": "449cdf5b49bff8e9710cac57c1af294a011caebe902cadaaeac34c3f6fe47caf",
-      "translation": "圖床"
-    },
     "zh-TW:content.blog.用Cloudflare R2+picgo实现免费图床.md.segment:308750ae74f2c943bed77939be541d7ff9da01081a9ddf360dc98baa1f6bf77f": {
       "fingerprint": "308750ae74f2c943bed77939be541d7ff9da01081a9ddf360dc98baa1f6bf77f",
       "translation": "外掛程式。"
@@ -2296,6 +2240,42 @@
     "zh-TW:content.blog.用Cloudflare R2+picgo实现免费图床.md.segment:86a0611468959171807110856bea09402433ca7d8aa9722aa42cd80fba1bd1d4": {
       "fingerprint": "86a0611468959171807110856bea09402433ca7d8aa9722aa42cd80fba1bd1d4",
       "translation": "利用本機 PicGo 實現貼上圖片後自動上傳至圖床並替換："
+    },
+    "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.frontmatter.title": {
+      "fingerprint": "baef064acad779ebd2218343a400d0dee3ec2ebc1efd6f624abae1b9ad1e8035",
+      "translation": "Build a Free Image Hosting Service with Cloudflare R2 + PicGo"
+    },
+    "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.frontmatter.description": {
+      "fingerprint": "7420cf9bcfbe16bede597443440187e211734f5bc4d55c568f50337d76c47021",
+      "translation": "Build a zero-egress-fee image hosting service with Cloudflare R2 object storage and PicGo, enabling instant automatic uploads while writing in Obsidian and Typora."
+    },
+    "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.frontmatter.tags[2]": {
+      "fingerprint": "449cdf5b49bff8e9710cac57c1af294a011caebe902cadaaeac34c3f6fe47caf",
+      "translation": "Image hosting service"
+    },
+    "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.frontmatter.tags[0]": {
+      "fingerprint": "28055dc5a029e557ba2886176083ab7fd9163c085776b786b82fe381b82c307b",
+      "translation": "Cloudflare"
+    },
+    "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.frontmatter.tags[1]": {
+      "fingerprint": "3e82fbaa9e00e6eef52e4e204445d8a04471675b826e206f2ba5df736d49a8cf",
+      "translation": "Freebie"
+    },
+    "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.segment:4ad2974208d16f1e13d09b86d3e1c4dc11fa342ba3ef6ad2ad148f6340ad77b6": {
+      "fingerprint": "4ad2974208d16f1e13d09b86d3e1c4dc11fa342ba3ef6ad2ad148f6340ad77b6",
+      "translation": "Paste or drag images directly into your notes, and they will be uploaded to the R2 image hosting service, with local paths in the content automatically replaced by remote image-hosting links."
+    },
+    "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.segment:a5139c2966a6fb9b5541023d820c4b36b75fd7ef9e994b87b358df80444c8c04": {
+      "fingerprint": "a5139c2966a6fb9b5541023d820c4b36b75fd7ef9e994b87b358df80444c8c04",
+      "translation": "Configure it as shown in the diagram, then click “Verify image upload settings” to test it."
+    },
+    "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.segment:308750ae74f2c943bed77939be541d7ff9da01081a9ddf360dc98baa1f6bf77f": {
+      "fingerprint": "308750ae74f2c943bed77939be541d7ff9da01081a9ddf360dc98baa1f6bf77f",
+      "translation": "Plugin."
+    },
+    "en:content.blog.用Cloudflare R2+picgo实现免费图床.md.segment:38a0dd291d72c59dc0d14edd74e1c51ca59d6bc58b6e0370cfeb775b7a9d7a74": {
+      "fingerprint": "38a0dd291d72c59dc0d14edd74e1c51ca59d6bc58b6e0370cfeb775b7a9d7a74",
+      "translation": "Install in Obsidian"
     }
   }
 }
