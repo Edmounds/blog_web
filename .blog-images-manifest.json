@@ -287,6 +287,226 @@
           }
         ]
       }
+    },
+    "https://img.muelsyse.us/bed/20261025165234244.png": {
+      "kind": "responsive",
+      "sourceDigest": "2ebec334b71b2561169ee1d60e94e2b519f26d853f33e8ac657276c8665d16b3",
+      "width": 4200,
+      "height": 3000,
+      "fallback": "https://img.muelsyse.us/bed/20261025165234244-w4200.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/20261025165234244-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.995176,
+            "bytes": 10514
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/20261025165234244-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.998773,
+            "bytes": 33290
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/20261025165234244-w1920.avif.webp",
+            "quality": 40,
+            "ssim": 0.999377,
+            "bytes": 60668
+          },
+          {
+            "width": 4200,
+            "url": "https://img.muelsyse.us/bed/20261025165234244-w4200.avif.webp",
+            "quality": 40,
+            "ssim": 0.999893,
+            "bytes": 134805
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/20261025165234244-w640.webp",
+            "quality": 70,
+            "ssim": 0.992901,
+            "bytes": 19970
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/20261025165234244-w1280.webp",
+            "quality": 70,
+            "ssim": 0.998554,
+            "bytes": 67942
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/20261025165234244-w1920.webp",
+            "quality": 70,
+            "ssim": 0.999166,
+            "bytes": 120696
+          },
+          {
+            "width": 4200,
+            "url": "https://img.muelsyse.us/bed/20261025165234244-w4200.webp",
+            "quality": 70,
+            "ssim": 0.999713,
+            "bytes": 298028
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/20261025185635532.png": {
+      "kind": "responsive",
+      "sourceDigest": "e02b256e62fd666aba68999c95f170d3d73a2a4bf1676ef1771af9b1ba230ea5",
+      "width": 718,
+      "height": 476,
+      "fallback": "https://img.muelsyse.us/bed/20261025185635532-w718.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/20261025185635532-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.997461,
+            "bytes": 6860
+          },
+          {
+            "width": 718,
+            "url": "https://img.muelsyse.us/bed/20261025185635532-w718.avif.webp",
+            "quality": 40,
+            "ssim": 0.998551,
+            "bytes": 8444
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/20261025185635532-w640.webp",
+            "quality": 70,
+            "ssim": 0.997795,
+            "bytes": 11550
+          },
+          {
+            "width": 718,
+            "url": "https://img.muelsyse.us/bed/20261025185635532-w718.webp",
+            "quality": 70,
+            "ssim": 0.998237,
+            "bytes": 13780
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/20261024151219546.jpg": {
+      "kind": "responsive",
+      "sourceDigest": "f2a332d620212e54c6e8f162764e93373f272e76278e033be381b2365add45b1",
+      "width": 2272,
+      "height": 1280,
+      "fallback": "https://img.muelsyse.us/bed/20261024151219546-w2272.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/20261024151219546-w640.avif.webp",
+            "quality": 67,
+            "ssim": 0.985062,
+            "bytes": 33037
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/20261024151219546-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.990061,
+            "bytes": 34120
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/20261024151219546-w1920.avif.webp",
+            "quality": 40,
+            "ssim": 0.993333,
+            "bytes": 54458
+          },
+          {
+            "width": 2272,
+            "url": "https://img.muelsyse.us/bed/20261024151219546-w2272.avif.webp",
+            "quality": 40,
+            "ssim": 0.995521,
+            "bytes": 65644
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/20261024151219546-w640.webp",
+            "quality": 90,
+            "ssim": 0.985787,
+            "bytes": 53084
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/20261024151219546-w1280.webp",
+            "quality": 70,
+            "ssim": 0.991365,
+            "bytes": 70734
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/20261024151219546-w1920.webp",
+            "quality": 70,
+            "ssim": 0.99369,
+            "bytes": 107404
+          },
+          {
+            "width": 2272,
+            "url": "https://img.muelsyse.us/bed/20261024151219546-w2272.webp",
+            "quality": 70,
+            "ssim": 0.995356,
+            "bytes": 127798
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/20261024151429269.jpg": {
+      "kind": "responsive",
+      "sourceDigest": "9ed062b5232db61820584738853bcc03232d1a790184a16aee4ee802db212eb6",
+      "width": 1279,
+      "height": 1706,
+      "fallback": "https://img.muelsyse.us/bed/20261024151429269-w1279.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/20261024151429269-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.996526,
+            "bytes": 23309
+          },
+          {
+            "width": 1279,
+            "url": "https://img.muelsyse.us/bed/20261024151429269-w1279.avif.webp",
+            "quality": 40,
+            "ssim": 0.998567,
+            "bytes": 52553
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/20261024151429269-w640.webp",
+            "quality": 70,
+            "ssim": 0.997829,
+            "bytes": 48786
+          },
+          {
+            "width": 1279,
+            "url": "https://img.muelsyse.us/bed/20261024151429269-w1279.webp",
+            "quality": 70,
+            "ssim": 0.998524,
+            "bytes": 103278
+          }
+        ]
+      }
     }
   },
   "vaultAssets": {},
@@ -309,6 +529,30 @@
     "bed/20260818133835704-w400.webp",
     "bed/20260818133840028-w400.avif.webp",
     "bed/20260818133840028-w400.webp",
+    "bed/20261024151219546-w1280.avif.webp",
+    "bed/20261024151219546-w1280.webp",
+    "bed/20261024151219546-w1920.avif.webp",
+    "bed/20261024151219546-w1920.webp",
+    "bed/20261024151219546-w2272.avif.webp",
+    "bed/20261024151219546-w2272.webp",
+    "bed/20261024151219546-w640.avif.webp",
+    "bed/20261024151219546-w640.webp",
+    "bed/20261024151429269-w1279.avif.webp",
+    "bed/20261024151429269-w1279.webp",
+    "bed/20261024151429269-w640.avif.webp",
+    "bed/20261024151429269-w640.webp",
+    "bed/20261025165234244-w1280.avif.webp",
+    "bed/20261025165234244-w1280.webp",
+    "bed/20261025165234244-w1920.avif.webp",
+    "bed/20261025165234244-w1920.webp",
+    "bed/20261025165234244-w4200.avif.webp",
+    "bed/20261025165234244-w4200.webp",
+    "bed/20261025165234244-w640.avif.webp",
+    "bed/20261025165234244-w640.webp",
+    "bed/20261025185635532-w640.avif.webp",
+    "bed/20261025185635532-w640.webp",
+    "bed/20261025185635532-w718.avif.webp",
+    "bed/20261025185635532-w718.webp",
     "bed/jupiter-w1280.avif.webp",
     "bed/jupiter-w1280.webp",
     "bed/jupiter-w640.avif.webp",
