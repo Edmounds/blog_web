@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "blog/用Cloudflare R2+picgo实现免费图床.md",
+                "file": "blog/使用GitHub Actions 实现博客自动化更新.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "用Cloudflare R2+picgo实现免费图床"
+              "title": "使用GitHub Actions 实现博客自动化更新"
             }
           }
         ]
@@ -178,7 +178,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "blog/用Cloudflare R2+picgo实现免费图床.md",
+                "file": "blog/使用GitHub Actions 实现博客自动化更新.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
@@ -209,11 +209,11 @@
   },
   "active": "151ac95f04400403",
   "lastOpenFiles": [
-    "blog/水果采摘比赛模型推理链路设计.md",
-    "blog/使用GitHub Actions 实现博客自动化更新.md",
-    "blog/多AP竞争环境下的路由器优化策略.md",
-    "blog/基于Cloudflare构建个人网站.md",
     "blog/链式代理前置节点选择.md",
+    "blog/基于Cloudflare构建个人网站.md",
+    "blog/多AP竞争环境下的路由器优化策略.md",
+    "blog/使用GitHub Actions 实现博客自动化更新.md",
+    "blog/水果采摘比赛模型推理链路设计.md",
     "blog/用Cloudflare R2+picgo实现免费图床.md",
     "blog/ROS2 Cyclone DDS 组播导致realsense深度断流.md",
     "note/我们是冠军!.md",

@@ -7,7 +7,7 @@ const contentSchema = z.object({
   description: z.string().default(""),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date().optional(),
-  published: z.boolean().default(true),
+  published: z.preprocess((val) => (val === null ? false : val), z.boolean()).default(true),
   slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).optional(),
   tags: z.array(z.string()).default([]),
 });
