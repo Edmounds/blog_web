@@ -40,11 +40,14 @@ grid: |
 ![moon](https://img.muelsyse.us/bed/moon.png)
 ```
 
-喜欢折腾 软路由、网站搭建、使用AI落地自己各种有意思想法
+喜欢折腾
 以下是我的几个ros相关的开源项目 如果觉得好用欢迎star~
 https://github.com/ConQU2026/auto_serial_bridge
 https://github.com/Edmounds/robviz
 
+-  2026 robocup 决赛国冠
+- 2026 电赛 省一
+- 2026 robocon 主赛国三
 
 ## 联系我
 [i@muelsyse.us](mailto:i@muelsyse.us)
