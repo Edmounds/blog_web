@@ -1,5 +1,5 @@
 ---
-updatedAt: 2026-10-21
+createdAt: 2026-10-21
 description: 记一次深度相机深度数据断流 Debug 经历
 title: ROS 2 Cyclone DDS 组播导致相机深度断流
 published: false

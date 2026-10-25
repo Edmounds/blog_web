@@ -1,0 +1,25 @@
+{
+  "id": "conv-1792832642379-4wdq9luti",
+  "providerId": "pi",
+  "title": "优化基础通识 Markdown 格式与数学公式",
+  "titleGenerationStatus": "success",
+  "createdAt": 1792832642387,
+  "lastActivityAt": 1792834270019,
+  "sessionId": "01a16d27-1e2a-77e5-a61e-418433b97809",
+  "selectedModel": "pi:antigravity/gemini-3.8-flash",
+  "providerState": {
+    "sessionFile": "/Users/cqc/.pi/agent/sessions/--Users-cqc-blog_web-src-content--/2026-10-24T09-04-02-603Z_01a16d27-1e2a-77e5-a61e-418433b97809.jsonl",
+    "sessionId": "01a16d27-1e2a-77e5-a61e-418433b97809"
+  },
+  "currentNote": "blog/多AP竞争环境下的路由器优化策略.md",
+  "usage": {
+    "cacheCreationInputTokens": 0,
+    "cacheReadInputTokens": 0,
+    "contextTokens": 109766,
+    "contextWindow": 1048576,
+    "contextWindowIsAuthoritative": true,
+    "inputTokens": 109766,
+    "model": "pi:antigravity/gemini-3.8-flash",
+    "percentage": 10
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "id": "conv-1792910550945-3a5t1gtrc",
+  "providerId": "pi",
+  "title": "转换SNR与SINR公式为LaTeX",
+  "titleGenerationStatus": "success",
+  "createdAt": 1792910550953,
+  "lastActivityAt": 1792911357901,
+  "sessionId": "01a171cb-e8ca-77a1-af55-cc5bd09e5da8",
+  "selectedModel": "pi:antigravity/gemini-3.8-flash",
+  "providerState": {
+    "sessionFile": "/Users/cqc/.pi/agent/sessions/--Users-cqc-blog_web-src-content--/2026-10-25T06-42-31-243Z_01a171cb-e8ca-77a1-af55-cc5bd09e5da8.jsonl",
+    "sessionId": "01a171cb-e8ca-77a1-af55-cc5bd09e5da8"
+  },
+  "currentNote": "blog/多AP竞争环境下的路由器优化策略.md",
+  "usage": {
+    "cacheCreationInputTokens": 0,
+    "cacheReadInputTokens": 0,
+    "contextTokens": 48869,
+    "contextWindow": 1048576,
+    "contextWindowIsAuthoritative": true,
+    "inputTokens": 48869,
+    "model": "pi:antigravity/gemini-3.8-flash",
+    "percentage": 5
+  }
+}

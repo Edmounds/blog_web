@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "conversationId": "conv-1792921905494-p9c86m2q3",
+  "records": [
+    {
+      "schemaVersion": 1,
+      "id": "msg-1792921905517-vfgjm08",
+      "userTurnOrdinal": 1,
+      "state": "accepted",
+      "localMessageId": "msg-1792921905490-5wvgq1c",
+      "timestamp": 1792921905490,
+      "rawDisplayText": "你帮我看看我这个作为博客还有没有要改的地方。只给建议",
+      "canonicalText": "你帮我看看我这个作为博客还有没有要改的地方。只给建议",
+      "context": {
+        "currentNote": {
+          "path": "blog/多AP竞争环境下的路由器优化策略.md"
+        }
+      },
+      "images": [],
+      "contentDigest": "9a4101a8d5bc612cde709c7dbfc844c1cf53cdef190c7c2ffe30ec8679fac39d",
+      "providerAssistantMessageId": "09486d85"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "msg-1792922018699-p8xhlkv",
+      "userTurnOrdinal": 2,
+      "state": "accepted",
+      "localMessageId": "msg-1792922018692-2ki3l6a",
+      "timestamp": 1792922018692,
+      "rawDisplayText": "我要不要把基础通识放到附录？然后文中涉及到的部分就可以一键跳转到对应附录的介绍？然后按照你说的来改一下。 然后这些就不用了。补充 CSMA/CA 侦听门限分类：\n文中提及的 -62 dBm ~ -82 dBm 可进一步讲透。\n-82 dBm 为检测同协议前导码的载波侦听（Carrier Sense）。\n-62 dBm 为检测非 Wi-Fi 电磁杂波的能量侦听（Energy Detect）。\n此处点明机制可大幅提升文章技术专业度。\n客观说明 DFS 信道的实际风险：\n52-64 信道确实干净。\n但比赛现场某些场馆的工业设备可能触发雷达波误报，导致动态跳频中断连接。\n建议提示读者赛前务必测试所用终端是否兼容 DFS 频段。\n4. 结尾与落地操作清单\n补充实战避坑排查清单：\n当前文章在“网页浏览也很快”处戛然而止，缺乏收尾。\n建议在末尾增加一张“现场快速调优 Checklist”表格或流程图。\n清单包含：现场扫频 -> 避开强干扰源 -> 选定低频宽（20/40 MHz）-> 绑定低重叠信道。\n检查 Frontmatter 博客配置：\n发布前需确认 published 状态。\n根据项目规范，后续需运行 npm run content:prepare 生成正式文章 slug。",
+      "canonicalText": "我要不要把基础通识放到附录？然后文中涉及到的部分就可以一键跳转到对应附录的介绍？然后按照你说的来改一下。 然后这些就不用了。补充 CSMA/CA 侦听门限分类：\n文中提及的 -62 dBm ~ -82 dBm 可进一步讲透。\n-82 dBm 为检测同协议前导码的载波侦听（Carrier Sense）。\n-62 dBm 为检测非 Wi-Fi 电磁杂波的能量侦听（Energy Detect）。\n此处点明机制可大幅提升文章技术专业度。\n客观说明 DFS 信道的实际风险：\n52-64 信道确实干净。\n但比赛现场某些场馆的工业设备可能触发雷达波误报，导致动态跳频中断连接。\n建议提示读者赛前务必测试所用终端是否兼容 DFS 频段。\n4. 结尾与落地操作清单\n补充实战避坑排查清单：\n当前文章在“网页浏览也很快”处戛然而止，缺乏收尾。\n建议在末尾增加一张“现场快速调优 Checklist”表格或流程图。\n清单包含：现场扫频 -> 避开强干扰源 -> 选定低频宽（20/40 MHz）-> 绑定低重叠信道。\n检查 Frontmatter 博客配置：\n发布前需确认 published 状态。\n根据项目规范，后续需运行 npm run content:prepare 生成正式文章 slug。",
+      "images": [],
+      "contentDigest": "71a0640d23862737e5a2b3fdc632aefaa35e565a96702d944339d0adf8d17829",
+      "providerAssistantMessageId": "ce2e7ef8"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "msg-1792922641179-2knjlow",
+      "userTurnOrdinal": 3,
+      "state": "accepted",
+      "localMessageId": "msg-1792922641171-fdtc8sa",
+      "timestamp": 1792922641171,
+      "rawDisplayText": "这些知识属于什么学科？",
+      "canonicalText": "这些知识属于什么学科？",
+      "images": [],
+      "contentDigest": "57ed8fcbcb447ed9d4b92d75c164d804eb9572508785d638794b499c9d5e2e5b",
+      "providerAssistantMessageId": "518c5bba"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "msg-1792922694494-vt5b693",
+      "userTurnOrdinal": 4,
+      "state": "accepted",
+      "localMessageId": "msg-1792922694491-08iqop3",
+      "timestamp": 1792922694491,
+      "rawDisplayText": "我觉得附录可以补充一下AP是什么，简单介绍一下就行",
+      "canonicalText": "我觉得附录可以补充一下AP是什么，简单介绍一下就行",
+      "images": [],
+      "contentDigest": "3296b9f97f3d2646137fdbe7fb81551870ddc85b241cd11888d102989ff7782a",
+      "providerAssistantMessageId": "eb31193f"
+    }
+  ]
+}
