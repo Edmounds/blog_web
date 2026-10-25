@@ -4,10 +4,27 @@ const FRIEND_AVATAR_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "i
 const MAX_FRIEND_AVATAR_BYTES = 5 * 1024 * 1024;
 const MAX_REDIRECTS = 4;
 
+const ALLOWED_AVATAR_HOSTS = [
+  "hanlife02.com",
+  "github.com",
+  "githubusercontent.com",
+  "muelsyse.us",
+  "example.com",
+];
+
+function isAllowedAvatarHost(urlString) {
+  try {
+    const host = new URL(urlString).hostname.toLowerCase();
+    return ALLOWED_AVATAR_HOSTS.some((allowed) => host === allowed || host.endsWith("." + allowed));
+  } catch {
+    return false;
+  }
+}
+
 export async function onRequestGet({ env, request }) {
   try {
     const rawUrl = new URL(request.url).searchParams.get("url");
-    if (!rawUrl) return avatarError(400, "INVALID_AVATAR_URL", "头像 URL 无效。");
+    if (!rawUrl || !isAllowedAvatarHost(rawUrl)) return avatarError(400, "INVALID_AVATAR_URL", "头像 URL 无效或域名未被允许。");
     if (!env?.IMAGES) return avatarError(503, "IMAGE_SERVICE_UNAVAILABLE", "头像处理服务暂不可用。");
 
     const source = await fetchFriendAvatar(env, rawUrl);

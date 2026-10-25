@@ -41,18 +41,25 @@ export default {
     }
 
     const upstreamHeaders = new Headers(request.headers);
-    const response = await env.ORIGIN.fetch(new Request(request, { headers: upstreamHeaders }));
-    const headers = new Headers(response.headers);
-    headers.delete("access-control-allow-origin");
-    for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
-      headers.set(name, value);
-    }
-    headers.set("x-blog-edge", "preferred-worker");
+    try {
+      const response = await env.ORIGIN.fetch(new Request(request, { headers: upstreamHeaders }));
+      const headers = new Headers(response.headers);
+      headers.delete("access-control-allow-origin");
+      for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
+        headers.set(name, value);
+      }
+      headers.set("x-blog-edge", "preferred-worker");
 
-    return new Response(response.body, {
-      status: response.status,
-      statusText: response.statusText,
-      headers,
-    });
+      return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+      });
+    } catch (err) {
+      return new Response(`Proxy upstream error: ${err?.name || "Error"}: ${err?.message || String(err)}\n${err?.stack || ""}`, {
+        status: 502,
+        headers: { "content-type": "text/plain; charset=utf-8" },
+      });
+    }
   },
 };

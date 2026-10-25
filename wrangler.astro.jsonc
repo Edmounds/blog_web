@@ -1,6 +1,8 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "new-blog-ssr",
+  "name": "blog-web-core",
+  "workers_dev": false,
+  "preview_urls": false,
   "compatibility_date": "2026-05-17",
   "compatibility_flags": ["nodejs_compat"],
   "main": "src/worker.ts",

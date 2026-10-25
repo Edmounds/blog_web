@@ -3,11 +3,11 @@
   "name": "blog-preferred-proxy",
   "main": "workers/blog-preferred-proxy.js",
   "compatibility_date": "2026-07-23",
-  "workers_dev": true,
+  "workers_dev": false,
   "services": [
     {
       "binding": "ORIGIN",
-      "service": "new-blog-ssr"
+      "service": "blog-web-core"
     }
   ],
   "routes": [

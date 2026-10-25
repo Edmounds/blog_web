@@ -1,10 +1,40 @@
 const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/avif", "image/svg+xml"]);
 const MAX_BYTES = 10 * 1024 * 1024;
 
+const ALLOWED_HOSTS = [
+  "doubanio.com",
+  "music.126.net",
+  "steamstatic.com",
+  "image.tmdb.org",
+  "api.themoviedb.org",
+  "books.google.com",
+  "books.googleusercontent.com",
+  "dzcdn.net",
+  "img.muelsyse.us",
+  "hanlife02.com",
+  "github.com",
+  "raw.githubusercontent.com",
+  "avatars.githubusercontent.com",
+  "example.com",
+];
+
+function isAllowedHost(hostname) {
+  const host = hostname.toLowerCase();
+  return ALLOWED_HOSTS.some((allowed) => host === allowed || host.endsWith("." + allowed));
+}
+
 export default {
   async fetch(request) {
-    const url = targetUrl(request);
+    const boundTarget = request.headers.get("x-art-cover-url");
+    if (!boundTarget) return new Response("Forbidden", { status: 403 });
+    let url;
+    try {
+      url = new URL(boundTarget);
+    } catch {
+      return new Response("Invalid URL", { status: 400 });
+    }
     if (url.protocol !== "https:") return new Response("HTTPS required", { status: 400 });
+    if (!isAllowedHost(url.hostname)) return new Response("Host not permitted", { status: 403 });
     const addresses = await resolveAddresses(url.hostname);
     if (!addresses.length || addresses.some(isPrivateAddress)) return new Response("Private address rejected", { status: 403 });
     const headers = new Headers(request.headers);
@@ -30,10 +60,7 @@ function normalizeImageType(value) {
   return mime;
 }
 
-function targetUrl(request) {
-  const boundTarget = request.headers.get("x-art-cover-url");
-  return new URL(boundTarget || request.url);
-}
+
 
 function limitBody(body, limit) {
   if (!body) return null;

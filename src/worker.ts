@@ -4,8 +4,19 @@ import { syncSteamGames } from "./server/games.js";
 import { syncNeteaseRankingsWithRefresh } from "./server/netease-music.js";
 
 export default {
-  fetch(request: Request, env: Cloudflare.Env, ctx: ExecutionContext) {
-    return handle(request, env, ctx);
+  async fetch(request: Request, env: Cloudflare.Env, ctx: ExecutionContext) {
+    try {
+      return await handle(request, env, ctx);
+    } catch (error: any) {
+      console.error("Worker fetch failed", {
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+      });
+      return new Response(`Worker fetch error: ${error?.name || "Error"}: ${error?.message || String(error)}\n${error?.stack || ""}`, {
+        status: 500,
+        headers: { "content-type": "text/plain; charset=utf-8" },
+      });
+    }
   },
   scheduled(_controller: ScheduledController, env: Cloudflare.Env, ctx: ExecutionContext) {
     ctx.waitUntil(syncSteamGames(env).catch((error) => {
