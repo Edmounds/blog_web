@@ -31,7 +31,7 @@ jobs:
         run: npm ci
 
       - name: Install Chrome for Mermaid rendering
-        run: npx puppeteer browsers install chrome --install-deps
+        run: npx puppeteer browsers install chrome
 
       - name: Run tests
         run: npm test
