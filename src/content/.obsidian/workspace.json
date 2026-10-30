@@ -192,7 +192,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 388.1484375
+    "width": 596.62890625
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -209,21 +209,16 @@
   },
   "active": "151ac95f04400403",
   "lastOpenFiles": [
+    "drafts/链式代理前置节点选择.md",
+    "drafts",
     "blog/用Cloudflare R2+picgo实现免费图床.md",
     "blog/ROS2 Cyclone DDS 组播导致realsense深度断流.md",
     "blog/水果采摘比赛模型推理链路设计.md",
-    "blog/多AP竞争环境下的路由器优化策略.md",
-    "runs/detect/val",
-    "runs/detect",
-    "runs",
     "blog/使用GitHub Actions 实现博客自动化更新.md",
     "blog/链式代理前置节点选择.md",
-    "blog/计算机网络笔记.md",
-    "blog/为什么ROS2组件化能加速数据搬运？.md",
-    "blog/tmux常用命令.md",
     "blog/基于Cloudflare构建个人网站.md",
-    "drafts/链式代理前置节点选择.md",
-    "drafts",
+    "blog/tmux常用命令.md",
+    "blog/多AP竞争环境下的路由器优化策略.md",
     "note/我们是冠军!.md",
     "note/我对东野圭吾的印象.md",
     "note/当temu变成了形容词.md",
@@ -239,6 +234,9 @@
     "translations/zh-TW/note/arknights-p3r.md",
     "translations/zh-TW/note/dongyeguiwu-passaway.md",
     "translations/zh-TW/blog/first-note.md",
+    "translations/ja/note/arknights-p3r.md",
+    "translations/ja/note/dongyeguiwu-passaway.md",
+    "translations/ja/blog/first-note.md",
     "Pasted image 20260728123257.png",
     "Pasted image 20260728123243.png"
   ]
