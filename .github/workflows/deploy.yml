@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install Chrome for Mermaid rendering
+        run: npx puppeteer browsers install chrome --install-deps
+
       - name: Run tests
         run: npm test
 

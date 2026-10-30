@@ -39,6 +39,35 @@ npm run check
 npm run build
 ```
 
+### 加载性能验证
+
+首屏内容默认可见。主栏目只在悬停、聚焦、触摸或点击时加载，首次访问不显示全屏遮罩。
+
+启动开发服务后，运行浏览器检查：
+
+```bash
+npm run test:loading:smoke -- http://127.0.0.1:4321
+```
+
+浏览器检查使用开发依赖 Puppeteer。若安装时跳过了 Chrome 下载，运行 `npx puppeteer browsers install chrome`，或设置 `PUPPETEER_EXECUTABLE_PATH` 指向本机 Chrome。
+
+主站使用 `Biotif-*.v2.woff2`。四个字重合计从 207184 字节降至 89476 字节，保留全部 Unicode 覆盖、字形轮廓、字宽和名称元数据。旧文件保留给历史样式使用。
+
+使用 FontTools 4.68.0 和 Brotli 1.2.1 可重新生成字体：
+
+```bash
+for weight in Regular Medium SemiBold Bold; do
+  pyftsubset "public/fonts/Biotif-${weight}.woff2" \
+    --unicodes='*' --no-hinting --name-IDs='*' --name-legacy \
+    --name-languages='*' --notdef-outline --flavor=woff2 \
+    --output-file="public/fonts/Biotif-${weight}.v2.woff2"
+done
+```
+
+字体使用一年 immutable 缓存。后续修改字体内容时，需要再次更新文件名。
+
+生产构建会把 Mermaid 代码块渲染为带内容哈希的亮色、暗色 SVG。静态图表不加载浏览器端 Mermaid，主题切换由 CSS 完成。构建会复用重复图表，阻止渲染浏览器访问外部网络，并在语法错误时失败。开发模式保留按需客户端渲染。
+
 ## 内容
 
 - Blog：`src/content/blog/**/*.{md,mdx}`
