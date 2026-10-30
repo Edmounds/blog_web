@@ -18,7 +18,7 @@
 - `src/i18n/`: 国际化字典与翻译状态跟踪。子目录 `src/i18n/generated/` 为脚本自动生成目录，严禁手动修改其内容。
 - `schema/`: Cloudflare D1 数据库的 SQL Schema 定义文件（如 `comments.sql`、`post_stats.sql` 等）。
 - `scripts/`: 构建预处理、内容准备、图片优化与同步、自动翻译脚本（ESM 模块，后缀 `.mjs`）。
-- `workers/`: 独立部署的边缘 Worker 服务（`art-cover-fetcher.js` 封面反代抓取、`blog-preferred-proxy.js` 生产路由反代）。
+- `workers/`: 独立部署的边缘 Worker 服务（`art-cover-fetcher.js` 封面反代抓取）。
 - `tests/`: 单元与集成测试（使用 Node.js 内置 test runner）。必须对输入、输出与副作用进行真实断言，严禁通过正则匹配源码文本冒充测试。
 - `dist/`, `.astro/`, `.wrangler/`: 编译产物与本地调试运行时状态，由构建工具管理，严禁手动修改或提交至版本控制。
 - `.worktrees/`: Git 独立开发工作树目录，新功能开发隔离区。
@@ -71,7 +71,7 @@
 - 严禁在代码、日志、组件或仓库中硬编码任何 Secret（如 `COMMENT_HASH_SALT`、`NETEASE_COOKIE_KEY`、`WAKA_TIME_API_KEY` 等），本地仅存未追踪的 `.env`。
 - 禁止将国内可直连稳定的上游 HTTPS 资源（网易云 `p*.music.126.net`、豆瓣 `*.doubanio.com`）重复搬运/上传至 R2。
 - 禁止在 Markdown 正文中引用本地绝对路径图片，必须统一使用 `https://img.muelsyse.us/bed/...`。
-- 禁止在 `blog-web-core`（主 SSR Worker）中重复声明生产域名 `blog.muelsyse.us/*`（由 `blog-preferred-proxy` 统一持有）。
+- 生产域名 `blog.muelsyse.us/*` 由 `blog-web-core` 直接持有，禁止引入多余的前置代理 Worker。
 - 禁止在默认分支 `master` 存在未提交更改时未经确认直接覆盖代码；所有新功能开发必须在 `.worktrees/` 独立工作树中进行。
 - 禁止私自引入重型运行时依赖，优先复用原生标准库或项目内现有依赖。
 

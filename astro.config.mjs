@@ -67,11 +67,11 @@ export default defineConfig({
   compressHTML: true,
   site: "https://blog.muelsyse.us",
   output: 'server',
-  // ClientRouter enables hover prefetch by default; viewport strategy also
-  // covers touch devices, where most mainland China traffic comes from.
+  // ClientRouter hover prefetch avoids bandwidth contention on initial load
+  // while keeping navigation responsive.
   prefetch: {
     prefetchAll: true,
-    defaultStrategy: "viewport",
+    defaultStrategy: "hover",
   },
   adapter: cloudflare({
     imageService: "compile",

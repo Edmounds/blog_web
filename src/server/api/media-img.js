@@ -1,6 +1,6 @@
 // Serves the blog-images R2 bucket's content images (blog/ and legacy bed/
-// prefixes) same-origin so they ride the preferred-proxy route instead of a
-// separate img.muelsyse.us connection, which is slow from mainland China.
+// prefixes) same-origin so they ride the main site route instead of a
+// separate img.muelsyse.us connection.
 const CONTENT_IMAGE_KEY = /^(?:blog|bed)\/[A-Za-z0-9_-]+(?:\.[A-Za-z0-9]+)*\.(?:avif|gif|jpe?g|png|svg|webp)$/i;
 
 export async function onRequestGet({ env, params, request }) {

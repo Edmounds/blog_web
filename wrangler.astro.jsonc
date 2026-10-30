@@ -5,6 +5,12 @@
   "preview_urls": false,
   "compatibility_date": "2026-05-17",
   "compatibility_flags": ["nodejs_compat"],
+  "routes": [
+    {
+      "pattern": "blog.muelsyse.us/*",
+      "zone_name": "muelsyse.us"
+    }
+  ],
   "main": "src/worker.ts",
   "triggers": { "crons": ["0 20 * * *"] },
   "keep_vars": true,

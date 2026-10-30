@@ -114,6 +114,6 @@ npm run cf:dev
 
 音乐页的“听歌排行”由 `blog-web-core` 每天北京时间 04:00 先续期网易云登录，再分别同步一周排行前 20 首和总排行前 50 首；单项失败时保留上一次成功排行。首次上线先配置至少 32 个字符的 `NETEASE_COOKIE_KEY` Secret 并运行 `npm run db:migrate:remote`。随后可在 Cloudflare Access 保护的 `/admin/music/` 扫码登录；页面会显示 Token 与排行刷新时间及最近错误，也可手动刷新。旧的 `NETEASE_MUSIC_U` 与 `NETEASE_CSRF` 只作为迁移引导，首次成功续期会将音乐 Cookie 白名单加密写入 D1。
 
-Cloudflare Access 必须同时保护 `blog.muelsyse.us/admin/*` 和 `blog.muelsyse.us/api/admin/*`。本地部署运行 `npm run deploy`；GitHub Actions 使用 Node 22，并需要 `CLOUDFLARE_API_TOKEN` 与 `CLOUDFLARE_ACCOUNT_ID`。`npm run deploy` 只更新 `blog-web-core`；生产域名路由继续由 `blog-preferred-proxy` 持有，它通过 `ORIGIN` service binding 调用该 Astro SSR Worker，因此代理 Worker 只需在其配置或代码变化时单独执行 `npx wrangler deploy --config wrangler.preferred-proxy.jsonc`。不要让两个 Worker 同时声明 `blog.muelsyse.us/*`。
+Cloudflare Access 必须同时保护 `blog.muelsyse.us/admin/*` 和 `blog.muelsyse.us/api/admin/*`。本地部署运行 `npm run deploy`；GitHub Actions 使用 Node 22，并需要 `CLOUDFLARE_API_TOKEN` 与 `CLOUDFLARE_ACCOUNT_ID`。`npm run deploy` 构建并部署 `blog-art-cover-fetcher` 与持有生产域名路由 `blog.muelsyse.us/*` 的 `blog-web-core` 主 Worker。
 
 生产 API 路由位于 `src/pages/`，可复用的 Worker 服务端逻辑位于 `src/server/`。

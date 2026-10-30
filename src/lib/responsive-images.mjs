@@ -1,8 +1,8 @@
 export const ARTICLE_IMAGE_SIZES = "(max-width: 48rem) calc(100vw - 2rem), 46rem";
 
-// Content images live in R2 behind img.muelsyse.us, which bypasses the
-// preferred-proxy route and needs an extra DNS+TLS handshake. Serving them
-// same-origin through /media/img/* keeps them on the optimized path.
+// Content images live in R2 behind img.muelsyse.us, which needs an extra
+// DNS+TLS handshake. Serving them same-origin through /media/img/* keeps
+// them on the main origin connection.
 const REMOTE_IMAGE_PREFIX = /^https:\/\/img\.muelsyse\.us\/((?:blog|bed)\/)/;
 
 export const toSameOriginImageUrl = (url) =>
