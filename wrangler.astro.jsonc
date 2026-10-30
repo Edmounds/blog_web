@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "blog-web-core",
+  "name": "blog-web-site",
   "workers_dev": false,
   "preview_urls": false,
   "compatibility_date": "2026-05-17",
