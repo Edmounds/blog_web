@@ -17,7 +17,7 @@ const routes = [...PRIMARY_ROUTES];
 const routePath = stripLocaleFromPath(initialPath).pathname;
 const initialIndex = Math.max(0, routes.indexOf(routePath as any));
 const sectionLabels = ["Home", "Blog", "Project", "Note", "Links", "About"];
-const sections = [initialIndex === 0 ? HomeSection : null, null, null, null, null, null] as Array<
+const sections = [null, null, null, null, null, null] as Array<
   typeof HomeSection | null
 >;
 if (initialIndex === 1)
@@ -56,15 +56,17 @@ if (initialIndex === 5)
         data-track
         style={`transform: translate3d(-${initialIndex * 100}%, 0, 0);`}
       >
+        <section data-slide-index="0" data-path="/">
+          <HomeSection locale={locale} />
+        </section>
         {
-          routes.map((path, index) => {
+          routes.slice(1).map((path, offset) => {
+            const index = offset + 1;
             const Section = sections[index];
             return (
               <section
                 data-slide-index={index}
                 data-path={path}
-                data-active={String(index === initialIndex)}
-                aria-hidden={index !== initialIndex}
                 data-section-url={localizePath(path, locale)}
                 data-load-state={Section ? "loaded" : "idle"}
               >
@@ -100,7 +102,7 @@ if (initialIndex === 5)
     display: flex;
     width: 100%;
     will-change: transform;
-    transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 680ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   .spa-track > section {
     position: relative;
@@ -188,6 +190,9 @@ if (initialIndex === 5)
     let wheelDelta = 0;
     let wheelTimer;
     let wheelLocked = false;
+    let idleHandle;
+    let backgroundTimer;
+    let backgroundQueue = [];
 
     const copySectionContent = (slide, sourceDocument) => {
       const source = sourceDocument.querySelector(
@@ -209,7 +214,7 @@ if (initialIndex === 5)
     };
     const loadSlide = async (index) => {
       const slide = slides[index];
-      if (!(slide instanceof HTMLElement)) return;
+      if (!(slide instanceof HTMLElement) || index === 0) return;
       if (slide.dataset.loadState === "loaded") return;
       if (slide.__loadPromise) return slide.__loadPromise;
       slide.dataset.loadState = "loading";
@@ -231,12 +236,57 @@ if (initialIndex === 5)
         })
         .catch((error) => {
           slide.dataset.loadState = "error";
-          slide.__loadPromise = undefined;
           slide.innerHTML =
             '<div class="spa-section-error" role="alert">页面加载失败，请刷新后重试。</div>';
           throw error;
         });
       return slide.__loadPromise;
+    };
+    const runWhenIdle = (callback, timeout) => {
+      if ("requestIdleCallback" in window)
+        idleHandle = window.requestIdleCallback(callback, { timeout });
+      else idleHandle = window.setTimeout(callback, Math.min(timeout, 240));
+    };
+    const neighborIndexes = (index) =>
+      [index - 1, index + 1].filter(
+        (candidate) => candidate > 0 && candidate < slides.length,
+      );
+    const distanceIndexes = (index) =>
+      slides
+        .map((_, candidate) => candidate)
+        .filter((candidate) => candidate > 0 && candidate !== index)
+        .sort(
+          (left, right) => Math.abs(left - index) - Math.abs(right - index),
+        );
+    const scheduleAdjacentSlides = () => {
+      runWhenIdle(() => {
+        for (const index of neighborIndexes(activeIndex))
+          void loadSlide(index).catch(() => {});
+      }, 800);
+    };
+    const scheduleRemainingSlides = () => {
+      backgroundQueue = distanceIndexes(activeIndex).filter(
+        (index) => !neighborIndexes(activeIndex).includes(index),
+      );
+      const loadNext = () => {
+        if (document.visibilityState !== "visible") return;
+        while (backgroundQueue.length > 0) {
+          const index = backgroundQueue.shift();
+          const slide = slides[index];
+          if (
+            slide instanceof HTMLElement &&
+            slide.dataset.loadState !== "loaded"
+          ) {
+            void loadSlide(index).catch(() => {});
+            break;
+          }
+        }
+        if (backgroundQueue.length > 0) runWhenIdle(loadNext, 1800);
+      };
+      backgroundTimer = window.setTimeout(
+        () => runWhenIdle(loadNext, 1800),
+        3_000,
+      );
     };
 
     const stripLocale = (pathname) => {
@@ -263,10 +313,12 @@ if (initialIndex === 5)
     };
     const setActive = async (index, path, push = true) => {
       if (index < 0 || index >= slides.length) return;
-      try {
-        await loadSlide(index);
-      } catch {
-        return;
+      if (index > 0) {
+        try {
+          await loadSlide(index);
+        } catch {
+          return;
+        }
       }
       root.dataset.transitioning = "true";
       root.dataset.activeIndex = String(index);
@@ -288,7 +340,7 @@ if (initialIndex === 5)
       else
         window.setTimeout(() => {
           root.dataset.transitioning = "false";
-        }, 260);
+        }, 760);
     };
 
     track.addEventListener(
@@ -303,11 +355,8 @@ if (initialIndex === 5)
       const preloadFromLink = () => {
         if (!(link instanceof HTMLAnchorElement)) return;
         const index = indexForPath(new URL(link.href).pathname);
-        const connection = navigator.connection;
-        if (connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType ?? "")) return;
-        if (index >= 0) void loadSlide(index).catch(() => {});
+        if (index > 0) void loadSlide(index).catch(() => {});
       };
-      link.dataset.astroPrefetch = "false";
       link.addEventListener("pointerenter", preloadFromLink, { signal });
       link.addEventListener("focusin", preloadFromLink, { signal });
       link.addEventListener("touchstart", preloadFromLink, {
@@ -378,7 +427,7 @@ if (initialIndex === 5)
               void setActive(next, localizedRoutes[next]);
               window.setTimeout(() => {
                 wheelLocked = false;
-              }, 260);
+              }, 700);
             }
           }
           wheelDelta = 0;
@@ -386,16 +435,39 @@ if (initialIndex === 5)
       },
       { passive: true, signal },
     );
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+        if (
+          document.visibilityState === "visible" &&
+          backgroundQueue.length > 0
+        ) {
+          clearTimeout(backgroundTimer);
+          scheduleRemainingSlides();
+        }
+      },
+      { signal },
+    );
+
     browserWindow.__spaCleanup = () => {
       controller.abort();
       clearTimeout(wheelTimer);
+      clearTimeout(backgroundTimer);
+      if ("cancelIdleCallback" in window && idleHandle)
+        window.cancelIdleCallback(idleHandle);
+      else if (idleHandle) window.clearTimeout(idleHandle);
     };
     document.addEventListener("astro:before-swap", browserWindow.__spaCleanup, {
       once: true,
       signal,
     });
 
-    void setActive(activeIndex, location.pathname, false);
+    const activateInitial = async () => {
+      await setActive(activeIndex, location.pathname, false);
+      scheduleAdjacentSlides();
+      scheduleRemainingSlides();
+    };
+    void activateInitial();
   }
 
   initSpa();

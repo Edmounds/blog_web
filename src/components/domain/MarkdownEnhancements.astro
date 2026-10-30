@@ -75,7 +75,6 @@ const labels = enhancementLabels[locale];
   let mermaidApi: MermaidApi | undefined;
   let mermaidLoad: Promise<MermaidApi> | undefined;
   let renderSequence = 0;
-  let pendingRender = Promise.resolve();
 
   const getConfig = () => document.querySelector<HTMLElement>("[data-markdown-enhancements]");
   const getProseContainers = () => [
@@ -191,7 +190,7 @@ const labels = enhancementLabels[locale];
         figure.appendChild(source);
         diagrams.push(diagram);
       });
-      diagrams.push(...container.querySelectorAll<HTMLElement>(".markdown-mermaid:not([data-prerendered]) .markdown-mermaid__diagram"));
+      diagrams.push(...container.querySelectorAll<HTMLElement>(".markdown-mermaid__diagram"));
     });
     return [...new Set(diagrams)];
   };
@@ -204,42 +203,34 @@ const labels = enhancementLabels[locale];
     return mermaidLoad;
   };
 
-  const renderMermaid = () => {
-    pendingRender = pendingRender.then(async () => {
-      const diagrams = prepareMermaidBlocks();
-      if (diagrams.length === 0) return;
+  const renderMermaid = async () => {
+    const diagrams = prepareMermaidBlocks();
+    if (diagrams.length === 0) return;
 
-      let mermaid: MermaidApi;
+    let mermaid: MermaidApi;
+    try {
+      mermaid = await loadMermaid();
+    } catch (error) {
+      console.error("Failed to load Mermaid", error);
+      return;
+    }
+
+    const theme = document.documentElement.classList.contains("dark") ? "dark" : "default";
+    mermaid.initialize({ startOnLoad: false, securityLevel: "strict", theme });
+
+    for (const diagram of diagrams) {
+      const source = diagram.dataset.mermaidSource ?? "";
+      diagram.replaceChildren();
+      diagram.closest(".markdown-mermaid")?.removeAttribute("data-rendered");
       try {
-        mermaid = await loadMermaid();
+        const { svg, bindFunctions } = await mermaid.render(`markdown-mermaid-${renderSequence++}`, source);
+        diagram.innerHTML = svg;
+        bindFunctions?.(diagram);
+        diagram.closest(".markdown-mermaid")?.setAttribute("data-rendered", "true");
       } catch (error) {
-        mermaidLoad = undefined;
-        console.error("Failed to load Mermaid", error);
-        return;
+        console.error("Failed to render Mermaid diagram", error);
       }
-
-      const theme = document.documentElement.classList.contains("dark") ? "dark" : "default";
-      mermaid.initialize({ startOnLoad: false, securityLevel: "strict", theme });
-
-      for (const diagram of diagrams) {
-        if (!diagram.isConnected || diagram.dataset.renderedTheme === theme) continue;
-        const source = diagram.dataset.mermaidSource ?? "";
-        diagram.replaceChildren();
-        diagram.closest(".markdown-mermaid")?.removeAttribute("data-rendered");
-        try {
-          const { svg, bindFunctions } = await mermaid.render(`markdown-mermaid-${renderSequence++}`, source);
-          diagram.innerHTML = svg;
-          bindFunctions?.(diagram);
-          diagram.closest(".markdown-mermaid")?.setAttribute("data-rendered", "true");
-          diagram.dataset.renderedTheme = theme;
-        } catch (error) {
-          console.error("Failed to render Mermaid diagram", error);
-        }
-      }
-    }).catch((error) => {
-      console.error("Failed to initialize Mermaid diagrams", error);
-    });
-    return pendingRender;
+    }
   };
 
   const enhanceCarousels = () => {
@@ -377,7 +368,6 @@ const labels = enhancementLabels[locale];
     getProseContainers().forEach((container) => {
       const images = [...container.querySelectorAll<HTMLImageElement>("img")].filter((image) => (
         !image.closest("a, .acknowledgement-logo, .image-layout__pagination")
-        && !image.closest(".markdown-mermaid")
         && !image.matches("[data-image-layout-placeholder]")
       ));
       images.forEach((image, index) => {
