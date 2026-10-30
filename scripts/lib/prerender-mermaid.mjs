@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { access, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { fromHtml } from "hast-util-from-html";
 
 const MERMAID_BLOCK = /<pre\b[^>]*>\s*<code\b[^>]*class="[^"]*\blanguage-mermaid\b[^"]*"[^>]*>([\s\S]*?)<\/code>\s*<\/pre>/g;
@@ -10,22 +10,6 @@ const textContent = (node) => node.type === "text"
 const escapeAttribute = (value) => value.replace(/[&"<>]/g, (character) => ({
   "&": "&amp;", '"': "&quot;", "<": "&lt;", ">": "&gt;",
 })[character]);
-
-const resolveExecutablePath = async () => {
-  if (process.env.PUPPETEER_EXECUTABLE_PATH) return process.env.PUPPETEER_EXECUTABLE_PATH;
-  for (const candidate of [
-    "/usr/bin/google-chrome",
-    "/usr/bin/google-chrome-stable",
-    "/usr/bin/chromium",
-    "/usr/bin/chromium-browser",
-  ]) {
-    try {
-      await access(candidate);
-      return candidate;
-    } catch {}
-  }
-  return undefined;
-};
 
 async function* htmlFiles(dir) {
   for (const entry of await readdir(dir, { withFileTypes: true })) {
@@ -48,9 +32,8 @@ export async function prerenderMermaid(dir) {
       if (blocks.length === 0) continue;
       if (!browser) {
         const { default: puppeteer } = await import("puppeteer");
-        const executablePath = await resolveExecutablePath();
         browser = await puppeteer.launch({
-          executablePath,
+          executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
           args: ["--no-sandbox"],
         });
         page = await browser.newPage();
