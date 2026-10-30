@@ -15,8 +15,8 @@ try {
   await page.setCacheEnabled(false);
   await page.setJavaScriptEnabled(false);
   await page.goto(`${origin}/`, { waitUntil: "load" });
-  assert.equal(await page.$eval("main [data-reveal]", (element) => getComputedStyle(element).opacity), "1");
-  assert.equal(await page.$eval("main [data-reveal]", (element) =>
+  assert.equal(await page.$eval(".profile-avatar", (element) => getComputedStyle(element).opacity), "1");
+  assert.equal(await page.$eval(".profile-avatar", (element) =>
     getComputedStyle(element).visibility === "visible" && element.getBoundingClientRect().height > 0), true);
   assert.equal(await page.$eval("main", (element) => element.inert), false);
 
