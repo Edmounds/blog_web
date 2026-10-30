@@ -163,7 +163,7 @@ const isLifeActive = routePath.startsWith("/life/");
 
 <script>
   import { stripLocaleFromPath } from "../../lib/i18n";
-  import { computeSubmenuPlacement } from "../../lib/life";
+  import { computeSubmenuShift } from "../../lib/life";
 
   type HeaderWindow = Window & { __siteHeaderCleanup?: () => void };
 
@@ -198,25 +198,33 @@ const isLifeActive = routePath.startsWith("/life/");
     let pointerInsideNavRegion = false;
     let frameId = 0;
 
-    const syncLifeMenuPlacement = () => {
-      if (!desktopLayout.matches) return;
+    const computeCurrentSubmenuShift = () => {
+      if (!desktopLayout.matches) return 0;
       if (
         !(lifeTrigger instanceof HTMLElement) ||
         !(lifeMenu instanceof HTMLElement)
       )
-        return;
+        return 0;
 
       const searchTarget =
         header.querySelector("[data-search-trigger]") ||
         header.querySelector("[data-global-search]") ||
         frameEnd;
-      if (!(searchTarget instanceof HTMLElement)) return;
+      if (!(searchTarget instanceof HTMLElement)) return 0;
 
       const searchLeft = searchTarget.getBoundingClientRect().left;
       const triggerRight = lifeTrigger.getBoundingClientRect().right;
+      const navLeft = desktopNav.getBoundingClientRect().left;
+      const logoRight = signatureMark.getBoundingClientRect().right;
+
+      const currentShift =
+        parseFloat(desktopNav.style.getPropertyValue("--desktop-nav-shift")) ||
+        0;
+      const baseTriggerRight = triggerRight - currentShift;
+      const baseNavLeft = navLeft - currentShift;
 
       const links = Array.from(lifeMenu.querySelectorAll("a"));
-      if (links.length === 0) return;
+      if (links.length === 0) return 0;
 
       const linksWidth = links.reduce(
         (sum, link) => sum + link.getBoundingClientRect().width,
@@ -225,21 +233,33 @@ const isLifeActive = routePath.startsWith("/life/");
 
       const computed = getComputedStyle(lifeMenu);
       const gapValue =
-        parseFloat(computed.rowGap) ||
         parseFloat(computed.columnGap) ||
-        parseFloat(computed.paddingTop) ||
+        parseFloat(computed.rowGap) ||
         parseFloat(computed.paddingLeft) ||
         16;
 
       const expectedHorizontalWidth =
         gapValue + linksWidth + (links.length - 1) * gapValue;
 
-      lifeMenu.dataset.placement = computeSubmenuPlacement({
-        triggerRight,
+      return computeSubmenuShift({
+        triggerRight: baseTriggerRight,
         submenuWidth: expectedHorizontalWidth,
         searchLeft,
-        buffer: 12,
+        navLeft: baseNavLeft,
+        logoRight,
+        searchBuffer: 12,
+        logoBuffer: 16,
       });
+    };
+
+    const updateSubmenuShift = () => {
+      if (!lifeIsOpen()) return;
+      const shift = computeCurrentSubmenuShift();
+      if (shift > 0) {
+        desktopNav.style.setProperty("--desktop-nav-shift", `-${shift}px`);
+      } else {
+        desktopNav.style.removeProperty("--desktop-nav-shift");
+      }
     };
 
     const clearContentFrame = () => {
@@ -256,7 +276,6 @@ const isLifeActive = routePath.startsWith("/life/");
         clearContentFrame();
         return;
       }
-      syncLifeMenuPlacement();
 
       const markRect = signatureMark.getBoundingClientRect();
       const endRect = frameEnd.getBoundingClientRect();
@@ -324,8 +343,18 @@ const isLifeActive = routePath.startsWith("/life/");
     const setLifeOpen = (open: boolean) => {
       lifeTrigger?.setAttribute("aria-expanded", String(open));
       if (lifeMenu instanceof HTMLElement) lifeMenu.dataset.open = String(open);
-      if (open) setHidden(false);
-      else syncAfterMenuChange();
+      if (open) {
+        setHidden(false);
+        const shift = computeCurrentSubmenuShift();
+        if (shift > 0) {
+          desktopNav.style.setProperty("--desktop-nav-shift", `-${shift}px`);
+        } else {
+          desktopNav.style.removeProperty("--desktop-nav-shift");
+        }
+      } else {
+        desktopNav.style.removeProperty("--desktop-nav-shift");
+        syncAfterMenuChange();
+      }
     };
     const closeLife = () => setLifeOpen(false);
     mobileTrigger?.addEventListener(
@@ -354,19 +383,13 @@ const isLifeActive = routePath.startsWith("/life/");
     const lifeMenuRoot = lifeMenu?.parentElement;
     lifeMenuRoot?.addEventListener(
       "pointerenter",
-      () => {
-        syncLifeMenuPlacement();
-        setLifeOpen(true);
-      },
+      () => setLifeOpen(true),
       { signal },
     );
     lifeMenuRoot?.addEventListener("pointerleave", closeLife, { signal });
     lifeMenuRoot?.addEventListener(
       "focusin",
-      () => {
-        syncLifeMenuPlacement();
-        setLifeOpen(true);
-      },
+      () => setLifeOpen(true),
       { signal },
     );
     document.addEventListener(
@@ -421,11 +444,15 @@ const isLifeActive = routePath.startsWith("/life/");
       },
       { passive: true, signal },
     );
-    window.addEventListener("resize", scheduleContentFrame, {
+    const handleResize = () => {
+      scheduleContentFrame();
+      updateSubmenuShift();
+    };
+    window.addEventListener("resize", handleResize, {
       passive: true,
       signal,
     });
-    window.visualViewport?.addEventListener("resize", scheduleContentFrame, {
+    window.visualViewport?.addEventListener("resize", handleResize, {
       passive: true,
       signal,
     });
@@ -433,23 +460,21 @@ const isLifeActive = routePath.startsWith("/life/");
       "change",
       () => {
         setHidden(canAutoHide() && window.scrollY > 0);
-        scheduleContentFrame();
-        syncLifeMenuPlacement();
+        handleResize();
       },
       { signal },
     );
 
     const syncRouteState = () => {
       setHidden(canAutoHide() && window.scrollY > 0);
-      syncLifeMenuPlacement();
+      desktopNav.style.removeProperty("--desktop-nav-shift");
     };
     window.addEventListener("spa:nav-sync", syncRouteState, { signal });
     window.addEventListener("popstate", syncRouteState, { signal });
 
     setHidden(canAutoHide() && window.scrollY > 0);
     scheduleContentFrame();
-    syncLifeMenuPlacement();
-    document.fonts?.ready.then(syncLifeMenuPlacement);
+    document.fonts?.ready.then(updateSubmenuShift);
     const cleanup = () => {
       controller.abort();
       frameObserver.disconnect();
@@ -505,9 +530,10 @@ const isLifeActive = routePath.startsWith("/life/");
     display: flex;
     align-items: center;
     gap: var(--desktop-nav-gap);
+    transform: translateX(var(--desktop-nav-shift, 0px));
     transition:
       opacity 180ms ease,
-      transform 180ms ease,
+      transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
       visibility 180ms ease;
   }
   .desktop-nav-region {
@@ -658,23 +684,6 @@ const isLifeActive = routePath.startsWith("/life/");
   .mobile-menu__sub a {
     color: var(--text-muted);
     font-size: var(--type-base);
-  }
-  .life-menu__items[data-placement="bottom"] {
-    top: 100%;
-    left: 0;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--life-submenu-gap);
-    padding-top: var(--life-submenu-gap);
-    padding-left: 0;
-    transform: translateY(-0.25rem);
-  }
-  .life-menu__items[data-placement="bottom"][data-open="true"],
-  .life-menu:hover .life-menu__items[data-placement="bottom"],
-  .life-menu:focus-within .life-menu__items[data-placement="bottom"] {
-    visibility: visible;
-    opacity: 1;
-    transform: translateY(0);
   }
   @media (max-width: 64rem) {
     .site-header {

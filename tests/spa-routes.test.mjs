@@ -10,7 +10,7 @@ import {
 import {
   LIFE_TITLES,
   LIFE_TYPES,
-  computeSubmenuPlacement,
+  computeSubmenuShift,
   isLifeType,
 } from "../src/lib/life.ts";
 
@@ -80,34 +80,46 @@ test("life titles use capitalized English names", () => {
   });
 });
 
-test("computeSubmenuPlacement switches to bottom on collision and right when room permits", () => {
+test("computeSubmenuShift shifts nav left to avoid search and clamps before logo boundary", () => {
+  // Case 1: Room permits without shift
   assert.equal(
-    computeSubmenuPlacement({
+    computeSubmenuShift({
       triggerRight: 700,
       submenuWidth: 260,
-      searchLeft: 950,
-      buffer: 12,
+      searchLeft: 1000,
+      navLeft: 450,
+      logoRight: 250,
+      searchBuffer: 12,
+      logoBuffer: 16,
     }),
-    "bottom",
+    0,
   );
 
+  // Case 2: Collision with search (needs 700 + 260 + 12 - 920 = 52px), logo margin allows (450 - 250 - 16 = 184px)
   assert.equal(
-    computeSubmenuPlacement({
+    computeSubmenuShift({
       triggerRight: 700,
       submenuWidth: 260,
-      searchLeft: 972,
-      buffer: 12,
+      searchLeft: 920,
+      navLeft: 450,
+      logoRight: 250,
+      searchBuffer: 12,
+      logoBuffer: 16,
     }),
-    "bottom",
+    52,
   );
 
+  // Case 3: Overflow is 70px, but logo margin only permits 40px -> clamped to 40px
   assert.equal(
-    computeSubmenuPlacement({
+    computeSubmenuShift({
       triggerRight: 700,
       submenuWidth: 260,
-      searchLeft: 1100,
-      buffer: 12,
+      searchLeft: 902,
+      navLeft: 306,
+      logoRight: 250,
+      searchBuffer: 12,
+      logoBuffer: 16,
     }),
-    "right",
+    40,
   );
 });
