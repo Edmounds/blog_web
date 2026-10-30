@@ -305,10 +305,6 @@
       "fingerprint": "3bc72e427ef03161165bbc39657cad21d41e64f78a613ce7dfe7d2ebf144c35e",
       "translation": "---\ntitle: My Impression of Keigo Higashino\ndescription: Keigo Higashino dies of colorectal cancer at the age of 68\ncreatedAt: 2026-07-27T00:00:00.000Z\nslug: 20260727-01\npublished: true\ntags:\n  - 日常\n---\n\n# My Impression of Keigo Higashino\nThe first work by Keigo Higashino that I read was probably *The Miracles of the Namiya General Store*.\n\nI remember it was when I was in elementary school. I was spending my summer vacation at my cousin’s house, and since there were no phones to play with back then, I had no choice but to read. As it happened, there was a copy of *The Miracles of the Namiya General Store* there. Judging solely by the title, I thought it would be a light, slice-of-life kind of book. It turned out to be quite fascinating. The redemption brought about through letters sent across time left a deep impression on me, and I remembered the author.\n\nThe next time I encountered his work was in my second year of high school.\n\nAt the time, people in our dormitory started passing around *Journey Under the Midnight Sun*. I remember that at least three of us read it on the same Kindle. We were genuinely so engrossed that we barely ate or slept—it was almost as intense as binge-watching *Breaking Bad*. BTW, even when I read online novels, I was never as enthusiastic as I was with this one. When it was my turn to read it, I would basically finish my homework as quickly as possible during self-study periods and then sneak a look, read while eating, and keep reading even after the dormitory lights had been turned off (thank goodness for this backlit Kindle). It was my first time reading a mystery novel with such mature subject matter. Although it was dark, it also had a certain sense of realism, and the way the main plot progressed through the alternating perspectives of the male and female leads was quite interesting. More importantly, the story was full of twists and turns, and it was very difficult to guess who the killer was. The most heartbreaking part was that Ryoji Kirihara ultimately protected Yukiho by taking his own life, only for Yukiho to say expressionlessly, “I don’t know this person at all.”\n\nThe next time I encountered “Yukiho” was in *The Phantom Night*. This story wasn’t as compelling as *Journey Under the Midnight Sun*, though it was still fairly decent. The ending of *The Phantom Night* was also very similar to that of *Journey Under the Midnight Sun*: the male protagonist eventually discovers that the female protagonist has been deceiving and using him all along, but in the end, he still takes his own life to protect her, allowing her to escape without suspicion.\n\nI won’t go into all his other books one by one. The image below shows the works by Keigo Higashino that I’ve read.\n![Works by Keigo Higashino that I’ve read|475](https://img.muelsyse.us/bed/20260808043442545.png)\n\n\nKeigo Higashino was a great writer. I’m grateful to him for enabling someone like me, who isn’t accustomed to reading, to concentrate and finish an entire book. I’m also grateful for the stories he created, which stay with you long after you’ve finished them.\n\nR.I.P."
     },
-    "en:content.about.profile.md.document": {
-      "fingerprint": "d220bca0e990c79995333be6666dc2a9dc71941d2dfb842b199660326f4e0d85",
-      "translation": "---\nname: Last4ev3r\nmotto: I focus on making complex tools feel calm and readable.\nportrait: /images/content/about/profile-fe4782a21dcb-w320.webp\nbackgroundKeywords:\n  - C++\n  - ROS2\n  - ubuntu\n  - 天文\n  - AI\n  - Python\n  - Music\n  - CQU\n  - SLAM\n---\n\n\n## About the Website\n- BLOG: Publish serious technical articles\n- NOTE Daily Ramblings\n- LINKS Blogroll\n- ABOUT is just this page\n- LIFE Share the books, TV shows, films, music, and games I’ve experienced\n\n## About Me\n\nThird-year student at Shazheng Street Men's Vocational Technical College, Shapingba, Chongqing  \nInto astronomy; I’ve dabbled in planetary astrophotography and hope to try deep-sky and wide-field astrophotography someday  \nStill getting skunked at lure fishing\n\n```image-layout\n---\nlayout: carousel\ngrid: |\n  A A B\n  A A C\n---\n![jupiter](https://img.muelsyse.us/bed/jupiter.png)\n\n\n![moon](https://img.muelsyse.us/bed/moon.png)\n```\n\nI enjoy tinkering.\n\nHere are a few of my ROS-related open-source projects. If you find them useful, feel free to star them~\n\nhttps://github.com/ConQU2026/auto_serial_bridge  \nhttps://github.com/Edmounds/robviz\n\n-  2026 RoboCup Finals National Champion\n- 2026 Electronic Design Contest — Provincial First Prize\n- 2026 RoboCon Main Competition — 3rd Place at Nationals\n\n## Contact Me\n[i@muelsyse.us](mailto:i@muelsyse.us)\n\n## Acknowledgments\n\nThis site is based on[Astro-star](https://github.com/hanlife02/Astro-star)Modify and Rebuild\n\nThis site uses the following services/APIs.\n\n<div class=\"acknowledgement-logos\"><a class=\"acknowledgement-logo\" href=\"https://www.cloudflare.com/\"><img src=\"/images/cloudflare-logo.svg?v=20260728\" alt=\"Cloudflare\" width=\"300\" height=\"64\" loading=\"eager\" decoding=\"async\"></a><a class=\"acknowledgement-logo\" href=\"https://www.themoviedb.org/\"><img src=\"/images/tmdb-logo.svg?v=20260728\" alt=\"The Movie Database\" width=\"300\" height=\"64\" loading=\"eager\" decoding=\"async\"></a><a class=\"acknowledgement-logo\" href=\"https://steamcommunity.com/dev\"><img src=\"/images/steam-logo.svg?v=20260728\" alt=\"Steam\" width=\"240\" height=\"64\" loading=\"eager\" decoding=\"async\"></a></div>\n"
-    },
     "zh-TW:messages.site.defaultDescription": {
       "fingerprint": "edcf720104fe86232c60ebcf88ec25b2239b1572f22992ef2057e9371268a053",
       "translation": "個人部落格與設計思考。"
@@ -613,10 +609,6 @@
       "fingerprint": "3bc72e427ef03161165bbc39657cad21d41e64f78a613ce7dfe7d2ebf144c35e",
       "translation": "---\ntitle: 我對東野圭吾的印象\ndescription: 東野圭吾因大腸癌逝世 享年68歲\ncreatedAt: 2026-07-27T00:00:00.000Z\nslug: 20260727-01\npublished: true\ntags:\n  - 日常\n---\n\n# 我對東野圭吾的印象\n我第一次閱讀東野圭吾的作品，應該是他的《解憂雜貨店》。\n\n我記得那時候還在國小，暑假在表姐家玩。那時沒有手機可以玩，於是只能看書了，剛好有一本《解憂雜貨店》。單從書名來看，我以為是日常休閒類型的書呢。這本書相當精彩，透過跨越時空的信件實現救贖，也讓我記住了這位作者。\n\n下一次再相見就是高二了。\n\n當時我們宿舍開始傳閱《白夜行》，我記得至少有三個人是用那台 Kindle 看完《白夜行》的。當時真的是廢寢忘食，跟追《絕命毒師》有得一比。順帶一提，我追網路小說都沒有追這本那麼積極。輪到我看的時候，我基本上就是自習課抓緊時間寫完作業後開始偷偷看、邊吃飯邊看，寢室熄燈了也繼續看（感謝這款有背光的 Kindle）。這是我第一次看這種尺度有點大的懸疑小說，雖然黑暗，卻又有一種真實感，而且男女雙視角的主線推進也滿有意思的。更重要的是，劇情確實相當跌宕起伏，凶手很難猜。最讓人意難平的是，桐原亮司最後透過自殺保護了雪穗，雪穗居然能面無表情地說出：「我完全不認識這個人。」\n\n後來再次見到「雪穗」就是在《幻夜》中了。這個故事寫得沒有《白夜行》精彩，也算差強人意吧。《幻夜》的結局也和《白夜行》很像，男主角最後知道了女主角一直在欺騙和利用自己，但是最後他還是為了保護女主角而自殺，讓女主角清白脫身。\n\n其他書就不一一贅述了，下面圖中是我看過的東野圭吾作品。\n![看過的東野圭吾作品|475](https://img.muelsyse.us/bed/20260808043442545.png)\n\n\n東野圭吾是一位偉大的作家，感謝他讓我這個不習慣看書的人也能集中精神讀完一本完整的書，也感謝他創作的故事讓人回味無窮。\n\nR.I.P."
     },
-    "zh-TW:content.about.profile.md.document": {
-      "fingerprint": "d220bca0e990c79995333be6666dc2a9dc71941d2dfb842b199660326f4e0d85",
-      "translation": "---\nname: Last4ev3r\nmotto: 保持簡單，笨蛋\nportrait: /images/content/about/profile-fe4782a21dcb-w320.webp\nbackgroundKeywords:\n  - C++\n  - ROS2\n  - ubuntu\n  - 天文\n  - AI\n  - Python\n  - Music\n  - CQU\n  - SLAM\n---\n\n\n## 關於網站\n- BLOG 發布正經的技術文章\n- NOTE 日常碎念\n- LINKS 友站連結\n- ABOUT 就是這一頁\n- LIFE 分享我看過的書籍、影劇、音樂、遊戲\n\n## 關於我\n\n重慶沙坪壩沙正街男子職業技術學院大三生  \n喜歡天文，稍微玩過行星攝影；以後有機會想試試深空攝影／星野攝影  \n路亞槓龜中\n\n```image-layout\n---\nlayout: carousel\ngrid: |\n  A A B\n  A A C\n---\n![jupiter](https://img.muelsyse.us/bed/jupiter.png)\n\n\n![moon](https://img.muelsyse.us/bed/moon.png)\n```\n\n喜歡折騰\n以下是我的幾個 ROS 相關開源專案，如果覺得好用，歡迎給個 Star～\nhttps://github.com/ConQU2026/auto_serial_bridge\nhttps://github.com/Edmounds/robviz\n\n-  2026 RoboCup 決賽全國冠軍\n- 2026 電賽省一\n- 2026 robocon 主賽國三\n\n## 聯絡我\n[i@muelsyse.us](mailto:i@muelsyse.us)\n\n## 致謝\n\n本站基於 [Astro-star](https://github.com/hanlife02/Astro-star) 修改與重建\n\n本站使用以下服務/API\n\n<div class=\"acknowledgement-logos\"><a class=\"acknowledgement-logo\" href=\"https://www.cloudflare.com/\"><img src=\"/images/cloudflare-logo.svg?v=20260728\" alt=\"Cloudflare\" width=\"300\" height=\"64\" loading=\"eager\" decoding=\"async\"></a><a class=\"acknowledgement-logo\" href=\"https://www.themoviedb.org/\"><img src=\"/images/tmdb-logo.svg?v=20260728\" alt=\"The Movie Database\" width=\"300\" height=\"64\" loading=\"eager\" decoding=\"async\"></a><a class=\"acknowledgement-logo\" href=\"https://steamcommunity.com/dev\"><img src=\"/images/steam-logo.svg?v=20260728\" alt=\"Steam\" width=\"240\" height=\"64\" loading=\"eager\" decoding=\"async\"></a></div>\n"
-    },
     "en:content.blog.基于Cloudflare构建个人网站.md.document": {
       "fingerprint": "3a7833d091e02cddd78a0a53b754e26fc287fd2590c60af019c14d4b27fbe0fe",
       "translation": "---\ntitle: Building a Personal Website with Cloudflare\ndescription: \"Site architecture overview: two Workers, one SQL database, and one object storage service\"\ncreatedAt: 2026-08-13T00:00:00.000Z\nupdatedAt: 2026-08-13T00:00:00.000Z\npublished: true\ntags:\n  - Network\n  - Build a Website\n  - Optimization\nslug: 20260813-02\n---\n\n## Quotation\n\nMy website runs on two Cloudflare Workers, an SQL database, and object storage. Comments, likes, and view counts update in real time; my book, movie, and music collections have their own admin dashboard, and my music rankings sync automatically every night at midnight. Apart from the domain, everything else on the bill costs virtually nothing.\n\nThis article describes its architecture.\n\n```mermaid\nflowchart LR\n  V[访客浏览器] --> D[DNS / 优选 CNAME]\n  D --> E[入口 Worker]\n  E -->|Service Binding| A[Astro SSR Worker]\n  A --> S[静态资源]\n  A --> Q[(D1 数据库)]\n  A --> R[(R2 对象存储)]\n  A --> X[外部 API]\n\n  C[Cloudflare Access] -.保护后台.-> E\n  K[Cron] -.每日定时同步.-> A\n```\n## A Single Request's Path\n\n```mermaid\nsequenceDiagram\n  participant B as 浏览器\n  participant E as 入口 Worker\n  participant A as Astro SSR Worker\n  participant D1 as D1 / R2\n\n  B->>E: HTTPS 请求\n  E->>A: 内部调用（Service Binding）\n  alt 静态资源\n    A-->>E: 直接返回带哈希的 CSS / JS / 图片\n  else 页面或 API\n    A->>D1: 查询或写入\n    D1-->>A: 结果\n    A-->>E: HTML / JSON\n  end\n  E-->>B: 补上安全响应头后返回\n```\n\n## Database Design\n\nD1 is Cloudflare’s managed SQLite database, used to store structured data such as comments, likes, view counts, and metadata for books, films, and music in your collection.\n\nR2 stores all images: illustrations in articles and collection covers. The main reason I chose it is that egress traffic is free—bandwidth charges are the bane of image hosting. R2 stores only the files; the metadata for those files lives in D1, and the two are linked by object key.\n## Image Pipeline\n\nI write articles in Obsidian. The moment I paste an image, the image-hosting plugin uploads it directly to R2, leaving a URL in the Markdown. There are no image binary files anywhere in the repository, so the Git history never bloats.\n\nAt build time, the script generates multiple AVIF and WebP variants at several widths for each image the first time it appears (640 / 1280 / 1920), uploads them to the same directory in R2, and records the mapping in a manifest. When rendered, the URL in the Markdown remains unchanged, but the resulting HTML contains a complete `<picture>` element: the browser selects the smallest file sufficient for the viewport and pixel density, the first image in the article loads at high priority, and the rest are lazy-loaded. The original image URL always remains valid as a fallback.\n\n## Little Money-Saving Tricks\n\n>If your site is a purely static blog, Astro and static hosting are all you need—no Workers required.\n\nIf you need comments, an admin panel, or scheduled tasks, D1 plus an SSR Worker is a relatively low-cost option.\n\n### Worker\nRequests for static assets don’t execute any code or count toward Workers’ 100,000 free requests per day. CSS, JavaScript, fonts, and local images all fall into this category, so they’re free and unlimited. The only things that actually consume the daily allowance of 100,000 free requests are HTML rendering and API calls that require code to run.\n\nSo I keep as many requests as possible at the static layer. Only routes that require dynamic processing are configured to pass through a Worker first. This keeps request usage largely within the free-tier limits.\n\n### D1\nKeep an eye on D1 row reads. The free tier includes 5 million rows per day, but this counts rows scanned, not rows returned. A query that returns 20 comments could count tens of thousands of rows if it scans the entire table instead of using an index. Indexing commonly filtered fields and paginating lists can help you make the most of D1’s free tier.\n\n###  A Note on Free-Tier Limits\nThe claim of zero cost here needs a qualification: excluding the domain name, the bill is approximately zero as long as traffic and data usage stay within the free tier. The specific allowances are (July 2026):\n\n| Item           | Free allowance               |\n| ------------ | ------------------ |\n| Dynamic Worker requests | 100,000/day, shared across the account       |\n| Static asset requests       | Free, unlimited             |\n| D1           | 5 million row reads/day, 100,000 row writes/day |\n| R2           | 10 GB of storage, free egress traffic    |\n\nNote that 100,000 requests is the free daily limit for your entire account, not 100,000 per Worker.\n\nImportant: D1 charges based on rows scanned, so queries without indexes can make your bill skyrocket.\n\n## Accelerating Access from Mainland China\n\nCloudflare’s default entry point uses Anycast, with routing determined by BGP, which isn’t always ideal for China’s three major telecom carriers. The same site may load quickly on China Telecom, while China Mobile users may experience detours and packet loss during the evening rush. My approach is to use an optimized CNAME: point my domain’s CNAME record to a hostname that continuously measures performance and updates its DNS responses.\n\nOnce traffic enters the site, speed depends on layered caching; the rules are based on how frequently each type of content changes:\n- CSS/JS/fonts with content hashes: cache for one year\n- HTML: `no-cache`, re-verify each time to ensure the latest code is being used\n- Dynamic APIs such as comments and statistics: cache at the edge for 15 seconds; write requests always use `no-store`.\n- The GitHub contribution graph is cached for 6 hours, while WakaTime data is cached for 15 minutes.\n\n## In Brief\n\n\n\n\n## References\n\n- [Workers Platform Limits](https://developers.cloudflare.com/workers/platform/limits/)\n- [Static Asset Billing Rules](https://developers.cloudflare.com/workers/static-assets/billing-and-limitations/)\n- [Service Bindings](https://developers.cloudflare.com/workers/runtime-apis/bindings/service-bindings/)\n- [D1 Pricing](https://developers.cloudflare.com/d1/platform/pricing/)\n- [R2 Pricing](https://developers.cloudflare.com/r2/pricing/)\n- [MDN: Cache-Control](https://developer.mozilla.org/docs/Web/HTTP/Reference/Headers/Cache-Control)\n"
@@ -690,8 +682,8 @@
       "translation": "專案"
     },
     "en:content.blog.多AP竞争环境下的路由器优化策略.md.document": {
-      "fingerprint": "0c621924e8da26fdc87d05c36d82f5ffc37fced69f03dffe1ceddef68b76b294",
-      "translation": "---\ntitle: Router Optimization Strategies in Environments with Multiple Competing APs\ndescription: At events like Robocon, where interference is abundant and network conditions are complex, use on-site spectrum scans to strike an appropriate balance between router channels and bandwidth\ncreatedAt: 2026-10-23\ntags:\n  - Networking\n  - Routers\n  - Optimization\npublished: true\nslug: 20261023-01\n---\n\n## Introduction\n\nAt robotics competitions such as Robocon, network conditions are often extremely complex.\n\nAt the time, my router was using its factory-default 80 MHz bandwidth, which happened to fall in the most crowded part of the spectrum. This caused severe stuttering in WebRTC video streams, with latency at one point rising above 1 second.\n\nA scan of the wireless environment at the venue found 88 Wi-Fi signals actively transmitting:\n\n![Spectrum scan at the competition](https://img.muelsyse.us/bed/20261025165234244.png)\n\nThe scan results show that a large number of devices were clustered in the same channel and bandwidth ranges. Even without knowing the underlying principles of radio communications, we can intuitively see that too many cars on the same lane cause a traffic jam. Wi-Fi is no different: choosing a lane with fewer cars should get you there faster. And that’s exactly what happened. Simply switching the router to a suitable bandwidth and channel can greatly improve Wi-Fi stability and speed.\n\nHere, I want to start from the underlying principles of radio communications and analyze why Wi-Fi stutters. This is also a set of study notes for my own learning about communications.\n\n---\n\n## Why Does Wi-Fi Stutter?\n\n### 1. Channel Contention and Backoff (CSMA/CA)\nWi-Fi uses the half-duplex CSMA/CA mechanism. Before sending data, a device must perform carrier sensing.\n\nWhen it detects an electromagnetic signal on the same frequency above a threshold (usually $-62 \\text{ dBm} \\sim -82 \\text{ dBm}$), the device considers the channel busy and is forced to back off for a random period. When dozens of devices take turns competing for access, packets build up in queues, causing noticeable network latency and jitter.\n\n### 2. Probability of Conflicts with Multiple Bound Channels\nHome routers typically come with a factory-default bandwidth of 80 MHz, created by bonding 4 consecutive, independent 20 MHz channels (see [Bandwidth and Channel Bonding](#频宽与信道绑定)). Most phones also hard-code their 5 GHz hotspots to channel 149 or 153.\n\nTo send an 80 MHz packet, all 4 of the bonded 20 MHz channels must be idle at the same time.\n\nLet $p$ be the probability that a single channel is occupied by nearby devices. Then the combined probability of successfully sending a packet over 80 MHz is only $(1-p)^4$. In a crowded Wi-Fi environment, the probability that all 4 channels are idle at once approaches zero.\n\n### 3. Strong Co-Channel Interference and Modulation Downgrade\nThe stronger the interference signals nearby, the lower the signal-to-interference-plus-noise ratio (see [Signal-to-Interference-plus-Noise Ratio (SINR)](#信干噪比-sinr)).\n\nAccording to Shannon’s theorem (see [Shannon’s Theorem](#香农定理)), channel capacity in a dense environment drops sharply as $\\text{SINR}$ falls. The high data rates advertised for Wi-Fi 6 rely on 1024-QAM modulation, which requires $\\text{SINR} \\ge 35 \\text{ dB}$ (see [QAM Modulation](#qam-调制)).\n\nWhen $\\text{SINR}$ falls below the threshold, the wireless chip can only automatically fall back to a lower-order modulation scheme, causing a dramatic drop in transmission bandwidth.\n\n---\n\n## Solution: Balancing Channels and Bandwidth On-Site\n\n### 1. Reduce Bandwidth to Improve the Baseline Resistance to Interference\nBlindly choosing higher bandwidth in a high-interference environment can backfire. According to the thermal noise formula (see [Thermal Noise Floor Formula](#热噪声底噪公式)), increasing bandwidth from 20 MHz to 80 MHz physically raises the background noise floor by:\n\n$$\\Delta N = 10 \\log_{10}(4) \\approx 6 \\text{ dB}$$\n\nDoubling the bandwidth physically raises the signal-to-noise threshold required by the receiving device, significantly reducing its overall resistance to interference.\n\n### 2. Spectrum Scanning and Avoidance\nIn a complex network environment, first use a spectrum scanning tool to collect information about nearby signals:\n- Received signal strength (RSSI)\n- Operating channel\n- Operating bandwidth\n\nThe core principle for choosing a channel is to avoid crowded channels and interference sources transmitting at high power. In general, you should proactively avoid frequency ranges occupied by APs with signal strengths above $-60 \\text{ dBm}$.\n\n### 3. On-Site Tuning in Practice\nAn analysis of the scan results above shows that the default 80 MHz bandwidth range was heavily congested. By contrast, channel 165 and channels 52 through 64 were not only clear, but also free of high-power interference signals.\n\nIn mainland China, channels 52 through 64 are in the DFS (Dynamic Frequency Selection) band. Since most phone hotspots lack radar avoidance certification, regulations prevent them from transmitting hotspots in this band at the system level. As a result, this range rarely experiences interference from hotspots.\n\nChannel 165 is suitable for operation at 20 MHz bandwidth, sacrificing peak speed in exchange for very high transmission stability.\n\nAt the time, I switched to channels 52 and 56, with the bandwidth set to 40 MHz. As soon as the change was complete, the WebRTC video stream returned to smooth playback, latency dropped to normal levels, and interruptions disappeared entirely.\n\n---\n\n## Appendix: Wi-Fi Fundamentals\n\n### AP\nAP stands for Access Point. It is the radio transmission hub that connects a wired local area network to wireless clients such as phones.\n\nHome wireless routers typically integrate an AP transmitter, network routing, and switching functions.\n\n### Frequency Bands\n#### 2.4 GHz\n- The frequency range is typically 2400 MHz to 2483.5 MHz.\n- Lower frequency and longer wavelength provide better wall penetration, but transmission speeds are slower. Common devices include Bluetooth devices, wireless mice, and smart home devices.\n\n#### 5 GHz\n- The total available continuous spectrum spans several hundred MHz, with common bands covering 5150 to 5350 MHz and 5725 to 5850 MHz.\n- Higher frequency and shorter wavelength mean greater attenuation through walls. The main advantage is very high transmission speed.\n\n### Channel Allocation\nCommunication protocols divide continuous spectrum into discrete center frequencies at fixed intervals. Each designated frequency, along with the physical bandwidth it occupies, is collectively referred to as a channel.\n\nAdjacent channel numbers are 5 MHz apart, while the Wi-Fi standard defines the physical spectrum width of a single channel as 20 MHz.\n\nTo prevent adjacent channels from overlapping in the 5 GHz band, channel numbers must be separated by 4 (for example, 36, 40, 44, and 48; or 149, 153, 157, and 161).\n\n### Bandwidth and Channel Bonding\nCommon Wi-Fi bandwidths include 20 MHz, 40 MHz, 80 MHz, and 160 MHz.\n\n#### 20 MHz\nTaking 802.11ac as an example, a 20 MHz physical channel is divided into 64 subcarriers, of which 52 are effective data carriers used to carry packets.\n\n#### 40 MHz / 80 MHz / 160 MHz\nHigher bandwidths use channel bonding. For example, with 80 MHz, the radio-frequency and baseband layers combine 4 consecutive 20 MHz channels (such as 149, 153, 157, and 161). According to Shannon’s theorem, channel capacity increases as bandwidth expands.\n\nWhen bonding multiple channels, the router must designate one of them as the primary channel. The router’s management frames are transmitted on the primary channel at a bandwidth of just 20 MHz, ensuring that older devices can still connect and operate normally.\n\n### Shannon’s Theorem\n\n$$C = B \\cdot \\log_2 \\left( 1 + \\frac{S}{N + I} \\right)$$\n\n- $C$: Maximum channel transmission rate\n- $B$: Physical bandwidth\n- $S$: Received power of the useful signal\n- $N$: Ambient background thermal noise\n- $I$: Co-channel interference power\n\n### Thermal Noise Floor Formula\n\n$$N = k \\cdot T \\cdot B \\implies N \\propto 10 \\log_{10}(B) \\quad (\\text{dBm})$$\n\n- $B$: Physical bandwidth\n- $N$: Physical background thermal noise\n\nIncrease in the noise floor as bandwidth grows by a factor:\n\n$$\\Delta N = 10 \\log_{10}\\left(\\frac{B_2}{B_1}\\right)$$\n\nEvery time bandwidth doubles, the background thermal noise received by the device physically increases by $3\\text{ dB}$.\n\n### Signal-to-Interference-plus-Noise Ratio (SINR)\n\n- **SNR** (signal-to-noise ratio): $\\text{SNR} = \\frac{S}{N}$\n- **SINR** (signal-to-interference-plus-noise ratio): $\\text{SINR} = \\frac{S}{N + I}$\n\n$$\\text{SINR}_{(\\text{dB})} \\approx P_{\\text{自身信号}}(\\text{dBm}) - P_{\\text{相邻干扰}}(\\text{dBm})$$\n\n- $P_{\\text{自身信号}}$: Signal strength received by the local router (RSSI)\n- $P_{\\text{相邻干扰}}$: Signal strength of nearby co-channel interference sources\n\n### QAM Modulation\nTraditional modulation methods use a single dimension to switch levels or reverse phase, transmitting just 1 bit at a time.\n\nQAM modulation divides the amplitude and phase of orthogonal electromagnetic waves into a two-dimensional constellation grid. The receiver determines the grid state to decode multiple bits simultaneously.\n\n| Modulation scheme | Data payload per carrier | Required SINR threshold |\n| :--- | :--- | :--- |\n| 1024-QAM (Wi-Fi 6 top tier) | 10 bit | $\\ge 35 \\text{ dB}$ |\n| 256-QAM (Wi-Fi 5 standard) | 8 bit | $\\ge 28 \\text{ dB}$ |\n| 64-QAM | 6 bit | $\\ge 22 \\text{ dB}$ |\n| 16-QAM | 4 bit | $\\ge 15 \\text{ dB}$ |\n| QPSK (fallback mode) | 2 bit | $\\approx 6 \\sim 10 \\text{ dB}$ |"
+      "fingerprint": "e83e50014104344b12f6d8ba5d8fc188bc95b9d10ba76697a567188752295cee",
+      "translation": "---\ntitle: Router Optimization Strategies in a Multi-AP Environment with Competing Access Points\ndescription: At events like Robocon, where interference is high and the network environment is complex, use on-site spectrum scans to strike the right balance when choosing the router’s channel and bandwidth.\ncreatedAt: 2026-10-23T00:00:00.000Z\ntags:\n  - Network\n  - Router\n  - Optimization\n  - Get to the Bottom of It\npublished: true\nslug: 20261023-01\n---\n\n## Introduction\n\nAt robotics competitions such as Robocon, network conditions are often extremely complex.\n\nAt the time, my router was using its factory-default 80 MHz bandwidth, which happened to fall in the most crowded part of the spectrum. This caused severe stuttering in WebRTC video streams, with latency at one point rising above 1 second.\n\nA scan of the wireless environment at the venue found 88 Wi-Fi signals actively transmitting:\n\n![Spectrum scan at the competition](https://img.muelsyse.us/bed/20261025165234244.png)\n\nThe scan results show that a large number of devices were clustered in the same channel and bandwidth ranges. Even without knowing the underlying principles of radio communications, we can intuitively see that too many cars on the same lane cause a traffic jam. Wi-Fi is no different: choosing a lane with fewer cars should get you there faster. And that’s exactly what happened. Simply switching the router to a suitable bandwidth and channel can greatly improve Wi-Fi stability and speed.\n\nHere, I want to start from the underlying principles of radio communications and analyze why Wi-Fi stutters. This is also a set of study notes for my own learning about communications.\n\n---\n\n## Why Does Wi-Fi Stutter?\n\n### 1. Channel Contention and Backoff (CSMA/CA)\nWi-Fi uses the half-duplex CSMA/CA mechanism. Before sending data, a device must perform carrier sensing.\n\nWhen it detects an electromagnetic signal on the same frequency above a threshold (usually $-62 \\text{ dBm} \\sim -82 \\text{ dBm}$), the device considers the channel busy and is forced to back off for a random period. When dozens of devices take turns competing for access, packets build up in queues, causing noticeable network latency and jitter.\n\n### 2. Probability of Conflicts with Multiple Bound Channels\nHome routers typically come with a factory-default bandwidth of 80 MHz, created by bonding 4 consecutive, independent 20 MHz channels (see [Bandwidth and Channel Bonding](#频宽与信道绑定)). Most phones also hard-code their 5 GHz hotspots to channel 149 or 153.\n\nTo send an 80 MHz packet, all 4 of the bonded 20 MHz channels must be idle at the same time.\n\nLet $p$ be the probability that a single channel is occupied by nearby devices. Then the combined probability of successfully sending a packet over 80 MHz is only $(1-p)^4$. In a crowded Wi-Fi environment, the probability that all 4 channels are idle at once approaches zero.\n\n### 3. Strong Co-Channel Interference and Modulation Downgrade\nThe stronger the interference signals nearby, the lower the signal-to-interference-plus-noise ratio (see [Signal-to-Interference-plus-Noise Ratio (SINR)](#信干噪比-sinr)).\n\nAccording to Shannon’s theorem (see [Shannon’s Theorem](#香农定理)), channel capacity in a dense environment drops sharply as $\\text{SINR}$ falls. The high data rates advertised for Wi-Fi 6 rely on 1024-QAM modulation, which requires $\\text{SINR} \\ge 35 \\text{ dB}$ (see [QAM Modulation](#qam-调制)).\n\nWhen $\\text{SINR}$ falls below the threshold, the wireless chip can only automatically fall back to a lower-order modulation scheme, causing a dramatic drop in transmission bandwidth.\n\n---\n\n## Solution: Balancing Channels and Bandwidth On-Site\n\n### 1. Reduce Bandwidth to Improve the Baseline Resistance to Interference\nBlindly choosing higher bandwidth in a high-interference environment can backfire. According to the thermal noise formula (see [Thermal Noise Floor Formula](#热噪声底噪公式)), increasing bandwidth from 20 MHz to 80 MHz physically raises the background noise floor by:\n\n$$\\Delta N = 10 \\log_{10}(4) \\approx 6 \\text{ dB}$$\n\nDoubling the bandwidth physically raises the signal-to-noise threshold required by the receiving device, significantly reducing its overall resistance to interference.\n\n### 2. Spectrum Scanning and Avoidance\nIn a complex network environment, first use a spectrum scanning tool to collect information about nearby signals:\n- Received signal strength (RSSI)\n- Operating channel\n- Operating bandwidth\n\nThe core principle for choosing a channel is to avoid crowded channels and interference sources transmitting at high power. In general, you should proactively avoid frequency ranges occupied by APs with signal strengths above $-60 \\text{ dBm}$.\n\n### 3. On-Site Tuning in Practice\nAn analysis of the scan results above shows that the default 80 MHz bandwidth range was heavily congested. By contrast, channel 165 and channels 52 through 64 were not only clear, but also free of high-power interference signals.\n\nIn mainland China, channels 52 through 64 are in the DFS (Dynamic Frequency Selection) band. Since most phone hotspots lack radar avoidance certification, regulations prevent them from transmitting hotspots in this band at the system level. As a result, this range rarely experiences interference from hotspots.\n\nChannel 165 is suitable for operation at 20 MHz bandwidth, sacrificing peak speed in exchange for very high transmission stability.\n\nAt the time, I switched to channels 52 and 56, with the bandwidth set to 40 MHz. As soon as the change was complete, the WebRTC video stream returned to smooth playback, latency dropped to normal levels, and interruptions disappeared entirely.\n\n---\n\n## Appendix: Wi-Fi Fundamentals\n\n### AP\nAP stands for Access Point. It is the radio transmission hub that connects a wired local area network to wireless clients such as phones.\n\nHome wireless routers typically integrate an AP transmitter, network routing, and switching functions.\n\n### Frequency Bands\n#### 2.4 GHz\n- The frequency range is typically 2400 MHz to 2483.5 MHz.\n- Lower frequency and longer wavelength provide better wall penetration, but transmission speeds are slower. Common devices include Bluetooth devices, wireless mice, and smart home devices.\n\n#### 5 GHz\n- The total available continuous spectrum spans several hundred MHz, with common bands covering 5150 to 5350 MHz and 5725 to 5850 MHz.\n- Higher frequency and shorter wavelength mean greater attenuation through walls. The main advantage is very high transmission speed.\n\n### Channel Allocation\nCommunication protocols divide continuous spectrum into discrete center frequencies at fixed intervals. Each designated frequency, along with the physical bandwidth it occupies, is collectively referred to as a channel.\n\nAdjacent channel numbers are 5 MHz apart, while the Wi-Fi standard defines the physical spectrum width of a single channel as 20 MHz.\n\nTo prevent adjacent channels from overlapping in the 5 GHz band, channel numbers must be separated by 4 (for example, 36, 40, 44, and 48; or 149, 153, 157, and 161).\n\n### Bandwidth and Channel Bonding\nCommon Wi-Fi bandwidths include 20 MHz, 40 MHz, 80 MHz, and 160 MHz.\n\n#### 20 MHz\nTaking 802.11ac as an example, a 20 MHz physical channel is divided into 64 subcarriers, of which 52 are effective data carriers used to carry packets.\n\n#### 40 MHz / 80 MHz / 160 MHz\nHigher bandwidths use channel bonding. For example, with 80 MHz, the radio-frequency and baseband layers combine 4 consecutive 20 MHz channels (such as 149, 153, 157, and 161). According to Shannon’s theorem, channel capacity increases as bandwidth expands.\n\nWhen bonding multiple channels, the router must designate one of them as the primary channel. The router’s management frames are transmitted on the primary channel at a bandwidth of just 20 MHz, ensuring that older devices can still connect and operate normally.\n\n### Shannon’s Theorem\n\n$$C = B \\cdot \\log_2 \\left( 1 + \\frac{S}{N + I} \\right)$$\n\n- $C$: Maximum channel transmission rate\n- $B$: Physical bandwidth\n- $S$: Received power of the useful signal\n- $N$: Ambient background thermal noise\n- $I$: Co-channel interference power\n\n### Thermal Noise Floor Formula\n\n$$N = k \\cdot T \\cdot B \\implies N \\propto 10 \\log_{10}(B) \\quad (\\text{dBm})$$\n\n- $B$: Physical bandwidth\n- $N$: Physical background thermal noise\n\nIncrease in the noise floor as bandwidth grows by a factor:\n\n$$\\Delta N = 10 \\log_{10}\\left(\\frac{B_2}{B_1}\\right)$$\n\nEvery time bandwidth doubles, the background thermal noise received by the device physically increases by $3\\text{ dB}$.\n\n### Signal-to-Interference-plus-Noise Ratio (SINR)\n\n- **SNR** (signal-to-noise ratio): $\\text{SNR} = \\frac{S}{N}$\n- **SINR** (signal-to-interference-plus-noise ratio): $\\text{SINR} = \\frac{S}{N + I}$\n\n$$\\text{SINR}_{(\\text{dB})} \\approx P_{\\text{自身信号}}(\\text{dBm}) - P_{\\text{相邻干扰}}(\\text{dBm})$$\n\n- $P_{\\text{自身信号}}$: Signal strength received by the local router (RSSI)\n- $P_{\\text{相邻干扰}}$: Signal strength of nearby co-channel interference sources\n\n### QAM Modulation\nTraditional modulation methods use a single dimension to switch levels or reverse phase, transmitting just 1 bit at a time.\n\nQAM modulation divides the amplitude and phase of orthogonal electromagnetic waves into a two-dimensional constellation grid. The receiver determines the grid state to decode multiple bits simultaneously.\n\n| Modulation scheme | Data payload per carrier | Required SINR threshold |\n| :--- | :--- | :--- |\n| 1024-QAM (Wi-Fi 6 top tier) | 10 bit | $\\ge 35 \\text{ dB}$ |\n| 256-QAM (Wi-Fi 5 standard) | 8 bit | $\\ge 28 \\text{ dB}$ |\n| 64-QAM | 6 bit | $\\ge 22 \\text{ dB}$ |\n| 16-QAM | 4 bit | $\\ge 15 \\text{ dB}$ |\n| QPSK (fallback mode) | 2 bit | $\\approx 6 \\sim 10 \\text{ dB}$ |"
     },
     "en:content.blog.多AP竞争环境下的路由器优化策略.md.segment:75671dea3e8a7cb639b9c7ff5fed248844fb1ace5b82358d5a161d8da18d6e35": {
       "fingerprint": "75671dea3e8a7cb639b9c7ff5fed248844fb1ace5b82358d5a161d8da18d6e35",
@@ -1526,8 +1518,8 @@
       "translation": "所有熱門圖片都會由 Cloudflare 全球 CDN 節點快取，後續請求不會再穿透至 R2 Bucket，Class B 操作消耗降至最低。"
     },
     "zh-TW:content.blog.多AP竞争环境下的路由器优化策略.md.document": {
-      "fingerprint": "0c621924e8da26fdc87d05c36d82f5ffc37fced69f03dffe1ceddef68b76b294",
-      "translation": "---\ntitle: 多 AP 競爭環境下的路由器最佳化策略\ndescription: 在 Robocon 這類干擾很多、網路環境複雜的比賽現場，根據現場頻譜掃描結果，對路由器的頻道與頻寬進行適當權衡\ncreatedAt: 2026-10-23\ntags:\n  - 網路\n  - 路由器\n  - 最佳化\npublished: true\nslug: 20261023-01\n---\n\n## 引言\n\n在 Robocon 等機器人比賽現場，網路環境往往極度複雜。\n\n我的路由器當時使用出廠預設的 80 MHz 頻寬，剛好落在最擁擠的頻段。這直接導致 WebRTC 視訊串流嚴重卡頓，延遲一度飆升至 1 秒以上。\n\n在現場使用工具掃描周遭無線環境，共發現 88 個正在發射的 Wi-Fi 訊號：\n\n![比賽現場掃頻圖](https://img.muelsyse.us/bed/20261025165234244.png)\n\n從掃頻結果可以看出，大量裝置擠在相同的頻道與頻寬範圍內。在不了解無線電底層原理的情況下，憑直覺我們就能知道，一條車道上行駛的車輛多了就會塞車，Wi-Fi 也是如此；那麼選擇幾乎沒有車的車道行駛，不就會更快了嗎？事實也確實如此，我們只需要將路由器切換到合適的頻寬與頻道，就能大幅提升 Wi-Fi 的穩定性與速率。\n\n這裡我想從無線電底層原理出發，分析 Wi-Fi 卡頓的原因，也算是我自己學習通訊相關知識的學習筆記。\n\n---\n\n## 為什麼 Wi-Fi 會卡頓？\n\n### 1. 頻道搶佔與退避機制（CSMA/CA）\nWi-Fi 採用半雙工的 CSMA/CA 機制。裝置傳送資料前必須進行載波偵聽。\n\n當偵聽到大於門檻值（通常為 $-62 \\text{ dBm} \\sim -82 \\text{ dBm}$）的同頻電磁訊號時，裝置判定頻道忙碌並強制隨機退避。在數十台裝置交替搶佔的環境下，資料封包嚴重排隊堆積，造成明顯的網路延遲與抖動。\n\n### 2. 多頻道綁定的機率衝突\n家用路由器預設出廠頻寬為 80 MHz，由 4 個連續的 20 MHz 獨立頻道綁定而成（詳見 [頻寬與頻道綁定](#频宽与信道绑定)）。多數手機的 5 GHz 熱點也硬編碼鎖定在 149 或 153 頻道。\n\n裝置傳送 80 MHz 資料封包的前提，是綁定的 4 個 20 MHz 頻道必須同時處於閒置狀態。\n\n設單個頻道被周圍裝置佔用的機率為 $p$，則 80 MHz 頻寬順利傳送封包的聯合機率僅為 $(1-p)^4$。在高密度 Wi-Fi 現場，4 個頻道同時閒置的機率趨近於零。\n\n### 3. 同頻強干擾與調變回退\n周圍干擾訊號強度越高，訊號干擾雜訊比越低（詳見 [訊號干擾雜訊比 SINR](#信干噪比-sinr)）。\n\n根據香農公式（詳見 [香農定理](#香农定理)），高密度環境下的頻道容量隨 $\\text{SINR}$ 暴跌而嚴重縮水。Wi-Fi 6 宣傳的高傳輸速率依賴 1024-QAM 調變，該調變要求 $\\text{SINR} \\ge 35 \\text{ dB}$（詳見 [QAM 調變](#qam-调制)）。\n\n當 $\\text{SINR}$ 跌破門檻時，無線晶片只能自動回退到低階調變，導致傳輸頻寬斷崖式下跌。\n\n---\n\n## 解決方案：現場頻道與頻寬權衡\n\n### 1. 降低頻寬，提升抗干擾能力\n在高干擾環境下盲目選擇高頻寬會適得其反。根據熱雜訊公式（詳見 [熱雜訊底噪公式](#热噪声底噪公式)），頻寬從 20 MHz 增加到 80 MHz 時，背景底噪在物理上增加：\n\n$$\\Delta N = 10 \\log_{10}(4) \\approx 6 \\text{ dB}$$\n\n頻寬翻倍導致裝置接收訊號的訊噪比門檻在物理上提高，整體抗干擾能力顯著下降。\n\n### 2. 頻譜掃描與避讓原則\n在複雜網路環境下，首先使用掃頻工具採集周遭訊號狀態：\n- 訊號接收強度（RSSI）\n- 工作頻道\n- 工作頻寬\n\n選擇頻道的核心原則：避開密集頻道並避開高發射功率的干擾源。通常需要主動避開訊號強度大於 $-60 \\text{ dBm}$ 的 AP 佔用頻段。\n\n### 3. 現場調校實戰\n分析前述掃頻結果，預設的 80 MHz 頻寬範圍重疊嚴重。相反地，頻道 165 以及頻道 52 至 64 不僅空曠，而且沒有高功率干擾訊號。\n\n在中國大陸，52 至 64 頻道屬於 DFS（Dynamic Frequency Selection）頻段。絕大多數手機熱點因缺少雷達避讓認證，系統底層受法律限制，無法在該頻段發射熱點，因此該區域極少出現熱點干擾。\n\n頻道 165 適合以 20 MHz 頻寬運作，可以犧牲極限速率換取極高的傳輸穩定性。\n\n當時現場選擇切換至頻道 52 與 56，對應頻寬設為 40 MHz。完成切換後，WebRTC 視訊串流立即恢復流暢，延遲降低至正常水準，斷流現象完全消除。\n\n---\n\n## 附錄：Wi-Fi 理論通識\n\n### AP\nAP（Access Point）的中文名稱是無線存取點。它是連接有線區域網路與無線終端（手機等）的射頻發射中樞。\n\n家用無線路由器通常整合了 AP 發射、網路路由與交換器功能。\n\n### 頻段\n#### 2.4 GHz\n- 頻率範圍通常為 2400 MHz 至 2483.5 MHz。\n- 頻率低、波長長、穿牆能力強，但傳輸速度較慢。常用裝置包括藍牙、無線滑鼠及智慧家庭終端裝置。\n\n#### 5 GHz\n- 總可用連續頻譜達數百 MHz，常見頻段涵蓋 5150 至 5350 MHz 與 5725 至 5850 MHz。\n- 頻率高、波長短、穿牆衰減大，主要優勢是傳輸速率極快。\n\n### 頻道劃分\n通訊協定在連續頻譜上按照固定步長劃分離散的中心頻率點，各個標定頻率及其所佔用的實體頻寬統稱為頻道。\n\n相鄰頻道編號間隔為 5 MHz，Wi-Fi 標準定義的單一頻道實體頻譜寬度為 20 MHz。\n\n為了在 5 GHz 頻段內實現相鄰頻道互不重疊，頻道號碼之間需相隔 4 個單位（如 36、40、44、48 與 149、153、157、161）。\n\n### 頻寬與頻道綁定\n常見 Wi-Fi 頻寬包含 20 MHz、40 MHz、80 MHz 與 160 MHz。\n\n#### 20 MHz\n以 802.11ac 為例，20 MHz 實體頻道劃分為 64 個子載波，其中包含 52 個負責承載資料封包的有效資料載波。\n\n#### 40 MHz / 80 MHz / 160 MHz\n高頻寬採用頻道綁定機制。以 80 MHz 為例，射頻與基頻會將 4 個連續的 20 MHz 頻道（如 149、153、157、161）在底層拼接在一起。根據香農定理，頻道容量會隨頻寬擴大而提升。\n\n綁定多個頻道時，路由器需指定其中一個頻道作為主頻道。路由器的管理訊框僅以 20 MHz 頻寬在主頻道上發射，確保舊款裝置仍可正常相容並連線。\n\n### 香農定理\n\n$$C = B \\cdot \\log_2 \\left( 1 + \\frac{S}{N + I} \\right)$$\n\n- $C$：頻道極限傳輸速率\n- $B$：實體頻寬\n- $S$：接收有用訊號功率\n- $N$：環境背景熱雜訊\n- $I$：同頻干擾功率\n\n### 熱雜訊底噪公式\n\n$$N = k \\cdot T \\cdot B \\implies N \\propto 10 \\log_{10}(B) \\quad (\\text{dBm})$$\n\n- $B$：實體頻寬\n- $N$：實體背景熱雜訊\n\n頻寬成倍增加時的底噪升幅：\n\n$$\\Delta N = 10 \\log_{10}\\left(\\frac{B_2}{B_1}\\right)$$\n\n頻寬每翻倍一次，裝置接收到的背景熱雜訊必然在物理上增加 $3\\text{ dB}$。\n\n### 訊號干擾雜訊比 SINR\n\n- **SNR**（訊噪比）： $\\text{SNR} = \\frac{S}{N}$\n- **SINR**（訊號干擾雜訊比）：$\\text{SINR} = \\frac{S}{N + I}$\n\n$$\\text{SINR}_{(\\text{dB})} \\approx P_{\\text{自身信号}}(\\text{dBm}) - P_{\\text{相邻干扰}}(\\text{dBm})$$\n\n- $P_{\\text{自身信号}}$：本地路由器接收訊號強度（RSSI）\n- $P_{\\text{相邻干扰}}$：同頻周邊干擾源訊號強度\n\n### QAM 調變\n傳統調變方式利用單一維度切換電平或反轉相位，單次僅能傳遞 1 個 bit。\n\nQAM 調變將正交電磁波的振幅與相位劃分為二維網格星座圖。接收端透過辨識網格狀態同時解析多個 bit。\n\n| 調變方式 | 單載波資料負載 | 所需訊號干擾雜訊比門檻 |\n| :--- | :--- | :--- |\n| 1024-QAM（Wi-Fi 6 最高規格） | 10 bit | $\\ge 35 \\text{ dB}$ |\n| 256-QAM（Wi-Fi 5 標準配備） | 8 bit | $\\ge 28 \\text{ dB}$ |\n| 64-QAM | 6 bit | $\\ge 22 \\text{ dB}$ |\n| 16-QAM | 4 bit | $\\ge 15 \\text{ dB}$ |\n| QPSK（最低限度回退模式） | 2 bit | $\\approx 6 \\sim 10 \\text{ dB}$ |"
+      "fingerprint": "e83e50014104344b12f6d8ba5d8fc188bc95b9d10ba76697a567188752295cee",
+      "translation": "---\ntitle: 多 AP 競爭環境下的路由器最佳化策略\ndescription: 在 Robocon 這類干擾眾多、網路環境複雜的競賽現場，根據現場頻譜掃描結果，適當權衡路由器的頻道與頻寬。\ncreatedAt: 2026-10-23T00:00:00.000Z\ntags:\n  - 網路\n  - 路由器\n  - 最佳化\n  - 刨根問底\npublished: true\nslug: 20261023-01\n---\n\n## 引言\n\n在 Robocon 等機器人比賽現場，網路環境往往極度複雜。\n\n我的路由器當時使用出廠預設的 80 MHz 頻寬，剛好落在最擁擠的頻段。這直接導致 WebRTC 視訊串流嚴重卡頓，延遲一度飆升至 1 秒以上。\n\n在現場使用工具掃描周遭無線環境，共發現 88 個正在發射的 Wi-Fi 訊號：\n\n![比賽現場掃頻圖](https://img.muelsyse.us/bed/20261025165234244.png)\n\n從掃頻結果可以看出，大量裝置擠在相同的頻道與頻寬範圍內。在不了解無線電底層原理的情況下，憑直覺我們就能知道，一條車道上行駛的車輛多了就會塞車，Wi-Fi 也是如此；那麼選擇幾乎沒有車的車道行駛，不就會更快了嗎？事實也確實如此，我們只需要將路由器切換到合適的頻寬與頻道，就能大幅提升 Wi-Fi 的穩定性與速率。\n\n這裡我想從無線電底層原理出發，分析 Wi-Fi 卡頓的原因，也算是我自己學習通訊相關知識的學習筆記。\n\n---\n\n## 為什麼 Wi-Fi 會卡頓？\n\n### 1. 頻道搶佔與退避機制（CSMA/CA）\nWi-Fi 採用半雙工的 CSMA/CA 機制。裝置傳送資料前必須進行載波偵聽。\n\n當偵聽到大於門檻值（通常為 $-62 \\text{ dBm} \\sim -82 \\text{ dBm}$）的同頻電磁訊號時，裝置判定頻道忙碌並強制隨機退避。在數十台裝置交替搶佔的環境下，資料封包嚴重排隊堆積，造成明顯的網路延遲與抖動。\n\n### 2. 多頻道綁定的機率衝突\n家用路由器預設出廠頻寬為 80 MHz，由 4 個連續的 20 MHz 獨立頻道綁定而成（詳見 [頻寬與頻道綁定](#频宽与信道绑定)）。多數手機的 5 GHz 熱點也硬編碼鎖定在 149 或 153 頻道。\n\n裝置傳送 80 MHz 資料封包的前提，是綁定的 4 個 20 MHz 頻道必須同時處於閒置狀態。\n\n設單個頻道被周圍裝置佔用的機率為 $p$，則 80 MHz 頻寬順利傳送封包的聯合機率僅為 $(1-p)^4$。在高密度 Wi-Fi 現場，4 個頻道同時閒置的機率趨近於零。\n\n### 3. 同頻強干擾與調變回退\n周圍干擾訊號強度越高，訊號干擾雜訊比越低（詳見 [訊號干擾雜訊比 SINR](#信干噪比-sinr)）。\n\n根據香農公式（詳見 [香農定理](#香农定理)），高密度環境下的頻道容量隨 $\\text{SINR}$ 暴跌而嚴重縮水。Wi-Fi 6 宣傳的高傳輸速率依賴 1024-QAM 調變，該調變要求 $\\text{SINR} \\ge 35 \\text{ dB}$（詳見 [QAM 調變](#qam-调制)）。\n\n當 $\\text{SINR}$ 跌破門檻時，無線晶片只能自動回退到低階調變，導致傳輸頻寬斷崖式下跌。\n\n---\n\n## 解決方案：現場頻道與頻寬權衡\n\n### 1. 降低頻寬，提升抗干擾能力\n在高干擾環境下盲目選擇高頻寬會適得其反。根據熱雜訊公式（詳見 [熱雜訊底噪公式](#热噪声底噪公式)），頻寬從 20 MHz 增加到 80 MHz 時，背景底噪在物理上增加：\n\n$$\\Delta N = 10 \\log_{10}(4) \\approx 6 \\text{ dB}$$\n\n頻寬翻倍導致裝置接收訊號的訊噪比門檻在物理上提高，整體抗干擾能力顯著下降。\n\n### 2. 頻譜掃描與避讓原則\n在複雜網路環境下，首先使用掃頻工具採集周遭訊號狀態：\n- 訊號接收強度（RSSI）\n- 工作頻道\n- 工作頻寬\n\n選擇頻道的核心原則：避開密集頻道並避開高發射功率的干擾源。通常需要主動避開訊號強度大於 $-60 \\text{ dBm}$ 的 AP 佔用頻段。\n\n### 3. 現場調校實戰\n分析前述掃頻結果，預設的 80 MHz 頻寬範圍重疊嚴重。相反地，頻道 165 以及頻道 52 至 64 不僅空曠，而且沒有高功率干擾訊號。\n\n在中國大陸，52 至 64 頻道屬於 DFS（Dynamic Frequency Selection）頻段。絕大多數手機熱點因缺少雷達避讓認證，系統底層受法律限制，無法在該頻段發射熱點，因此該區域極少出現熱點干擾。\n\n頻道 165 適合以 20 MHz 頻寬運作，可以犧牲極限速率換取極高的傳輸穩定性。\n\n當時現場選擇切換至頻道 52 與 56，對應頻寬設為 40 MHz。完成切換後，WebRTC 視訊串流立即恢復流暢，延遲降低至正常水準，斷流現象完全消除。\n\n---\n\n## 附錄：Wi-Fi 理論通識\n\n### AP\nAP（Access Point）的中文名稱是無線存取點。它是連接有線區域網路與無線終端（手機等）的射頻發射中樞。\n\n家用無線路由器通常整合了 AP 發射、網路路由與交換器功能。\n\n### 頻段\n#### 2.4 GHz\n- 頻率範圍通常為 2400 MHz 至 2483.5 MHz。\n- 頻率低、波長長、穿牆能力強，但傳輸速度較慢。常用裝置包括藍牙、無線滑鼠及智慧家庭終端裝置。\n\n#### 5 GHz\n- 總可用連續頻譜達數百 MHz，常見頻段涵蓋 5150 至 5350 MHz 與 5725 至 5850 MHz。\n- 頻率高、波長短、穿牆衰減大，主要優勢是傳輸速率極快。\n\n### 頻道劃分\n通訊協定在連續頻譜上按照固定步長劃分離散的中心頻率點，各個標定頻率及其所佔用的實體頻寬統稱為頻道。\n\n相鄰頻道編號間隔為 5 MHz，Wi-Fi 標準定義的單一頻道實體頻譜寬度為 20 MHz。\n\n為了在 5 GHz 頻段內實現相鄰頻道互不重疊，頻道號碼之間需相隔 4 個單位（如 36、40、44、48 與 149、153、157、161）。\n\n### 頻寬與頻道綁定\n常見 Wi-Fi 頻寬包含 20 MHz、40 MHz、80 MHz 與 160 MHz。\n\n#### 20 MHz\n以 802.11ac 為例，20 MHz 實體頻道劃分為 64 個子載波，其中包含 52 個負責承載資料封包的有效資料載波。\n\n#### 40 MHz / 80 MHz / 160 MHz\n高頻寬採用頻道綁定機制。以 80 MHz 為例，射頻與基頻會將 4 個連續的 20 MHz 頻道（如 149、153、157、161）在底層拼接在一起。根據香農定理，頻道容量會隨頻寬擴大而提升。\n\n綁定多個頻道時，路由器需指定其中一個頻道作為主頻道。路由器的管理訊框僅以 20 MHz 頻寬在主頻道上發射，確保舊款裝置仍可正常相容並連線。\n\n### 香農定理\n\n$$C = B \\cdot \\log_2 \\left( 1 + \\frac{S}{N + I} \\right)$$\n\n- $C$：頻道極限傳輸速率\n- $B$：實體頻寬\n- $S$：接收有用訊號功率\n- $N$：環境背景熱雜訊\n- $I$：同頻干擾功率\n\n### 熱雜訊底噪公式\n\n$$N = k \\cdot T \\cdot B \\implies N \\propto 10 \\log_{10}(B) \\quad (\\text{dBm})$$\n\n- $B$：實體頻寬\n- $N$：實體背景熱雜訊\n\n頻寬成倍增加時的底噪升幅：\n\n$$\\Delta N = 10 \\log_{10}\\left(\\frac{B_2}{B_1}\\right)$$\n\n頻寬每翻倍一次，裝置接收到的背景熱雜訊必然在物理上增加 $3\\text{ dB}$。\n\n### 訊號干擾雜訊比 SINR\n\n- **SNR**（訊噪比）： $\\text{SNR} = \\frac{S}{N}$\n- **SINR**（訊號干擾雜訊比）：$\\text{SINR} = \\frac{S}{N + I}$\n\n$$\\text{SINR}_{(\\text{dB})} \\approx P_{\\text{自身信号}}(\\text{dBm}) - P_{\\text{相邻干扰}}(\\text{dBm})$$\n\n- $P_{\\text{自身信号}}$：本地路由器接收訊號強度（RSSI）\n- $P_{\\text{相邻干扰}}$：同頻周邊干擾源訊號強度\n\n### QAM 調變\n傳統調變方式利用單一維度切換電平或反轉相位，單次僅能傳遞 1 個 bit。\n\nQAM 調變將正交電磁波的振幅與相位劃分為二維網格星座圖。接收端透過辨識網格狀態同時解析多個 bit。\n\n| 調變方式 | 單載波資料負載 | 所需訊號干擾雜訊比門檻 |\n| :--- | :--- | :--- |\n| 1024-QAM（Wi-Fi 6 最高規格） | 10 bit | $\\ge 35 \\text{ dB}$ |\n| 256-QAM（Wi-Fi 5 標準配備） | 8 bit | $\\ge 28 \\text{ dB}$ |\n| 64-QAM | 6 bit | $\\ge 22 \\text{ dB}$ |\n| 16-QAM | 4 bit | $\\ge 15 \\text{ dB}$ |\n| QPSK（最低限度回退模式） | 2 bit | $\\approx 6 \\sim 10 \\text{ dB}$ |"
     },
     "zh-TW:content.blog.多AP竞争环境下的路由器优化策略.md.segment:75671dea3e8a7cb639b9c7ff5fed248844fb1ace5b82358d5a161d8da18d6e35": {
       "fingerprint": "75671dea3e8a7cb639b9c7ff5fed248844fb1ace5b82358d5a161d8da18d6e35",
@@ -1920,6 +1912,502 @@
     "zh-TW:content.blog.用Cloudflare R2+picgo实现免费图床.md.segment:2077b730af88a529c076ead12e95afcf7715c041717d8d54188835e7be0f2dca": {
       "fingerprint": "2077b730af88a529c076ead12e95afcf7715c041717d8d54188835e7be0f2dca",
       "translation": "都免費給你用了，還有什麼好說的？量大管飽，基本上不會超出限額，而且徹底免除出口流量費用。對中國大陸而言，唯一的缺點是如果不掛 VPN，存取速度會比較慢。"
+    },
+    "en:content.blog.链式代理前置节点选择.md.document": {
+      "fingerprint": "14479263240e3ccb10d2a5f7ac7058bf8edc6164d00a9b4634a98c679472af1c",
+      "translation": "---\ntitle: Choosing a Front Node for Chained Proxies\ntags:\n  - Proxy\n  - Chained Proxy\ncreatedAt: 2026-10-19\ndescription: An introduction to front-node selection strategies, core protocol comparisons, and network topology trade-offs for chained proxy architectures\npublished: true\nslug: 20261019-01\n---\n\n## How to Choose a Front Node for a Chained Proxy\nA chained proxy consists of a front node and an exit node.\n\nThe core principle behind choosing a front node is that it should act as a purely transparent TCP transport tunnel.\nMany protocols work well for direct connections, but can cause severe disconnections or freezes when used as front nodes.\n### Recommended Front-End Protocols\n\n| Rating | Protocol Type | Technical Characteristics |\n| :-----: | :------------------ | :------------------------- |\n| **Top choice** | **Shadowsocks ** | Pure TCP encrypted byte stream, with no certificate handshake or multiplexing interference |\n| **Recommended** | **Trojan (native TCP)** | A single-layer, standard TLS encrypted tunnel with a clean, standard handshake |\n| **Recommended** | **VMess (pure TCP)** | Basic symmetric encryption for transport (disable WS and CDN) |\n| **Avoid** | **Hysteria / TUIC** | Based on the UDP / QUIC protocol stack |\n| **Avoid** | **VLESS-Reality** | XTLS-Vision flow-control checks and certificate-stealing mechanism |\n| **Avoid** | **Any node behind a CDN** | Routed through an edge reverse proxy such as Cloudflare |\n\nOnce you’ve chosen a protocol, consider latency and location.\nA quick note on location: choose a combination with the shortest physical route. Suppose your residential-broadband exit node is on the US West Coast. You wouldn’t want to choose a node in Europe or India, because that would add a lot of unnecessary physical distance and latency. From mainland China, it’s best to choose a node in Hong Kong, Japan, or Singapore. The rest of the route will generally run over trans-Pacific submarine cables to the US West Coast.\n\nIn short, choose a low-latency Asia-Pacific node that uses a suitable protocol as your front node.\n### Why Do Advanced Protocols Frequently Disconnect When Used as Front Nodes?\n\n1. **UDP / QUIC protocols cannot be nested reliably**\nThe client carries a TCP handshake for residential broadband inside a UDP tunnel, making the underlying state machine complicated to handle. The two layers of congestion control compete and conflict, causing frequent connection resets.\n**Protocols involved**: Hysteria 1/2, TUIC, WireGuard.\n\n2. **Reality / Vision flow control conflicts with the inner handshake**\nReality simulates a real website’s TLS handshake. Nesting a second proxy handshake inside the tunnel (such as SOCKS5 or a second TLS handshake) contaminates the traffic characteristics, triggering filtering and blocking by the Vision module’s flow-control checks and directly returning RST to the client.\n**Protocols involved**: VLESS-Reality, VLESS-XTLS-Vision.\n\n3. **WebSocket + CDN timeouts**\nCDN edge nodes impose strict timeouts on connections to the origin. If the front connection to a slow residential-broadband gateway times out, the CDN returns a 502 or 504 Gateway Timeout.\n**Protocols involved**: WS or gRPC nodes behind Cloudflare CDN.\n\n## Appendix\n## Comparison of Common Front-Node Protocols\n\nFront-node connections operate in environments with public-network censorship and internal network monitoring, so encryption strength and resistance to traffic inspection are key concerns.\n\n| Protocol / Type | Transport Layer | Encryption | Camouflage and Resistance to Blocking |\n| :-------------------- | :--------- | :--------------------------------- | :--------------------------- |\n| **HTTP Proxy** | TCP | **None** | No camouflage. Plain-text content that gateways can match directly with regular expressions |\n| **SOCKS5** | TCP / UDP | **None** | No camouflage. Fixed hexadecimal handshake signature (`05 01 00`) |\n| **Shadowsocks** | TCP / UDP | **Strong symmetric encryption** (AES-256-GCM / ChaCha20) | Purely random ciphertext. No plaintext protocol fields, but easily matched by fingerprint databases |\n| **VLESS-Reality** | TCP | **Strong TLS 1.3 encryption** (public-key authentication) | Very high. Borrows the SNI of a real external website, eliminating certificate signatures |\n| **Trojan** | TCP | **Standard TLS 1.3 encryption** (CA certificate) | High. The password is embedded in the TLS payload, making the traffic look like legitimate HTTPS |\n| **Hysteria 2 / TUIC** | UDP (QUIC) | **Strong TLS 1.3 encryption** | Camouflaged as HTTP/3 traffic or random UDP data |\n> Note: HTTP proxies do not encrypt the transport layer. Intermediate network devices can capture packets and read request headers, full URL paths, cookies, and account credentials."
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:2ee64502029a2a983d9113968d670073cc6d70fb7214e175bc04c8d05757fd23": {
+      "fingerprint": "2ee64502029a2a983d9113968d670073cc6d70fb7214e175bc04c8d05757fd23",
+      "translation": "How to Choose a Front Node for a Chained Proxy"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:2c7f3b41f4bf65f7e9b4613cd782d1fcff79aeb4182860fa51fd780fb8050b26": {
+      "fingerprint": "2c7f3b41f4bf65f7e9b4613cd782d1fcff79aeb4182860fa51fd780fb8050b26",
+      "translation": "A chained proxy consists of a front node and an exit node."
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:e5e578ae3d67979406dfded2000db476179e39779317d5761ec9c79128adbee3": {
+      "fingerprint": "e5e578ae3d67979406dfded2000db476179e39779317d5761ec9c79128adbee3",
+      "translation": "The core principle behind choosing a front node is that it should act as a purely transparent TCP transport tunnel.\nMany protocols work well for direct connections, but can cause severe disconnections or freezes when used as front nodes."
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:78b41da4a38c8e4c9798574ed51b48eb7d833f0d54c8238a66319db3d237aa1b": {
+      "fingerprint": "78b41da4a38c8e4c9798574ed51b48eb7d833f0d54c8238a66319db3d237aa1b",
+      "translation": "Recommended Front-End Protocols"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:863b28cfa2cd173a82373ce9eca404573c1da55330f2781aaa89b3df8e48a3dd": {
+      "fingerprint": "863b28cfa2cd173a82373ce9eca404573c1da55330f2781aaa89b3df8e48a3dd",
+      "translation": "| Rating | Protocol Type | Technical Characteristics |\n| :-----: | :------------------ | :------------------------- |\n| "
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:19c6ca975aa26df65445dac8a1129b3351f51215346b727693d73df6f9d355a2": {
+      "fingerprint": "19c6ca975aa26df65445dac8a1129b3351f51215346b727693d73df6f9d355a2",
+      "translation": "Top choice"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:c49258fa65995030b93e957f32e8e95258294b4cf39fb8fbaaadffc7a9445f60": {
+      "fingerprint": "c49258fa65995030b93e957f32e8e95258294b4cf39fb8fbaaadffc7a9445f60",
+      "translation": " | **Shadowsocks ** | Pure TCP encrypted byte stream, with no certificate handshake or multiplexing interference |\n| "
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:26e52918dec7a5f1fdbc31b2cefde5d81a829e4393601fbecd60d63918f16ae0": {
+      "fingerprint": "26e52918dec7a5f1fdbc31b2cefde5d81a829e4393601fbecd60d63918f16ae0",
+      "translation": "Recommended"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:624c96c32a77421e5092fec1dea9922f342ae4c27ba37737457d16876da0ab70": {
+      "fingerprint": "624c96c32a77421e5092fec1dea9922f342ae4c27ba37737457d16876da0ab70",
+      "translation": " | "
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:18be7eb46d3feb598310edf1924f4ed052648942c44ff7ce914d57e1e06b6ccb": {
+      "fingerprint": "18be7eb46d3feb598310edf1924f4ed052648942c44ff7ce914d57e1e06b6ccb",
+      "translation": "Trojan (native TCP)"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:d171b4d83553d93f09e1329a96c140d69630795cc4af00cb8037f9d88f92215a": {
+      "fingerprint": "d171b4d83553d93f09e1329a96c140d69630795cc4af00cb8037f9d88f92215a",
+      "translation": " | A single-layer, standard TLS encrypted tunnel with a clean, standard handshake |\n| "
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:dae4c7550bd73e07be55f0489c83ba0cd88cfbdff1bee83df9d4474e1944fe84": {
+      "fingerprint": "dae4c7550bd73e07be55f0489c83ba0cd88cfbdff1bee83df9d4474e1944fe84",
+      "translation": "VMess (pure TCP)"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:98f68fdebabcb302ebc398a81883ad67951ae8e1b30e7b6867ca41701f743dd2": {
+      "fingerprint": "98f68fdebabcb302ebc398a81883ad67951ae8e1b30e7b6867ca41701f743dd2",
+      "translation": " | Basic symmetric encryption for transport (disable WS and CDN) |\n| "
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:44d7a7dc666d8ae30fa4c488b32708b036f8dd0380501854375972f0cf799dd2": {
+      "fingerprint": "44d7a7dc666d8ae30fa4c488b32708b036f8dd0380501854375972f0cf799dd2",
+      "translation": "Avoid"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:6a85b7a8ffacf7d9d0542e8cf051d8371d93489b2fd2dba0afdf75e307a2925b": {
+      "fingerprint": "6a85b7a8ffacf7d9d0542e8cf051d8371d93489b2fd2dba0afdf75e307a2925b",
+      "translation": "Hysteria / TUIC"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:80bd950fdaffb755b04b0cf7a113663dd788972a38efa86105bff7e9f46325df": {
+      "fingerprint": "80bd950fdaffb755b04b0cf7a113663dd788972a38efa86105bff7e9f46325df",
+      "translation": " | Based on the UDP / QUIC protocol stack |\n| "
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:49b08f86f564394f84050b4cd716bf8eae9e76523ee15963250c6081c120ac2c": {
+      "fingerprint": "49b08f86f564394f84050b4cd716bf8eae9e76523ee15963250c6081c120ac2c",
+      "translation": "VLESS-Reality"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:be261578303c1b32596660bfdf4d1294705468a15dac53b7b18abf0ad55c3eab": {
+      "fingerprint": "be261578303c1b32596660bfdf4d1294705468a15dac53b7b18abf0ad55c3eab",
+      "translation": " | XTLS-Vision flow-control checks and certificate-stealing mechanism |\n| "
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:12894c55378f77375afd187497f821ffc13293e1209305663071723d34e5c608": {
+      "fingerprint": "12894c55378f77375afd187497f821ffc13293e1209305663071723d34e5c608",
+      "translation": "Any node behind a CDN"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:c2fad4dcc4b0a070f631f235a57c70e99bdaee9e8eea2b78b821292cfdcaebdb": {
+      "fingerprint": "c2fad4dcc4b0a070f631f235a57c70e99bdaee9e8eea2b78b821292cfdcaebdb",
+      "translation": " | Routed through an edge reverse proxy such as Cloudflare |"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:9a570d3bae11f1ca47a3a0f785e08b323e60a1ef2206e75c3ac9020c447735f7": {
+      "fingerprint": "9a570d3bae11f1ca47a3a0f785e08b323e60a1ef2206e75c3ac9020c447735f7",
+      "translation": "Once you’ve chosen a protocol, consider latency and location.\nA quick note on location: choose a combination with the shortest physical route. Suppose your residential-broadband exit node is on the US West Coast. You wouldn’t want to choose a node in Europe or India, because that would add a lot of unnecessary physical distance and latency. From mainland China, it’s best to choose a node in Hong Kong, Japan, or Singapore. The rest of the route will generally run over trans-Pacific submarine cables to the US West Coast."
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:56da5f87610be6c4ff90ba46c2ac9f5b0b5eb776811bb0f96c42e7c7c335c01a": {
+      "fingerprint": "56da5f87610be6c4ff90ba46c2ac9f5b0b5eb776811bb0f96c42e7c7c335c01a",
+      "translation": "In short, choose a low-latency Asia-Pacific node that uses a suitable protocol as your front node."
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:d05f2aaa9fde8a5290dfe6babdae1dbb88e26bcea8a39c5bcc37874da9fae61d": {
+      "fingerprint": "d05f2aaa9fde8a5290dfe6babdae1dbb88e26bcea8a39c5bcc37874da9fae61d",
+      "translation": "Why Do Advanced Protocols Frequently Disconnect When Used as Front Nodes?"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:3142a14548a3e80d27fde6c2ffa5988eb38b4e83adc86c42dacf314a8fe8801a": {
+      "fingerprint": "3142a14548a3e80d27fde6c2ffa5988eb38b4e83adc86c42dacf314a8fe8801a",
+      "translation": "UDP / QUIC protocols cannot be nested reliably"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:0734bd85fd66ac23c5a989cd84b90e30edc53f49a4197db98597f506503b9d4d": {
+      "fingerprint": "0734bd85fd66ac23c5a989cd84b90e30edc53f49a4197db98597f506503b9d4d",
+      "translation": "\nThe client carries a TCP handshake for residential broadband inside a UDP tunnel, making the underlying state machine complicated to handle. The two layers of congestion control compete and conflict, causing frequent connection resets.\n"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:6b33034167d90b0e6fb150093fcba6cb84100c1cf5c9f3e2b6dbd6800508ec9d": {
+      "fingerprint": "6b33034167d90b0e6fb150093fcba6cb84100c1cf5c9f3e2b6dbd6800508ec9d",
+      "translation": "Protocols involved"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:51d12455f36149ecc163add3fc4cf7027164875447094e4cb41157683be2c920": {
+      "fingerprint": "51d12455f36149ecc163add3fc4cf7027164875447094e4cb41157683be2c920",
+      "translation": ": Hysteria 1/2, TUIC, WireGuard."
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:6fda756da68ed65df0c5958748db79ba1d304d408901315457ace38a87a994e6": {
+      "fingerprint": "6fda756da68ed65df0c5958748db79ba1d304d408901315457ace38a87a994e6",
+      "translation": "Reality / Vision flow control conflicts with the inner handshake"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:1bdb0b1f645c610d65d3b5b8221c34ca799485f375df018d94d409a39388a810": {
+      "fingerprint": "1bdb0b1f645c610d65d3b5b8221c34ca799485f375df018d94d409a39388a810",
+      "translation": "\nReality simulates a real website’s TLS handshake. Nesting a second proxy handshake inside the tunnel (such as SOCKS5 or a second TLS handshake) contaminates the traffic characteristics, triggering filtering and blocking by the Vision module’s flow-control checks and directly returning RST to the client.\n"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:9269f90da9ae5f23920891132129cfa78784a9ce61412a12d2f32b9f9a034349": {
+      "fingerprint": "9269f90da9ae5f23920891132129cfa78784a9ce61412a12d2f32b9f9a034349",
+      "translation": ": VLESS-Reality, VLESS-XTLS-Vision."
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:e1c8d03be61f579d6e3df663f5c1f410800a8a6d5929fb7f4f6b6a6e4dba9260": {
+      "fingerprint": "e1c8d03be61f579d6e3df663f5c1f410800a8a6d5929fb7f4f6b6a6e4dba9260",
+      "translation": "WebSocket + CDN timeouts"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:179ae5ce1f906f03c3211f34a44bc13f22875d31c7490859d402630712ef91aa": {
+      "fingerprint": "179ae5ce1f906f03c3211f34a44bc13f22875d31c7490859d402630712ef91aa",
+      "translation": "\nCDN edge nodes impose strict timeouts on connections to the origin. If the front connection to a slow residential-broadband gateway times out, the CDN returns a 502 or 504 Gateway Timeout.\n"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:beb90a068843b1f79e36ebe6cc383b9032a7100b02daf4537d5770bc983abd46": {
+      "fingerprint": "beb90a068843b1f79e36ebe6cc383b9032a7100b02daf4537d5770bc983abd46",
+      "translation": ": WS or gRPC nodes behind Cloudflare CDN."
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:ee2fe61b859581c6e444159b3fcd08ff0ab18c48a98e7c1706c445e43d06fb4f": {
+      "fingerprint": "ee2fe61b859581c6e444159b3fcd08ff0ab18c48a98e7c1706c445e43d06fb4f",
+      "translation": "Appendix"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:8cb933b1017fa12d7f881088d854784825ec4a8b6fede7d62710906a5201f250": {
+      "fingerprint": "8cb933b1017fa12d7f881088d854784825ec4a8b6fede7d62710906a5201f250",
+      "translation": "Comparison of Common Front-Node Protocols"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:75f8c32dbe88c9ee954ad61c0a37b290ea9dc265ea62b37562fde6d800022337": {
+      "fingerprint": "75f8c32dbe88c9ee954ad61c0a37b290ea9dc265ea62b37562fde6d800022337",
+      "translation": "Front-node connections operate in environments with public-network censorship and internal network monitoring, so encryption strength and resistance to traffic inspection are key concerns."
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:da31207275a658e03b3033a36d8096a2683bad6023c904b637b6b3738e007460": {
+      "fingerprint": "da31207275a658e03b3033a36d8096a2683bad6023c904b637b6b3738e007460",
+      "translation": "| Protocol / Type | Transport Layer | Encryption | Camouflage and Resistance to Blocking |\n| :-------------------- | :--------- | :--------------------------------- | :--------------------------- |\n| "
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:7d5a22a886b8f06cd6348adf29cb1e949ac92efd0f83334f02f505392097b212": {
+      "fingerprint": "7d5a22a886b8f06cd6348adf29cb1e949ac92efd0f83334f02f505392097b212",
+      "translation": "HTTP Proxy"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:467512e7fa86c7883cc7ce5ca29b907b730fca8d0021565685bdce43df8985ad": {
+      "fingerprint": "467512e7fa86c7883cc7ce5ca29b907b730fca8d0021565685bdce43df8985ad",
+      "translation": " | TCP | "
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:115f2356d7969bfeb37e43554d7689d1115fa22cd2158d738e13d0c6ab6f73ff": {
+      "fingerprint": "115f2356d7969bfeb37e43554d7689d1115fa22cd2158d738e13d0c6ab6f73ff",
+      "translation": "None"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:c5d0151d94877a03ec25bb22936f5bad54b319219166144b6e85db43ac99d871": {
+      "fingerprint": "c5d0151d94877a03ec25bb22936f5bad54b319219166144b6e85db43ac99d871",
+      "translation": " | No camouflage. Plain-text content that gateways can match directly with regular expressions |\n| "
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:29112ab976bf9795030f74816ee20bc43da0844fb21d7224b6fd4c59d06e7008": {
+      "fingerprint": "29112ab976bf9795030f74816ee20bc43da0844fb21d7224b6fd4c59d06e7008",
+      "translation": "SOCKS5"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:9883bb9e8e1ff97aa6032c0283439dde2414621e505ff7dbe2212be5b0f5379f": {
+      "fingerprint": "9883bb9e8e1ff97aa6032c0283439dde2414621e505ff7dbe2212be5b0f5379f",
+      "translation": " | TCP / UDP | "
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:302b199f483f0348a37441571b61a54a9f754027ea87b3439064d3fd1cde3a8b": {
+      "fingerprint": "302b199f483f0348a37441571b61a54a9f754027ea87b3439064d3fd1cde3a8b",
+      "translation": " | No camouflage. Fixed hexadecimal handshake signature ("
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:6990cdfc75a1ddb7e74d331aff68ac85b394484c0d93f1af41eab872e391a194": {
+      "fingerprint": "6990cdfc75a1ddb7e74d331aff68ac85b394484c0d93f1af41eab872e391a194",
+      "translation": ") |\n| "
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:f2e3ceb44de11468ca5a4e37ee6b882ab0fba9eebc154650e947c7551c567d11": {
+      "fingerprint": "f2e3ceb44de11468ca5a4e37ee6b882ab0fba9eebc154650e947c7551c567d11",
+      "translation": "Shadowsocks"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:b83474614f5057a0a3cd4d9fa7f950d3367a99574f188d2e25f9c670dab4be88": {
+      "fingerprint": "b83474614f5057a0a3cd4d9fa7f950d3367a99574f188d2e25f9c670dab4be88",
+      "translation": " | TCP / UDP | "
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:f76089d242dc84268ea9925b7bd16694126723cb0c97be898a0ee5fbed12c7b2": {
+      "fingerprint": "f76089d242dc84268ea9925b7bd16694126723cb0c97be898a0ee5fbed12c7b2",
+      "translation": "Strong symmetric encryption"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:1a6679cb54e54ed20a5985cae7b44cc939a9b9d5c64798c98430ddc590dc3923": {
+      "fingerprint": "1a6679cb54e54ed20a5985cae7b44cc939a9b9d5c64798c98430ddc590dc3923",
+      "translation": " (AES-256-GCM / ChaCha20) | Purely random ciphertext. No plaintext protocol fields, but easily matched by fingerprint databases |\n| "
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:d80bfc5169c402f58da910893692acbd4c9f4b47968e6e2cbb29ced7fd21900a": {
+      "fingerprint": "d80bfc5169c402f58da910893692acbd4c9f4b47968e6e2cbb29ced7fd21900a",
+      "translation": " | TCP | "
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:f1473ab28634a5a2b6d684ce05251c0ef6551293c78e02d4c692da1c46a5f4bd": {
+      "fingerprint": "f1473ab28634a5a2b6d684ce05251c0ef6551293c78e02d4c692da1c46a5f4bd",
+      "translation": "Strong TLS 1.3 encryption"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:6d8452144727fb4c4e696541dc1fb27b2afdd45b9ce712d1e709230727674e48": {
+      "fingerprint": "6d8452144727fb4c4e696541dc1fb27b2afdd45b9ce712d1e709230727674e48",
+      "translation": " (public-key authentication) | Very high. Borrows the SNI of a real external website, eliminating certificate signatures |\n| "
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:42cdfc84133e3a0018d9b79ed1a7c7dcd96f5e41b9dcdb0e0742299398db55ad": {
+      "fingerprint": "42cdfc84133e3a0018d9b79ed1a7c7dcd96f5e41b9dcdb0e0742299398db55ad",
+      "translation": "Trojan"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:9b229f606e1a65251e4caa65e25597c69cc5d8f93d8d86933f4a0227367d0182": {
+      "fingerprint": "9b229f606e1a65251e4caa65e25597c69cc5d8f93d8d86933f4a0227367d0182",
+      "translation": " | TCP | "
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:22689afbad0924172cb873ab0af342415761cb6c278b66510db54a0f2c725877": {
+      "fingerprint": "22689afbad0924172cb873ab0af342415761cb6c278b66510db54a0f2c725877",
+      "translation": "Standard TLS 1.3 encryption"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:4675efba4b7d4b6bd4a2315e21f532a64ff720a207bd4a1e97e3683fe4b00b1a": {
+      "fingerprint": "4675efba4b7d4b6bd4a2315e21f532a64ff720a207bd4a1e97e3683fe4b00b1a",
+      "translation": " (CA certificate) | High. The password is embedded in the TLS payload, making the traffic look like legitimate HTTPS |\n| "
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:15f80d601807c96bc778b87be2e4f516543fd5ca4aa55e47efc34e7477863817": {
+      "fingerprint": "15f80d601807c96bc778b87be2e4f516543fd5ca4aa55e47efc34e7477863817",
+      "translation": "Hysteria 2 / TUIC"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:9f038be8132b0d85b543ace88487f34e90c050d0aebcc7f003f30925b008d092": {
+      "fingerprint": "9f038be8132b0d85b543ace88487f34e90c050d0aebcc7f003f30925b008d092",
+      "translation": " | UDP (QUIC) | "
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:615041b8dd6c947416ff911702466a57504808b39953ffff96b10a2eddae632d": {
+      "fingerprint": "615041b8dd6c947416ff911702466a57504808b39953ffff96b10a2eddae632d",
+      "translation": " | Camouflaged as HTTP/3 traffic or random UDP data |"
+    },
+    "en:content.blog.链式代理前置节点选择.md.segment:2715a96c1659cfccc83b7b4834fc9affce8079adcf6d0860949c6861dba6171f": {
+      "fingerprint": "2715a96c1659cfccc83b7b4834fc9affce8079adcf6d0860949c6861dba6171f",
+      "translation": "Note: HTTP proxies do not encrypt the transport layer. Intermediate network devices can capture packets and read request headers, full URL paths, cookies, and account credentials."
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.document": {
+      "fingerprint": "14479263240e3ccb10d2a5f7ac7058bf8edc6164d00a9b4634a98c679472af1c",
+      "translation": "---\ntitle: 鏈式代理前置節點選擇\ntags:\n  - 翻牆\n  - 鏈式代理\ncreatedAt: 2026-10-19\ndescription: 介紹鏈式代理架構下的前置節點選擇策略、核心協定比較與網路拓撲權衡\npublished: true\nslug: 20261019-01\n---\n\n## 如何選擇鏈式代理前置節點\n鏈式代理由前置節點＋落地節點組成\n\n選擇前置節點的核心原則是：讓它充當純粹且透明的 TCP 傳輸隧道。\n許多協定作為直連節點時體驗良好，但作為前置節點時，可能會導致嚴重斷流或卡死。\n### 前置協定選擇建議\n\n|   評級    | 協定類型                | 技術特性                       |\n| :-----: | :------------------ | :------------------------- |\n| **首選** | **Shadowsocks **    | 純粹的 TCP 加密位元組流，不受憑證握手與多路複用干擾 |\n| **推薦**  | **Trojan (原生 TCP)** | 單層標準 TLS 加密隧道，握手乾淨且符合標準       |\n| **推薦**  | **VMess (純 TCP)**   | 基礎對稱式加密傳輸（停用 WS，停用 CDN）     |\n| **避免使用**  | **Hysteria / TUIC** | 基於 UDP / QUIC 協定堆疊          |\n| **避免使用**  | **VLESS-Reality**   | XTLS-Vision 流量控管檢查與憑證竊取機制    |\n| **避免使用**  | **任何套用 CDN 的節點**     | 經過 Cloudflare 等邊緣反向代理        |\n\n選定協定後，再考量延遲與地區。\n簡單談談地區選擇：挑選實體鏈路最短的組合即可。假設你的家用寬頻落地節點在美西，總不會選歐洲或印度的節點吧？否則在實體上就會增加許多不必要的延遲。在中國大陸，最好選擇香港、日本、新加坡等地的節點，後續一般都會透過太平洋海底光纜連到美西。\n\n簡單來說，就是選擇協定合適、延遲低的亞太節點作為前置節點。\n### 為什麼進階協定作為前置節點時特別容易斷流？\n\n1. **UDP / QUIC 協定無法穩定巢狀封裝**\n用戶端透過 UDP 隧道巢狀封裝 TCP 家用寬頻握手，底層狀態機的處理十分繁瑣。雙層擁塞控制彼此競爭、互相衝突，導致連線頻繁重設。\n**涉及協定**：Hysteria 1/2、TUIC、WireGuard。\n\n2. **Reality / Vision 流量控管與內層握手衝突**\nReality 會模擬真實網站的 TLS 握手。隧道內再巢狀封裝第二次代理握手（例如 SOCKS5 或第二次 TLS），會污染流量特徵，觸發 Vision 模組的流量控管過濾並阻斷連線，直接向用戶端回傳 RST。\n**涉及協定**：VLESS-Reality、VLESS-XTLS-Vision。\n\n3. **WebSocket + CDN 因逾時而中斷**\nCDN 邊緣節點對回源連線的逾時限制相當嚴格。若前置連線至速度較慢的家用寬頻閘道器時逾時，CDN 就會直接回傳 502 或 504 Gateway Timeout。\n**涉及協定**：套用 Cloudflare CDN 的 WS 或 gRPC 節點。\n\n## 附錄\n## 前置節點常見協定比較\n\n前置鏈路運作於公網審查與內網監控環境中，核心考量是加密強度與防止稽核的能力。\n\n| 協定 / 類型               | 傳輸層        | 加密情況                               | 偽裝與抗封鎖能力                     |\n| :-------------------- | :--------- | :--------------------------------- | :--------------------------- |\n| **HTTP Proxy**        | TCP        | **無加密**                            | 無偽裝。純明文內容，閘道器可直接以正規表示式比對           |\n| **SOCKS5**            | TCP / UDP  | **無加密**                            | 無偽裝。固定的十六進位握手特徵 (`05 01 00`)  |\n| **Shadowsocks**       | TCP / UDP  | **強對稱式加密** (AES-256-GCM / ChaCha20) | 純隨機密文。沒有協定明文字段，但容易被特徵資料庫比對       |\n| **VLESS-Reality**     | TCP        | **TLS 1.3 強加密**（公鑰驗證）              | 極高。借用外部真實網站的 SNI，消除憑證特徵       |\n| **Trojan**            | TCP        | **標準 TLS 1.3 加密**（CA 憑證）           | 高。將密碼置於 TLS 內文中，呈現方式與合法 HTTPS 一致 |\n| **Hysteria 2 / TUIC** | UDP (QUIC) | **TLS 1.3 強加密**                    | 偽裝成 HTTP/3 流量或隨機 UDP 資料      |\n> 注意，HTTP 代理不包含傳輸層加密。中間網路設備可以直接攔截封包，讀取要求標頭、完整 URL 路徑、Cookie 與帳號憑證"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:2ee64502029a2a983d9113968d670073cc6d70fb7214e175bc04c8d05757fd23": {
+      "fingerprint": "2ee64502029a2a983d9113968d670073cc6d70fb7214e175bc04c8d05757fd23",
+      "translation": "如何選擇鏈式代理前置節點"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:2c7f3b41f4bf65f7e9b4613cd782d1fcff79aeb4182860fa51fd780fb8050b26": {
+      "fingerprint": "2c7f3b41f4bf65f7e9b4613cd782d1fcff79aeb4182860fa51fd780fb8050b26",
+      "translation": "鏈式代理由前置節點＋落地節點組成"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:e5e578ae3d67979406dfded2000db476179e39779317d5761ec9c79128adbee3": {
+      "fingerprint": "e5e578ae3d67979406dfded2000db476179e39779317d5761ec9c79128adbee3",
+      "translation": "選擇前置節點的核心原則是：讓它充當純粹且透明的 TCP 傳輸隧道。\n許多協定作為直連節點時體驗良好，但作為前置節點時，可能會導致嚴重斷流或卡死。"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:78b41da4a38c8e4c9798574ed51b48eb7d833f0d54c8238a66319db3d237aa1b": {
+      "fingerprint": "78b41da4a38c8e4c9798574ed51b48eb7d833f0d54c8238a66319db3d237aa1b",
+      "translation": "前置協定選擇建議"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:863b28cfa2cd173a82373ce9eca404573c1da55330f2781aaa89b3df8e48a3dd": {
+      "fingerprint": "863b28cfa2cd173a82373ce9eca404573c1da55330f2781aaa89b3df8e48a3dd",
+      "translation": "|   評級    | 協定類型                | 技術特性                       |\n| :-----: | :------------------ | :------------------------- |\n| "
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:19c6ca975aa26df65445dac8a1129b3351f51215346b727693d73df6f9d355a2": {
+      "fingerprint": "19c6ca975aa26df65445dac8a1129b3351f51215346b727693d73df6f9d355a2",
+      "translation": "首選"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:c49258fa65995030b93e957f32e8e95258294b4cf39fb8fbaaadffc7a9445f60": {
+      "fingerprint": "c49258fa65995030b93e957f32e8e95258294b4cf39fb8fbaaadffc7a9445f60",
+      "translation": " | **Shadowsocks **    | 純粹的 TCP 加密位元組流，不受憑證握手與多路複用干擾 |\n| "
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:26e52918dec7a5f1fdbc31b2cefde5d81a829e4393601fbecd60d63918f16ae0": {
+      "fingerprint": "26e52918dec7a5f1fdbc31b2cefde5d81a829e4393601fbecd60d63918f16ae0",
+      "translation": "推薦"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:624c96c32a77421e5092fec1dea9922f342ae4c27ba37737457d16876da0ab70": {
+      "fingerprint": "624c96c32a77421e5092fec1dea9922f342ae4c27ba37737457d16876da0ab70",
+      "translation": "  | "
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:18be7eb46d3feb598310edf1924f4ed052648942c44ff7ce914d57e1e06b6ccb": {
+      "fingerprint": "18be7eb46d3feb598310edf1924f4ed052648942c44ff7ce914d57e1e06b6ccb",
+      "translation": "Trojan (原生 TCP)"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:d171b4d83553d93f09e1329a96c140d69630795cc4af00cb8037f9d88f92215a": {
+      "fingerprint": "d171b4d83553d93f09e1329a96c140d69630795cc4af00cb8037f9d88f92215a",
+      "translation": " | 單層標準 TLS 加密隧道，握手乾淨且符合標準       |\n| "
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:dae4c7550bd73e07be55f0489c83ba0cd88cfbdff1bee83df9d4474e1944fe84": {
+      "fingerprint": "dae4c7550bd73e07be55f0489c83ba0cd88cfbdff1bee83df9d4474e1944fe84",
+      "translation": "VMess (純 TCP)"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:98f68fdebabcb302ebc398a81883ad67951ae8e1b30e7b6867ca41701f743dd2": {
+      "fingerprint": "98f68fdebabcb302ebc398a81883ad67951ae8e1b30e7b6867ca41701f743dd2",
+      "translation": "   | 基礎對稱式加密傳輸（停用 WS，停用 CDN）     |\n| "
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:44d7a7dc666d8ae30fa4c488b32708b036f8dd0380501854375972f0cf799dd2": {
+      "fingerprint": "44d7a7dc666d8ae30fa4c488b32708b036f8dd0380501854375972f0cf799dd2",
+      "translation": "避免使用"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:6a85b7a8ffacf7d9d0542e8cf051d8371d93489b2fd2dba0afdf75e307a2925b": {
+      "fingerprint": "6a85b7a8ffacf7d9d0542e8cf051d8371d93489b2fd2dba0afdf75e307a2925b",
+      "translation": "Hysteria / TUIC"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:80bd950fdaffb755b04b0cf7a113663dd788972a38efa86105bff7e9f46325df": {
+      "fingerprint": "80bd950fdaffb755b04b0cf7a113663dd788972a38efa86105bff7e9f46325df",
+      "translation": " | 基於 UDP / QUIC 協定堆疊          |\n| "
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:49b08f86f564394f84050b4cd716bf8eae9e76523ee15963250c6081c120ac2c": {
+      "fingerprint": "49b08f86f564394f84050b4cd716bf8eae9e76523ee15963250c6081c120ac2c",
+      "translation": "VLESS-Reality"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:be261578303c1b32596660bfdf4d1294705468a15dac53b7b18abf0ad55c3eab": {
+      "fingerprint": "be261578303c1b32596660bfdf4d1294705468a15dac53b7b18abf0ad55c3eab",
+      "translation": "   | XTLS-Vision 流量控管檢查與憑證竊取機制    |\n| "
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:12894c55378f77375afd187497f821ffc13293e1209305663071723d34e5c608": {
+      "fingerprint": "12894c55378f77375afd187497f821ffc13293e1209305663071723d34e5c608",
+      "translation": "任何套用 CDN 的節點"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:c2fad4dcc4b0a070f631f235a57c70e99bdaee9e8eea2b78b821292cfdcaebdb": {
+      "fingerprint": "c2fad4dcc4b0a070f631f235a57c70e99bdaee9e8eea2b78b821292cfdcaebdb",
+      "translation": "     | 經過 Cloudflare 等邊緣反向代理        |"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:9a570d3bae11f1ca47a3a0f785e08b323e60a1ef2206e75c3ac9020c447735f7": {
+      "fingerprint": "9a570d3bae11f1ca47a3a0f785e08b323e60a1ef2206e75c3ac9020c447735f7",
+      "translation": "選定協定後，再考量延遲與地區。\n簡單談談地區選擇：挑選實體鏈路最短的組合即可。假設你的家用寬頻落地節點在美西，總不會選歐洲或印度的節點吧？否則在實體上就會增加許多不必要的延遲。在中國大陸，最好選擇香港、日本、新加坡等地的節點，後續一般都會透過太平洋海底光纜連到美西。"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:56da5f87610be6c4ff90ba46c2ac9f5b0b5eb776811bb0f96c42e7c7c335c01a": {
+      "fingerprint": "56da5f87610be6c4ff90ba46c2ac9f5b0b5eb776811bb0f96c42e7c7c335c01a",
+      "translation": "簡單來說，就是選擇協定合適、延遲低的亞太節點作為前置節點。"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:d05f2aaa9fde8a5290dfe6babdae1dbb88e26bcea8a39c5bcc37874da9fae61d": {
+      "fingerprint": "d05f2aaa9fde8a5290dfe6babdae1dbb88e26bcea8a39c5bcc37874da9fae61d",
+      "translation": "為什麼進階協定作為前置節點時特別容易斷流？"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:3142a14548a3e80d27fde6c2ffa5988eb38b4e83adc86c42dacf314a8fe8801a": {
+      "fingerprint": "3142a14548a3e80d27fde6c2ffa5988eb38b4e83adc86c42dacf314a8fe8801a",
+      "translation": "UDP / QUIC 協定無法穩定巢狀封裝"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:0734bd85fd66ac23c5a989cd84b90e30edc53f49a4197db98597f506503b9d4d": {
+      "fingerprint": "0734bd85fd66ac23c5a989cd84b90e30edc53f49a4197db98597f506503b9d4d",
+      "translation": "\n用戶端透過 UDP 隧道巢狀封裝 TCP 家用寬頻握手，底層狀態機的處理十分繁瑣。雙層擁塞控制彼此競爭、互相衝突，導致連線頻繁重設。\n"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:6b33034167d90b0e6fb150093fcba6cb84100c1cf5c9f3e2b6dbd6800508ec9d": {
+      "fingerprint": "6b33034167d90b0e6fb150093fcba6cb84100c1cf5c9f3e2b6dbd6800508ec9d",
+      "translation": "涉及協定"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:51d12455f36149ecc163add3fc4cf7027164875447094e4cb41157683be2c920": {
+      "fingerprint": "51d12455f36149ecc163add3fc4cf7027164875447094e4cb41157683be2c920",
+      "translation": "：Hysteria 1/2、TUIC、WireGuard。"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:6fda756da68ed65df0c5958748db79ba1d304d408901315457ace38a87a994e6": {
+      "fingerprint": "6fda756da68ed65df0c5958748db79ba1d304d408901315457ace38a87a994e6",
+      "translation": "Reality / Vision 流量控管與內層握手衝突"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:1bdb0b1f645c610d65d3b5b8221c34ca799485f375df018d94d409a39388a810": {
+      "fingerprint": "1bdb0b1f645c610d65d3b5b8221c34ca799485f375df018d94d409a39388a810",
+      "translation": "\nReality 會模擬真實網站的 TLS 握手。隧道內再巢狀封裝第二次代理握手（例如 SOCKS5 或第二次 TLS），會污染流量特徵，觸發 Vision 模組的流量控管過濾並阻斷連線，直接向用戶端回傳 RST。\n"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:9269f90da9ae5f23920891132129cfa78784a9ce61412a12d2f32b9f9a034349": {
+      "fingerprint": "9269f90da9ae5f23920891132129cfa78784a9ce61412a12d2f32b9f9a034349",
+      "translation": "：VLESS-Reality、VLESS-XTLS-Vision。"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:e1c8d03be61f579d6e3df663f5c1f410800a8a6d5929fb7f4f6b6a6e4dba9260": {
+      "fingerprint": "e1c8d03be61f579d6e3df663f5c1f410800a8a6d5929fb7f4f6b6a6e4dba9260",
+      "translation": "WebSocket + CDN 因逾時而中斷"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:179ae5ce1f906f03c3211f34a44bc13f22875d31c7490859d402630712ef91aa": {
+      "fingerprint": "179ae5ce1f906f03c3211f34a44bc13f22875d31c7490859d402630712ef91aa",
+      "translation": "\nCDN 邊緣節點對回源連線的逾時限制相當嚴格。若前置連線至速度較慢的家用寬頻閘道器時逾時，CDN 就會直接回傳 502 或 504 Gateway Timeout。\n"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:beb90a068843b1f79e36ebe6cc383b9032a7100b02daf4537d5770bc983abd46": {
+      "fingerprint": "beb90a068843b1f79e36ebe6cc383b9032a7100b02daf4537d5770bc983abd46",
+      "translation": "：套用 Cloudflare CDN 的 WS 或 gRPC 節點。"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:ee2fe61b859581c6e444159b3fcd08ff0ab18c48a98e7c1706c445e43d06fb4f": {
+      "fingerprint": "ee2fe61b859581c6e444159b3fcd08ff0ab18c48a98e7c1706c445e43d06fb4f",
+      "translation": "附錄"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:8cb933b1017fa12d7f881088d854784825ec4a8b6fede7d62710906a5201f250": {
+      "fingerprint": "8cb933b1017fa12d7f881088d854784825ec4a8b6fede7d62710906a5201f250",
+      "translation": "前置節點常見協定比較"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:75f8c32dbe88c9ee954ad61c0a37b290ea9dc265ea62b37562fde6d800022337": {
+      "fingerprint": "75f8c32dbe88c9ee954ad61c0a37b290ea9dc265ea62b37562fde6d800022337",
+      "translation": "前置鏈路運作於公網審查與內網監控環境中，核心考量是加密強度與防止稽核的能力。"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:da31207275a658e03b3033a36d8096a2683bad6023c904b637b6b3738e007460": {
+      "fingerprint": "da31207275a658e03b3033a36d8096a2683bad6023c904b637b6b3738e007460",
+      "translation": "| 協定 / 類型               | 傳輸層        | 加密情況                               | 偽裝與抗封鎖能力                     |\n| :-------------------- | :--------- | :--------------------------------- | :--------------------------- |\n| "
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:7d5a22a886b8f06cd6348adf29cb1e949ac92efd0f83334f02f505392097b212": {
+      "fingerprint": "7d5a22a886b8f06cd6348adf29cb1e949ac92efd0f83334f02f505392097b212",
+      "translation": "HTTP Proxy"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:467512e7fa86c7883cc7ce5ca29b907b730fca8d0021565685bdce43df8985ad": {
+      "fingerprint": "467512e7fa86c7883cc7ce5ca29b907b730fca8d0021565685bdce43df8985ad",
+      "translation": "        | TCP        | "
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:115f2356d7969bfeb37e43554d7689d1115fa22cd2158d738e13d0c6ab6f73ff": {
+      "fingerprint": "115f2356d7969bfeb37e43554d7689d1115fa22cd2158d738e13d0c6ab6f73ff",
+      "translation": "無加密"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:c5d0151d94877a03ec25bb22936f5bad54b319219166144b6e85db43ac99d871": {
+      "fingerprint": "c5d0151d94877a03ec25bb22936f5bad54b319219166144b6e85db43ac99d871",
+      "translation": "                            | 無偽裝。純明文內容，閘道器可直接以正規表示式比對           |\n| "
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:29112ab976bf9795030f74816ee20bc43da0844fb21d7224b6fd4c59d06e7008": {
+      "fingerprint": "29112ab976bf9795030f74816ee20bc43da0844fb21d7224b6fd4c59d06e7008",
+      "translation": "SOCKS5"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:9883bb9e8e1ff97aa6032c0283439dde2414621e505ff7dbe2212be5b0f5379f": {
+      "fingerprint": "9883bb9e8e1ff97aa6032c0283439dde2414621e505ff7dbe2212be5b0f5379f",
+      "translation": "            | TCP / UDP  | "
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:302b199f483f0348a37441571b61a54a9f754027ea87b3439064d3fd1cde3a8b": {
+      "fingerprint": "302b199f483f0348a37441571b61a54a9f754027ea87b3439064d3fd1cde3a8b",
+      "translation": "                            | 無偽裝。固定的十六進位握手特徵 ("
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:6990cdfc75a1ddb7e74d331aff68ac85b394484c0d93f1af41eab872e391a194": {
+      "fingerprint": "6990cdfc75a1ddb7e74d331aff68ac85b394484c0d93f1af41eab872e391a194",
+      "translation": ")  |\n| "
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:f2e3ceb44de11468ca5a4e37ee6b882ab0fba9eebc154650e947c7551c567d11": {
+      "fingerprint": "f2e3ceb44de11468ca5a4e37ee6b882ab0fba9eebc154650e947c7551c567d11",
+      "translation": "Shadowsocks"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:b83474614f5057a0a3cd4d9fa7f950d3367a99574f188d2e25f9c670dab4be88": {
+      "fingerprint": "b83474614f5057a0a3cd4d9fa7f950d3367a99574f188d2e25f9c670dab4be88",
+      "translation": "       | TCP / UDP  | "
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:f76089d242dc84268ea9925b7bd16694126723cb0c97be898a0ee5fbed12c7b2": {
+      "fingerprint": "f76089d242dc84268ea9925b7bd16694126723cb0c97be898a0ee5fbed12c7b2",
+      "translation": "強對稱式加密"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:1a6679cb54e54ed20a5985cae7b44cc939a9b9d5c64798c98430ddc590dc3923": {
+      "fingerprint": "1a6679cb54e54ed20a5985cae7b44cc939a9b9d5c64798c98430ddc590dc3923",
+      "translation": " (AES-256-GCM / ChaCha20) | 純隨機密文。沒有協定明文字段，但容易被特徵資料庫比對       |\n| "
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:d80bfc5169c402f58da910893692acbd4c9f4b47968e6e2cbb29ced7fd21900a": {
+      "fingerprint": "d80bfc5169c402f58da910893692acbd4c9f4b47968e6e2cbb29ced7fd21900a",
+      "translation": "     | TCP        | "
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:f1473ab28634a5a2b6d684ce05251c0ef6551293c78e02d4c692da1c46a5f4bd": {
+      "fingerprint": "f1473ab28634a5a2b6d684ce05251c0ef6551293c78e02d4c692da1c46a5f4bd",
+      "translation": "TLS 1.3 強加密"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:6d8452144727fb4c4e696541dc1fb27b2afdd45b9ce712d1e709230727674e48": {
+      "fingerprint": "6d8452144727fb4c4e696541dc1fb27b2afdd45b9ce712d1e709230727674e48",
+      "translation": "（公鑰驗證）              | 極高。借用外部真實網站的 SNI，消除憑證特徵       |\n| "
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:42cdfc84133e3a0018d9b79ed1a7c7dcd96f5e41b9dcdb0e0742299398db55ad": {
+      "fingerprint": "42cdfc84133e3a0018d9b79ed1a7c7dcd96f5e41b9dcdb0e0742299398db55ad",
+      "translation": "Trojan"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:9b229f606e1a65251e4caa65e25597c69cc5d8f93d8d86933f4a0227367d0182": {
+      "fingerprint": "9b229f606e1a65251e4caa65e25597c69cc5d8f93d8d86933f4a0227367d0182",
+      "translation": "            | TCP        | "
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:22689afbad0924172cb873ab0af342415761cb6c278b66510db54a0f2c725877": {
+      "fingerprint": "22689afbad0924172cb873ab0af342415761cb6c278b66510db54a0f2c725877",
+      "translation": "標準 TLS 1.3 加密"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:4675efba4b7d4b6bd4a2315e21f532a64ff720a207bd4a1e97e3683fe4b00b1a": {
+      "fingerprint": "4675efba4b7d4b6bd4a2315e21f532a64ff720a207bd4a1e97e3683fe4b00b1a",
+      "translation": "（CA 憑證）           | 高。將密碼置於 TLS 內文中，呈現方式與合法 HTTPS 一致 |\n| "
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:15f80d601807c96bc778b87be2e4f516543fd5ca4aa55e47efc34e7477863817": {
+      "fingerprint": "15f80d601807c96bc778b87be2e4f516543fd5ca4aa55e47efc34e7477863817",
+      "translation": "Hysteria 2 / TUIC"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:9f038be8132b0d85b543ace88487f34e90c050d0aebcc7f003f30925b008d092": {
+      "fingerprint": "9f038be8132b0d85b543ace88487f34e90c050d0aebcc7f003f30925b008d092",
+      "translation": " | UDP (QUIC) | "
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:615041b8dd6c947416ff911702466a57504808b39953ffff96b10a2eddae632d": {
+      "fingerprint": "615041b8dd6c947416ff911702466a57504808b39953ffff96b10a2eddae632d",
+      "translation": "                    | 偽裝成 HTTP/3 流量或隨機 UDP 資料      |"
+    },
+    "zh-TW:content.blog.链式代理前置节点选择.md.segment:2715a96c1659cfccc83b7b4834fc9affce8079adcf6d0860949c6861dba6171f": {
+      "fingerprint": "2715a96c1659cfccc83b7b4834fc9affce8079adcf6d0860949c6861dba6171f",
+      "translation": "注意，HTTP 代理不包含傳輸層加密。中間網路設備可以直接攔截封包，讀取要求標頭、完整 URL 路徑、Cookie 與帳號憑證"
+    },
+    "en:content.about.profile.md.document": {
+      "fingerprint": "d220bca0e990c79995333be6666dc2a9dc71941d2dfb842b199660326f4e0d85",
+      "translation": "---\nname: Last4ev3r\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile-fe4782a21dcb-w320.webp\nbackgroundKeywords:\n  - C++\n  - ROS2\n  - ubuntu\n  - 天文\n  - AI\n  - Python\n  - Music\n  - CQU\n  - SLAM\n---\n\n## About This Website\n- BLOG Publishes serious technical articles\n- NOTE Everyday musings\n- LINKS Blogroll\n- ABOUT This page\n- LIFE Shares books, movies and TV shows, music, and games I've enjoyed\n\n## About Me\n\nCurrently a third-year student at Shazheng Street Men's Vocational and Technical College in Shapingba, Chongqing\nI like astronomy. I've dabbled in planetary photography, and hope to try deep-sky or wide-field astrophotography someday.\nCurrently getting skunked at lure fishing.\n\n```image-layout\n---\nlayout: carousel\ngrid: |\n  A A B\n  A A C\n---\n![jupiter](https://img.muelsyse.us/bed/jupiter.png)\n\n\n![moon](https://img.muelsyse.us/bed/moon.png)\n```\n\nI like tinkering.\nHere are a few of my open-source ROS projects. If you find them useful, feel free to star them~\nhttps://github.com/ConQU2026/auto_serial_bridge\nhttps://github.com/Edmounds/robviz\n\n-  2026 RoboCup Finals, National Champion\n- 2026 Electronic Design Contest, Provincial First Prize\n- 2026 RoboCon Main Competition, National Third Prize\n\n## Contact Me\n[i@muelsyse.us](mailto:i@muelsyse.us)\n\n## Acknowledgements\n\nThis site is adapted and rebuilt from [Astro-star](https://github.com/hanlife02/Astro-star)\n\nThis site uses the following services/APIs\n\n<div class=\"acknowledgement-logos\"><a class=\"acknowledgement-logo\" href=\"https://www.cloudflare.com/\"><img src=\"/images/cloudflare-logo.svg?v=20260728\" alt=\"Cloudflare\" width=\"300\" height=\"64\" loading=\"eager\" decoding=\"async\"></a><a class=\"acknowledgement-logo\" href=\"https://www.themoviedb.org/\"><img src=\"/images/tmdb-logo.svg?v=20260728\" alt=\"The Movie Database\" width=\"300\" height=\"64\" loading=\"eager\" decoding=\"async\"></a><a class=\"acknowledgement-logo\" href=\"https://steamcommunity.com/dev\"><img src=\"/images/steam-logo.svg?v=20260728\" alt=\"Steam\" width=\"240\" height=\"64\" loading=\"eager\" decoding=\"async\"></a></div>"
+    },
+    "zh-TW:content.about.profile.md.document": {
+      "fingerprint": "d220bca0e990c79995333be6666dc2a9dc71941d2dfb842b199660326f4e0d85",
+      "translation": "---\nname: Last4ev3r\nmotto: Keep it Simple,Stupid\nportrait: /images/content/about/profile-fe4782a21dcb-w320.webp\nbackgroundKeywords:\n  - C++\n  - ROS2\n  - ubuntu\n  - 天文\n  - AI\n  - Python\n  - Music\n  - CQU\n  - SLAM\n---\n\n## 關於網站\n- BLOG 發布正經的技術文章\n- NOTE 日常碎念\n- LINKS 友站連結\n- ABOUT 就是這一頁\n- LIFE 分享我看過的書、影視劇、音樂和遊戲\n\n## 關於我\n\n重慶沙坪壩沙正街男子職業技術學院大三就讀中  \n喜歡天文，淺嚐過行星攝影，未來有機會想嘗試深空攝影／星野攝影  \n路亞空軍中\n\n```image-layout\n---\nlayout: carousel\ngrid: |\n  A A B\n  A A C\n---\n![jupiter](https://img.muelsyse.us/bed/jupiter.png)\n\n\n![moon](https://img.muelsyse.us/bed/moon.png)\n```\n\n喜歡折騰  \n以下是我的幾個 ROS 相關開源專案，如果覺得好用，歡迎 star～  \nhttps://github.com/ConQU2026/auto_serial_bridge\nhttps://github.com/Edmounds/robviz\n\n-  2026 robocup 決賽全國冠軍\n- 2026 電賽 省一\n- 2026 robocon 主賽全國三等獎\n\n## 聯絡我\n[i@muelsyse.us](mailto:i@muelsyse.us)\n\n## 致謝\n\n本站基於 [Astro-star](https://github.com/hanlife02/Astro-star) 修改並重新建置\n\n本站使用以下服務／API\n\n<div class=\"acknowledgement-logos\"><a class=\"acknowledgement-logo\" href=\"https://www.cloudflare.com/\"><img src=\"/images/cloudflare-logo.svg?v=20260728\" alt=\"Cloudflare\" width=\"300\" height=\"64\" loading=\"eager\" decoding=\"async\"></a><a class=\"acknowledgement-logo\" href=\"https://www.themoviedb.org/\"><img src=\"/images/tmdb-logo.svg?v=20260728\" alt=\"The Movie Database\" width=\"300\" height=\"64\" loading=\"eager\" decoding=\"async\"></a><a class=\"acknowledgement-logo\" href=\"https://steamcommunity.com/dev\"><img src=\"/images/steam-logo.svg?v=20260728\" alt=\"Steam\" width=\"240\" height=\"64\" loading=\"eager\" decoding=\"async\"></a></div>"
     }
   }
 }
