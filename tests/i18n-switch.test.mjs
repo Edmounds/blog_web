@@ -32,6 +32,18 @@ test("isLocale accepts supported locales and rejects ja", () => {
 });
 
 test("stripLocaleFromPath strips localized prefixes and ignores removed ja", () => {
+  assert.deepEqual(stripLocaleFromPath("/"), {
+    locale: "zh-CN",
+    pathname: "/",
+  });
+  assert.deepEqual(stripLocaleFromPath("/en/"), {
+    locale: "en",
+    pathname: "/",
+  });
+  assert.deepEqual(stripLocaleFromPath("/zh-TW/"), {
+    locale: "zh-TW",
+    pathname: "/",
+  });
   assert.deepEqual(stripLocaleFromPath("/en/blog/"), {
     locale: "en",
     pathname: "/blog/",

@@ -162,6 +162,7 @@ const isLifeActive = routePath.startsWith("/life/");
 </header>
 
 <script>
+  import { stripLocaleFromPath } from "../../lib/i18n";
   import { computeSubmenuPlacement } from "../../lib/life";
 
   type HeaderWindow = Window & { __siteHeaderCleanup?: () => void };
@@ -289,9 +290,14 @@ const isLifeActive = routePath.startsWith("/life/");
     const lifeIsOpen = () =>
       lifeTrigger?.getAttribute("aria-expanded") === "true";
     const navHasFocus = () => desktopNav.contains(document.activeElement);
+    const canAutoHide = () => {
+      const path = stripLocaleFromPath(window.location.pathname).pathname;
+      return path !== "/";
+    };
     const setHidden = (hidden: boolean) => {
       const nextHidden =
         hidden &&
+        canAutoHide() &&
         desktopLayout.matches &&
         window.scrollY > 0 &&
         !lifeIsOpen() &&
@@ -301,7 +307,7 @@ const isLifeActive = routePath.startsWith("/life/");
     };
     const syncAfterMenuChange = () =>
       requestAnimationFrame(() => {
-        setHidden(window.scrollY > 0);
+        setHidden(canAutoHide() && window.scrollY > 0);
       });
 
     const closeMobile = () => {
@@ -395,7 +401,7 @@ const isLifeActive = routePath.startsWith("/life/");
       "pointerleave",
       () => {
         pointerInsideNavRegion = false;
-        setHidden(window.scrollY > 0);
+        setHidden(canAutoHide() && window.scrollY > 0);
       },
       { signal },
     );
@@ -404,6 +410,7 @@ const isLifeActive = routePath.startsWith("/life/");
       () => {
         const currentScrollY = window.scrollY;
         if (
+          !canAutoHide() ||
           currentScrollY <= 0 ||
           lifeIsOpen() ||
           pointerInsideNavRegion ||
@@ -425,14 +432,21 @@ const isLifeActive = routePath.startsWith("/life/");
     desktopLayout.addEventListener(
       "change",
       () => {
-        setHidden(window.scrollY > 0);
+        setHidden(canAutoHide() && window.scrollY > 0);
         scheduleContentFrame();
         syncLifeMenuPlacement();
       },
       { signal },
     );
 
-    setHidden(window.scrollY > 0);
+    const syncRouteState = () => {
+      setHidden(canAutoHide() && window.scrollY > 0);
+      syncLifeMenuPlacement();
+    };
+    window.addEventListener("spa:nav-sync", syncRouteState, { signal });
+    window.addEventListener("popstate", syncRouteState, { signal });
+
+    setHidden(canAutoHide() && window.scrollY > 0);
     scheduleContentFrame();
     syncLifeMenuPlacement();
     document.fonts?.ready.then(syncLifeMenuPlacement);
