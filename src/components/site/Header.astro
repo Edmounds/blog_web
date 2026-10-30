@@ -162,6 +162,8 @@ const isLifeActive = routePath.startsWith("/life/");
 </header>
 
 <script>
+  import { computeSubmenuPlacement } from "../../lib/life";
+
   type HeaderWindow = Window & { __siteHeaderCleanup?: () => void };
 
   function bindHeader() {
@@ -195,6 +197,50 @@ const isLifeActive = routePath.startsWith("/life/");
     let pointerInsideNavRegion = false;
     let frameId = 0;
 
+    const syncLifeMenuPlacement = () => {
+      if (!desktopLayout.matches) return;
+      if (
+        !(lifeTrigger instanceof HTMLElement) ||
+        !(lifeMenu instanceof HTMLElement)
+      )
+        return;
+
+      const searchTarget =
+        header.querySelector("[data-search-trigger]") ||
+        header.querySelector("[data-global-search]") ||
+        frameEnd;
+      if (!(searchTarget instanceof HTMLElement)) return;
+
+      const searchLeft = searchTarget.getBoundingClientRect().left;
+      const triggerRight = lifeTrigger.getBoundingClientRect().right;
+
+      const links = Array.from(lifeMenu.querySelectorAll("a"));
+      if (links.length === 0) return;
+
+      const linksWidth = links.reduce(
+        (sum, link) => sum + link.getBoundingClientRect().width,
+        0,
+      );
+
+      const computed = getComputedStyle(lifeMenu);
+      const gapValue =
+        parseFloat(computed.rowGap) ||
+        parseFloat(computed.columnGap) ||
+        parseFloat(computed.paddingTop) ||
+        parseFloat(computed.paddingLeft) ||
+        16;
+
+      const expectedHorizontalWidth =
+        gapValue + linksWidth + (links.length - 1) * gapValue;
+
+      lifeMenu.dataset.placement = computeSubmenuPlacement({
+        triggerRight,
+        submenuWidth: expectedHorizontalWidth,
+        searchLeft,
+        buffer: 12,
+      });
+    };
+
     const clearContentFrame = () => {
       document.documentElement.style.removeProperty(
         "--content-frame-inline-start",
@@ -209,6 +255,7 @@ const isLifeActive = routePath.startsWith("/life/");
         clearContentFrame();
         return;
       }
+      syncLifeMenuPlacement();
 
       const markRect = signatureMark.getBoundingClientRect();
       const endRect = frameEnd.getBoundingClientRect();
@@ -299,13 +346,23 @@ const isLifeActive = routePath.startsWith("/life/");
         link.addEventListener("click", closeMobile, { signal }),
       );
     const lifeMenuRoot = lifeMenu?.parentElement;
-    lifeMenuRoot?.addEventListener("pointerenter", () => setLifeOpen(true), {
-      signal,
-    });
+    lifeMenuRoot?.addEventListener(
+      "pointerenter",
+      () => {
+        syncLifeMenuPlacement();
+        setLifeOpen(true);
+      },
+      { signal },
+    );
     lifeMenuRoot?.addEventListener("pointerleave", closeLife, { signal });
-    lifeMenuRoot?.addEventListener("focusin", () => setLifeOpen(true), {
-      signal,
-    });
+    lifeMenuRoot?.addEventListener(
+      "focusin",
+      () => {
+        syncLifeMenuPlacement();
+        setLifeOpen(true);
+      },
+      { signal },
+    );
     document.addEventListener(
       "pointerdown",
       (event) => {
@@ -370,12 +427,15 @@ const isLifeActive = routePath.startsWith("/life/");
       () => {
         setHidden(window.scrollY > 0);
         scheduleContentFrame();
+        syncLifeMenuPlacement();
       },
       { signal },
     );
 
     setHidden(window.scrollY > 0);
     scheduleContentFrame();
+    syncLifeMenuPlacement();
+    document.fonts?.ready.then(syncLifeMenuPlacement);
     const cleanup = () => {
       controller.abort();
       frameObserver.disconnect();
@@ -585,22 +645,22 @@ const isLifeActive = routePath.startsWith("/life/");
     color: var(--text-muted);
     font-size: var(--type-base);
   }
-  @media (min-width: 64.0625rem) and (max-width: 78rem) {
-    .life-menu__items {
-      top: 100%;
-      left: 0;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--life-submenu-gap);
-      padding-top: var(--life-submenu-gap);
-      padding-left: 0;
-      transform: translateY(-0.25rem);
-    }
-    .life-menu__items[data-open="true"],
-    .life-menu:hover .life-menu__items,
-    .life-menu:focus-within .life-menu__items {
-      transform: translateY(0);
-    }
+  .life-menu__items[data-placement="bottom"] {
+    top: 100%;
+    left: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--life-submenu-gap);
+    padding-top: var(--life-submenu-gap);
+    padding-left: 0;
+    transform: translateY(-0.25rem);
+  }
+  .life-menu__items[data-placement="bottom"][data-open="true"],
+  .life-menu:hover .life-menu__items[data-placement="bottom"],
+  .life-menu:focus-within .life-menu__items[data-placement="bottom"] {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
   }
   @media (max-width: 64rem) {
     .site-header {

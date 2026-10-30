@@ -10,6 +10,7 @@ import {
 import {
   LIFE_TITLES,
   LIFE_TYPES,
+  computeSubmenuPlacement,
   isLifeType,
 } from "../src/lib/life.ts";
 
@@ -77,4 +78,36 @@ test("life titles use capitalized English names", () => {
     screen: "MOVIES",
     game: "GAMES",
   });
+});
+
+test("computeSubmenuPlacement switches to bottom on collision and right when room permits", () => {
+  assert.equal(
+    computeSubmenuPlacement({
+      triggerRight: 700,
+      submenuWidth: 260,
+      searchLeft: 950,
+      buffer: 12,
+    }),
+    "bottom",
+  );
+
+  assert.equal(
+    computeSubmenuPlacement({
+      triggerRight: 700,
+      submenuWidth: 260,
+      searchLeft: 972,
+      buffer: 12,
+    }),
+    "bottom",
+  );
+
+  assert.equal(
+    computeSubmenuPlacement({
+      triggerRight: 700,
+      submenuWidth: 260,
+      searchLeft: 1100,
+      buffer: 12,
+    }),
+    "right",
+  );
 });
