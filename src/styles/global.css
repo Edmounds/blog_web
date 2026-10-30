@@ -12,7 +12,7 @@
 
 @font-face {
   font-family: "Biotif";
-  src: url("/fonts/Biotif-Regular.woff2") format("woff2");
+  src: url("/fonts/Biotif-Regular.v2.woff2") format("woff2");
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -20,7 +20,7 @@
 
 @font-face {
   font-family: "Biotif";
-  src: url("/fonts/Biotif-Medium.woff2") format("woff2");
+  src: url("/fonts/Biotif-Medium.v2.woff2") format("woff2");
   font-style: normal;
   font-weight: 500;
   font-display: swap;
@@ -28,7 +28,7 @@
 
 @font-face {
   font-family: "Biotif";
-  src: url("/fonts/Biotif-SemiBold.woff2") format("woff2");
+  src: url("/fonts/Biotif-SemiBold.v2.woff2") format("woff2");
   font-style: normal;
   font-weight: 600;
   font-display: swap;
@@ -36,7 +36,7 @@
 
 @font-face {
   font-family: "Biotif";
-  src: url("/fonts/Biotif-Bold.woff2") format("woff2");
+  src: url("/fonts/Biotif-Bold.v2.woff2") format("woff2");
   font-style: normal;
   font-weight: 700;
   font-display: swap;
@@ -1307,6 +1307,21 @@ html.dark .ui-prose pre.astro-code span {
   margin-inline: auto;
 }
 
+.ui-prose .markdown-mermaid__diagram img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ui-prose [data-mermaid-theme="dark"],
+html.dark .ui-prose [data-mermaid-theme="light"] {
+  display: none;
+}
+
+html.dark .ui-prose [data-mermaid-theme="dark"] {
+  display: block;
+}
+
 .ui-prose .markdown-mermaid__source {
   margin: 0;
   border: 0;
@@ -1503,31 +1518,16 @@ html.dark .ui-prose pre.astro-code span {
 }
 
 /*
- * Scroll-reveal system: elements marked with data-reveal stay hidden until the
- * shared IntersectionObserver in BaseLayout marks them .is-revealed. The
- * html.js-reveal gate is added by an inline script only when JS is available
- * and the user does not prefer reduced motion, so content is never trapped
- * hidden. Children of a data-reveal-group container get a stagger delay via
- * --reveal-delay.
+ * Content is visible by default. Only offscreen elements observed by
+ * BaseLayout receive reveal-pending and an optional staggered entrance.
  */
-html.js-reveal [data-reveal]:not(.is-revealed) {
+[data-reveal].reveal-pending:not(.is-revealed) {
   opacity: 0;
 }
 
-html.js-reveal [data-reveal].is-revealed {
+[data-reveal].reveal-pending.is-revealed {
   animation: reveal-up var(--dur-reveal) var(--ease-out-soft) backwards;
   animation-delay: var(--reveal-delay, 0ms);
-}
-
-/* Load-time entrance choreography (no observer; plays immediately). */
-.entrance-rise {
-  animation: reveal-up var(--dur-reveal) var(--ease-out-soft) backwards;
-  animation-delay: var(--entrance-delay, 0ms);
-}
-
-.entrance-fade {
-  animation: entrance-fade var(--dur-reveal) ease-out backwards;
-  animation-delay: var(--entrance-delay, 0ms);
 }
 
 .post-engagement {
@@ -1979,7 +1979,7 @@ html.js-reveal [data-reveal].is-revealed {
 }
 
 ::view-transition-new(page-content) {
-  animation: page-content-in 260ms var(--ease-out-soft) 60ms both;
+  animation: page-content-in 220ms var(--ease-out-soft) both;
 }
 
 html[data-astro-transition="back"]::view-transition-old(page-content) {

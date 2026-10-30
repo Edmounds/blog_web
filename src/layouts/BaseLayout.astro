@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import "../styles/article.css";
 import { ClientRouter } from "astro:transitions";
 
 import Footer from "../components/site/Footer.astro";
@@ -86,7 +87,7 @@ if (!Astro.response.headers.has("Cache-Control"))
     />
     <link
       rel="preload"
-      href="/fonts/Biotif-Regular.woff2"
+      href="/fonts/Biotif-Regular.v2.woff2"
       as="font"
       type="font/woff2"
       crossorigin="anonymous"
@@ -152,23 +153,6 @@ if (!Astro.response.headers.has("Cache-Control"))
           mode === "dark" || mode === "light" ? mode : "system";
       })();
     </script>
-    <script is:inline>
-      (() => {
-        // Gate the scroll-reveal hidden state on html.js-reveal so content is
-        // fully visible without JS or with reduced motion. Re-applied on
-        // astro:after-swap (pre-paint) because the router resets <html>
-        // attributes during navigation.
-        const applyRevealGate = () => {
-          if (
-            "IntersectionObserver" in window &&
-            !matchMedia("(prefers-reduced-motion: reduce)").matches
-          )
-            document.documentElement.classList.add("js-reveal");
-        };
-        applyRevealGate();
-        document.addEventListener("astro:after-swap", applyRevealGate);
-      })();
-    </script>
   </head>
   <body>
     <RouteBackground currentPath={currentPath} />
@@ -214,7 +198,10 @@ if (!Astro.response.headers.has("Cache-Control"))
       };
 
       const scanReveals = () => {
-        if (!document.documentElement.classList.contains("js-reveal")) return;
+        if (
+          !("IntersectionObserver" in window) ||
+          matchMedia("(prefers-reduced-motion: reduce)").matches
+        ) return;
         revealObserver ??= new IntersectionObserver(onReveal, {
           threshold: 0.05,
           rootMargin: "0px 0px -32px 0px",
@@ -222,7 +209,12 @@ if (!Astro.response.headers.has("Cache-Control"))
         revealObserver.disconnect();
         document
           .querySelectorAll("[data-reveal]:not(.is-revealed)")
-          .forEach((element) => revealObserver?.observe(element));
+          .forEach((element) => {
+            // Only hide offscreen content after the observer is ready.
+            if (element.getBoundingClientRect().top <= window.innerHeight) return;
+            revealObserver?.observe(element);
+            element.classList.add("reveal-pending");
+          });
       };
 
       scanReveals();
@@ -257,12 +249,14 @@ if (!Astro.response.headers.has("Cache-Control"))
         !window.location.pathname.startsWith("/admin/")
       ) {
         const DEPLOYMENT_CHECK_INTERVAL_MS = 60_000;
+        const DEPLOYMENT_CHECK_DELAY_MS = 5_000;
         const DEPLOYMENT_REFRESH_KEY = "blog-deployment-refresh";
         const browserWindow = window as typeof window & {
           __deploymentRefreshCleanup?: () => void;
         };
         const currentBuildId = document.documentElement.dataset.buildId;
         let checkInFlight = false;
+        let lastCheckAt = 0;
 
         browserWindow.__deploymentRefreshCleanup?.();
         if (sessionStorage.getItem(DEPLOYMENT_REFRESH_KEY) === currentBuildId) {
@@ -270,8 +264,13 @@ if (!Astro.response.headers.has("Cache-Control"))
         }
 
         const checkForDeployment = async () => {
-          if (document.visibilityState !== "visible" || checkInFlight) return;
+          if (
+            document.visibilityState !== "visible" ||
+            checkInFlight ||
+            Date.now() - lastCheckAt < DEPLOYMENT_CHECK_DELAY_MS
+          ) return;
           checkInFlight = true;
+          lastCheckAt = Date.now();
           try {
             const response = await fetch(`/version.json?t=${Date.now()}`, {
               cache: "no-store",
@@ -304,15 +303,19 @@ if (!Astro.response.headers.has("Cache-Control"))
           () => void checkForDeployment(),
           DEPLOYMENT_CHECK_INTERVAL_MS,
         );
+        const initialCheckId = window.setTimeout(
+          () => void checkForDeployment(),
+          DEPLOYMENT_CHECK_DELAY_MS,
+        );
 
         document.addEventListener("visibilitychange", onVisibilityChange);
         window.addEventListener("focus", onFocus);
         browserWindow.__deploymentRefreshCleanup = () => {
           window.clearInterval(intervalId);
+          window.clearTimeout(initialCheckId);
           document.removeEventListener("visibilitychange", onVisibilityChange);
           window.removeEventListener("focus", onFocus);
         };
-        void checkForDeployment();
       }
     </script>
   </body>

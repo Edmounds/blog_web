@@ -25,6 +25,7 @@
     "check": "astro check",
     "test": "node --test tests/*.test.mjs",
     "test:comments:smoke": "node scripts/smoke-comments.mjs",
+    "test:loading:smoke": "node scripts/smoke-loading.mjs",
     "netease:sync": "node scripts/sync-netease-ranking.mjs",
     "cf:secrets:sync": "node scripts/sync-cloudflare-secrets.mjs",
     "cf:dev": "npx wrangler dev --config dist/server/wrangler.json --persist-to $INIT_CWD/.wrangler/state",
@@ -71,6 +72,7 @@
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "puppeteer": "25.16.0",
     "typescript": "^5.9.3",
     "wrangler": "^4.114.0"
   }

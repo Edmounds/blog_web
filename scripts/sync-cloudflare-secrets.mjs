@@ -4,7 +4,7 @@ import { parseArgs, parseEnv } from "node:util";
 
 const DEFAULT_ENV_FILE = ".env";
 const DEFAULT_CONFIG = "wrangler.astro.jsonc";
-const DEFAULT_WORKER = "blog-web-core";
+const DEFAULT_WORKER = "blog-web-site";
 
 const { values } = parseArgs({
   options: {

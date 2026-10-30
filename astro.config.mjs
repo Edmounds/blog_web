@@ -11,6 +11,7 @@ import { satteri } from "@astrojs/markdown-satteri";
 import sitemap from "@astrojs/sitemap";
 import { createMarkdownPlugins, markdownOptions } from "./src/lib/markdown.mjs";
 import { createResponsiveImagePlugin } from "./src/lib/responsive-images.mjs";
+import { prerenderMermaid } from "./scripts/lib/prerender-mermaid.mjs";
 
 const buildId = process.env.PUBLIC_BUILD_ID ?? `local-${Date.now()}`;
 const imageManifestSource = await readFile(new URL("./.blog-images-manifest.json", import.meta.url), "utf8");
@@ -42,6 +43,8 @@ const deploymentVersion = {
   hooks: {
     /** @param {{ dir: URL }} options */
     "astro:build:done": async ({ dir }) => {
+      const mermaid = await prerenderMermaid(dir);
+      console.log(`Prerendered ${mermaid.diagrams} Mermaid diagrams across ${mermaid.pages} pages.`);
       await writeFile(
         new URL("version.json", dir),
         `${JSON.stringify({ buildId })}\n`,
@@ -54,7 +57,7 @@ const deploymentVersion = {
       if (!layoutCss) throw new Error("BaseLayout stylesheet missing from _astro output");
       const links = [
         `  Link: </_astro/${layoutCss}>; rel=preload; as=style`,
-        "  Link: </fonts/Biotif-Regular.woff2>; rel=preload; as=font; type=font/woff2; crossorigin",
+        "  Link: </fonts/Biotif-Regular.v2.woff2>; rel=preload; as=font; type=font/woff2; crossorigin",
       ];
       const rules = HTML_ROUTES.map((route) => [route, ...links].join("\n")).join("\n\n");
       await appendFile(new URL("_headers", dir), `\n${rules}\n`, "utf8");

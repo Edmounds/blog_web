@@ -39,6 +39,35 @@ npm run check
 npm run build
 ```
 
+### 加载性能验证
+
+首屏内容默认可见。主栏目只在悬停、聚焦、触摸或点击时加载，首次访问不显示全屏遮罩。
+
+启动开发服务后，运行浏览器检查：
+
+```bash
+npm run test:loading:smoke -- http://127.0.0.1:4321
+```
+
+浏览器检查使用开发依赖 Puppeteer。若安装时跳过了 Chrome 下载，运行 `npx puppeteer browsers install chrome`，或设置 `PUPPETEER_EXECUTABLE_PATH` 指向本机 Chrome。
+
+主站使用 `Biotif-*.v2.woff2`。四个字重合计从 207184 字节降至 89476 字节，保留全部 Unicode 覆盖、字形轮廓、字宽和名称元数据。旧文件保留给历史样式使用。
+
+使用 FontTools 4.68.0 和 Brotli 1.2.1 可重新生成字体：
+
+```bash
+for weight in Regular Medium SemiBold Bold; do
+  pyftsubset "public/fonts/Biotif-${weight}.woff2" \
+    --unicodes='*' --no-hinting --name-IDs='*' --name-legacy \
+    --name-languages='*' --notdef-outline --flavor=woff2 \
+    --output-file="public/fonts/Biotif-${weight}.v2.woff2"
+done
+```
+
+字体使用一年 immutable 缓存。后续修改字体内容时，需要再次更新文件名。
+
+生产构建会把 Mermaid 代码块渲染为带内容哈希的亮色、暗色 SVG。静态图表不加载浏览器端 Mermaid，主题切换由 CSS 完成。构建会复用重复图表，阻止渲染浏览器访问外部网络，并在语法错误时失败。开发模式保留按需客户端渲染。
+
 ## 内容
 
 - Blog：`src/content/blog/**/*.{md,mdx}`
@@ -91,12 +120,12 @@ npm run images:verify -- --remote  # 额外校验 R2 对象和 MIME
 - `WAKA_TIME_API_KEY`
 - 翻译服务所需的 `OPENAI_BASE_URL`、`API_KEY`、`MODEL`
 
-第一次创建 `blog-web-core` Worker 后，运行 `npm run cf:secrets:sync` 将本地 `.env` 中的变量批量上传为 Worker Secrets。脚本只把变量值通过标准输入交给 Wrangler，不会输出变量值或创建包含密钥的临时文件；也不会删除仅存在于 Cloudflare 的 Secret。`wrangler.astro.jsonc` 启用了 `keep_vars`，后续代码部署不会清除控制台中已配置的 secrets/vars。
+第一次创建 `blog-web-site` Worker 后，运行 `npm run cf:secrets:sync` 将本地 `.env` 中的变量批量上传为 Worker Secrets。脚本只把变量值通过标准输入交给 Wrangler，不会输出变量值或创建包含密钥的临时文件；也不会删除仅存在于 Cloudflare 的 Secret。`wrangler.astro.jsonc` 启用了 `keep_vars`，后续代码部署不会清除控制台中已配置的 secrets/vars。
 
 WakaTime 密钥只由服务端 SVG 代理读取。曾在对话或日志中暴露的旧密钥必须先在 WakaTime 轮换，再将新值配置为 Cloudflare Secret：
 
 ```bash
-npx wrangler secret put WAKA_TIME_API_KEY --name blog-web-core
+npx wrangler secret put WAKA_TIME_API_KEY --name blog-web-site
 ```
 
 不要把密钥写入组件、客户端脚本、仓库或构建产物。
@@ -112,8 +141,8 @@ npm run cf:dev
 
 `cf:dev` 使用构建产物中的 Astro Worker 配置和本地 D1/R2 状态；先运行 `npm run db:migrate:local`。
 
-音乐页的“听歌排行”由 `blog-web-core` 每天北京时间 04:00 先续期网易云登录，再分别同步一周排行前 20 首和总排行前 50 首；单项失败时保留上一次成功排行。首次上线先配置至少 32 个字符的 `NETEASE_COOKIE_KEY` Secret 并运行 `npm run db:migrate:remote`。随后可在 Cloudflare Access 保护的 `/admin/music/` 扫码登录；页面会显示 Token 与排行刷新时间及最近错误，也可手动刷新。旧的 `NETEASE_MUSIC_U` 与 `NETEASE_CSRF` 只作为迁移引导，首次成功续期会将音乐 Cookie 白名单加密写入 D1。
+音乐页的“听歌排行”由 `blog-web-site` 每天北京时间 04:00 先续期网易云登录，再分别同步一周排行前 20 首和总排行前 50 首；单项失败时保留上一次成功排行。首次上线先配置至少 32 个字符的 `NETEASE_COOKIE_KEY` Secret 并运行 `npm run db:migrate:remote`。随后可在 Cloudflare Access 保护的 `/admin/music/` 扫码登录；页面会显示 Token 与排行刷新时间及最近错误，也可手动刷新。旧的 `NETEASE_MUSIC_U` 与 `NETEASE_CSRF` 只作为迁移引导，首次成功续期会将音乐 Cookie 白名单加密写入 D1。
 
-Cloudflare Access 必须同时保护 `blog.muelsyse.us/admin/*` 和 `blog.muelsyse.us/api/admin/*`。本地部署运行 `npm run deploy`；GitHub Actions 使用 Node 22，并需要 `CLOUDFLARE_API_TOKEN` 与 `CLOUDFLARE_ACCOUNT_ID`。`npm run deploy` 构建并部署 `blog-art-cover-fetcher` 与持有生产域名路由 `blog.muelsyse.us/*` 的 `blog-web-core` 主 Worker。
+Cloudflare Access 必须同时保护 `blog.muelsyse.us/admin/*` 和 `blog.muelsyse.us/api/admin/*`。本地部署运行 `npm run deploy`；GitHub Actions 使用 Node 22，并需要 `CLOUDFLARE_API_TOKEN` 与 `CLOUDFLARE_ACCOUNT_ID`。`npm run deploy` 构建并部署 `blog-art-cover-fetcher` 与持有生产域名路由 `blog.muelsyse.us/*` 的 `blog-web-site` 主 Worker。
 
 生产 API 路由位于 `src/pages/`，可复用的 Worker 服务端逻辑位于 `src/server/`。

@@ -534,6 +534,420 @@
           }
         ]
       }
+    },
+    "https://img.muelsyse.us/bed/fruit_pipeline_fig1_architecture.png": {
+      "kind": "responsive",
+      "sourceDigest": "d28828ebcda898504f9b528a94e9e0d8f31022152720175e40ea00f1b35fa089",
+      "width": 3270,
+      "height": 1830,
+      "fallback": "https://img.muelsyse.us/bed/fruit_pipeline_fig1_architecture-w3270.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig1_architecture-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.993505,
+            "bytes": 8283
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig1_architecture-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.999305,
+            "bytes": 18166
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig1_architecture-w1920.avif.webp",
+            "quality": 40,
+            "ssim": 0.999629,
+            "bytes": 26747
+          },
+          {
+            "width": 3270,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig1_architecture-w3270.avif.webp",
+            "quality": 40,
+            "ssim": 0.999916,
+            "bytes": 38937
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig1_architecture-w640.webp",
+            "quality": 70,
+            "ssim": 0.992227,
+            "bytes": 11886
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig1_architecture-w1280.webp",
+            "quality": 70,
+            "ssim": 0.998921,
+            "bytes": 30424
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig1_architecture-w1920.webp",
+            "quality": 70,
+            "ssim": 0.999534,
+            "bytes": 49300
+          },
+          {
+            "width": 3270,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig1_architecture-w3270.webp",
+            "quality": 70,
+            "ssim": 0.999749,
+            "bytes": 87130
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/fruit_pipeline_fig2_confusion_matrices.png": {
+      "kind": "responsive",
+      "sourceDigest": "eb24d59b751e1ef6df1e8b3db358d4a1b6796859929c28c23d8fd414285b4039",
+      "width": 3414,
+      "height": 1456,
+      "fallback": "https://img.muelsyse.us/bed/fruit_pipeline_fig2_confusion_matrices-w3414.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig2_confusion_matrices-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.994109,
+            "bytes": 7760
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig2_confusion_matrices-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.998934,
+            "bytes": 16565
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig2_confusion_matrices-w1920.avif.webp",
+            "quality": 40,
+            "ssim": 0.999568,
+            "bytes": 24674
+          },
+          {
+            "width": 3414,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig2_confusion_matrices-w3414.avif.webp",
+            "quality": 40,
+            "ssim": 0.999884,
+            "bytes": 35638
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig2_confusion_matrices-w640.webp",
+            "quality": 70,
+            "ssim": 0.993338,
+            "bytes": 11422
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig2_confusion_matrices-w1280.webp",
+            "quality": 70,
+            "ssim": 0.998728,
+            "bytes": 26658
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig2_confusion_matrices-w1920.webp",
+            "quality": 70,
+            "ssim": 0.999293,
+            "bytes": 40922
+          },
+          {
+            "width": 3414,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig2_confusion_matrices-w3414.webp",
+            "quality": 70,
+            "ssim": 0.999677,
+            "bytes": 74778
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/fruit_pipeline_fig3_performance_benchmark.png": {
+      "kind": "responsive",
+      "sourceDigest": "b0a020a80ee9854ab21d757529ec48ceece17ce8dff1faa5c25971374ee89d34",
+      "width": 2970,
+      "height": 1409,
+      "fallback": "https://img.muelsyse.us/bed/fruit_pipeline_fig3_performance_benchmark-w2970.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig3_performance_benchmark-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.98769,
+            "bytes": 7427
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig3_performance_benchmark-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.997468,
+            "bytes": 18028
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig3_performance_benchmark-w1920.avif.webp",
+            "quality": 40,
+            "ssim": 0.999205,
+            "bytes": 25591
+          },
+          {
+            "width": 2970,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig3_performance_benchmark-w2970.avif.webp",
+            "quality": 40,
+            "ssim": 0.999745,
+            "bytes": 37269
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig3_performance_benchmark-w640.webp",
+            "quality": 79,
+            "ssim": 0.98565,
+            "bytes": 12356
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig3_performance_benchmark-w1280.webp",
+            "quality": 70,
+            "ssim": 0.994582,
+            "bytes": 29560
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig3_performance_benchmark-w1920.webp",
+            "quality": 70,
+            "ssim": 0.998698,
+            "bytes": 47194
+          },
+          {
+            "width": 2970,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig3_performance_benchmark-w2970.webp",
+            "quality": 70,
+            "ssim": 0.999106,
+            "bytes": 77536
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/fruit_pipeline_fig4_confidence_distribution.png": {
+      "kind": "responsive",
+      "sourceDigest": "e86ae6d4208ed62fdb1b1caa5ebe243a1a33b7ae4c139215284a544696f2a544",
+      "width": 3278,
+      "height": 1320,
+      "fallback": "https://img.muelsyse.us/bed/fruit_pipeline_fig4_confidence_distribution-w3278.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig4_confidence_distribution-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.98821,
+            "bytes": 8226
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig4_confidence_distribution-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.997053,
+            "bytes": 18531
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig4_confidence_distribution-w1920.avif.webp",
+            "quality": 40,
+            "ssim": 0.998379,
+            "bytes": 28001
+          },
+          {
+            "width": 3278,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig4_confidence_distribution-w3278.avif.webp",
+            "quality": 40,
+            "ssim": 0.999634,
+            "bytes": 44657
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig4_confidence_distribution-w640.webp",
+            "quality": 70,
+            "ssim": 0.989948,
+            "bytes": 13080
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig4_confidence_distribution-w1280.webp",
+            "quality": 70,
+            "ssim": 0.996112,
+            "bytes": 31976
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig4_confidence_distribution-w1920.webp",
+            "quality": 70,
+            "ssim": 0.998371,
+            "bytes": 50012
+          },
+          {
+            "width": 3278,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig4_confidence_distribution-w3278.webp",
+            "quality": 70,
+            "ssim": 0.999274,
+            "bytes": 93876
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/fruit_pipeline_fig6_stage2_classifier_ablation.png": {
+      "kind": "responsive",
+      "sourceDigest": "9b20cc006e98cc17e251a63cce06f7ba351dab6b6d19a598437737315667381f",
+      "width": 2670,
+      "height": 1230,
+      "fallback": "https://img.muelsyse.us/bed/fruit_pipeline_fig6_stage2_classifier_ablation-w2670.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig6_stage2_classifier_ablation-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.99164,
+            "bytes": 7105
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig6_stage2_classifier_ablation-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.997823,
+            "bytes": 14863
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig6_stage2_classifier_ablation-w1920.avif.webp",
+            "quality": 40,
+            "ssim": 0.999005,
+            "bytes": 22595
+          },
+          {
+            "width": 2670,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig6_stage2_classifier_ablation-w2670.avif.webp",
+            "quality": 40,
+            "ssim": 0.999723,
+            "bytes": 28612
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig6_stage2_classifier_ablation-w640.webp",
+            "quality": 70,
+            "ssim": 0.986377,
+            "bytes": 11024
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig6_stage2_classifier_ablation-w1280.webp",
+            "quality": 70,
+            "ssim": 0.995582,
+            "bytes": 26306
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig6_stage2_classifier_ablation-w1920.webp",
+            "quality": 70,
+            "ssim": 0.998118,
+            "bytes": 42956
+          },
+          {
+            "width": 2670,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig6_stage2_classifier_ablation-w2670.webp",
+            "quality": 70,
+            "ssim": 0.999124,
+            "bytes": 61098
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/fruit_pipeline_fig5_feature_disentanglement.png": {
+      "kind": "responsive",
+      "sourceDigest": "69d7d35cf0e55e150380806c01705a988d7fe88634453fb3af10439cd19247ec",
+      "width": 3570,
+      "height": 1170,
+      "fallback": "https://img.muelsyse.us/bed/fruit_pipeline_fig5_feature_disentanglement-w3570.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig5_feature_disentanglement-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.985378,
+            "bytes": 10687
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig5_feature_disentanglement-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.996453,
+            "bytes": 26631
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig5_feature_disentanglement-w1920.avif.webp",
+            "quality": 40,
+            "ssim": 0.997005,
+            "bytes": 40337
+          },
+          {
+            "width": 3570,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig5_feature_disentanglement-w3570.avif.webp",
+            "quality": 40,
+            "ssim": 0.9996,
+            "bytes": 74556
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig5_feature_disentanglement-w640.webp",
+            "quality": 70,
+            "ssim": 0.990115,
+            "bytes": 19274
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig5_feature_disentanglement-w1280.webp",
+            "quality": 70,
+            "ssim": 0.995871,
+            "bytes": 48194
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig5_feature_disentanglement-w1920.webp",
+            "quality": 70,
+            "ssim": 0.996325,
+            "bytes": 76520
+          },
+          {
+            "width": 3570,
+            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig5_feature_disentanglement-w3570.webp",
+            "quality": 70,
+            "ssim": 0.999151,
+            "bytes": 151836
+          }
+        ]
+      }
     }
   },
   "vaultAssets": {},
@@ -582,6 +996,54 @@
     "bed/20261025185635532-w718.webp",
     "bed/20261025214411104-w474.avif.webp",
     "bed/20261025214411104-w474.webp",
+    "bed/fruit_pipeline_fig1_architecture-w1280.avif.webp",
+    "bed/fruit_pipeline_fig1_architecture-w1280.webp",
+    "bed/fruit_pipeline_fig1_architecture-w1920.avif.webp",
+    "bed/fruit_pipeline_fig1_architecture-w1920.webp",
+    "bed/fruit_pipeline_fig1_architecture-w3270.avif.webp",
+    "bed/fruit_pipeline_fig1_architecture-w3270.webp",
+    "bed/fruit_pipeline_fig1_architecture-w640.avif.webp",
+    "bed/fruit_pipeline_fig1_architecture-w640.webp",
+    "bed/fruit_pipeline_fig2_confusion_matrices-w1280.avif.webp",
+    "bed/fruit_pipeline_fig2_confusion_matrices-w1280.webp",
+    "bed/fruit_pipeline_fig2_confusion_matrices-w1920.avif.webp",
+    "bed/fruit_pipeline_fig2_confusion_matrices-w1920.webp",
+    "bed/fruit_pipeline_fig2_confusion_matrices-w3414.avif.webp",
+    "bed/fruit_pipeline_fig2_confusion_matrices-w3414.webp",
+    "bed/fruit_pipeline_fig2_confusion_matrices-w640.avif.webp",
+    "bed/fruit_pipeline_fig2_confusion_matrices-w640.webp",
+    "bed/fruit_pipeline_fig3_performance_benchmark-w1280.avif.webp",
+    "bed/fruit_pipeline_fig3_performance_benchmark-w1280.webp",
+    "bed/fruit_pipeline_fig3_performance_benchmark-w1920.avif.webp",
+    "bed/fruit_pipeline_fig3_performance_benchmark-w1920.webp",
+    "bed/fruit_pipeline_fig3_performance_benchmark-w2970.avif.webp",
+    "bed/fruit_pipeline_fig3_performance_benchmark-w2970.webp",
+    "bed/fruit_pipeline_fig3_performance_benchmark-w640.avif.webp",
+    "bed/fruit_pipeline_fig3_performance_benchmark-w640.webp",
+    "bed/fruit_pipeline_fig4_confidence_distribution-w1280.avif.webp",
+    "bed/fruit_pipeline_fig4_confidence_distribution-w1280.webp",
+    "bed/fruit_pipeline_fig4_confidence_distribution-w1920.avif.webp",
+    "bed/fruit_pipeline_fig4_confidence_distribution-w1920.webp",
+    "bed/fruit_pipeline_fig4_confidence_distribution-w3278.avif.webp",
+    "bed/fruit_pipeline_fig4_confidence_distribution-w3278.webp",
+    "bed/fruit_pipeline_fig4_confidence_distribution-w640.avif.webp",
+    "bed/fruit_pipeline_fig4_confidence_distribution-w640.webp",
+    "bed/fruit_pipeline_fig5_feature_disentanglement-w1280.avif.webp",
+    "bed/fruit_pipeline_fig5_feature_disentanglement-w1280.webp",
+    "bed/fruit_pipeline_fig5_feature_disentanglement-w1920.avif.webp",
+    "bed/fruit_pipeline_fig5_feature_disentanglement-w1920.webp",
+    "bed/fruit_pipeline_fig5_feature_disentanglement-w3570.avif.webp",
+    "bed/fruit_pipeline_fig5_feature_disentanglement-w3570.webp",
+    "bed/fruit_pipeline_fig5_feature_disentanglement-w640.avif.webp",
+    "bed/fruit_pipeline_fig5_feature_disentanglement-w640.webp",
+    "bed/fruit_pipeline_fig6_stage2_classifier_ablation-w1280.avif.webp",
+    "bed/fruit_pipeline_fig6_stage2_classifier_ablation-w1280.webp",
+    "bed/fruit_pipeline_fig6_stage2_classifier_ablation-w1920.avif.webp",
+    "bed/fruit_pipeline_fig6_stage2_classifier_ablation-w1920.webp",
+    "bed/fruit_pipeline_fig6_stage2_classifier_ablation-w2670.avif.webp",
+    "bed/fruit_pipeline_fig6_stage2_classifier_ablation-w2670.webp",
+    "bed/fruit_pipeline_fig6_stage2_classifier_ablation-w640.avif.webp",
+    "bed/fruit_pipeline_fig6_stage2_classifier_ablation-w640.webp",
     "bed/jupiter-w1280.avif.webp",
     "bed/jupiter-w1280.webp",
     "bed/jupiter-w640.avif.webp",
@@ -602,6 +1064,10 @@
     "bed/20260808035823249-w1876.webp",
     "bed/20260808035823249-w640.avif.webp",
     "bed/20260808035823249-w640.webp",
+    "bed/20261027103501918-w640.avif.webp",
+    "bed/20261027103501918-w640.webp",
+    "bed/20261027103501918-w818.avif.webp",
+    "bed/20261027103501918-w818.webp",
     "blog/36357886a211c5a9e1f9664b9ecb190aa034a1fe9054c8cab2415e58a6783ab5.svg",
     "blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w1280.avif.webp",
     "blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w1280.webp",
