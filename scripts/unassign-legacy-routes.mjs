@@ -25,7 +25,7 @@ try {
 
     for (const route of routes) {
       console.log(`[unassign] Route: id=${route.id}, pattern=${route.pattern}, script=${route.script}`);
-      if (route.pattern?.includes("blog.muelsyse.us") && route.script !== "blog-web-site") {
+      if (route.pattern?.includes("blog.muelsyse.us") && route.script !== "muelsyse-blog") {
         console.log(`[unassign] Deleting legacy route ${route.id} (${route.pattern} -> ${route.script})...`);
         const delRes = await fetch(
           `https://api.cloudflare.com/client/v4/zones/${zoneId}/workers/routes/${route.id}`,

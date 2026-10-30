@@ -39,8 +39,7 @@ jobs:
       - name: Build and deploy Astro SSR Worker
         run: |
           node scripts/unassign-legacy-routes.mjs || true
-          npx wrangler delete blog-web-core --force || true
-          npx wrangler delete blog-preferred-proxy --force || true
+          npx wrangler delete blog-web-site --force || true
           npm run deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

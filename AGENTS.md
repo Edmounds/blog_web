@@ -71,7 +71,7 @@
 - 严禁在代码、日志、组件或仓库中硬编码任何 Secret（如 `COMMENT_HASH_SALT`、`NETEASE_COOKIE_KEY`、`WAKA_TIME_API_KEY` 等），本地仅存未追踪的 `.env`。
 - 禁止将国内可直连稳定的上游 HTTPS 资源（网易云 `p*.music.126.net`、豆瓣 `*.doubanio.com`）重复搬运/上传至 R2。
 - 禁止在 Markdown 正文中引用本地绝对路径图片，必须统一使用 `https://img.muelsyse.us/bed/...`。
-- 生产域名 `blog.muelsyse.us/*` 由 `blog-web-site` 直接持有，禁止引入多余的前置代理 Worker。
+- 生产域名 `blog.muelsyse.us/*` 由 `muelsyse-blog` 直接持有，禁止引入多余的前置代理 Worker。
 - 禁止在默认分支 `master` 存在未提交更改时未经确认直接覆盖代码；所有新功能开发必须在 `.worktrees/` 独立工作树中进行。
 - 禁止私自引入重型运行时依赖，优先复用原生标准库或项目内现有依赖。
 
