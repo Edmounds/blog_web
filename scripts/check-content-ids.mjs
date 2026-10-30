@@ -13,7 +13,7 @@ for (const group of groups) {
   for (const file of await walk(root)) {
     if (!/\.(md|mdx)$/.test(file)) continue;
     const source = matter((await readFile(file, "utf8")).replace(/^\uFEFF/, ""));
-    if (source.data.published !== true) continue;
+    if (source.data.published === false || source.data.published === null) continue;
     const slug = source.data.slug;
     if (typeof slug !== "string" || !slugPattern.test(slug)) {
       throw new Error(`Published content requires a lowercase kebab-case slug: ${path.relative(process.cwd(), file)}`);

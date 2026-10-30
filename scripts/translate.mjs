@@ -567,8 +567,7 @@ const translateContentFiles = async ({
     await Promise.all(
       fileNames.map(async (fileName) => {
         const raw = await readFile(path.join(sourceDir, fileName), "utf8");
-        const frontmatter = matter(raw.replace(/^\uFEFF/, "")).data;
-        if (group !== "about" && frontmatter.published !== true) return;
+        if (matter(raw.replace(/^\uFEFF/, "")).data.published === false) return;
         const keyPrefix = `content.${group}.${fileName.replaceAll(path.sep, ".")}`;
         const { data, body } = await translateDocument({
           raw,

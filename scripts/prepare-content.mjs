@@ -48,7 +48,7 @@ export const prepareContent = async (rootDir = process.cwd()) => {
     }
   }
 
-  const isDraft = (val) => val !== true;
+  const isDraft = (val) => val === false || val === null;
   const published = records.filter(({ document }) => !isDraft(document.data.published));
   const usedSlugs = new Map(CONTENT_GROUPS.map((group) => [group, new Map()]));
 

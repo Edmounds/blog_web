@@ -1,12 +1,11 @@
 ﻿---
-title: Router Optimization Strategies in a Multi-AP Environment with Competing Access Points
-description: At events like Robocon, where interference is high and the network environment is complex, use on-site spectrum scans to strike the right balance when choosing the router’s channel and bandwidth.
+title: Router Optimization Strategies in Environments with Multiple Competing APs
+description: At events like Robocon, where interference is abundant and network conditions are complex, use on-site spectrum scans to strike an appropriate balance between router channels and bandwidth
 createdAt: 2026-10-23T00:00:00.000Z
 tags:
-  - Network
-  - Router
+  - Networking
+  - Routers
   - Optimization
-  - Get to the Bottom of It
 published: true
 slug: 20261023-01
 ---

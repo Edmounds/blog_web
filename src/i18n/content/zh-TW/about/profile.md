@@ -1,6 +1,6 @@
 ﻿---
 name: Last4ev3r
-motto: Keep it Simple,Stupid
+motto: 保持簡單，笨蛋
 portrait: /images/content/about/profile-fe4782a21dcb-w320.webp
 backgroundKeywords:
   - C++
@@ -19,13 +19,13 @@ backgroundKeywords:
 - NOTE 日常碎念
 - LINKS 友站連結
 - ABOUT 就是這一頁
-- LIFE 分享我看過的書、影視劇、音樂和遊戲
+- LIFE 分享我看過的書籍、影劇、音樂、遊戲
 
 ## 關於我
 
-重慶沙坪壩沙正街男子職業技術學院大三就讀中
-喜歡天文，淺嚐過行星攝影，未來有機會想嘗試深空攝影／星野攝影
-路亞空軍中
+重慶沙坪壩沙正街男子職業技術學院大三生
+喜歡天文，稍微玩過行星攝影；以後有機會想試試深空攝影／星野攝影
+路亞槓龜中
 
 ```image-layout
 ---
@@ -41,21 +41,21 @@ grid: |
 ```
 
 喜歡折騰
-以下是我的幾個 ROS 相關開源專案，如果覺得好用，歡迎 star～
+以下是我的幾個 ROS 相關開源專案，如果覺得好用，歡迎給個 Star～
 https://github.com/ConQU2026/auto_serial_bridge
 https://github.com/Edmounds/robviz
 
--  2026 robocup 決賽全國冠軍
-- 2026 電賽 省一
-- 2026 robocon 主賽全國三等獎
+-  2026 RoboCup 決賽全國冠軍
+- 2026 電賽省一
+- 2026 robocon 主賽國三
 
 ## 聯絡我
 [i@muelsyse.us](mailto:i@muelsyse.us)
 
 ## 致謝
 
-本站基於 [Astro-star](https://github.com/hanlife02/Astro-star) 修改並重新建置
+本站基於 [Astro-star](https://github.com/hanlife02/Astro-star) 修改與重建
 
-本站使用以下服務／API
+本站使用以下服務/API
 
 <div class="acknowledgement-logos"><a class="acknowledgement-logo" href="https://www.cloudflare.com/"><img src="/images/cloudflare-logo.svg?v=20260728" alt="Cloudflare" width="300" height="64" loading="eager" decoding="async"></a><a class="acknowledgement-logo" href="https://www.themoviedb.org/"><img src="/images/tmdb-logo.svg?v=20260728" alt="The Movie Database" width="300" height="64" loading="eager" decoding="async"></a><a class="acknowledgement-logo" href="https://steamcommunity.com/dev"><img src="/images/steam-logo.svg?v=20260728" alt="Steam" width="240" height="64" loading="eager" decoding="async"></a></div>
