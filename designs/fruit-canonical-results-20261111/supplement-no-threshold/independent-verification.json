@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "images": 60,
+  "targets": 91,
+  "schemes": 2,
+  "scenarios": 3,
+  "checks": [
+    "all local models match original run, all ONNX match current lab hash record",
+    "same images and all91ground-truth targets as original evaluation",
+    "independent scalar-IoU replay of all six comparisons",
+    "one-to-one assignment and highest-score selection",
+    "all original0.25counts reproduced",
+    "background predictions remain in denominators"
+  ]
+}

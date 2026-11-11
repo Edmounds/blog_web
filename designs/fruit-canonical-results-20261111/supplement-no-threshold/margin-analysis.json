@@ -1,0 +1,729 @@
+{
+  "confidence_controlled_comparison": {
+    "composite": {
+      "0.25": {
+        "ground_truth": 91,
+        "predictions": 59,
+        "matched": 47,
+        "missed": 44,
+        "unmatched_predictions": 12,
+        "type_correct": 41,
+        "joint_correct": 40,
+        "cross_type_errors": 6,
+        "maturity_errors": 1
+      },
+      "0": {
+        "ground_truth": 91,
+        "predictions": 11271,
+        "matched": 87,
+        "missed": 4,
+        "unmatched_predictions": 11184,
+        "type_correct": 71,
+        "joint_correct": 66,
+        "cross_type_errors": 16,
+        "maturity_errors": 5
+      }
+    },
+    "two_stage": {
+      "0.25": {
+        "ground_truth": 91,
+        "predictions": 59,
+        "matched": 54,
+        "missed": 37,
+        "unmatched_predictions": 5,
+        "type_correct": 46,
+        "joint_correct": 46,
+        "cross_type_errors": 8,
+        "maturity_errors": 0
+      },
+      "0": {
+        "ground_truth": 91,
+        "predictions": 14405,
+        "matched": 90,
+        "missed": 1,
+        "unmatched_predictions": 14315,
+        "type_correct": 68,
+        "joint_correct": 66,
+        "cross_type_errors": 22,
+        "maturity_errors": 2
+      }
+    }
+  },
+  "paired_targets": {
+    "both_correct": 55,
+    "composite_only": 11,
+    "neither": 14,
+    "two_stage_only": 11
+  },
+  "margins": {
+    "composite": {
+      "type": {
+        "n": 87,
+        "median_gap": 0.3689182788310177,
+        "median_relative_gap": 0.9988914290745775,
+        "absolute_gap_under_005": 32,
+        "relative_gap_under_010": 1
+      },
+      "native_label": {
+        "n": 87,
+        "median_gap": 0.3689179882396445,
+        "median_relative_gap": 0.9986190174091002,
+        "absolute_gap_under_005": 32,
+        "relative_gap_under_010": 1
+      },
+      "maturity_all_matched": {
+        "n": 87,
+        "median_gap": 0.3689179882396445,
+        "median_relative_gap": 0.9996832378282788,
+        "absolute_gap_under_005": 32,
+        "relative_gap_under_010": 0
+      },
+      "maturity_correct_type": {
+        "n": 71,
+        "median_gap": 0.6857973440783098,
+        "median_relative_gap": 0.9995132877774996,
+        "absolute_gap_under_005": 26,
+        "relative_gap_under_010": 0
+      },
+      "same_target_type": {
+        "n": 87,
+        "median_gap": 0.33280363952690095,
+        "median_relative_gap": 0.9955276468226174,
+        "absolute_gap_under_005": 32,
+        "relative_gap_under_010": 1
+      },
+      "same_target_native_label": {
+        "n": 87,
+        "median_gap": 0.33280363952690095,
+        "median_relative_gap": 0.9936138080757184,
+        "absolute_gap_under_005": 32,
+        "relative_gap_under_010": 2
+      }
+    },
+    "two_stage": {
+      "type": {
+        "n": 90,
+        "median_gap": 0.5701874696482716,
+        "median_relative_gap": 0.9984590447614463,
+        "absolute_gap_under_005": 24,
+        "relative_gap_under_010": 2
+      },
+      "native_label": {
+        "n": 90,
+        "median_gap": 0.5701874696482716,
+        "median_relative_gap": 0.9984590447614463,
+        "absolute_gap_under_005": 24,
+        "relative_gap_under_010": 2
+      },
+      "maturity_all_matched": {
+        "n": 90,
+        "median_gap": 1.0,
+        "median_relative_gap": 1.0,
+        "absolute_gap_under_005": 0,
+        "relative_gap_under_010": 0
+      },
+      "maturity_correct_type": {
+        "n": 68,
+        "median_gap": 1.0,
+        "median_relative_gap": 1.0,
+        "absolute_gap_under_005": 0,
+        "relative_gap_under_010": 0
+      },
+      "same_target_type": {
+        "n": 90,
+        "median_gap": 0.5089201516530011,
+        "median_relative_gap": 0.9962473412121309,
+        "absolute_gap_under_005": 24,
+        "relative_gap_under_010": 2
+      },
+      "same_target_native_label": {
+        "n": 90,
+        "median_gap": 0.5089201516530011,
+        "median_relative_gap": 0.9962473412121309,
+        "absolute_gap_under_005": 24,
+        "relative_gap_under_010": 2
+      }
+    }
+  },
+  "ambiguity_rule": "gap/(first+second)<0.10, equivalent to first/second<1.2222; an exploratory diagnostic, not a validated video flip threshold",
+  "ambiguous_targets": [
+    {
+      "scheme": "two_stage",
+      "image": "data/external/fruit/images/20260823_025414_730_png.rf.5593d7f91ec99cd924956dc9f25ba00a.jpg",
+      "group": "20260823_025414_730",
+      "target_index": 2,
+      "truth_type": "pear",
+      "truth_state": "ripe",
+      "prediction_type": "pear",
+      "prediction_state": "unripe",
+      "confidence": 9.483098983764648e-05,
+      "iou": 0.5241569795911306,
+      "type_correct": true,
+      "joint_correct": false,
+      "type_ranking": {
+        "first": "pear",
+        "second": "apple",
+        "first_score": 9.482107998337597e-05,
+        "second_score": 8.515334775438532e-05,
+        "gap": 9.667732228990644e-06,
+        "relative_gap": 0.05371725500401306
+      },
+      "native_label_ranking": {
+        "first": "pear",
+        "second": "apple",
+        "first_score": 9.482107998337597e-05,
+        "second_score": 8.515334775438532e-05,
+        "gap": 9.667732228990644e-06,
+        "relative_gap": 0.05371725500401306
+      },
+      "maturity_ranking": {
+        "first": "unripe",
+        "second": "ripe",
+        "first_score": 0.8431246280670166,
+        "second_score": 0.1568753719329834,
+        "gap": 0.6862492561340332,
+        "relative_gap": 0.6862492561340332
+      },
+      "same_target_competition": {
+        "type": {
+          "first": "pear",
+          "second": "apple",
+          "first_score": 9.482107998337597e-05,
+          "second_score": 8.515334775438532e-05,
+          "gap": 9.667732228990644e-06,
+          "relative_gap": 0.05371725500401306
+        },
+        "native_label": {
+          "first": "pear",
+          "second": "apple",
+          "first_score": 9.482107998337597e-05,
+          "second_score": 8.515334775438532e-05,
+          "gap": 9.667732228990644e-06,
+          "relative_gap": 0.05371725500401306
+        },
+        "spatial_candidates": 2
+      }
+    },
+    {
+      "scheme": "composite",
+      "image": "data/external/fruit/images/20260823_025605_310_png.rf.4d732b760475cffb41a0fc859969ee20.jpg",
+      "group": "20260823_025605_310",
+      "target_index": 1,
+      "truth_type": "apple",
+      "truth_state": "ripe",
+      "prediction_type": "apple",
+      "prediction_state": "unripe",
+      "confidence": 3.0100345611572266e-06,
+      "iou": 0.8708997985366224,
+      "type_correct": true,
+      "joint_correct": false,
+      "type_ranking": {
+        "first": "apple",
+        "second": "pear",
+        "first_score": 2.972348511320888e-06,
+        "second_score": 1.1373531378922053e-06,
+        "gap": 1.8349953734286828e-06,
+        "relative_gap": 0.446503306092801
+      },
+      "native_label_ranking": {
+        "first": "apple_unripe",
+        "second": "pear_ripe",
+        "first_score": 2.972348511320888e-06,
+        "second_score": 1.1373531378922053e-06,
+        "gap": 1.8349953734286828e-06,
+        "relative_gap": 0.446503306092801
+      },
+      "maturity_ranking": {
+        "first": "unripe",
+        "second": "ripe",
+        "first_score": 2.972348511320888e-06,
+        "second_score": 1.1271855555605725e-06,
+        "gap": 1.8451629557603155e-06,
+        "relative_gap": 0.4500908946376781
+      },
+      "same_target_competition": {
+        "type": {
+          "first": "apple",
+          "second": "pear",
+          "first_score": 2.972348511320888e-06,
+          "second_score": 1.1373531378922053e-06,
+          "gap": 1.8349953734286828e-06,
+          "relative_gap": 0.446503306092801
+        },
+        "native_label": {
+          "first": "apple_unripe",
+          "second": "apple_ripe",
+          "first_score": 2.972348511320888e-06,
+          "second_score": 2.6843051728064893e-06,
+          "gap": 2.880433385143988e-07,
+          "relative_gap": 0.05092115490871415
+        },
+        "spatial_candidates": 3
+      }
+    },
+    {
+      "scheme": "composite",
+      "image": "data/external/fruit/images/20260823_030002_475_png.rf.543e14a27a5f8c5e92df917e7b33152b.jpg",
+      "group": "20260823_030002_475",
+      "target_index": 1,
+      "truth_type": "apple",
+      "truth_state": "ripe",
+      "prediction_type": "apple",
+      "prediction_state": "ripe",
+      "confidence": 0.0034418702125549316,
+      "iou": 0.7929444444000686,
+      "type_correct": true,
+      "joint_correct": true,
+      "type_ranking": {
+        "first": "apple",
+        "second": "pear",
+        "first_score": 0.0034418620634824038,
+        "second_score": 0.0030806565191596746,
+        "gap": 0.0003612055443227291,
+        "relative_gap": 0.0553782315444804
+      },
+      "native_label_ranking": {
+        "first": "apple_ripe",
+        "second": "pear_unripe",
+        "first_score": 0.0034418620634824038,
+        "second_score": 0.0030806565191596746,
+        "gap": 0.0003612055443227291,
+        "relative_gap": 0.0553782315444804
+      },
+      "maturity_ranking": {
+        "first": "ripe",
+        "second": "unripe",
+        "first_score": 0.0034418620634824038,
+        "second_score": 1.5715760355305974e-06,
+        "gap": 0.003440290487446873,
+        "relative_gap": 0.9990872041107488
+      },
+      "same_target_competition": {
+        "type": {
+          "first": "apple",
+          "second": "pear",
+          "first_score": 0.0034418620634824038,
+          "second_score": 0.0030806565191596746,
+          "gap": 0.0003612055443227291,
+          "relative_gap": 0.0553782315444804
+        },
+        "native_label": {
+          "first": "apple_ripe",
+          "second": "pear_unripe",
+          "first_score": 0.0034418620634824038,
+          "second_score": 0.0030806565191596746,
+          "gap": 0.0003612055443227291,
+          "relative_gap": 0.0553782315444804
+        },
+        "spatial_candidates": 11
+      }
+    },
+    {
+      "scheme": "two_stage",
+      "image": "data/external/vegetable/images/IMG_20260916_023238_jpg.rf.e3a0d8b8e0d6b584b3f5ac274985fb55.jpg",
+      "group": "IMG_20260916_023238",
+      "target_index": 3,
+      "truth_type": "onion",
+      "truth_state": "unripe",
+      "prediction_type": "tomato",
+      "prediction_state": "unripe",
+      "confidence": 0.0003370344638824463,
+      "iou": 0.9361006556858736,
+      "type_correct": false,
+      "joint_correct": false,
+      "type_ranking": {
+        "first": "tomato",
+        "second": "pepper",
+        "first_score": 0.00033705896930769086,
+        "second_score": 0.0003276501956861466,
+        "gap": 9.408773621544242e-06,
+        "relative_gap": 0.014154722271102536
+      },
+      "native_label_ranking": {
+        "first": "tomato",
+        "second": "pepper",
+        "first_score": 0.00033705896930769086,
+        "second_score": 0.0003276501956861466,
+        "gap": 9.408773621544242e-06,
+        "relative_gap": 0.014154722271102536
+      },
+      "maturity_ranking": {
+        "first": "unripe",
+        "second": "ripe",
+        "first_score": 1.0,
+        "second_score": 0.0,
+        "gap": 1.0,
+        "relative_gap": 1.0
+      },
+      "same_target_competition": {
+        "type": {
+          "first": "tomato",
+          "second": "pepper",
+          "first_score": 0.00033705896930769086,
+          "second_score": 0.0003276501956861466,
+          "gap": 9.408773621544242e-06,
+          "relative_gap": 0.014154722271102536
+        },
+        "native_label": {
+          "first": "tomato",
+          "second": "pepper",
+          "first_score": 0.00033705896930769086,
+          "second_score": 0.0003276501956861466,
+          "gap": 9.408773621544242e-06,
+          "relative_gap": 0.014154722271102536
+        },
+        "spatial_candidates": 3
+      }
+    }
+  ],
+  "most_confident_cross_type_errors": {
+    "composite": [
+      {
+        "scheme": "composite",
+        "image": "data/external/vegetable/images/IMG_20260916_023418_jpg.rf.3132e8149834ee46e5b82220a6e66aa1.jpg",
+        "group": "IMG_20260916_023418",
+        "target_index": 0,
+        "truth_type": "onion",
+        "truth_state": "ripe",
+        "prediction_type": "pepper",
+        "prediction_state": "ripe",
+        "confidence": 0.9328491687774658,
+        "iou": 0.9753586322179232,
+        "type_correct": false,
+        "joint_correct": false,
+        "type_ranking": {
+          "first": "pepper",
+          "second": "tomato",
+          "first_score": 0.9328491687774658,
+          "second_score": 1.2171381058578845e-05,
+          "gap": 0.9328369973964072,
+          "relative_gap": 0.9999739052728748
+        },
+        "native_label_ranking": {
+          "first": "pepper_ripe",
+          "second": "tomato_ripe",
+          "first_score": 0.9328491687774658,
+          "second_score": 1.2171381058578845e-05,
+          "gap": 0.9328369973964072,
+          "relative_gap": 0.9999739052728748
+        },
+        "maturity_ranking": {
+          "first": "ripe",
+          "second": "unripe",
+          "first_score": 0.9328491687774658,
+          "second_score": 8.799866946240797e-10,
+          "gap": 0.9328491678974791,
+          "relative_gap": 0.9999999981133354
+        },
+        "same_target_competition": {
+          "type": {
+            "first": "pepper",
+            "second": "onion",
+            "first_score": 0.9328491687774658,
+            "second_score": 0.008856015279889107,
+            "gap": 0.9239931534975767,
+            "relative_gap": 0.9811915333379969
+          },
+          "native_label": {
+            "first": "pepper_ripe",
+            "second": "onion_ripe",
+            "first_score": 0.9328491687774658,
+            "second_score": 0.008856015279889107,
+            "gap": 0.9239931534975767,
+            "relative_gap": 0.9811915333379969
+          },
+          "spatial_candidates": 23
+        }
+      },
+      {
+        "scheme": "composite",
+        "image": "data/external/vegetable/images/IMG_20260819_022654_jpg.rf.f035e104d546b9d48e3ea3dabca5c8d0.jpg",
+        "group": "IMG_20260819_022654",
+        "target_index": 0,
+        "truth_type": "pepper",
+        "truth_state": "ripe",
+        "prediction_type": "tomato",
+        "prediction_state": "ripe",
+        "confidence": 0.8166720867156982,
+        "iou": 0.95810061582062,
+        "type_correct": false,
+        "joint_correct": false,
+        "type_ranking": {
+          "first": "tomato",
+          "second": "pepper",
+          "first_score": 0.8166736364364624,
+          "second_score": 0.007602097932249308,
+          "gap": 0.8090715385042131,
+          "relative_gap": 0.9815544783977621
+        },
+        "native_label_ranking": {
+          "first": "tomato_ripe",
+          "second": "pepper_ripe",
+          "first_score": 0.8166736364364624,
+          "second_score": 0.007602097932249308,
+          "gap": 0.8090715385042131,
+          "relative_gap": 0.9815544783977621
+        },
+        "maturity_ranking": {
+          "first": "ripe",
+          "second": "unripe",
+          "first_score": 0.8166736364364624,
+          "second_score": 1.5216333082435085e-08,
+          "gap": 0.8166736212201293,
+          "relative_gap": 0.9999999627358296
+        },
+        "same_target_competition": {
+          "type": {
+            "first": "tomato",
+            "second": "pepper",
+            "first_score": 0.8166736364364624,
+            "second_score": 0.007602097932249308,
+            "gap": 0.8090715385042131,
+            "relative_gap": 0.9815544783977621
+          },
+          "native_label": {
+            "first": "tomato_ripe",
+            "second": "pepper_ripe",
+            "first_score": 0.8166736364364624,
+            "second_score": 0.007602097932249308,
+            "gap": 0.8090715385042131,
+            "relative_gap": 0.9815544783977621
+          },
+          "spatial_candidates": 17
+        }
+      },
+      {
+        "scheme": "composite",
+        "image": "data/external/vegetable/images/IMG_20260819_022118_jpg.rf.8ae2ba0be3f4101e9d23a6d8cd09ef0f.jpg",
+        "group": "IMG_20260819_022118",
+        "target_index": 0,
+        "truth_type": "tomato",
+        "truth_state": "unripe",
+        "prediction_type": "pepper",
+        "prediction_state": "unripe",
+        "confidence": 0.5978588461875916,
+        "iou": 0.8781324687212838,
+        "type_correct": false,
+        "joint_correct": false,
+        "type_ranking": {
+          "first": "pepper",
+          "second": "pumpkin",
+          "first_score": 0.597859263420105,
+          "second_score": 0.0020568761974573135,
+          "gap": 0.5958023872226477,
+          "relative_gap": 0.9931427875943843
+        },
+        "native_label_ranking": {
+          "first": "pepper_unripe",
+          "second": "pumpkin_unripe",
+          "first_score": 0.597859263420105,
+          "second_score": 0.0020568761974573135,
+          "gap": 0.5958023872226477,
+          "relative_gap": 0.9931427875943843
+        },
+        "maturity_ranking": {
+          "first": "unripe",
+          "second": "ripe",
+          "first_score": 0.597859263420105,
+          "second_score": 1.0114593351318035e-05,
+          "gap": 0.5978491488267537,
+          "relative_gap": 0.999966164537863
+        },
+        "same_target_competition": {
+          "type": {
+            "first": "pepper",
+            "second": "pumpkin",
+            "first_score": 0.597859263420105,
+            "second_score": 0.0020568761974573135,
+            "gap": 0.5958023872226477,
+            "relative_gap": 0.9931427875943843
+          },
+          "native_label": {
+            "first": "pepper_unripe",
+            "second": "pumpkin_unripe",
+            "first_score": 0.597859263420105,
+            "second_score": 0.0020568761974573135,
+            "gap": 0.5958023872226477,
+            "relative_gap": 0.9931427875943843
+          },
+          "spatial_candidates": 20
+        }
+      }
+    ],
+    "two_stage": [
+      {
+        "scheme": "two_stage",
+        "image": "data/external/fruit/images/IMG_20260823_021410_jpg.rf.49c8a42c1436fcbc61d797018817702e.jpg",
+        "group": "IMG_20260823_021410",
+        "target_index": 0,
+        "truth_type": "apple",
+        "truth_state": "unripe",
+        "prediction_type": "pear",
+        "prediction_state": "unripe",
+        "confidence": 0.964980959892273,
+        "iou": 0.9132550704528759,
+        "type_correct": false,
+        "joint_correct": false,
+        "type_ranking": {
+          "first": "pear",
+          "second": "apple",
+          "first_score": 0.9649810194969177,
+          "second_score": 9.619409684091806e-05,
+          "gap": 0.9648848254000768,
+          "relative_gap": 0.999800649946997
+        },
+        "native_label_ranking": {
+          "first": "pear",
+          "second": "apple",
+          "first_score": 0.9649810194969177,
+          "second_score": 9.619409684091806e-05,
+          "gap": 0.9648848254000768,
+          "relative_gap": 0.999800649946997
+        },
+        "maturity_ranking": {
+          "first": "unripe",
+          "second": "ripe",
+          "first_score": 0.9828311204910278,
+          "second_score": 0.017168879508972168,
+          "gap": 0.9656622409820557,
+          "relative_gap": 0.9656622409820557
+        },
+        "same_target_competition": {
+          "type": {
+            "first": "pear",
+            "second": "apple",
+            "first_score": 0.9649810194969177,
+            "second_score": 9.619409684091806e-05,
+            "gap": 0.9648848254000768,
+            "relative_gap": 0.999800649946997
+          },
+          "native_label": {
+            "first": "pear",
+            "second": "apple",
+            "first_score": 0.9649810194969177,
+            "second_score": 9.619409684091806e-05,
+            "gap": 0.9648848254000768,
+            "relative_gap": 0.999800649946997
+          },
+          "spatial_candidates": 10
+        }
+      },
+      {
+        "scheme": "two_stage",
+        "image": "data/external/vegetable/images/IMG_20260819_022118_jpg.rf.8ae2ba0be3f4101e9d23a6d8cd09ef0f.jpg",
+        "group": "IMG_20260819_022118",
+        "target_index": 0,
+        "truth_type": "tomato",
+        "truth_state": "unripe",
+        "prediction_type": "pepper",
+        "prediction_state": "unripe",
+        "confidence": 0.9352145195007324,
+        "iou": 0.8654624530046601,
+        "type_correct": false,
+        "joint_correct": false,
+        "type_ranking": {
+          "first": "pepper",
+          "second": "pumpkin",
+          "first_score": 0.9352144598960876,
+          "second_score": 0.0007250661728903651,
+          "gap": 0.9344893937231973,
+          "relative_gap": 0.9984506132016121
+        },
+        "native_label_ranking": {
+          "first": "pepper",
+          "second": "pumpkin",
+          "first_score": 0.9352144598960876,
+          "second_score": 0.0007250661728903651,
+          "gap": 0.9344893937231973,
+          "relative_gap": 0.9984506132016121
+        },
+        "maturity_ranking": {
+          "first": "unripe",
+          "second": "ripe",
+          "first_score": 1.0,
+          "second_score": 0.0,
+          "gap": 1.0,
+          "relative_gap": 1.0
+        },
+        "same_target_competition": {
+          "type": {
+            "first": "pepper",
+            "second": "pumpkin",
+            "first_score": 0.9352144598960876,
+            "second_score": 0.0007250661728903651,
+            "gap": 0.9344893937231973,
+            "relative_gap": 0.9984506132016121
+          },
+          "native_label": {
+            "first": "pepper",
+            "second": "pumpkin",
+            "first_score": 0.9352144598960876,
+            "second_score": 0.0007250661728903651,
+            "gap": 0.9344893937231973,
+            "relative_gap": 0.9984506132016121
+          },
+          "spatial_candidates": 8
+        }
+      },
+      {
+        "scheme": "two_stage",
+        "image": "data/external/vegetable/images/IMG_20260819_022307_jpg.rf.7518d2c607b63bd75ec728f7d5c6667b.jpg",
+        "group": "IMG_20260819_022307",
+        "target_index": 0,
+        "truth_type": "tomato",
+        "truth_state": "unripe",
+        "prediction_type": "pepper",
+        "prediction_state": "unripe",
+        "confidence": 0.906122088432312,
+        "iou": 0.8934078738657275,
+        "type_correct": false,
+        "joint_correct": false,
+        "type_ranking": {
+          "first": "pepper",
+          "second": "tomato",
+          "first_score": 0.9061221480369568,
+          "second_score": 0.0013823930639773607,
+          "gap": 0.9047397549729794,
+          "relative_gap": 0.9969534189607463
+        },
+        "native_label_ranking": {
+          "first": "pepper",
+          "second": "tomato",
+          "first_score": 0.9061221480369568,
+          "second_score": 0.0013823930639773607,
+          "gap": 0.9047397549729794,
+          "relative_gap": 0.9969534189607463
+        },
+        "maturity_ranking": {
+          "first": "unripe",
+          "second": "ripe",
+          "first_score": 1.0,
+          "second_score": 0.0,
+          "gap": 1.0,
+          "relative_gap": 1.0
+        },
+        "same_target_competition": {
+          "type": {
+            "first": "pepper",
+            "second": "onion",
+            "first_score": 0.9061221480369568,
+            "second_score": 0.021241210401058197,
+            "gap": 0.8848809376358986,
+            "relative_gap": 0.9541901020613206
+          },
+          "native_label": {
+            "first": "pepper",
+            "second": "onion",
+            "first_score": 0.9061221480369568,
+            "second_score": 0.021241210401058197,
+            "gap": 0.8848809376358986,
+            "relative_gap": 0.9541901020613206
+          },
+          "spatial_candidates": 6
+        }
+      }
+    ]
+  },
+  "scope": "same-candidate and same-target static class competition; state margin conditioned on predicted type; not frame-to-frame stability",
+  "same_target_definition": "For each annotated target, max each class score across spatial candidates with IoU>=0.50; compare different types separately from different states. This diagnostic association uses GT boxes, not GT labels, and does not change recognition counts."
+}

@@ -1,0 +1,47 @@
+{
+  "status": "passed",
+  "user_confirmed_dedicated_set": true,
+  "date": "2026-11-11",
+  "directory": "/Users/cqc/fruit_train/output/canonical_rebuild_20261111/data/external",
+  "images": 60,
+  "targets": 91,
+  "internal_split_counts": {
+    "train": 2460,
+    "valid": 250,
+    "test": 116
+  },
+  "source_group_overlap": 0,
+  "image_sha256_overlap": 0,
+  "decoded_pixel_overlap": 0,
+  "all_detector_directory_members_match_manifest": true,
+  "all_classifier_crops_match_internal_source_targets": true,
+  "training_package_sha256": "a51cf39c60c614ee31eee97f1649bff9c58cb8527487003688ebc39df819732d",
+  "dedicated_images_in_training_package": 0,
+  "actual_file_verification": {
+    "status": "passed",
+    "manifest_sha256": "504125d1d705f2e9289bb73781bd6cea0d7743a7b810c12c36f90ed80516b46b",
+    "data_content_sha256": "1f0a50e60f5e162c6e0b45f091e5b784b4b9a34055f610f08d7bea83ad9c0135",
+    "external_images": 60,
+    "external_objects": 91,
+    "verified_files": 15437,
+    "checks": [
+      "identical full-image bytes across schemes",
+      "identical target boxes; deterministic class mapping",
+      "maturation crops contain exact pixels from same training split",
+      "external source groups/hashes excluded from all internal splits",
+      "source-group partition consistency"
+    ],
+    "counts": {
+      "crop/train": 3481,
+      "paired/fruit/train": 399,
+      "crop/valid": 367,
+      "paired/fruit/valid": 26,
+      "crop/test": 165,
+      "paired/fruit/test": 16,
+      "paired/vegetable/valid": 224,
+      "paired/vegetable/train": 2061,
+      "paired/vegetable/test": 100
+    }
+  },
+  "scope": "This round's ten newly trained models; same-capture variants excluded by source group. Exact checks do not prove absence of every visually similar scene."
+}

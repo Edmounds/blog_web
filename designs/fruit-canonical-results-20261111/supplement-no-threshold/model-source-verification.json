@@ -1,0 +1,49 @@
+{
+  "status": "complete",
+  "fingerprint": "e07cd8dc7e104b15d1232455aebbec6ed699242fa175974d826e29df99d7160c:504125d1d705f2e9289bb73781bd6cea0d7743a7b810c12c36f90ed80516b46b",
+  "models": {
+    "composite/fruit": {
+      "sha256": "e462574e28426ac6de775f80043d45eaf7485726b930527a115396d975b3f403",
+      "finished": 1794326838.0450475
+    },
+    "type/fruit": {
+      "sha256": "345d29736bbea3154e2cfe197674f91a05d3f04658b3954deb79ca7b7e1eb5a1",
+      "finished": 1794327191.7386386
+    },
+    "composite/vegetable": {
+      "sha256": "4102e7a13acb31f51e728c8821e13c890c71865ed886b429ef8c2b49a62c56f4",
+      "finished": 1794328846.483799
+    },
+    "type/vegetable": {
+      "sha256": "08caaa4fa6728918325cb41b448e5834b941b94e3c98b1e23aa12ec33b099ade",
+      "finished": 1794330323.6664212
+    },
+    "ripeness/apple": {
+      "sha256": "ef1b09737619b2e6f108032ecebea1a99bbbcc1661e887f6a25b01f3816bb8f4",
+      "finished": 1794330342.6168318
+    },
+    "ripeness/pear": {
+      "sha256": "95082a732db5208046eb0b4cea5c483bea993d9edb83b130ae2231a0a5eae399",
+      "finished": 1794330359.9612424
+    },
+    "ripeness/onion": {
+      "sha256": "e58bfbd56e1c2c596d1f1abda5ef5ab326662f13ad7b823690a0505d4edbc343",
+      "finished": 1794330376.7130036
+    },
+    "ripeness/pepper": {
+      "sha256": "fb5b99a432a7e50909ec011c66fad9fb65213645f8f7dea19819d3f7d83eecc1",
+      "finished": 1794330409.820249
+    },
+    "ripeness/pumpkin": {
+      "sha256": "1568c6a96eb8e7703ef3f86053831075e11d3723cd3550cc1617abeb9b28c40e",
+      "finished": 1794330440.0747542
+    },
+    "ripeness/tomato": {
+      "sha256": "f3d0217f69d15c6348408098e9a163458f6f8928eadbeaf0066435d28a6204fb",
+      "finished": 1794330464.1536915
+    }
+  },
+  "verified_local_matches_remote": true,
+  "verification_date": "2026-11-11",
+  "remote_directory": "/home/cqc/experiments/canonical_rebuild_20261111"
+}
