@@ -1,0 +1,217 @@
+{
+  "selection": "One lexical-first example per stratum: B better, A better, both fully correct, both no correct target. Selected only for illustration; full cohort metrics unchanged.",
+  "display": "Predictions only. No GT label or GT box. Scores are detection confidence.",
+  "examples": [
+    {
+      "image": "data/external/fruit/images/20260823_025317_494_png.rf.973a5572d5ab7d48b81da79968d125ea.jpg",
+      "group": "20260823_025317_494",
+      "paired_counts": {
+        "image": "data/external/fruit/images/20260823_025317_494_png.rf.973a5572d5ab7d48b81da79968d125ea.jpg",
+        "group": "20260823_025317_494",
+        "batch": "capture_20260823",
+        "objects": 4,
+        "both_correct": 0,
+        "only_composite": 0,
+        "only_two_stage": 2,
+        "neither_correct": 2
+      },
+      "predictions": {
+        "two_stage": {
+          "items": [
+            {
+              "type": "apple",
+              "state": "ripe",
+              "box": [
+                30.6728515625,
+                196.44082641601562,
+                172.8198699951172,
+                335.484130859375
+              ],
+              "confidence": 0.7152060866355896,
+              "ripeness_confidence": 1.0
+            },
+            {
+              "type": "apple",
+              "state": "unripe",
+              "box": [
+                341.19830322265625,
+                172.56068420410156,
+                453.5236511230469,
+                281.2974548339844
+              ],
+              "confidence": 0.6481025218963623,
+              "ripeness_confidence": 1.0
+            }
+          ],
+          "elapsed_ms": 165.54183300002023
+        },
+        "composite": {
+          "items": [],
+          "elapsed_ms": 164.93095900000299
+        }
+      }
+    },
+    {
+      "image": "data/external/fruit/images/20260823_025907_017_png.rf.0de6c5af79446424443a8945967b57d8.jpg",
+      "group": "20260823_025907_017",
+      "paired_counts": {
+        "image": "data/external/fruit/images/20260823_025907_017_png.rf.0de6c5af79446424443a8945967b57d8.jpg",
+        "group": "20260823_025907_017",
+        "batch": "capture_20260823",
+        "objects": 2,
+        "both_correct": 0,
+        "only_composite": 1,
+        "only_two_stage": 0,
+        "neither_correct": 1
+      },
+      "predictions": {
+        "two_stage": {
+          "items": [
+            {
+              "type": "pear",
+              "state": "ripe",
+              "box": [
+                242.5863800048828,
+                19.542251586914062,
+                405.8946228027344,
+                162.77850341796875
+              ],
+              "confidence": 0.639859676361084,
+              "ripeness_confidence": 0.9995983242988586
+            }
+          ],
+          "elapsed_ms": 153.7473340000588
+        },
+        "composite": {
+          "items": [
+            {
+              "type": "pear",
+              "state": "ripe",
+              "box": [
+                240.27536010742188,
+                39.809059143066406,
+                385.58929443359375,
+                160.34678649902344
+              ],
+              "confidence": 0.9842068552970886,
+              "ripeness_confidence": null
+            },
+            {
+              "type": "pear",
+              "state": "ripe",
+              "box": [
+                138.48019409179688,
+                187.77923583984375,
+                274.1993103027344,
+                346.51611328125
+              ],
+              "confidence": 0.9202563762664795,
+              "ripeness_confidence": null
+            }
+          ],
+          "elapsed_ms": 161.81837500005258
+        }
+      }
+    },
+    {
+      "image": "data/external/vegetable/images/IMG_20260819_021952_jpg.rf.42f4d735e64377058a7b8501643494d4.jpg",
+      "group": "IMG_20260819_021952",
+      "paired_counts": {
+        "image": "data/external/vegetable/images/IMG_20260819_021952_jpg.rf.42f4d735e64377058a7b8501643494d4.jpg",
+        "group": "IMG_20260819_021952",
+        "batch": "capture_20260819",
+        "objects": 1,
+        "both_correct": 1,
+        "only_composite": 0,
+        "only_two_stage": 0,
+        "neither_correct": 0
+      },
+      "predictions": {
+        "composite": {
+          "items": [
+            {
+              "type": "pepper",
+              "state": "unripe",
+              "box": [
+                103.13912963867188,
+                12.74700927734375,
+                378.9432067871094,
+                337.66107177734375
+              ],
+              "confidence": 0.9423869848251343,
+              "ripeness_confidence": null
+            }
+          ],
+          "elapsed_ms": 167.4585420000767
+        },
+        "two_stage": {
+          "items": [
+            {
+              "type": "pepper",
+              "state": "unripe",
+              "box": [
+                98.40666198730469,
+                13.272430419921875,
+                374.9862976074219,
+                336.9992370605469
+              ],
+              "confidence": 0.6522132754325867,
+              "ripeness_confidence": 1.0
+            }
+          ],
+          "elapsed_ms": 177.28033399998822
+        }
+      }
+    },
+    {
+      "image": "data/external/fruit/images/20260823_025247_706_png.rf.07218537c560b3e5ed967d27adc885b0.jpg",
+      "group": "20260823_025247_706",
+      "paired_counts": {
+        "image": "data/external/fruit/images/20260823_025247_706_png.rf.07218537c560b3e5ed967d27adc885b0.jpg",
+        "group": "20260823_025247_706",
+        "batch": "capture_20260823",
+        "objects": 4,
+        "both_correct": 0,
+        "only_composite": 0,
+        "only_two_stage": 0,
+        "neither_correct": 4
+      },
+      "predictions": {
+        "composite": {
+          "items": [
+            {
+              "type": "pear",
+              "state": "unripe",
+              "box": [
+                441.409423828125,
+                286.55670166015625,
+                548.2271728515625,
+                409.67791748046875
+              ],
+              "confidence": 0.30729156732559204,
+              "ripeness_confidence": null
+            }
+          ],
+          "elapsed_ms": 416.61962500006666
+        },
+        "two_stage": {
+          "items": [
+            {
+              "type": "pear",
+              "state": "unripe",
+              "box": [
+                157.69137573242188,
+                287.66259765625,
+                262.3395080566406,
+                420.761474609375
+              ],
+              "confidence": 0.25563880801200867,
+              "ripeness_confidence": 0.901237428188324
+            }
+          ],
+          "elapsed_ms": 164.2162080000844
+        }
+      }
+    }
+  ]
+}

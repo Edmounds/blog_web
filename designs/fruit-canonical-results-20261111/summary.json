@@ -1,0 +1,1415 @@
+{
+  "experiment_id": "canonical_rebuild_20261111",
+  "images": 60,
+  "schemes": {
+    "composite": {
+      "ground_truth": 91,
+      "predictions": 59,
+      "type_correct": 40,
+      "joint_correct": 39,
+      "cross_type_errors": 7,
+      "maturity_errors": 1,
+      "missed": 44,
+      "unmatched_predictions": 12,
+      "type_precision": 0.6779661016949152,
+      "type_recall": 0.43956043956043955,
+      "joint_precision": 0.6610169491525424,
+      "joint_recall": 0.42857142857142855,
+      "maturity_accuracy_given_correct_type": 0.975,
+      "latency_cpu_ms": {
+        "mean": 155.54014580000432,
+        "median": 148.6719794999658,
+        "p95": 162.11100179999107
+      },
+      "type_confusion_matrix": [
+        [
+          2,
+          2,
+          0,
+          0,
+          0,
+          0,
+          17
+        ],
+        [
+          0,
+          5,
+          0,
+          0,
+          0,
+          0,
+          15
+        ],
+        [
+          0,
+          0,
+          13,
+          2,
+          0,
+          0,
+          3
+        ],
+        [
+          0,
+          0,
+          0,
+          4,
+          0,
+          1,
+          3
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          7,
+          0,
+          2
+        ],
+        [
+          0,
+          0,
+          1,
+          1,
+          0,
+          9,
+          4
+        ],
+        [
+          1,
+          8,
+          1,
+          2,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "two_stage": {
+      "ground_truth": 91,
+      "predictions": 59,
+      "type_correct": 46,
+      "joint_correct": 46,
+      "cross_type_errors": 8,
+      "maturity_errors": 0,
+      "missed": 37,
+      "unmatched_predictions": 5,
+      "type_precision": 0.7796610169491526,
+      "type_recall": 0.5054945054945055,
+      "joint_precision": 0.7796610169491526,
+      "joint_recall": 0.5054945054945055,
+      "maturity_accuracy_given_correct_type": 1.0,
+      "latency_cpu_ms": {
+        "mean": 156.75002561667193,
+        "median": 154.80970850001086,
+        "p95": 168.66021874998862
+      },
+      "type_confusion_matrix": [
+        [
+          8,
+          2,
+          0,
+          0,
+          0,
+          0,
+          11
+        ],
+        [
+          0,
+          5,
+          0,
+          0,
+          0,
+          0,
+          15
+        ],
+        [
+          0,
+          0,
+          9,
+          3,
+          0,
+          0,
+          6
+        ],
+        [
+          0,
+          0,
+          0,
+          7,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          8,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          3,
+          0,
+          9,
+          3
+        ],
+        [
+          0,
+          4,
+          1,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    }
+  },
+  "by_zone": {
+    "fruit": {
+      "composite": {
+        "ground_truth": 41,
+        "predictions": 18,
+        "type_correct": 7,
+        "joint_correct": 6,
+        "cross_type_errors": 2,
+        "maturity_errors": 1,
+        "missed": 32,
+        "unmatched_predictions": 9,
+        "type_precision": 0.3888888888888889,
+        "type_recall": 0.17073170731707318,
+        "joint_precision": 0.3333333333333333,
+        "joint_recall": 0.14634146341463414,
+        "maturity_accuracy_given_correct_type": 0.8571428571428571,
+        "latency_cpu_ms": {
+          "mean": 167.89490630000614,
+          "median": 155.37016700000095,
+          "p95": 177.51539230000634
+        },
+        "type_confusion_matrix": [
+          [
+            2,
+            2,
+            0,
+            0,
+            0,
+            0,
+            17
+          ],
+          [
+            0,
+            5,
+            0,
+            0,
+            0,
+            0,
+            15
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            8,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "two_stage": {
+        "ground_truth": 41,
+        "predictions": 19,
+        "type_correct": 13,
+        "joint_correct": 13,
+        "cross_type_errors": 2,
+        "maturity_errors": 0,
+        "missed": 26,
+        "unmatched_predictions": 4,
+        "type_precision": 0.6842105263157895,
+        "type_recall": 0.3170731707317073,
+        "joint_precision": 0.6842105263157895,
+        "joint_recall": 0.3170731707317073,
+        "maturity_accuracy_given_correct_type": 1.0,
+        "latency_cpu_ms": {
+          "mean": 159.1461145500091,
+          "median": 160.6993329999682,
+          "p95": 168.66021874998864
+        },
+        "type_confusion_matrix": [
+          [
+            8,
+            2,
+            0,
+            0,
+            0,
+            0,
+            11
+          ],
+          [
+            0,
+            5,
+            0,
+            0,
+            0,
+            0,
+            15
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            4,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    "vegetable": {
+      "composite": {
+        "ground_truth": 50,
+        "predictions": 41,
+        "type_correct": 33,
+        "joint_correct": 33,
+        "cross_type_errors": 5,
+        "maturity_errors": 0,
+        "missed": 12,
+        "unmatched_predictions": 3,
+        "type_precision": 0.8048780487804879,
+        "type_recall": 0.66,
+        "joint_precision": 0.8048780487804879,
+        "joint_recall": 0.66,
+        "maturity_accuracy_given_correct_type": 1.0,
+        "latency_cpu_ms": {
+          "mean": 149.36276555000347,
+          "median": 148.19706200000837,
+          "p95": 156.2125256000627
+        },
+        "type_confusion_matrix": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            13,
+            2,
+            0,
+            0,
+            3
+          ],
+          [
+            0,
+            0,
+            0,
+            4,
+            0,
+            1,
+            3
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7,
+            0,
+            2
+          ],
+          [
+            0,
+            0,
+            1,
+            1,
+            0,
+            9,
+            4
+          ],
+          [
+            0,
+            0,
+            1,
+            2,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "two_stage": {
+        "ground_truth": 50,
+        "predictions": 40,
+        "type_correct": 33,
+        "joint_correct": 33,
+        "cross_type_errors": 6,
+        "maturity_errors": 0,
+        "missed": 11,
+        "unmatched_predictions": 1,
+        "type_precision": 0.825,
+        "type_recall": 0.66,
+        "joint_precision": 0.825,
+        "joint_recall": 0.66,
+        "maturity_accuracy_given_correct_type": 1.0,
+        "latency_cpu_ms": {
+          "mean": 155.55198115000337,
+          "median": 153.64758300000858,
+          "p95": 165.57910419991796
+        },
+        "type_confusion_matrix": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            9,
+            3,
+            0,
+            0,
+            6
+          ],
+          [
+            0,
+            0,
+            0,
+            7,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            8,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            3,
+            0,
+            9,
+            3
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      }
+    }
+  },
+  "by_capture_batch": {
+    "capture_20260819": {
+      "composite": {
+        "ground_truth": 22,
+        "predictions": 22,
+        "type_correct": 15,
+        "joint_correct": 15,
+        "cross_type_errors": 4,
+        "maturity_errors": 0,
+        "missed": 3,
+        "unmatched_predictions": 3,
+        "type_precision": 0.6818181818181818,
+        "type_recall": 0.6818181818181818,
+        "joint_precision": 0.6818181818181818,
+        "joint_recall": 0.6818181818181818,
+        "maturity_accuracy_given_correct_type": 1.0,
+        "latency_cpu_ms": {
+          "mean": 150.24501504546544,
+          "median": 148.23539549996667,
+          "p95": 157.5952243999609
+        },
+        "type_confusion_matrix": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            5,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            4,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            6,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            1,
+            0,
+            0,
+            3
+          ],
+          [
+            0,
+            0,
+            1,
+            2,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "two_stage": {
+        "ground_truth": 22,
+        "predictions": 20,
+        "type_correct": 15,
+        "joint_correct": 15,
+        "cross_type_errors": 4,
+        "maturity_errors": 0,
+        "missed": 3,
+        "unmatched_predictions": 1,
+        "type_precision": 0.75,
+        "type_recall": 0.6818181818181818,
+        "joint_precision": 0.75,
+        "joint_recall": 0.6818181818181818,
+        "maturity_accuracy_given_correct_type": 1.0,
+        "latency_cpu_ms": {
+          "mean": 157.74477072727677,
+          "median": 155.9621664999895,
+          "p95": 176.66447979998452
+        },
+        "type_confusion_matrix": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            5,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            5,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            5,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            3,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    "capture_20260823": {
+      "composite": {
+        "ground_truth": 41,
+        "predictions": 18,
+        "type_correct": 7,
+        "joint_correct": 6,
+        "cross_type_errors": 2,
+        "maturity_errors": 1,
+        "missed": 32,
+        "unmatched_predictions": 9,
+        "type_precision": 0.3888888888888889,
+        "type_recall": 0.17073170731707318,
+        "joint_precision": 0.3333333333333333,
+        "joint_recall": 0.14634146341463414,
+        "maturity_accuracy_given_correct_type": 0.8571428571428571,
+        "latency_cpu_ms": {
+          "mean": 167.89490630000614,
+          "median": 155.37016700000095,
+          "p95": 177.51539230000634
+        },
+        "type_confusion_matrix": [
+          [
+            2,
+            2,
+            0,
+            0,
+            0,
+            0,
+            17
+          ],
+          [
+            0,
+            5,
+            0,
+            0,
+            0,
+            0,
+            15
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            8,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "two_stage": {
+        "ground_truth": 41,
+        "predictions": 19,
+        "type_correct": 13,
+        "joint_correct": 13,
+        "cross_type_errors": 2,
+        "maturity_errors": 0,
+        "missed": 26,
+        "unmatched_predictions": 4,
+        "type_precision": 0.6842105263157895,
+        "type_recall": 0.3170731707317073,
+        "joint_precision": 0.6842105263157895,
+        "joint_recall": 0.3170731707317073,
+        "maturity_accuracy_given_correct_type": 1.0,
+        "latency_cpu_ms": {
+          "mean": 159.1461145500091,
+          "median": 160.6993329999682,
+          "p95": 168.66021874998864
+        },
+        "type_confusion_matrix": [
+          [
+            8,
+            2,
+            0,
+            0,
+            0,
+            0,
+            11
+          ],
+          [
+            0,
+            5,
+            0,
+            0,
+            0,
+            0,
+            15
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            4,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    "capture_20260916": {
+      "composite": {
+        "ground_truth": 18,
+        "predictions": 14,
+        "type_correct": 13,
+        "joint_correct": 13,
+        "cross_type_errors": 1,
+        "maturity_errors": 0,
+        "missed": 4,
+        "unmatched_predictions": 0,
+        "type_precision": 0.9285714285714286,
+        "type_recall": 0.7222222222222222,
+        "joint_precision": 0.9285714285714286,
+        "joint_recall": 0.7222222222222222,
+        "maturity_accuracy_given_correct_type": 1.0,
+        "latency_cpu_ms": {
+          "mean": 148.1348124999755,
+          "median": 147.79249999998,
+          "p95": 152.8069563499514
+        },
+        "type_confusion_matrix": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            6,
+            1,
+            0,
+            0,
+            3
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            7,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "two_stage": {
+        "ground_truth": 18,
+        "predictions": 12,
+        "type_correct": 10,
+        "joint_correct": 10,
+        "cross_type_errors": 2,
+        "maturity_errors": 0,
+        "missed": 6,
+        "unmatched_predictions": 0,
+        "type_precision": 0.8333333333333334,
+        "type_recall": 0.5555555555555556,
+        "joint_precision": 0.8333333333333334,
+        "joint_recall": 0.5555555555555556,
+        "maturity_accuracy_given_correct_type": 1.0,
+        "latency_cpu_ms": {
+          "mean": 155.74370825001438,
+          "median": 155.20456249998915,
+          "p95": 163.6001296000302
+        },
+        "type_confusion_matrix": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            3,
+            2,
+            0,
+            0,
+            5
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            7,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    "capture_20261010": {
+      "composite": {
+        "ground_truth": 7,
+        "predictions": 4,
+        "type_correct": 4,
+        "joint_correct": 4,
+        "cross_type_errors": 0,
+        "maturity_errors": 0,
+        "missed": 3,
+        "unmatched_predictions": 0,
+        "type_precision": 1.0,
+        "type_recall": 0.5714285714285714,
+        "joint_precision": 1.0,
+        "joint_recall": 0.5714285714285714,
+        "maturity_accuracy_given_correct_type": 1.0,
+        "latency_cpu_ms": {
+          "mean": 148.63849400002695,
+          "median": 147.8530410000758,
+          "p95": 152.4600875000374
+        },
+        "type_confusion_matrix": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "two_stage": {
+        "ground_truth": 7,
+        "predictions": 6,
+        "type_correct": 6,
+        "joint_correct": 6,
+        "cross_type_errors": 0,
+        "maturity_errors": 0,
+        "missed": 1,
+        "unmatched_predictions": 0,
+        "type_precision": 1.0,
+        "type_recall": 0.8571428571428571,
+        "joint_precision": 1.0,
+        "joint_recall": 0.8571428571428571,
+        "maturity_accuracy_given_correct_type": 1.0,
+        "latency_cpu_ms": {
+          "mean": 150.34744628569894,
+          "median": 150.86904099996445,
+          "p95": 154.05113750001647
+        },
+        "type_confusion_matrix": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    "capture_20261015": {
+      "composite": {
+        "ground_truth": 3,
+        "predictions": 1,
+        "type_correct": 1,
+        "joint_correct": 1,
+        "cross_type_errors": 0,
+        "maturity_errors": 0,
+        "missed": 2,
+        "unmatched_predictions": 0,
+        "type_precision": 1.0,
+        "type_recall": 0.3333333333333333,
+        "joint_precision": 1.0,
+        "joint_recall": 0.3333333333333333,
+        "maturity_accuracy_given_correct_type": 1.0,
+        "latency_cpu_ms": {
+          "mean": 147.85744433330214,
+          "median": 148.27320799997779,
+          "p95": 148.62840829999868
+        },
+        "type_confusion_matrix": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "two_stage": {
+        "ground_truth": 3,
+        "predictions": 2,
+        "type_correct": 2,
+        "joint_correct": 2,
+        "cross_type_errors": 0,
+        "maturity_errors": 0,
+        "missed": 1,
+        "unmatched_predictions": 0,
+        "type_precision": 1.0,
+        "type_recall": 0.6666666666666666,
+        "joint_precision": 1.0,
+        "joint_recall": 0.6666666666666666,
+        "maturity_accuracy_given_correct_type": 1.0,
+        "latency_cpu_ms": {
+          "mean": 151.1041666666794,
+          "median": 150.76550000003408,
+          "p95": 154.64375030001065
+        },
+        "type_confusion_matrix": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      }
+    }
+  },
+  "model_hashes": {
+    "composite/fruit": "e462574e28426ac6de775f80043d45eaf7485726b930527a115396d975b3f403",
+    "composite/vegetable": "4102e7a13acb31f51e728c8821e13c890c71865ed886b429ef8c2b49a62c56f4",
+    "type/fruit": "345d29736bbea3154e2cfe197674f91a05d3f04658b3954deb79ca7b7e1eb5a1",
+    "type/vegetable": "08caaa4fa6728918325cb41b448e5834b941b94e3c98b1e23aa12ec33b099ade",
+    "ripeness/apple": "ef1b09737619b2e6f108032ecebea1a99bbbcc1661e887f6a25b01f3816bb8f4",
+    "ripeness/pear": "95082a732db5208046eb0b4cea5c483bea993d9edb83b130ae2231a0a5eae399",
+    "ripeness/onion": "e58bfbd56e1c2c596d1f1abda5ef5ab326662f13ad7b823690a0505d4edbc343",
+    "ripeness/pepper": "fb5b99a432a7e50909ec011c66fad9fb65213645f8f7dea19819d3f7d83eecc1",
+    "ripeness/pumpkin": "1568c6a96eb8e7703ef3f86053831075e11d3723cd3550cc1617abeb9b28c40e",
+    "ripeness/tomato": "f3d0217f69d15c6348408098e9a163458f6f8928eadbeaf0066435d28a6204fb"
+  },
+  "protocol_sha256": "e07cd8dc7e104b15d1232455aebbec6ed699242fa175974d826e29df99d7160c",
+  "manifest_sha256": "504125d1d705f2e9289bb73781bd6cea0d7743a7b810c12c36f90ed80516b46b",
+  "evaluation_selection_sha256": "bf19100ab7b8245e89906490c54fbd0d8c767767cb80e5c97480eee48196b0a8",
+  "runtime": {
+    "platform": "macOS-27.2.1-arm64-arm-64bit",
+    "machine": "arm64",
+    "onnxruntime": "1.23.2",
+    "torch_threads": 4,
+    "classifier_ort_threads": 4
+  },
+  "latency_scope": "Warmed CPU full pipeline wall time, excludes disk/model loading, includes detection pre/postprocess, predicted-ROI crop and classification; not robot hardware latency",
+  "limitations": [
+    "single seed",
+    "small external set:60 images and91 targets; per-class counts are low",
+    "corrected-source rerun on previously inspected diagnostic external cohort; no test-driven threshold tuning",
+    "five held-out dated capture sessions; some older training capture dates unknown",
+    "no empty-scene negatives in primary dated set",
+    "separate maturation models add compute and initialization; this compares two practical pipelines"
+  ]
+}

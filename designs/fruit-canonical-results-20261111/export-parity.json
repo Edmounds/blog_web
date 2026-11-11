@@ -1,0 +1,135 @@
+{
+  "status": "passed",
+  "pairs": 16,
+  "scope": "Four deterministic external images per zone, both detector variants; same640letterbox andconf0.25; verifies export pipeline, not generalization",
+  "checks": [
+    {
+      "model": "composite/fruit",
+      "image": "data/external/fruit/images/20260823_025247_706_png.rf.07218537c560b3e5ed967d27adc885b0.jpg",
+      "pytorch_predictions": 1,
+      "onnx_predictions": 1,
+      "equivalent": true,
+      "max_box_delta": 0.0
+    },
+    {
+      "model": "composite/fruit",
+      "image": "data/external/fruit/images/20260823_025616_273_png.rf.34a37f3b03ed78610d8f627f9a6e1280.jpg",
+      "pytorch_predictions": 0,
+      "onnx_predictions": 0,
+      "equivalent": true,
+      "max_box_delta": null
+    },
+    {
+      "model": "composite/fruit",
+      "image": "data/external/fruit/images/20260823_025944_555_png.rf.043a0223c217b503bf4d20cb234bc0cb.jpg",
+      "pytorch_predictions": 2,
+      "onnx_predictions": 2,
+      "equivalent": true,
+      "max_box_delta": 1.52587890625e-05
+    },
+    {
+      "model": "composite/fruit",
+      "image": "data/external/fruit/images/IMG_20260823_023503_jpg.rf.5591edf7df793e9b8f399c211edc8e88.jpg",
+      "pytorch_predictions": 1,
+      "onnx_predictions": 1,
+      "equivalent": true,
+      "max_box_delta": 3.0517578125e-05
+    },
+    {
+      "model": "type/fruit",
+      "image": "data/external/fruit/images/20260823_025247_706_png.rf.07218537c560b3e5ed967d27adc885b0.jpg",
+      "pytorch_predictions": 1,
+      "onnx_predictions": 1,
+      "equivalent": true,
+      "max_box_delta": 3.0517578125e-05
+    },
+    {
+      "model": "type/fruit",
+      "image": "data/external/fruit/images/20260823_025616_273_png.rf.34a37f3b03ed78610d8f627f9a6e1280.jpg",
+      "pytorch_predictions": 0,
+      "onnx_predictions": 0,
+      "equivalent": true,
+      "max_box_delta": null
+    },
+    {
+      "model": "type/fruit",
+      "image": "data/external/fruit/images/20260823_025944_555_png.rf.043a0223c217b503bf4d20cb234bc0cb.jpg",
+      "pytorch_predictions": 1,
+      "onnx_predictions": 1,
+      "equivalent": true,
+      "max_box_delta": 3.0517578125e-05
+    },
+    {
+      "model": "type/fruit",
+      "image": "data/external/fruit/images/IMG_20260823_023503_jpg.rf.5591edf7df793e9b8f399c211edc8e88.jpg",
+      "pytorch_predictions": 3,
+      "onnx_predictions": 3,
+      "equivalent": true,
+      "max_box_delta": 6.103515625e-05
+    },
+    {
+      "model": "composite/vegetable",
+      "image": "data/external/vegetable/images/IMG_20260819_021952_jpg.rf.42f4d735e64377058a7b8501643494d4.jpg",
+      "pytorch_predictions": 1,
+      "onnx_predictions": 1,
+      "equivalent": true,
+      "max_box_delta": 4.57763671875e-05
+    },
+    {
+      "model": "composite/vegetable",
+      "image": "data/external/vegetable/images/IMG_20260819_022455_jpg.rf.f004144865f0654aa9de32a6c8943e0b.jpg",
+      "pytorch_predictions": 1,
+      "onnx_predictions": 1,
+      "equivalent": true,
+      "max_box_delta": 7.62939453125e-05
+    },
+    {
+      "model": "composite/vegetable",
+      "image": "data/external/vegetable/images/IMG_20260916_023353_jpg.rf.61929b0cf2286452cf38c4dbc09f136f.jpg",
+      "pytorch_predictions": 1,
+      "onnx_predictions": 1,
+      "equivalent": true,
+      "max_box_delta": 3.0517578125e-05
+    },
+    {
+      "model": "composite/vegetable",
+      "image": "data/external/vegetable/images/frame_20261010_022700_023_png.rf.663564b5f73ec66240f398afca543373.jpg",
+      "pytorch_predictions": 1,
+      "onnx_predictions": 1,
+      "equivalent": true,
+      "max_box_delta": 3.0517578125e-05
+    },
+    {
+      "model": "type/vegetable",
+      "image": "data/external/vegetable/images/IMG_20260819_021952_jpg.rf.42f4d735e64377058a7b8501643494d4.jpg",
+      "pytorch_predictions": 1,
+      "onnx_predictions": 1,
+      "equivalent": true,
+      "max_box_delta": 4.57763671875e-05
+    },
+    {
+      "model": "type/vegetable",
+      "image": "data/external/vegetable/images/IMG_20260819_022455_jpg.rf.f004144865f0654aa9de32a6c8943e0b.jpg",
+      "pytorch_predictions": 2,
+      "onnx_predictions": 2,
+      "equivalent": true,
+      "max_box_delta": 0.0001220703125
+    },
+    {
+      "model": "type/vegetable",
+      "image": "data/external/vegetable/images/IMG_20260916_023353_jpg.rf.61929b0cf2286452cf38c4dbc09f136f.jpg",
+      "pytorch_predictions": 1,
+      "onnx_predictions": 1,
+      "equivalent": true,
+      "max_box_delta": 4.57763671875e-05
+    },
+    {
+      "model": "type/vegetable",
+      "image": "data/external/vegetable/images/frame_20261010_022700_023_png.rf.663564b5f73ec66240f398afca543373.jpg",
+      "pytorch_predictions": 1,
+      "onnx_predictions": 1,
+      "equivalent": true,
+      "max_box_delta": 0.0
+    }
+  ]
+}

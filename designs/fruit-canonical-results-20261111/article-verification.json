@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "processor": "@astrojs/markdown-satteri",
+  "images": 8,
+  "figures": 8,
+  "headings": 4,
+  "draft": true,
+  "checks": [
+    "Markdown renders with project plugins",
+    "all eight image URLs match upload receipts",
+    "all images have alt text",
+    "no local image references",
+    "title and draft state preserved"
+  ]
+}

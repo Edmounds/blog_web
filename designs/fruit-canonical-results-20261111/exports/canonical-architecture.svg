@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="705.24pt" height="318.312pt" viewBox="0 0 705.24 318.312" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-11-11T17:18:14.727319</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.10.9, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M -0 318.312
+L 705.24 318.312
+L 705.24 0
+L -0 0
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 22.842 211.2696
+L 141.138 211.2696
+Q 145.602 211.2696 145.602 206.8344
+L 145.602 119.7936
+Q 145.602 115.3584 141.138 115.3584
+L 22.842 115.3584
+Q 18.378 115.3584 18.378 119.7936
+L 18.378 206.8344
+Q 18.378 211.2696 22.842 211.2696
+z
+" clip-path="url(#p94b1bcca0f)" style="fill: #eef2f4; stroke: #69747c; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 190.242 139.1976
+L 375.498 139.1976
+Q 379.962 139.1976 379.962 134.7624
+L 379.962 83.7576
+Q 379.962 79.3224 375.498 79.3224
+L 190.242 79.3224
+Q 185.778 79.3224 185.778 83.7576
+L 185.778 134.7624
+Q 185.778 139.1976 190.242 139.1976
+z
+" clip-path="url(#p94b1bcca0f)" style="fill: #fbede7; stroke: #ba5730; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 469.242 139.1976
+L 665.658 139.1976
+Q 670.122 139.1976 670.122 134.7624
+L 670.122 83.7576
+Q 670.122 79.3224 665.658 79.3224
+L 469.242 79.3224
+Q 464.778 79.3224 464.778 83.7576
+L 464.778 134.7624
+Q 464.778 139.1976 469.242 139.1976
+z
+" clip-path="url(#p94b1bcca0f)" style="fill: #fbede7; stroke: #ba5730; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 190.242 252.8496
+L 375.498 252.8496
+Q 379.962 252.8496 379.962 248.4144
+L 379.962 197.4096
+Q 379.962 192.9744 375.498 192.9744
+L 190.242 192.9744
+Q 185.778 192.9744 185.778 197.4096
+L 185.778 248.4144
+Q 185.778 252.8496 190.242 252.8496
+z
+" clip-path="url(#p94b1bcca0f)" style="fill: #e9f4f7; stroke: #237a97; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 410.652 252.8496
+L 531.738 252.8496
+Q 536.202 252.8496 536.202 248.4144
+L 536.202 197.4096
+Q 536.202 192.9744 531.738 192.9744
+L 410.652 192.9744
+Q 406.188 192.9744 406.188 197.4096
+L 406.188 248.4144
+Q 406.188 252.8496 410.652 252.8496
+z
+" clip-path="url(#p94b1bcca0f)" style="fill: #e9f4f7; stroke: #237a97; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 564.102 252.8496
+L 679.608 252.8496
+Q 684.072 252.8496 684.072 248.4144
+L 684.072 197.4096
+Q 684.072 192.9744 679.608 192.9744
+L 564.102 192.9744
+Q 559.638 192.9744 559.638 197.4096
+L 559.638 248.4144
+Q 559.638 252.8496 564.102 252.8496
+z
+" clip-path="url(#p94b1bcca0f)" style="fill: #e9f4f7; stroke: #237a97; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 147.630948 143.938931
+Q 165.690166 127.277847 182.681123 111.602318
+" clip-path="url(#p94b1bcca0f)" style="fill: none; stroke: #647079; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 176.666573 113.341625
+L 182.681123 111.602318
+L 180.463839 117.457543
+z
+" clip-path="url(#p94b1bcca0f)" style="fill: #647079; stroke: #647079; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 147.530819 182.791259
+Q 165.691051 202.123119 182.856145 220.395638
+" clip-path="url(#p94b1bcca0f)" style="fill: none; stroke: #647079; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 181.062737 214.396998
+L 182.856145 220.395638
+L 176.981188 218.231181
+z
+" clip-path="url(#p94b1bcca0f)" style="fill: #647079; stroke: #647079; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 382.520034 109.26
+Q 422.370209 109.26 460.766941 109.26
+" clip-path="url(#p94b1bcca0f)" style="fill: none; stroke: #647079; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 455.166941 106.46
+L 460.766941 109.26
+L 455.166941 112.06
+z
+" clip-path="url(#p94b1bcca0f)" style="fill: #647079; stroke: #647079; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 382.521566 222.912
+Q 393.07579 222.912 402.176571 222.912
+" clip-path="url(#p94b1bcca0f)" style="fill: none; stroke: #647079; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 396.576571 220.112
+L 402.176571 222.912
+L 396.576571 225.712
+z
+" clip-path="url(#p94b1bcca0f)" style="fill: #647079; stroke: #647079; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 538.762588 222.912
+Q 547.921792 222.912 555.627553 222.912
+" clip-path="url(#p94b1bcca0f)" style="fill: none; stroke: #647079; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 550.027553 220.112
+L 555.627553 222.912
+L 550.027553 225.712
+z
+" clip-path="url(#p94b1bcca0f)" style="fill: #647079; stroke: #647079; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="text_1">
+    <text style="font-weight: 700; font-size: 16px; font-family: 'DejaVu Sans'; text-anchor: start" x="17.82" y="27.2088" transform="rotate(-0 17.82 27.2088)">Same source images and boxes; different supervision</text>
+   </g>
+   <g id="text_2">
+    <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #58636b" x="17.82" y="52.7112" transform="rotate(-0 17.82 52.7112)">Zone routing, initialization, validation and detector training settings are shared.</text>
+   </g>
+   <g id="text_3">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'" transform="translate(37.281016 149.852578)">Same full image</text>
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'" transform="translate(48.678906 166.349312)">Known zone</text>
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'" transform="translate(37 182.846047)">Fruit / vegetable</text>
+   </g>
+   <g id="text_4">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'" transform="translate(245.922891 104.046945)">A  ·  YOLO26s</text>
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'" transform="translate(206.563516 120.54368)">4 fruit / 8 vegetable classes</text>
+   </g>
+   <g id="text_5">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'" transform="translate(498.987031 103.893977)">Type + state in one label</text>
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'" transform="translate(507.067734 120.390711)">Example: pepper_ripe</text>
+   </g>
+   <g id="text_6">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'" transform="translate(245.911719 217.698945)">B  ·  YOLO26s</text>
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'" transform="translate(206.563516 234.19568)">2 fruit / 4 vegetable classes</text>
+   </g>
+   <g id="text_7">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'" transform="translate(419.922969 217.698945)">Predicted box crop</text>
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'" transform="translate(432.699297 234.19568)">Route by type</text>
+   </g>
+   <g id="text_8">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'" transform="translate(586.895625 217.698945)">MobileNetV3</text>
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'" transform="translate(588.205312 234.19568)">ripe / unripe</text>
+   </g>
+   <g id="text_9">
+    <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #58636b" x="190.8" y="276.6888" transform="rotate(-0 190.8 276.6888)">Red and green peppers share one type label; each fruit type has its own maturity rule.</text>
+   </g>
+   <g id="text_10">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #58636b" x="20.61" y="303.3" transform="rotate(-0 20.61 303.3)">2,460 train images + 250 validation images   |   no bad class or third stage   |   six separate maturity classifiers in B</text>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p94b1bcca0f">
+   <rect x="12.24" y="12.24" width="680.76" height="293.832"/>
+  </clipPath>
+ </defs>
+</svg>

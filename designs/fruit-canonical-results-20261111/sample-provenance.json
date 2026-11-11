@@ -1,0 +1,77 @@
+{
+  "selection": "Lexical median target per type/state; independent of model outcome",
+  "targets": [
+    {
+      "type": "apple",
+      "state": "ripe",
+      "image": "data/external/fruit/images/20260823_025616_273_png.rf.34a37f3b03ed78610d8f627f9a6e1280.jpg",
+      "index": 0
+    },
+    {
+      "type": "apple",
+      "state": "unripe",
+      "image": "data/external/fruit/images/20260823_025605_310_png.rf.4d732b760475cffb41a0fc859969ee20.jpg",
+      "index": 0
+    },
+    {
+      "type": "pear",
+      "state": "ripe",
+      "image": "data/external/fruit/images/20260823_025837_066_png.rf.a671d8cb39f4f2765f8b7dc1eecfabd2.jpg",
+      "index": 0
+    },
+    {
+      "type": "pear",
+      "state": "unripe",
+      "image": "data/external/fruit/images/20260823_025719_453_png.rf.2e3ed059650d46798be171916ce43a48.jpg",
+      "index": 0
+    },
+    {
+      "type": "onion",
+      "state": "ripe",
+      "image": "data/external/vegetable/images/IMG_20260916_023418_jpg.rf.3132e8149834ee46e5b82220a6e66aa1.jpg",
+      "index": 0
+    },
+    {
+      "type": "onion",
+      "state": "unripe",
+      "image": "data/external/vegetable/images/IMG_20260916_023238_jpg.rf.e3a0d8b8e0d6b584b3f5ac274985fb55.jpg",
+      "index": 3
+    },
+    {
+      "type": "pepper",
+      "state": "ripe",
+      "image": "data/external/vegetable/images/IMG_20261015_201053_jpg.rf.0cd5f78c6ec249153705c3b49a723660.jpg",
+      "index": 0
+    },
+    {
+      "type": "pepper",
+      "state": "unripe",
+      "image": "data/external/vegetable/images/IMG_20260819_022646_jpg.rf.4ddcf432a0984e718897472f760e9da4.jpg",
+      "index": 0
+    },
+    {
+      "type": "pumpkin",
+      "state": "ripe",
+      "image": "data/external/vegetable/images/IMG_20260819_022734_jpg.rf.b866e56328a48f6f6b3747a0cf66f88c.jpg",
+      "index": 0
+    },
+    {
+      "type": "pumpkin",
+      "state": "unripe",
+      "image": "data/external/vegetable/images/IMG_20260819_022725_jpg.rf.0de1640d33c97f2c94859e8b2ffeb91d.jpg",
+      "index": 0
+    },
+    {
+      "type": "tomato",
+      "state": "ripe",
+      "image": "data/external/vegetable/images/IMG_20260916_023238_jpg.rf.e3a0d8b8e0d6b584b3f5ac274985fb55.jpg",
+      "index": 1
+    },
+    {
+      "type": "tomato",
+      "state": "unripe",
+      "image": "data/external/vegetable/images/IMG_20260819_022619_jpg.rf.3f17ace4218a9228be4a955b9580550c.jpg",
+      "index": 0
+    }
+  ]
+}

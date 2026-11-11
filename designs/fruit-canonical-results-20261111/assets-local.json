@@ -1,0 +1,50 @@
+[
+  {
+    "id": "canonical-samples",
+    "filename": "canonical-samples.png",
+    "sha256": "76a2ffa3fa6578341b7572d493aff9b77b4d8f6cf7d4ae416ecfae63703cfcd8",
+    "bytes": 1574513
+  },
+  {
+    "id": "canonical-color",
+    "filename": "canonical-color.png",
+    "sha256": "c9df31f29ebcfafdf75e5bb6a9d5d7b04987710c3b8b0edb41d0ec81445af81e",
+    "bytes": 355832
+  },
+  {
+    "id": "canonical-architecture",
+    "filename": "canonical-architecture.png",
+    "sha256": "6f627658052ca958edec108dfc494a713df04b671f5769cf67ba140a436bfa1d",
+    "bytes": 233922
+  },
+  {
+    "id": "canonical-cases",
+    "filename": "canonical-cases.png",
+    "sha256": "a4cdd808c7fed02c8c6cc246660111690316fa606d08772c1e1f1206fb14fa29",
+    "bytes": 3028620
+  },
+  {
+    "id": "canonical-confusion",
+    "filename": "canonical-confusion.png",
+    "sha256": "1d143ab5174705ec758a719628dd5f074611fdc9d8a55e2f75092ee3ac104bfc",
+    "bytes": 222590
+  },
+  {
+    "id": "canonical-performance",
+    "filename": "canonical-performance.png",
+    "sha256": "60773ad5621fbf542e032de369128bd507953a851230cba3f6d70abe87ca7b09",
+    "bytes": 139841
+  },
+  {
+    "id": "canonical-batches",
+    "filename": "canonical-batches.png",
+    "sha256": "0221727fcb6056f74e64698ff70c257e9c5ecfc6ed30bb27d2bb2ae8ba9940a0",
+    "bytes": 149988
+  },
+  {
+    "id": "canonical-confidence",
+    "filename": "canonical-confidence.png",
+    "sha256": "e84a722dc21ed566167469373236dcc2ca810301acfff6a8630e232f0ab514ce",
+    "bytes": 100637
+  }
+]

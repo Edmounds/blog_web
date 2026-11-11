@@ -1,0 +1,37 @@
+{
+  "status": "passed",
+  "counts": {
+    "composite": {
+      "ground_truth": 91,
+      "predictions": 59,
+      "missed": 44,
+      "unmatched_predictions": 12,
+      "type_correct": 40,
+      "joint_correct": 39,
+      "maturity_errors": 1,
+      "cross_type_errors": 7
+    },
+    "two_stage": {
+      "ground_truth": 91,
+      "predictions": 59,
+      "missed": 37,
+      "unmatched_predictions": 5,
+      "type_correct": 46,
+      "joint_correct": 46,
+      "cross_type_errors": 8
+    }
+  },
+  "paired_target_outcomes": {
+    "both_correct": 32,
+    "only_composite": 7,
+    "only_two_stage": 14,
+    "neither_correct": 38
+  },
+  "checks": [
+    "all model/source/protocol hashes",
+    "exact approved60-image membership",
+    "independent pure-Python IoU matching",
+    "complete counts and confusion matrices",
+    "precision/recall denominators"
+  ]
+}

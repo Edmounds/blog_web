@@ -1,0 +1,86 @@
+{
+  "status": "passed",
+  "method": "same-origin fetch and image decoding in Ego Chromium",
+  "images": [
+    {
+      "id": "canonical-samples",
+      "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-samples-76a2ffa3fa65.png",
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 1574513,
+      "sha256": "76a2ffa3fa6578341b7572d493aff9b77b4d8f6cf7d4ae416ecfae63703cfcd8",
+      "width": 3939,
+      "height": 1576
+    },
+    {
+      "id": "canonical-color",
+      "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-color-c9df31f29ebc.png",
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 355832,
+      "sha256": "c9df31f29ebcfafdf75e5bb6a9d5d7b04987710c3b8b0edb41d0ec81445af81e",
+      "width": 3676,
+      "height": 1876
+    },
+    {
+      "id": "canonical-architecture",
+      "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-architecture-6f627658052c.png",
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 233922,
+      "sha256": "6f627658052ca958edec108dfc494a713df04b671f5769cf67ba140a436bfa1d",
+      "width": 2938,
+      "height": 1326
+    },
+    {
+      "id": "canonical-cases",
+      "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-cases-a4cdd808c7fe.png",
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 3028620,
+      "sha256": "a4cdd808c7fed02c8c6cc246660111690316fa606d08772c1e1f1206fb14fa29",
+      "width": 2842,
+      "height": 3916
+    },
+    {
+      "id": "canonical-confusion",
+      "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-confusion-1d143ab51747.png",
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 222590,
+      "sha256": "1d143ab5174705ec758a719628dd5f074611fdc9d8a55e2f75092ee3ac104bfc",
+      "width": 3817,
+      "height": 1738
+    },
+    {
+      "id": "canonical-performance",
+      "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-performance-60773ad5621f.png",
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 139841,
+      "sha256": "60773ad5621fbf542e032de369128bd507953a851230cba3f6d70abe87ca7b09",
+      "width": 3796,
+      "height": 1508
+    },
+    {
+      "id": "canonical-batches",
+      "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-batches-0221727fcb60.png",
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 149988,
+      "sha256": "0221727fcb6056f74e64698ff70c257e9c5ecfc6ed30bb27d2bb2ae8ba9940a0",
+      "width": 3196,
+      "height": 1516
+    },
+    {
+      "id": "canonical-confidence",
+      "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-confidence-e84a722dc21e.png",
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 100637,
+      "sha256": "e84a722dc21ed566167469373236dcc2ca810301acfff6a8630e232f0ab514ce",
+      "width": 2416,
+      "height": 1456
+    }
+  ]
+}
