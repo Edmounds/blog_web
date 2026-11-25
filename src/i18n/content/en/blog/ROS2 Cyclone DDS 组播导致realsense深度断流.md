@@ -1,11 +1,11 @@
 ﻿---
 createdAt: 2026-10-21T00:00:00.000Z
-description: A deep-dive debugging story about a depth camera stream dropping out
+description: Debugging an Interrupted Depth Data Stream from a Depth Camera
 title: ROS 2 Cyclone DDS Multicast Causes Camera Depth Stream Dropouts
 published: true
 tags:
   - ros2
-  - realsense
+  - RealSense
   - mid360
   - DDS
   - Cyclone
@@ -14,154 +14,93 @@ slug: 20261021-01
 
 ## Case Review
 
-### Background
+- MID-360 LiDAR | Wired Ethernet port (100 Mbps)
+- Intel RealSense D435if Depth Camera | USB 3.0
+- Ubuntu 22.04 ROS 2 Humble Cyclone DDS
 
-Allow me to introduce the two suspects:
+The camera’s RGB stream is used for inference-based recognition, and both the inference node and camera driver are componentized using ROS 2 and run in the same container.
+### The problem finally came to light
+We finished tuning the first version the day before the robot was due to leave. All the tests had gone smoothly, and based on the results we’d achieved at the time, we were virtually guaranteed first place nationally. We even popped champagne, thinking we had finally broken the curse of always finishing projects at the very last minute before the deadline. Alas, what was bound to happen still happened.
 
-- MID-360 LiDAR | Wired Ethernet port, negotiated link speed of 100 Mbps
-- Intel RealSense D435if depth camera | USB 3.0
-
-In an earlier ROS 2 Humble project, I ran into intermittent failures where Actions and Services wouldn’t respond: the task state machine couldn’t get a Goal Handle, and the competition process would grind to a halt. To work around this, I switched ROS 2’s DDS middleware from the default Fast DDS to Cyclone DDS. I also compiled the camera driver and YOLO inference nodes as ROS 2 Components and loaded them into the same component container process to reduce the overhead of moving images around.
-
-### The Trouble Begins
-
-Everything had been working fine in testing, and I’d even finished the first version the day before we left. Based on our test results, we thought we had a real shot at first place nationally. We were already celebrating, thinking we’d finally broken the curse of always finishing projects right up against the deadline. Unfortunately, we celebrated too soon. Trouble was still on its way.
-
-The workflow was nearly optimized, so I decided to make a change to our competition debugging tool. To make it easier to view the camera feed on-site, I overhauled the video streaming component in a web-based debugging page I’d built earlier. It was a bit like RViz. To keep latency low and control the bitrate, I chose WebRTC: a standalone Server node on the ROS 2 side subscribed to the camera’s RGB and depth images, encoded the frames for display as H.264, and sent them to my computer over WebRTC. In isolation, it worked as expected. But the problem was hiding in the word “standalone”: I’d added a cross-process subscriber outside the Component container. The local path from the camera to YOLO was still there, but the publisher now also had to deliver raw images to this new process over DDS. Since WebRTC compression only happened after the images arrived, it couldn’t help with that earlier transfer.
-
+After finishing the tuning, I had nothing else to do, so I put together a web-based visualization. On the ROS 2 side, I ran a node that subscribed to the camera’s RGB and depth images, encoded them as H.264, and then sent them to my computer via WebRTC. When tested in isolation, everything worked as expected. But the problem was hidden precisely in that “isolation”—at the time, I hadn’t realized that I had added a cross-process subscriber outside the Component container.
 ### DEBUG
 
-Four hours before we were due to leave, all the trouble we’d set ourselves up for came to a head. After finishing the debugging tool, I was ready to run through the whole workflow again. The car moved, but it couldn’t recognize a single target. I checked the logs and saw that the YOLO inference node hadn’t even started inferring properly.
+Four hours before departure, all the landmines I’d planted earlier blew up at once. After finishing the Web side, I was preparing to run through the entire workflow one more time. The car could move, but—wait, why couldn’t it recognize targets anymore? I checked the logs and found that the inference and recognition node hadn’t even started inference properly.
 
-“Okay, let’s restart the process. There’s probably a 90% chance that’ll fix it.”
+“Well, restarting the process should have, what, a 90% chance of fixing it, right?” Nope, that didn’t work. “Fine, I’ll have AI take a look.” AI checked the logs and said that the depth data appeared briefly and then cut out again, so it guessed that the camera cable was loose. I breathed a sigh of relief. A loose cable was easy enough to fix—just unplug it and plug it back in, right? Nope, still didn’t work. I tried swapping the cable, the USB port, and the Thunderbolt port, but none of it helped. I then tried gpt-6.1-sol and gpt-6-astra in turn, but neither solved the problem. Instead, they made random changes to the existing code, and at one point even made the RGB disappear.
 
-Nope. Still broken.
+With only an hour left before departure and the problem still unresolved, in the end I could only`git reset`I rolled back to the code that had worked yesterday. I figured that if the old version could run, it would show that the hardware itself wasn’t faulty. But surprisingly, it still failed to run.
+>It was only later that I realized the WebRTC support node was in another workspace, so this rollback hadn’t affected it at all.
 
-“Fine, I’ll ask AI.”
+At the time, I really felt like the sky was falling. Software problems can still be fixed, but if the hardware is broken, there’s really nothing you can do. And since I couldn’t find a second camera, all I could do was start packing things up. Sigh… let’s go, let’s go.
 
-The AI looked at the logs and said the depth data had appeared briefly before dropping out, suggesting that the camera cable was loose. I breathed a sigh of relief. A loose cable was easy to fix—all I had to do was unplug it and plug it back in. Nope. Still no luck. I tried another cable, another USB port, and even another Thunderbolt port, but nothing worked. I also tried gemini-3.8-flash, gpt-6.1-sol, and gpt-6-astra one after another. None of them spotted the problem; instead, they started making random changes to the existing code, and at one point even the RGB feed disappeared.
+On the way to the airport, I was exhausted but couldn’t fall asleep. The elevated highway was eerily empty at five in the morning, with the streetlights stretching in a line through the darkness before dawn. No one was talking, and there was no vehicle left for me to keep debugging. All I could do was sit there, unable to touch anything or change anything. The frantic anxiety that had nearly driven me crazy in the hours before setting out slowly faded in the silence. Until then, I’d been desperate to put out the fire the very next second by restarting things, swapping cables, and taking a chance on whatever help AI could offer. Yet that quiet made me realize that I could debug it manually after all—that there had to be a way to determine whether it was really a hardware problem.
 
-With only an hour left before we had to leave and the problem still unsolved, I had no choice but to `git reset` back to the code that had worked the day before. I thought that if the old version ran, it would prove the hardware was fine. But it still wouldn’t run. I found out later that the WebRTC companion node was in a different workspace, so rolling back hadn’t touched it at all. At the time, though, I didn’t know that. I really thought the sky was falling. A software problem might still be fixable; if the hardware was broken, we were out of luck. There wasn’t a second camera to try, so all we could do was start packing. “Come on, let’s go. Here we are again: ‘Teacher, we have a video of it working.’”
+When we arrived at the boarding gate, there was still half an hour before boarding. I hurriedly connected the battery to the car to test it and finally got some good news: I didn’t launch any ROS nodes and just opened the camera driver test directly. Surprisingly, both RGB and depth worked normally and the frame rate was stable. That meant the hardware was fine—it was a software problem, so it could still be fixed.
 
-I was exhausted on the way to the airport, but couldn’t sleep. The elevated highway was eerily empty at five in the morning. Streetlights stretched into a line through the pre-dawn darkness. Nobody spoke, and there was no car left to tinker with. I could only sit there, unable to touch anything or change anything. The frantic anxiety that had nearly driven me mad in those last few hours before we left slowly began to fade in the silence. I’d been rushing to put out the fire by restarting things, swapping cables, and asking AI for help, hoping to get lucky and fix it in the next second, but I hadn’t even done the basic work of changing one variable at a time.
+When I got to the hotel, the room was too cramped to run the entire pipeline, so I only started the camera and inference/recognition nodes; I didn’t launch anything related to the LiDAR or electronic controls. Huh—the camera was actually working normally, with both depth and RGB data coming through. Well, it turned out to be some kind of metaphysical problem after all—the code was running on its own again? I celebrated a little too early, but since it was working, I decided not to worry about it for the time being, got some restful sleep, and waited until the afternoon to debug it on-site.
 
-“I can’t keep relying on that dumb lucky AI.” First, I needed to check RGB and depth separately in `realsense-viewer` and rule out ROS.
+Once we got into the venue and tested the entire process, the camera failed again—the depth stream was still cutting out. That was when I remembered that I hadn’t powered on the lidar or the lower-level computer at noon before starting the controlled-variable experiments. The scope was finally narrowed down: as soon as the lidar was powered on and connected to the mini PC, the camera’s depth stream would stop.
 
-When we reached the gate, boarding was still half an hour away. I hurriedly connected the battery to the car to test it, and finally got some good news: when I viewed the camera on its own, both RGB and depth worked normally. That meant the hardware was fine. It was a software problem, so there was still hope.
+I told Gemini-3.8-Flash about the issue, and it started freaking out again, suggesting that the lidar’s infrared light might be interfering with the camera. I thought that might actually be possible. We had changed the arm’s initial position that day, and the lidar could have been scanning the camera—coincidentally, the electrical-control team had changed the arm’s initial position that very day, making the camera face directly toward the lidar. The D435 series uses active stereo structured light and also has an infrared projector, so optical interference was indeed possible.
 
-At the hotel, the room was too cramped to run the whole workflow, so I started only the camera and inference nodes. I left the LiDAR and lower-level controller off. Huh—the camera was working normally, with both depth and RGB coming through. I still hadn’t realized that the LiDAR was the difference, since it had always been on during our pre-departure testing. So I celebrated too early again, thinking it must be some kind of mysterious fluke. Since it was working, I decided not to touch anything and got some sleep before the on-site debugging session that afternoon.
+We raised the camera by changing the arm’s initial position and also tested it with the lidar covered by hand, but the stream still kept cutting out. I then switched to GPT-6.1-sol to analyze the logs and see whether it had any new ideas. This time, GPT finally started pulling its weight, and the troubleshooting finally shifted toward the network: after capturing and analyzing the logs, we found that the camera’s raw image data might be passing through the 100 Mbps wired interface connected to the lidar???? Then, after modifying Cyclone DDS so that its data communications would no longer use multicast, everything went back to normal!
 
-But as soon as we ran the full workflow at the venue, the camera went down again, and the depth stream dropped out as before. That’s when I remembered that I hadn’t turned on the LiDAR or the lower-level controller at lunchtime. I compared things one by one, and finally narrowed it down: whenever the LiDAR was powered on and connected to the mini PC, the camera’s depth stream would drop out. I told gemini-3.8-flash what I’d found, and Gemini went into panic mode again, suggesting that the LiDAR’s infrared light might be interfering with the camera. I thought it was possible: we had changed the arm’s initial position that day, so the LiDAR might have been scanning the camera. The D435 series uses active stereo depth and also has an infrared projector, so optical interference was worth checking. We raised the camera and tested again with the LiDAR covered by hand, but the stream still dropped out. It wasn’t until I asked gpt-6.1-sol to analyze the logs that we finally started looking at the network: even though the camera was connected over USB, that didn’t mean ROS image data traveled only over USB. The raw cross-process image traffic could be passing through the LiDAR’s 100 Mbps wired interface. After we restricted DDS’s user-data multicast, depth came back and the network port’s transmit rate dropped significantly. That finally pinned the problem on the communication configuration.
+## Root Cause Analysis
 
-## Root Cause and How the Data Travels
+### Problem Analysis
 
-### Analysis
+After the robot was connected to the LiDAR network, the camera stream stopped. Cyclone DDS’s`AllowMulticast`Change to`spdp`Afterward, depth-image streaming resumed, and the physical interface’s transmit rate also dropped from approximately 100 Mbps to 0.003 Mbps. This confirmed**High-bandwidth image data is sent via DDS multicast over the 100 Mbps wired network link.**This explanation.
 
-The strongest evidence on-site was the link between the failure, the wired interface, and the DDS multicast policy: the stream dropped out when the LiDAR network was connected, recovered after setting `AllowMulticast` to `spdp`, and the physical interface’s transmit rate fell from around 100 Mbps to 0.003 Mbps. This supports the explanation that **high-bandwidth image data was being sent as DDS data multicast over the 100 Mbps link, causing network congestion**.
+I didn’t encounter the problem immediately after switching to Cyclone DDS because the communication topology was still relatively simple at the time: the camera and YOLO were running in the same container process and used intra-process communication. Later, I added a WebRTC node in a separate process, which needed to receive the raw images through RMW/DDS. Cyclone DDS selects network paths based on interface capabilities, configuration, and the peers it discovers. For wireless interfaces, it tends to use only discovery multicast, while for wired interfaces, it allows multicast to be used more broadly. The problem is that an interface capable of carrying multicast data does not necessarily have sufficient bandwidth—and Cyclone DDS doesn’t care about that. A 1280 × 720 RGB8 image published at 30 Hz requires approximately 664 Mbps of bandwidth, already far exceeding 100 Mbps. The network port was simply overwhelmed.
 
-I didn’t run into a problem immediately after switching to Cyclone DDS because the communication topology was relatively simple at the time: the camera and YOLO were in the same container process, and with the right configuration they could communicate in-process. Later, when I added the WebRTC node in a separate process, it needed to receive raw images through RMW/DDS, adding another high-bandwidth transfer path. (The original in-process path wasn’t disabled.) Cyclone DDS chooses network paths based on interface capabilities, configuration, and discovered peers. In the on-site logs, the wireless interface showed `presumed flaky multicast, use for SPDP only`, while the wired interface showed `presumed robust multicast support, use for everything`. This reflects its default assessment of multicast support on each interface: wireless interfaces tend to be used only for discovery multicast, while wired interfaces may be used more broadly. It does not mean that “all wired interfaces will carry all traffic.” The actual choice also depends on the version, configuration, and subscription topology. The problem was that an interface allowed to carry data multicast doesn’t necessarily have enough bandwidth. A 1280 × 720 RGB8 image published at 30 Hz has a pixel payload of about 664 Mbps alone—far beyond the capacity of this 100 Mbps link, so it was bound to get stuck.
+### Key Points
 
-![ROS 2 Image Communication on the Same Host and Multicast Policies](https://img.muelsyse.us/bed/paper-20261110-ros-data-path-4c6bb401b377.png)
+By this point, there’s probably still one thing that seems very strange and counterintuitive: if the data has already entered the same computer via USB, why would data communication still be affected by the physical Ethernet port?
 
-*Figure 2: An external subscriber adds a DDS image transfer path. After switching to `spdp`, multicast is used only for participant discovery, while endpoint matching and image transfer use unicast. Same-host destination addresses are usually delivered via local routing; remote subscribers still require the physical network.*
+Let me retrace the data path. The camera data enters the computer over USB, but because Linux isolates process memory, the camera driver has to hand the data off to DDS for inter-process transmission.
 
-> Here’s another counterintuitive point: if the data has already arrived at the same computer over USB, why would it affect the physical network port? Because cross-process communication doesn’t automatically mean shared-memory communication. The DDS network path used here serializes the images and sends them through the UDP/IP stack. Unicast to a local address is usually delivered via local routing on Linux; data multicast can generate both traffic on a physical interface and local loopback delivery.
+Cyclone DDS selects a default network interface based on its own data-group multicast strategy, and then calls Linux’s`setsockopt`function, and pass in`IP_MULTICAST_IF`parameter. This directive forces the kernel to bind the multicast socket to the specified network interface. The kernel sends the multicast packets directly to the target interface while simultaneously sending a copy to the local address, 127.0.0.1. But there’s another problem here: the local loopback transmission can only take place after the preceding task of sending the packets to the target interface has completed. In our case, the depth and RGB data is too large, completely overwhelming the narrow 100 Mbps pipe, so the local loopback copy can’t be made either.
+
+Another question arises: why can’t the local loopback interface replicate the data here either? This again brings us to the Linux kernel’s multicast data processing path.
+
+1. When DDS calls the system interface to send UDP data, the kernel allocates memory for the packet and deducts it from the current socket’s`SO_SNDBUF`Buffer quota
+2. of packets entering the kernel`ip_mc_output`Once the function completes, the kernel immediately makes a copy and sends it to 127.0.0.1, while placing the original packet in the transmit queue of the target network interface. These two steps are performed synchronously.
+3. There’s a major problem here: at this point, the image data rate far exceeds the network interface’s throughput. A large number of packets are piling up in the send queue—before the old ones can be sent, new ones keep arriving. Even if the buffer is extremely large, it can’t withstand this kind of load (the buffer only releases the corresponding data after it has been sent). Once the buffer is full, subsequent packets are dropped before they even reach the first stage—the kernel protocol stack—so they never make it to the loopback-copy stage.
+
+Here’s also why it runs normally when the wired network port isn’t connected. When only a wireless network adapter is available, CycloneDDS enables multicast on the wireless adapter only for node discovery, while application data is transmitted via unicast.
 
 ## Solution
-
-The fix that worked was to restrict Cyclone DDS multicast to the participant discovery stage, so that endpoint matching and user data use unicast. Set this in the terminal where you start the ROS nodes:
 
 ```bash
 export CYCLONEDDS_URI='<CycloneDDS><Domain Id="any"><General><AllowMulticast>spdp</AllowMulticast></General></Domain></CycloneDDS>'
 ```
 
-You can also add it to `~/.bashrc` or `~/.zshrc`, then reload the configuration before starting the relevant nodes. Already-running processes won’t automatically pick up the new environment variable, so they need to be restarted. If the nodes are managed by systemd, a container, or another launcher, pass the variable through that launch environment as well.
+`AllowMulticast`Value Description
 
-`AllowMulticast` values
-
-| Value   | Behavior and notes |
+| Value      | Behavior and Notes                                                              |
 | :------ | :------------------------------------------------------------------- |
-| `true`  | Allows multicast for discovery and user data; whether it is actually used also depends on the interfaces and peers. On bandwidth-constrained networks, check the transfer paths for high-bandwidth topics such as images. |
-| `false` | Disables the multicast controlled by this setting. The default multicast discovery path is unavailable, but contact can be established through unicast discovery configuration such as `Peers`; this does not mean that “discovery for all nodes stops working entirely.” |
-| `spdp`  | Keeps multicast only for SPDP participant discovery; endpoint matching and user data use unicast. In this case, it preserved convenient node discovery while avoiding image data multicast over the 100 Mbps interface. |
+|`true`| Allow multicast for discovery and user data; whether it is actually used also depends on the interfaces and peers. On bandwidth-constrained networks, check the transport path for large-data topics such as images.           |
+|`false`| Disable the multicast controlled by this configuration. The default multicast discovery path is unavailable; this can be done via`Peers`Wait for the unicast discovery configuration to establish a connection; it cannot be generalized as “node discovery completely fails for all nodes.” |
+|`spdp`| Retain multicast only for SPDP participant discovery; use unicast for endpoint matching and application data. In this case, it preserves convenient node discovery while avoiding sending image-data multicast traffic to the 100 Mbps interface.    |
 
 ## Appendix
 
 ### Theoretical Calculations
 
-#### Image Payload and 100 Mbps Bandwidth Limit
-
-A useful clue at the time was that the RGB receive rate was only about 4.4 Hz. Working backward from the size of a single frame, its payload throughput was already close to 100 Mbps. The physical network port had also negotiated a rate of exactly 100 Mbps. This was consistent with the link being the bottleneck, though the calculation alone cannot replace packet capture or interface counters.
-
-| Image stream | Resolution | Pixel encoding | Data per frame | Theoretical bandwidth at 30 Hz |
-| :--- | :--- | :--- | :---: | :---: |
-| RGB | 1280 × 720 | RGB8 (3 B/pixel) | 2.76 MB | **663.55 Mbps** |
-| Native depth | 848 × 480 | Z16 / 16UC1 (2 B/pixel) | 0.81 MB | **195.38 Mbps** |
-| Aligned depth | 1280 × 720 | 16UC1 (2 B/pixel) | 1.84 MB | **442.37 Mbps** |
-
-The mini PC’s network port and the LiDAR had negotiated an actual link speed of **100 Mbps full duplex**. Full duplex means that data can be transmitted in both directions at the same time; it does not raise the limit in one direction to 200 Mbps. In the ideal case, without accounting for any protocol overhead, the maximum it can handle in one direction is:
-
-$$100,000,000 \text{ bps} \div (1280 \times 720 \times 3 \times 8 \text{ bits}) \approx 4.52 \text{ fps}$$
-
-The RGB receive rate on-site was **4.4 Hz**, equivalent to a pixel payload of about **97.3 Mbps**, close to this theoretical limit.
-
-#### Comparison with Measured Data
-
-| Metric | Before fix | After fix |
-| :--- | :---: | :---: |
-| **Color image update rate** | 4.4 Hz | 13.9 Hz |
-| **Native depth update rate** | 0 Hz | 29.7 Hz |
-| **Aligned depth update rate** | 0 Hz | 14.2 Hz |
-| **RGBD heartbeat rate** | 0 Hz | 14.1 Hz |
-| **Median color image receive latency** | 943.9 ms | 58.3 ms |
-| **Median native depth receive latency** | N/A | 42.1 ms |
-| **Physical wired port transmit rate** | About 100 Mbps | **0.003 Mbps** |
-
-Restoring communication doesn’t mean every stream is running at 30 Hz: native depth recovered to 29.7 Hz, but RGB, aligned depth, and the RGBD heartbeat were still around 14 Hz. This shows that the dropouts were alleviated; it doesn’t prove that the entire vision processing pipeline is free of other bottlenecks.
+| Image stream | Resolution | Pixel encoding | Per-frame data size | Theoretical bandwidth at 30 Hz |
+| :--- | :--------- | :--------------------- | :-----: | :-------------: |
+| RGB | 1280 × 720 | RGB8 (3 B/pixel) | 2.76 MB |**663.55 Mbps**|
+| Native depth | 848 × 480  | Z16 / 16UC1 (2 B/pixel) | 0.81 MB |**195.38 Mbps**|
+| Aligned depth | 1280 × 720 | 16UC1 (2 B/pixel)       | 1.84 MB |**442.37 Mbps**|
 
 ### Introduction to DDS
 
-![ROS 2 Communication Layers and the In-Process Path](https://img.muelsyse.us/bed/paper-20261110-ros-layers-24212fd3eca3.png)
+![ROS 2 Communication Layers and Intra-Process Path](https://img.muelsyse.us/bed/paper-20261110-ros-layers-24212fd3eca3.png)
 
-*Figure 5: The ROS 2 communication layers: client library, RMW, and DDS. An eligible in-process path can bypass DDS serialization; whether cross-process communication uses the network or shared memory depends on the implementation and configuration.*
+*Figure 5: The communication layers of ROS 2 client libraries, RMW, and DDS. In-process paths that meet the requirements can bypass DDS serialization.*
 
-DDS (Data Distribution Service) is a distributed data communication standard published by the OMG. ROS 2 typically relies on DDS for capabilities such as discovery, publish-subscribe, and QoS, organizing communication through Topics and data types. It uses **RMW (ROS Middleware Interface)** to separate the client API from the specific middleware implementation, allowing implementations to be switched within the limits of the supported interface. Unlike the centralized Master-based discovery commonly used in ROS 1, DDS can establish endpoint connections through distributed discovery. (However, the ROS 1 Master is not a relay for all user data either: after nodes establish a connection, user data is usually transferred directly, so a Master failure should not be equated with all existing data connections immediately dropping.) DDS implementations often interoperate through RTPS. UDP/IP is a common transport, but the DDS standard does not permit only this one transport.
+DDS (Data Distribution Service) is a distributed data communication standard published by OMG. ROS 2 typically relies on DDS to provide capabilities such as discovery, publish-subscribe, and QoS, organizes communication through Topics and data types, and uses**RMW (ROS Middleware Interface)**By separating the client API from the specific middleware implementation, implementations can be switched within the scope supported by the adaptation interface. Compared with the centralized Master-based discovery commonly used in ROS 1, DDS can establish connections between endpoints through distributed discovery (however, ROS 1’s Master is not the forwarding hub for all application data either; after nodes establish a connection, application data is usually transmitted directly, so a Master failure should not be equated with all existing data connections being immediately severed). DDS implementations commonly interoperate via RTPS. UDP/IP is a common transport, but the DDS standard does not permit only this one form of transport.
+### ROS 2 component
 
-### Fast DDS vs Cyclone DDS
-
-The table below covers only the differences relevant to this issue; it does not attempt to assign absolute use cases to the two implementations based on this one on-site experience.
-
-| Evaluation area | Fast DDS | Cyclone DDS |
-| :--- | :--- | :--- |
-| Shared memory | Supports mechanisms such as shared-memory transport and data sharing. Whether they are enabled, or reduce serialization or copying, depends on the version, configuration, and message conditions. | Support depends on the version, build, and configuration; this article does not assume that “same-host communication” means shared memory is enabled. |
-| Network interfaces and multicast | Network transport, discovery, and multicast behavior can be configured; check which configuration is actually in effect. | Offers interface selection and multicast policy configuration; this time, `AllowMulticast=spdp` avoided user-data multicast. |
-| Behavior observed in this project | We had previously encountered unresponsive Actions / Services, but didn’t retain enough information to confirm the specific mechanism. | Dropouts occurred after adding an external image subscriber and a 100 Mbps wired interface; they stopped after restricting user-data multicast. |
-| Selection and validation | Validate functionality, QoS, load, and fault recovery on the specific version in use. | Likewise, validate with the full node topology and actual network conditions; testing a single node isn’t enough. |
-
-### ROS 2 Components
-
-ROS 2 Components compile node implementations into dynamically loadable libraries, which a component container loads into the same process. This gives them a shared address space, making it easier to organize nodes and creating opportunities to reduce image copying. However, how the container schedules callbacks also depends on the executor, so it’s not always accurate to say that components “share one thread pool.” Nodes that continuously process large messages—such as camera publishers, image preprocessing, and YOLO inference—are good candidates for checking whether they can be placed in the same container. However, **componentization and in-process communication are two related but distinct configuration points**. In addition to placing the nodes together, you also need to enable `use_intra_process_comms` for the relevant nodes and confirm that the messages and QoS support this path.
-
-#### How Componentization Can Improve Performance
-
-When the conditions for in-process communication are met, messages can be delivered to local subscribers by transferring ownership of or sharing C++ objects, reducing two kinds of overhead:
-
-1. **Message copying**: With compatible publisher and subscriber interfaces, a `std::unique_ptr` or a shared read-only message can be transferred. Whether copying is still required depends on the number of subscribers, callback signatures, and buffering strategy.
-2. **Serialization**: Local in-process delivery can bypass DDS serialization and deserialization. If there are external subscribers too, the publisher still needs to prepare a middleware message for the external path.
-
-So, “turn on Components and you get completely zero-copy” is not true. To verify the actual effect, you can use the ROS 2 in-process communication example to check message addresses, then measure CPU usage, memory bandwidth, and end-to-end latency under a real workload.
-
-### Unicast
-
-Unicast sends data to a specific destination address. In the same-host scenario described here, data sent to a local address can usually be delivered via local routing, while data sent to a remote host still needs the physical link. Unicast doesn’t automatically guarantee high throughput or low latency. If there are many remote subscribers and data must be sent to each one separately, total traffic may actually increase. In this case, the benefit came from preventing high-bandwidth user-data multicast from entering a constrained interface.
-
-### Multicast
-
-IPv4 multicast uses addresses in the `224.0.0.0` to `239.255.255.255` range. A sender transmits data to a multicast group, and network devices handle it according to their multicast forwarding configuration. Receivers get the data by joining the multicast group. Whether a switch forwards traffic only to ports with members also depends on features such as IGMP snooping. If these features aren’t enabled or are misconfigured, traffic may be flooded to more ports. Multicast is useful for one-to-many transmission, but it is still constrained by link bandwidth, wireless conditions, and endpoint implementations.
-
-References:
-
-- [ROS 2 Humble: Setting up efficient intra-process communication](https://docs.ros.org/en/humble/Tutorials/Demos/Intra-Process-Communication.html)
-- [ROS 2: Intra-process communication design](https://design.ros2.org/articles/intraprocess_communications.html)
-- [Cyclone DDS 0.10.5: Implementation features and data transmission](https://cyclonedds.io/docs/cyclonedds/0.10.5/config/cyclonedds_specifics.html)
-- [Cyclone DDS: Multicast configuration](https://cyclonedds.io/docs/cyclonedds/latest/config/multicasting.html) (current documentation; options depend on the installed version)
+ROS 2 components compile node implementations into dynamically loadable libraries, which are loaded by a component container within the same process. This provides a shared address space, making it easier to organize nodes. Nodes that continuously process large messages, such as camera publishers, image preprocessing, and YOLO inference, are well suited to being placed in the same container;**However, componentization and intra-process communication are two related but distinct configuration points. In addition to placing the nodes together, you also need to enable it for the relevant nodes.`use_intra_process_comms`, and confirm that the message and QoS support this path.**

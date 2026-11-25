@@ -508,75 +508,6 @@
         ]
       }
     },
-    "https://img.muelsyse.us/bed/paper-20261110-ros-data-path-4c6bb401b377.png": {
-      "kind": "responsive",
-      "sourceDigest": "4c6bb401b377b5b79029324f108528b54f224056d1ffa678ad08c3527652de30",
-      "width": 2400,
-      "height": 1563,
-      "fallback": "https://img.muelsyse.us/bed/paper-20261110-ros-data-path-4c6bb401b377-w2400.webp",
-      "sources": {
-        "avif": [
-          {
-            "width": 640,
-            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-data-path-4c6bb401b377-w640.avif.webp",
-            "quality": 40,
-            "ssim": 0.996747,
-            "bytes": 11816
-          },
-          {
-            "width": 1280,
-            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-data-path-4c6bb401b377-w1280.avif.webp",
-            "quality": 40,
-            "ssim": 0.999218,
-            "bytes": 30272
-          },
-          {
-            "width": 1920,
-            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-data-path-4c6bb401b377-w1920.avif.webp",
-            "quality": 40,
-            "ssim": 0.999721,
-            "bytes": 43990
-          },
-          {
-            "width": 2400,
-            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-data-path-4c6bb401b377-w2400.avif.webp",
-            "quality": 40,
-            "ssim": 0.999918,
-            "bytes": 54841
-          }
-        ],
-        "webp": [
-          {
-            "width": 640,
-            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-data-path-4c6bb401b377-w640.webp",
-            "quality": 70,
-            "ssim": 0.997859,
-            "bytes": 19460
-          },
-          {
-            "width": 1280,
-            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-data-path-4c6bb401b377-w1280.webp",
-            "quality": 70,
-            "ssim": 0.999272,
-            "bytes": 51064
-          },
-          {
-            "width": 1920,
-            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-data-path-4c6bb401b377-w1920.webp",
-            "quality": 70,
-            "ssim": 0.999739,
-            "bytes": 80784
-          },
-          {
-            "width": 2400,
-            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-data-path-4c6bb401b377-w2400.webp",
-            "quality": 70,
-            "ssim": 0.999727,
-            "bytes": 106676
-          }
-        ]
-      }
-    },
     "https://img.muelsyse.us/bed/paper-20261110-ros-layers-24212fd3eca3.png": {
       "kind": "responsive",
       "sourceDigest": "24212fd3eca3da3aa7e2b57be1e92bc4a40584cfe22241d39af76272aa8f36d9",
@@ -1009,14 +940,6 @@
     "bed/paper-20261110-picgo-upload-5539b593dd45-w2400.webp",
     "bed/paper-20261110-picgo-upload-5539b593dd45-w640.avif.webp",
     "bed/paper-20261110-picgo-upload-5539b593dd45-w640.webp",
-    "bed/paper-20261110-ros-data-path-4c6bb401b377-w1280.avif.webp",
-    "bed/paper-20261110-ros-data-path-4c6bb401b377-w1280.webp",
-    "bed/paper-20261110-ros-data-path-4c6bb401b377-w1920.avif.webp",
-    "bed/paper-20261110-ros-data-path-4c6bb401b377-w1920.webp",
-    "bed/paper-20261110-ros-data-path-4c6bb401b377-w2400.avif.webp",
-    "bed/paper-20261110-ros-data-path-4c6bb401b377-w2400.webp",
-    "bed/paper-20261110-ros-data-path-4c6bb401b377-w640.avif.webp",
-    "bed/paper-20261110-ros-data-path-4c6bb401b377-w640.webp",
     "bed/paper-20261110-ros-layers-24212fd3eca3-w1280.avif.webp",
     "bed/paper-20261110-ros-layers-24212fd3eca3-w1280.webp",
     "bed/paper-20261110-ros-layers-24212fd3eca3-w1920.avif.webp",
@@ -1089,6 +1012,14 @@
     "bed/fruit_pipeline_fig6_stage2_classifier_ablation-w2670.webp",
     "bed/fruit_pipeline_fig6_stage2_classifier_ablation-w640.avif.webp",
     "bed/fruit_pipeline_fig6_stage2_classifier_ablation-w640.webp",
+    "bed/paper-20261110-ros-data-path-4c6bb401b377-w1280.avif.webp",
+    "bed/paper-20261110-ros-data-path-4c6bb401b377-w1280.webp",
+    "bed/paper-20261110-ros-data-path-4c6bb401b377-w1920.avif.webp",
+    "bed/paper-20261110-ros-data-path-4c6bb401b377-w1920.webp",
+    "bed/paper-20261110-ros-data-path-4c6bb401b377-w2400.avif.webp",
+    "bed/paper-20261110-ros-data-path-4c6bb401b377-w2400.webp",
+    "bed/paper-20261110-ros-data-path-4c6bb401b377-w640.avif.webp",
+    "bed/paper-20261110-ros-data-path-4c6bb401b377-w640.webp",
     "blog/36357886a211c5a9e1f9664b9ecb190aa034a1fe9054c8cab2415e58a6783ab5.svg",
     "blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w1280.avif.webp",
     "blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w1280.webp",
