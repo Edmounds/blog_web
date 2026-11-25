@@ -921,6 +921,558 @@
           }
         ]
       }
+    },
+    "https://img.muelsyse.us/bed/paper-20261111-canonical-samples-76a2ffa3fa65.png": {
+      "kind": "responsive",
+      "sourceDigest": "76a2ffa3fa6578341b7572d493aff9b77b4d8f6cf7d4ae416ecfae63703cfcd8",
+      "width": 3939,
+      "height": 1576,
+      "fallback": "https://img.muelsyse.us/bed/paper-20261111-canonical-samples-76a2ffa3fa65-w3939.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-samples-76a2ffa3fa65-w640.avif.webp",
+            "quality": 54,
+            "ssim": 0.985303,
+            "bytes": 11770
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-samples-76a2ffa3fa65-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.992368,
+            "bytes": 20669
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-samples-76a2ffa3fa65-w1920.avif.webp",
+            "quality": 40,
+            "ssim": 0.996292,
+            "bytes": 33748
+          },
+          {
+            "width": 3939,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-samples-76a2ffa3fa65-w3939.avif.webp",
+            "quality": 40,
+            "ssim": 0.998546,
+            "bytes": 75871
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-samples-76a2ffa3fa65-w640.webp",
+            "quality": 74,
+            "ssim": 0.985053,
+            "bytes": 15950
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-samples-76a2ffa3fa65-w1280.webp",
+            "quality": 70,
+            "ssim": 0.993791,
+            "bytes": 35926
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-samples-76a2ffa3fa65-w1920.webp",
+            "quality": 70,
+            "ssim": 0.996213,
+            "bytes": 59654
+          },
+          {
+            "width": 3939,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-samples-76a2ffa3fa65-w3939.webp",
+            "quality": 70,
+            "ssim": 0.998228,
+            "bytes": 134452
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/paper-20261111-canonical-color-c9df31f29ebc.png": {
+      "kind": "responsive",
+      "sourceDigest": "c9df31f29ebcfafdf75e5bb6a9d5d7b04987710c3b8b0edb41d0ec81445af81e",
+      "width": 3676,
+      "height": 1876,
+      "fallback": "https://img.muelsyse.us/bed/paper-20261111-canonical-color-c9df31f29ebc-w3676.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-color-c9df31f29ebc-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.987445,
+            "bytes": 9222
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-color-c9df31f29ebc-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.998335,
+            "bytes": 23217
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-color-c9df31f29ebc-w1920.avif.webp",
+            "quality": 40,
+            "ssim": 0.998989,
+            "bytes": 38822
+          },
+          {
+            "width": 3676,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-color-c9df31f29ebc-w3676.avif.webp",
+            "quality": 40,
+            "ssim": 0.999577,
+            "bytes": 70130
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-color-c9df31f29ebc-w640.webp",
+            "quality": 70,
+            "ssim": 0.988701,
+            "bytes": 14982
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-color-c9df31f29ebc-w1280.webp",
+            "quality": 70,
+            "ssim": 0.997435,
+            "bytes": 38718
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-color-c9df31f29ebc-w1920.webp",
+            "quality": 70,
+            "ssim": 0.998363,
+            "bytes": 65760
+          },
+          {
+            "width": 3676,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-color-c9df31f29ebc-w3676.webp",
+            "quality": 70,
+            "ssim": 0.999569,
+            "bytes": 146500
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/paper-20261111-canonical-architecture-6f627658052c.png": {
+      "kind": "responsive",
+      "sourceDigest": "6f627658052ca958edec108dfc494a713df04b671f5769cf67ba140a436bfa1d",
+      "width": 2938,
+      "height": 1326,
+      "fallback": "https://img.muelsyse.us/bed/paper-20261111-canonical-architecture-6f627658052c-w2938.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-architecture-6f627658052c-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.992597,
+            "bytes": 8530
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-architecture-6f627658052c-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.998718,
+            "bytes": 20231
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-architecture-6f627658052c-w1920.avif.webp",
+            "quality": 40,
+            "ssim": 0.999576,
+            "bytes": 29636
+          },
+          {
+            "width": 2938,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-architecture-6f627658052c-w2938.avif.webp",
+            "quality": 40,
+            "ssim": 0.999876,
+            "bytes": 38810
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-architecture-6f627658052c-w640.webp",
+            "quality": 70,
+            "ssim": 0.994229,
+            "bytes": 13928
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-architecture-6f627658052c-w1280.webp",
+            "quality": 70,
+            "ssim": 0.999067,
+            "bytes": 33840
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-architecture-6f627658052c-w1920.webp",
+            "quality": 70,
+            "ssim": 0.999597,
+            "bytes": 51398
+          },
+          {
+            "width": 2938,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-architecture-6f627658052c-w2938.webp",
+            "quality": 70,
+            "ssim": 0.999856,
+            "bytes": 82102
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/paper-20261111-canonical-cases-a4cdd808c7fe.png": {
+      "kind": "responsive",
+      "sourceDigest": "a4cdd808c7fed02c8c6cc246660111690316fa606d08772c1e1f1206fb14fa29",
+      "width": 2842,
+      "height": 3916,
+      "fallback": "https://img.muelsyse.us/bed/paper-20261111-canonical-cases-a4cdd808c7fe-w2842.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-cases-a4cdd808c7fe-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.997804,
+            "bytes": 20077
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-cases-a4cdd808c7fe-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.998996,
+            "bytes": 48131
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-cases-a4cdd808c7fe-w1920.avif.webp",
+            "quality": 40,
+            "ssim": 0.999551,
+            "bytes": 79238
+          },
+          {
+            "width": 2842,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-cases-a4cdd808c7fe-w2842.avif.webp",
+            "quality": 40,
+            "ssim": 0.999686,
+            "bytes": 129680
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-cases-a4cdd808c7fe-w640.webp",
+            "quality": 70,
+            "ssim": 0.998593,
+            "bytes": 40688
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-cases-a4cdd808c7fe-w1280.webp",
+            "quality": 70,
+            "ssim": 0.999164,
+            "bytes": 95450
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-cases-a4cdd808c7fe-w1920.webp",
+            "quality": 70,
+            "ssim": 0.999581,
+            "bytes": 156064
+          },
+          {
+            "width": 2842,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-cases-a4cdd808c7fe-w2842.webp",
+            "quality": 70,
+            "ssim": 0.999654,
+            "bytes": 248120
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/paper-20261111-canonical-confusion-1d143ab51747.png": {
+      "kind": "responsive",
+      "sourceDigest": "1d143ab5174705ec758a719628dd5f074611fdc9d8a55e2f75092ee3ac104bfc",
+      "width": 3817,
+      "height": 1738,
+      "fallback": "https://img.muelsyse.us/bed/paper-20261111-canonical-confusion-1d143ab51747-w3817.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-confusion-1d143ab51747-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.992576,
+            "bytes": 8334
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-confusion-1d143ab51747-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.999177,
+            "bytes": 19254
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-confusion-1d143ab51747-w1920.avif.webp",
+            "quality": 40,
+            "ssim": 0.999628,
+            "bytes": 30068
+          },
+          {
+            "width": 3817,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-confusion-1d143ab51747-w3817.avif.webp",
+            "quality": 40,
+            "ssim": 0.999955,
+            "bytes": 49179
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-confusion-1d143ab51747-w640.webp",
+            "quality": 70,
+            "ssim": 0.991089,
+            "bytes": 12536
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-confusion-1d143ab51747-w1280.webp",
+            "quality": 70,
+            "ssim": 0.99828,
+            "bytes": 29436
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-confusion-1d143ab51747-w1920.webp",
+            "quality": 70,
+            "ssim": 0.999192,
+            "bytes": 45866
+          },
+          {
+            "width": 3817,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-confusion-1d143ab51747-w3817.webp",
+            "quality": 70,
+            "ssim": 0.999864,
+            "bytes": 99532
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/paper-20261111-canonical-performance-60773ad5621f.png": {
+      "kind": "responsive",
+      "sourceDigest": "60773ad5621fbf542e032de369128bd507953a851230cba3f6d70abe87ca7b09",
+      "width": 3796,
+      "height": 1508,
+      "fallback": "https://img.muelsyse.us/bed/paper-20261111-canonical-performance-60773ad5621f-w3796.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-performance-60773ad5621f-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.994758,
+            "bytes": 4464
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-performance-60773ad5621f-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.998831,
+            "bytes": 9822
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-performance-60773ad5621f-w1920.avif.webp",
+            "quality": 40,
+            "ssim": 0.99924,
+            "bytes": 14973
+          },
+          {
+            "width": 3796,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-performance-60773ad5621f-w3796.avif.webp",
+            "quality": 40,
+            "ssim": 0.999835,
+            "bytes": 25539
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-performance-60773ad5621f-w640.webp",
+            "quality": 70,
+            "ssim": 0.991891,
+            "bytes": 6238
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-performance-60773ad5621f-w1280.webp",
+            "quality": 70,
+            "ssim": 0.997311,
+            "bytes": 15312
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-performance-60773ad5621f-w1920.webp",
+            "quality": 70,
+            "ssim": 0.998647,
+            "bytes": 26092
+          },
+          {
+            "width": 3796,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-performance-60773ad5621f-w3796.webp",
+            "quality": 70,
+            "ssim": 0.99969,
+            "bytes": 60840
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/paper-20261111-canonical-batches-0221727fcb60.png": {
+      "kind": "responsive",
+      "sourceDigest": "0221727fcb6056f74e64698ff70c257e9c5ecfc6ed30bb27d2bb2ae8ba9940a0",
+      "width": 3196,
+      "height": 1516,
+      "fallback": "https://img.muelsyse.us/bed/paper-20261111-canonical-batches-0221727fcb60-w3196.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-batches-0221727fcb60-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.994754,
+            "bytes": 4910
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-batches-0221727fcb60-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.9991,
+            "bytes": 11413
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-batches-0221727fcb60-w1920.avif.webp",
+            "quality": 40,
+            "ssim": 0.999658,
+            "bytes": 15976
+          },
+          {
+            "width": 3196,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-batches-0221727fcb60-w3196.avif.webp",
+            "quality": 40,
+            "ssim": 0.999894,
+            "bytes": 23036
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-batches-0221727fcb60-w640.webp",
+            "quality": 70,
+            "ssim": 0.988453,
+            "bytes": 7646
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-batches-0221727fcb60-w1280.webp",
+            "quality": 70,
+            "ssim": 0.998075,
+            "bytes": 19112
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-batches-0221727fcb60-w1920.webp",
+            "quality": 70,
+            "ssim": 0.999293,
+            "bytes": 30068
+          },
+          {
+            "width": 3196,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-batches-0221727fcb60-w3196.webp",
+            "quality": 70,
+            "ssim": 0.999373,
+            "bytes": 54982
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/paper-20261111-canonical-confidence-e84a722dc21e.png": {
+      "kind": "responsive",
+      "sourceDigest": "e84a722dc21ed566167469373236dcc2ca810301acfff6a8630e232f0ab514ce",
+      "width": 2416,
+      "height": 1456,
+      "fallback": "https://img.muelsyse.us/bed/paper-20261111-canonical-confidence-e84a722dc21e-w2416.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-confidence-e84a722dc21e-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.997624,
+            "bytes": 5363
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-confidence-e84a722dc21e-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.998512,
+            "bytes": 13171
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-confidence-e84a722dc21e-w1920.avif.webp",
+            "quality": 40,
+            "ssim": 0.999421,
+            "bytes": 22596
+          },
+          {
+            "width": 2416,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-confidence-e84a722dc21e-w2416.avif.webp",
+            "quality": 40,
+            "ssim": 0.999514,
+            "bytes": 21872
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-confidence-e84a722dc21e-w640.webp",
+            "quality": 70,
+            "ssim": 0.997355,
+            "bytes": 8232
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-confidence-e84a722dc21e-w1280.webp",
+            "quality": 70,
+            "ssim": 0.998459,
+            "bytes": 23442
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-confidence-e84a722dc21e-w1920.webp",
+            "quality": 70,
+            "ssim": 0.999358,
+            "bytes": 38418
+          },
+          {
+            "width": 2416,
+            "url": "https://img.muelsyse.us/bed/paper-20261111-canonical-confidence-e84a722dc21e-w2416.webp",
+            "quality": 70,
+            "ssim": 0.999519,
+            "bytes": 48802
+          }
+        ]
+      }
     }
   },
   "vaultAssets": {},
@@ -1024,7 +1576,71 @@
     "bed/paper-20261110-ros-layers-24212fd3eca3-w2400.avif.webp",
     "bed/paper-20261110-ros-layers-24212fd3eca3-w2400.webp",
     "bed/paper-20261110-ros-layers-24212fd3eca3-w640.avif.webp",
-    "bed/paper-20261110-ros-layers-24212fd3eca3-w640.webp"
+    "bed/paper-20261110-ros-layers-24212fd3eca3-w640.webp",
+    "bed/paper-20261111-canonical-architecture-6f627658052c-w1280.avif.webp",
+    "bed/paper-20261111-canonical-architecture-6f627658052c-w1280.webp",
+    "bed/paper-20261111-canonical-architecture-6f627658052c-w1920.avif.webp",
+    "bed/paper-20261111-canonical-architecture-6f627658052c-w1920.webp",
+    "bed/paper-20261111-canonical-architecture-6f627658052c-w2938.avif.webp",
+    "bed/paper-20261111-canonical-architecture-6f627658052c-w2938.webp",
+    "bed/paper-20261111-canonical-architecture-6f627658052c-w640.avif.webp",
+    "bed/paper-20261111-canonical-architecture-6f627658052c-w640.webp",
+    "bed/paper-20261111-canonical-batches-0221727fcb60-w1280.avif.webp",
+    "bed/paper-20261111-canonical-batches-0221727fcb60-w1280.webp",
+    "bed/paper-20261111-canonical-batches-0221727fcb60-w1920.avif.webp",
+    "bed/paper-20261111-canonical-batches-0221727fcb60-w1920.webp",
+    "bed/paper-20261111-canonical-batches-0221727fcb60-w3196.avif.webp",
+    "bed/paper-20261111-canonical-batches-0221727fcb60-w3196.webp",
+    "bed/paper-20261111-canonical-batches-0221727fcb60-w640.avif.webp",
+    "bed/paper-20261111-canonical-batches-0221727fcb60-w640.webp",
+    "bed/paper-20261111-canonical-cases-a4cdd808c7fe-w1280.avif.webp",
+    "bed/paper-20261111-canonical-cases-a4cdd808c7fe-w1280.webp",
+    "bed/paper-20261111-canonical-cases-a4cdd808c7fe-w1920.avif.webp",
+    "bed/paper-20261111-canonical-cases-a4cdd808c7fe-w1920.webp",
+    "bed/paper-20261111-canonical-cases-a4cdd808c7fe-w2842.avif.webp",
+    "bed/paper-20261111-canonical-cases-a4cdd808c7fe-w2842.webp",
+    "bed/paper-20261111-canonical-cases-a4cdd808c7fe-w640.avif.webp",
+    "bed/paper-20261111-canonical-cases-a4cdd808c7fe-w640.webp",
+    "bed/paper-20261111-canonical-color-c9df31f29ebc-w1280.avif.webp",
+    "bed/paper-20261111-canonical-color-c9df31f29ebc-w1280.webp",
+    "bed/paper-20261111-canonical-color-c9df31f29ebc-w1920.avif.webp",
+    "bed/paper-20261111-canonical-color-c9df31f29ebc-w1920.webp",
+    "bed/paper-20261111-canonical-color-c9df31f29ebc-w3676.avif.webp",
+    "bed/paper-20261111-canonical-color-c9df31f29ebc-w3676.webp",
+    "bed/paper-20261111-canonical-color-c9df31f29ebc-w640.avif.webp",
+    "bed/paper-20261111-canonical-color-c9df31f29ebc-w640.webp",
+    "bed/paper-20261111-canonical-confidence-e84a722dc21e-w1280.avif.webp",
+    "bed/paper-20261111-canonical-confidence-e84a722dc21e-w1280.webp",
+    "bed/paper-20261111-canonical-confidence-e84a722dc21e-w1920.avif.webp",
+    "bed/paper-20261111-canonical-confidence-e84a722dc21e-w1920.webp",
+    "bed/paper-20261111-canonical-confidence-e84a722dc21e-w2416.avif.webp",
+    "bed/paper-20261111-canonical-confidence-e84a722dc21e-w2416.webp",
+    "bed/paper-20261111-canonical-confidence-e84a722dc21e-w640.avif.webp",
+    "bed/paper-20261111-canonical-confidence-e84a722dc21e-w640.webp",
+    "bed/paper-20261111-canonical-confusion-1d143ab51747-w1280.avif.webp",
+    "bed/paper-20261111-canonical-confusion-1d143ab51747-w1280.webp",
+    "bed/paper-20261111-canonical-confusion-1d143ab51747-w1920.avif.webp",
+    "bed/paper-20261111-canonical-confusion-1d143ab51747-w1920.webp",
+    "bed/paper-20261111-canonical-confusion-1d143ab51747-w3817.avif.webp",
+    "bed/paper-20261111-canonical-confusion-1d143ab51747-w3817.webp",
+    "bed/paper-20261111-canonical-confusion-1d143ab51747-w640.avif.webp",
+    "bed/paper-20261111-canonical-confusion-1d143ab51747-w640.webp",
+    "bed/paper-20261111-canonical-performance-60773ad5621f-w1280.avif.webp",
+    "bed/paper-20261111-canonical-performance-60773ad5621f-w1280.webp",
+    "bed/paper-20261111-canonical-performance-60773ad5621f-w1920.avif.webp",
+    "bed/paper-20261111-canonical-performance-60773ad5621f-w1920.webp",
+    "bed/paper-20261111-canonical-performance-60773ad5621f-w3796.avif.webp",
+    "bed/paper-20261111-canonical-performance-60773ad5621f-w3796.webp",
+    "bed/paper-20261111-canonical-performance-60773ad5621f-w640.avif.webp",
+    "bed/paper-20261111-canonical-performance-60773ad5621f-w640.webp",
+    "bed/paper-20261111-canonical-samples-76a2ffa3fa65-w1280.avif.webp",
+    "bed/paper-20261111-canonical-samples-76a2ffa3fa65-w1280.webp",
+    "bed/paper-20261111-canonical-samples-76a2ffa3fa65-w1920.avif.webp",
+    "bed/paper-20261111-canonical-samples-76a2ffa3fa65-w1920.webp",
+    "bed/paper-20261111-canonical-samples-76a2ffa3fa65-w3939.avif.webp",
+    "bed/paper-20261111-canonical-samples-76a2ffa3fa65-w3939.webp",
+    "bed/paper-20261111-canonical-samples-76a2ffa3fa65-w640.avif.webp",
+    "bed/paper-20261111-canonical-samples-76a2ffa3fa65-w640.webp"
   ],
   "pendingDeletion": [
     "bed/20260728123332461-w616.avif.webp",
