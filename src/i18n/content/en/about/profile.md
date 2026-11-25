@@ -16,7 +16,7 @@ backgroundKeywords:
 
 ## About This Website
 - BLOG Publishes serious technical articles
-- NOTE Everyday musings
+  <!-- - NOTE 日常碎碎念 -->
 - LINKS Blogroll
 - ABOUT This page
 - LIFE Shares books, movies and TV shows, music, and games I've enjoyed

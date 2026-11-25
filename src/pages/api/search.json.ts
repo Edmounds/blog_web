@@ -15,7 +15,7 @@ export const GET: APIRoute = async ({ request }) => {
 
     const contents = await getAllPublishedContent(locale);
     const items: SearchIndexItem[] = contents
-      .filter((c) => c.section === "blog" || c.section === "project" || c.section === "note")
+      .filter((c) => c.section === "blog" /* || c.section === "project" || c.section === "note" */)
       .map((c) => ({
         id: c.contentId,
         type: c.section,

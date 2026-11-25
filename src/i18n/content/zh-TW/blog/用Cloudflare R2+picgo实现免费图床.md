@@ -1,9 +1,9 @@
 ﻿---
-title: 使用 Cloudflare R2 + PicGo 打造免費圖床
-description: 基於 Cloudflare R2 物件儲存與 PicGo 建立零出口流量費的圖床，實現 Obsidian 與 Typora 寫作時即時自動上傳。
+title: 使用 Cloudflare R2 + PicGo 實現免費圖床
+description: 基於 Cloudflare R2 物件儲存與 PicGo 建構零出口流量費的圖床，實現 Obsidian 與 Typora 寫作時即時自動上傳。
 tags:
   - Cloudflare
-  - 免費使用
+  - 免費蹭用
   - 圖片託管服務
 createdAt: 2026-10-25T00:00:00.000Z
 published: true
@@ -14,27 +14,27 @@ slug: 20261025-01
 
 使用 Cloudflare R2 取代傳統物件儲存，作為圖床後端。
 
-```mermaid
-flowchart LR
-  A[Obsidian / Typora] -->|本地端口 36677| B[PicGo 本地服务]
-  B -->|S3 API 上传| C[Cloudflare R2 Bucket]
-```
+![PicGo 上傳到 R2 並回寫圖片連結](https://img.muelsyse.us/bed/paper-20261110-picgo-upload-5539b593dd45.png)
+
+*圖 1：編輯器呼叫本機 PicGo，PicGo 上傳物件後依自訂網域產生公開 URL，再交由編輯器替換圖片引用。*
 
 1. 編輯器貼上圖片會觸發本機 PicGo 上傳。
 2. PicGo 透過 S3 相容 API 將圖片推送至 R2。
-3. 介面回傳 Custom Domain 連結，並自動替換圖片位址。
+3. PicGo 外掛會根據設定的 Custom Domain 與物件路徑組合成公開連結，編輯器外掛再自動替換圖片網址。
 
 ---
 ## 為什麼選擇 Cloudflare R2
 
-都免費給你用了，還有什麼好說的？量大管飽，基本上不會超出限額，而且徹底免除出口流量費用。對中國大陸而言，唯一的缺點是如果不掛 VPN，存取速度會比較慢。
+都免費給你用了，那還有什麼好說的呢？對我這種個人用的圖床來說，免費額度算是很充足，而且沒有出口流量費。不過，免費的是額度內的儲存空間和請求量，大量存取或頻繁上傳仍可能超出額度。中國大陸直連的速度也要看線路，不能只看帳單。
+
+以下是撰寫時記錄的 Standard 儲存價格，實際開通前以[R2 官方定價](https://developers.cloudflare.com/r2/pricing/)為準：
 
 | 資源項目                  | Cloudflare R2 每月免費額度 | 超額計費單價          |
 | :-------------------- | :------------------ | :-------------- |
 | **儲存空間**              | 10 GB / 月           | $0.015 / GB / 月 |
 | **Class A 操作（寫入/列出）** | 100 萬次 / 月          | $4.50 / 百萬次     |
 | **Class B 操作（讀取/下載）** | 1000 萬次 / 月         | $0.36 / 百萬次     |
-| 出口流量                  | **永久免費，無上限**        | **$0.00**       |
+| 出口流量                  | **出口流量不收費**        | **$0.00**       |
 
 ---
 ## Cloudflare R2 啟用與準備
@@ -57,7 +57,7 @@ flowchart LR
   > **注意**：`Secret Access Key` 僅在產生成功時顯示一次。若先前建立的 Token 未儲存密鑰，便無法再次查看，需重新點選「Create Account API token」產生新的密鑰。
 
 ### Agent
-建立 Bucket、綁定 Custom Domain 等操作，都可以讓 Agent 透過 Wrangler 這個 cli 來完成，只需要用 Wrangler oauth 綁定自己的 cf 帳號即可。
+建立 Bucket 等操作可以讓 Agent 透過 Wrangler CLI 完成。先登入 Cloudflare 帳號，再確認執行具體操作所需的權限；自訂網域設定也可以透過 Dashboard 或 Cloudflare API 處理。Wrangler 的登入工作階段和 PicGo 所需的 S3 存取金鑰是兩套憑證，無法相互取代。
 
 ## PicGo 用戶端設定
 
@@ -70,9 +70,9 @@ flowchart LR
 
 | **Account ID**      | 在 R2 概覽頁右下角查看      |
 | :------------------ | :--------------- |
-| **AccessKey ID**    | 產生的 API Token    |
-| **SecretAccessKey** | 產生的 API Token    |
-| **儲存桶名稱**           | 建立的 R2 Bucket    |
+| **AccessKey ID**| 建立 R2 權杖時產生的 Access Key ID |
+|**SecretAccessKey**| 同一次產生的 Secret Access Key |
+|**儲存桶名稱**           | 建立的 R2 Bucket    |
 | **儲存路徑（可選）**        | 依需求指定目錄層級         |
 | **自訂網域**           | R2 Custom Domain |
 
@@ -81,14 +81,14 @@ flowchart LR
 ## 編輯器自動無感上傳
 
 ### Obsidian 設定
-利用本機 PicGo 實現貼上圖片後自動上傳至圖床並替換：
+使用本機版 PicGo，貼上圖片後即可自動上傳至圖床並替換：
 1. 確保 PicGo 處於執行狀態。
 2. 在 Obsidian 安裝`Image auto upload Plugin`外掛程式。
 3. 在外掛程式中設定使用 PicGo 上傳服務。
 4. 在筆記中直接貼上或拖曳圖片，圖片就會上傳至 R2 圖床，內文中的本機路徑會自動替換為遠端圖床連結。
 
 ### Typora 設定
-依照圖示設定即可，最後點選「驗證圖片上傳選項」測試一下
+按照圖示設定即可，最後點選「驗證圖片上傳選項」測試一下。
 
 ![image.png](https://img.muelsyse.us/bed/20261025185635532.png)
 
@@ -103,4 +103,4 @@ flowchart LR
 - **Edge Cache TTL**：覆寫來源伺服器並設為 1 年（31536000 秒）
 - **Browser Cache TTL**：設為 1 年
 
-所有熱門圖片都會由 Cloudflare 全球 CDN 節點快取，後續請求不會再穿透至 R2 Bucket，Class B 操作消耗降至最低。
+命中 CDN 快取的請求不必再次讀取 R2，可減少 Class B 操作。首次存取、快取失效或節點淘汰後，仍會回源，因此較長的 TTL 無法保證讀取費用為零。瀏覽器快取設為一年時，更新圖片應使用新的物件名稱，避免讀者一直看到舊圖片。

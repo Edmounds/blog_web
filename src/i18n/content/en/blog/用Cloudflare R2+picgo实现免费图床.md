@@ -1,106 +1,105 @@
 ﻿---
 title: Build a Free Image Hosting Service with Cloudflare R2 + PicGo
-description: Build a zero-egress-fee image hosting service with Cloudflare R2 object storage and PicGo, enabling instant automatic uploads while writing in Obsidian and Typora.
+description: Use Cloudflare R2 object storage and PicGo to set up an image host with zero egress fees, enabling instant, automatic uploads while writing in Obsidian and Typora.
 tags:
   - Cloudflare
-  - Freebie
+  - Get It for Free
   - Image hosting service
 createdAt: 2026-10-25T00:00:00.000Z
 published: true
 slug: 20261025-01
 ---
 
-## Architecture
+## Solution Architecture
 
-Use Cloudflare R2 instead of traditional object storage as the backend for your image host.
+Use Cloudflare R2 instead of traditional object storage as the image hosting backend.
 
-```mermaid
-flowchart LR
-  A[Obsidian / Typora] -->|本地端口 36677| B[PicGo 本地服务]
-  B -->|S3 API 上传| C[Cloudflare R2 Bucket]
-```
+![Upload images to R2 with PicGo and write back the image links](https://img.muelsyse.us/bed/paper-20261110-picgo-upload-5539b593dd45.png)
 
-1. Pasting an image in the editor triggers a local PicGo upload.
-2. PicGo pushes the image to R2 through an S3-compatible API.
-3. The API returns a Custom Domain link and automatically replaces the image address.
+*Figure 1: The editor invokes the local PicGo. After uploading the object, PicGo generates a public URL using the custom domain and passes it back to the editor to replace the image reference.*
+
+1. Pasting an image into the editor triggers an upload via the local PicGo app.
+2. PicGo uploads images to R2 via its S3-compatible API.
+3. The PicGo plugin constructs a public URL by combining the configured Custom Domain with the object path, and the editor plugin then automatically replaces the image URL.
 
 ---
 ## Why Choose Cloudflare R2
 
-It’s free—what more is there to say? You get plenty of storage and bandwidth, and you’re unlikely to exceed the limits. Best of all, egress traffic fees are completely eliminated. However, direct access from mainland China can be relatively slow.
+They’re practically giving it away for free—what more is there to say? For a personal image-hosting service like mine, the free allowance is fairly generous, and there are no egress traffic fees. That said, the free tier only covers storage and requests within the quota; lots of traffic or frequent uploads can still push you over the limit. Speeds for direct connections from mainland China also depend on the network route, so you can’t judge it by the bill alone.
 
-| Resource item                  | Cloudflare R2 free monthly allowance | Overage unit price          |
+The following are the Standard storage prices recorded at the time of writing; before activating it, refer to[Official R2 Pricing](https://developers.cloudflare.com/r2/pricing/)shall prevail:
+
+| Resource              | Cloudflare R2 Free Monthly Allowance | Overage Unit Price |
 | :-------------------- | :------------------ | :-------------- |
-| **Storage space**              | 10 GB / month           | $0.015 / GB / month |
-| **Class A operations (writes/listing)** | 1 million operations / month          | $4.50 / million operations     |
-| **Class B operations (reads/downloads)** | 10 million operations / month         | $0.36 / million operations     |
-| Egress traffic                  | **Free forever, with no limit**        | **$0.00**       |
+|**Storage Space**| 10 GB / month           | $0.015 / GB / month |**Class A operations (write/list)**| 1 million requests / month | $4.50 / million requests     |
+|**Class B operations (read/download)**| 10 million requests / month | $0.36 / million requests |
+| Egress traffic                  |**No egress fees**|**$0.00**|
 
 ---
-## Setting Up and Preparing Cloudflare R2
+## Enabling and Preparing Cloudflare R2
 
 ### Prerequisites
-1. Log in to the Cloudflare Dashboard and open “R2 Object Storage”.
-2. Link a credit card or PayPal to complete account verification. No charges will be incurred within the allowance.
-> If you don’t have a card, try the second-hand marketplace—you can get one for under 10 RMB.
+1. Log in to the Cloudflare Dashboard and go to “R2 Object Storage.”
+2. Link a credit card or PayPal account to verify your account. You won’t be charged as long as you stay within the usage limits.
+> If you don’t have a card, you can check out the second-hand market—one for under RMB 10 will do the job.
 
-### Manual Web Configuration
-1. **Create a Bucket**: On the R2 page, click “Create bucket”, enter a name, and set Location to Automatic.
-2. **Bind a public Custom Domain**: Go to Bucket -> “Settings” -> “Public Access” -> click “Connect Domain”, then enter a subdomain (for example, `img.yourdomain.com`).
-3. **Get API credentials**:
-   - **Account ID**: On the bottom right of the R2 overview page, click “Account Details” and copy it directly.
+### Manual Configuration via the Web Interface
+1. **Create a Bucket**：On the R2 page, click “Create bucket,” enter a name, and set Location to “Automatic.”
+2. **Bind a public Custom Domain**: Go to Bucket -> “Settings” -> “Public Access” -> click “Connect Domain” and enter a subdomain (e.g.`img.yourdomain.com`).
+3. **Obtain API credentials**:
+   - **Account ID**: On the bottom right of the R2 Overview page, click “Copy” in the “Account Details” section.
    - **Access Key ID and Secret Access Key**:
-	  1. Click “Manage API Tokens” below “Account Details” to open the token page.
-	  2. Click “Create Account API token”.
-	  3. Select “Object Read & Write” under Permissions, and specify a Bucket if needed.
-	  4. Click to create it, then immediately copy and save the ** and ** on the `Access Key ID`final success page`Secret Access Key`.
-  > **Note**:`Secret Access Key` is displayed only once, when it is successfully generated. If you did not save the key for a previously created Token, it cannot be viewed again. You must click “Create Account API token” again to generate a new key.
+	  1. Click “Manage API Tokens” under “Account Details” to open the API token page.
+	  2. Click “Create Account API Token.”
+	  3. Select “Object Read & Write” under Permissions, and specify the Bucket as needed.
+	  4. Click Create, and in**Final Success Page**Copy and save now`Access Key ID`and`Secret Access Key`.
+  > **Note**:`Secret Access Key`The secret is displayed only once after successful generation. If you did not save the secret for a previously created token, you cannot view it again; click “Create Account API token” again to generate a new one.
 
 ### Agent
-Creating a Bucket and binding a Custom Domain can also be done by an agent through the Wrangler CLI. You only need to run Wrangler oauth to link your own Cloudflare account.
+Operations such as creating a bucket can be completed by the agent via the Wrangler CLI. First, log in to your Cloudflare account, then verify that you have the permissions required for the specific operations. Custom domain configuration can also be handled through the Dashboard or the Cloudflare API. The Wrangler login session and the S3 access keys required by PicGo are separate sets of credentials and cannot be used interchangeably.
 
 ## PicGo Client Configuration
 
 ### 1. Install the Plugin
-1. Open PicGo and go to “Plugin Settings”.
-2. Search for and install `picgo-plugin-cloudflare-r2`.
+1. Open PicGo and go to “Plugin Settings.”
+2. Search for and install`picgo-plugin-cloudflare-r2`.
 
-### 2. Configure the Parameters
-Go to “Image Hosting Settings” -> “Cloudflare R2” and fill in the following configuration items:
+### 2. Configure Parameters
+Go to “Image Hosting Settings” → “Cloudflare R2” and fill in the following configuration fields:
 
-| **Account ID**      | View it at the bottom right of the R2 overview page      |
+|**Account ID**| View in the bottom-right corner of the R2 overview page      |
 | :------------------ | :--------------- |
-| **AccessKey ID**    | Generated API Token    |
-| **SecretAccessKey** | Generated API Token    |
-| **Bucket name**           | Created R2 Bucket    |
-| **Storage path (optional)**        | Specify directory levels as needed         |
-| **Custom domain**           | R2 Custom Domain |
+|**Access Key ID**| Access Key ID generated when creating the R2 token |
+|**SecretAccessKey**| Secret Access Key generated at the same time |
+|**Bucket name**| Created R2 Bucket    |
+|**Storage path (optional)**| Specify directory levels as needed         |
+|**Custom Domain**| R2 Custom Domain |
 
 ---
 
-## Automatic, Seamless Upload in Editors
+## Automatic, seamless uploads from the editor
 
 ### Obsidian Configuration
-Use local PicGo to automatically upload pasted images to the image host and replace their paths:
+Use local PicGo to automatically upload pasted images to the image host and replace them:
 1. Make sure PicGo is running.
 2. Install in Obsidian`Image auto upload Plugin`Plugin.
-3. Configure the plugin to use the PicGo upload service.
-4. Paste or drag images directly into your notes, and they will be uploaded to the R2 image hosting service, with local paths in the content automatically replaced by remote image-hosting links.
+3. Configure the plugin to use PicGo for image uploads.
+4. Paste or drag images directly into your notes, and they’ll be uploaded to the R2 image host, with their local paths in the body text automatically replaced by remote image-host links.
 
 ### Typora Configuration
-Configure it as shown in the diagram, then click “Verify image upload settings” to test it.
+Configure it as shown in the diagram, then click “Verify image upload option” to test it.
 
 ![image.png](https://img.muelsyse.us/bed/20261025185635532.png)
 
 ---
 
-## Cache Optimization and Anti-Abuse Strategy
+## Cache Optimization and Anti-Abuse Strategies
 
-Although R2 egress traffic is free, Class B read requests exceeding 10 million per month will still incur a small charge. It is recommended that you enable CDN edge caching and protection.
+Although R2 offers free egress traffic, more than 10 million Class B read requests per month will still incur a small charge. Enabling CDN edge caching and protection is recommended.
 
-In the Cloudflare Dashboard, go to your domain’s “Caching” -> “Cache Rules” and add a rule:
-- **Match condition**:`Hostname equals img.yourdomain.com`
-- **Edge Cache TTL**: Override the origin and set it to 1 year (31536000 seconds)
-- **Browser Cache TTL**: Set it to 1 year
+In the Cloudflare Dashboard, go to the domain’s “Caching” → “Cache Rules” and add a rule:
+- **Matching conditions**:`Hostname equals img.yourdomain.com`
+- **Edge Cache TTL**: Replace the origin server and set it to 1 year (31536000 seconds)
+- **Browser Cache TTL**: Set to 1 year
 
-All high-traffic images will be cached by Cloudflare CDN nodes worldwide. Subsequent requests will no longer pass through to the R2 Bucket, minimizing Class B operation usage.
+Requests served from the CDN cache do not need to read from R2 again, which reduces Class B operations. However, the request still goes back to the origin on the first visit, after the cache expires, or when the object is evicted from a cache node, so a long TTL cannot guarantee zero read charges. When browser caching is set to one year, use a new object name when updating an image to prevent readers from continuing to see the old version.

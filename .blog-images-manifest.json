@@ -508,443 +508,416 @@
         ]
       }
     },
-    "https://img.muelsyse.us/bed/20261025214411104.png": {
+    "https://img.muelsyse.us/bed/paper-20261110-ros-data-path-4c6bb401b377.png": {
       "kind": "responsive",
-      "sourceDigest": "bc1bac5d29314514645f923bc58cb1cff6844388f73b8e218a23feaa0c4dbd1d",
-      "width": 474,
-      "height": 349,
-      "fallback": "https://img.muelsyse.us/bed/20261025214411104-w474.webp",
+      "sourceDigest": "4c6bb401b377b5b79029324f108528b54f224056d1ffa678ad08c3527652de30",
+      "width": 2400,
+      "height": 1563,
+      "fallback": "https://img.muelsyse.us/bed/paper-20261110-ros-data-path-4c6bb401b377-w2400.webp",
       "sources": {
         "avif": [
           {
-            "width": 474,
-            "url": "https://img.muelsyse.us/bed/20261025214411104-w474.avif.webp",
-            "quality": 44,
-            "ssim": 0.985183,
-            "bytes": 8227
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-data-path-4c6bb401b377-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.996747,
+            "bytes": 11816
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-data-path-4c6bb401b377-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.999218,
+            "bytes": 30272
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-data-path-4c6bb401b377-w1920.avif.webp",
+            "quality": 40,
+            "ssim": 0.999721,
+            "bytes": 43990
+          },
+          {
+            "width": 2400,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-data-path-4c6bb401b377-w2400.avif.webp",
+            "quality": 40,
+            "ssim": 0.999918,
+            "bytes": 54841
           }
         ],
         "webp": [
           {
-            "width": 474,
-            "url": "https://img.muelsyse.us/bed/20261025214411104-w474.webp",
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-data-path-4c6bb401b377-w640.webp",
             "quality": 70,
-            "ssim": 0.996028,
-            "bytes": 14582
+            "ssim": 0.997859,
+            "bytes": 19460
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-data-path-4c6bb401b377-w1280.webp",
+            "quality": 70,
+            "ssim": 0.999272,
+            "bytes": 51064
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-data-path-4c6bb401b377-w1920.webp",
+            "quality": 70,
+            "ssim": 0.999739,
+            "bytes": 80784
+          },
+          {
+            "width": 2400,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-data-path-4c6bb401b377-w2400.webp",
+            "quality": 70,
+            "ssim": 0.999727,
+            "bytes": 106676
           }
         ]
       }
     },
-    "https://img.muelsyse.us/bed/fruit_pipeline_fig1_architecture.png": {
+    "https://img.muelsyse.us/bed/paper-20261110-ros-layers-24212fd3eca3.png": {
       "kind": "responsive",
-      "sourceDigest": "d28828ebcda898504f9b528a94e9e0d8f31022152720175e40ea00f1b35fa089",
-      "width": 3270,
-      "height": 1830,
-      "fallback": "https://img.muelsyse.us/bed/fruit_pipeline_fig1_architecture-w3270.webp",
+      "sourceDigest": "24212fd3eca3da3aa7e2b57be1e92bc4a40584cfe22241d39af76272aa8f36d9",
+      "width": 2400,
+      "height": 1531,
+      "fallback": "https://img.muelsyse.us/bed/paper-20261110-ros-layers-24212fd3eca3-w2400.webp",
       "sources": {
         "avif": [
           {
             "width": 640,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig1_architecture-w640.avif.webp",
+            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-layers-24212fd3eca3-w640.avif.webp",
             "quality": 40,
-            "ssim": 0.993505,
-            "bytes": 8283
+            "ssim": 0.997323,
+            "bytes": 8103
           },
           {
             "width": 1280,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig1_architecture-w1280.avif.webp",
+            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-layers-24212fd3eca3-w1280.avif.webp",
             "quality": 40,
-            "ssim": 0.999305,
-            "bytes": 18166
+            "ssim": 0.999449,
+            "bytes": 20809
           },
           {
             "width": 1920,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig1_architecture-w1920.avif.webp",
+            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-layers-24212fd3eca3-w1920.avif.webp",
             "quality": 40,
-            "ssim": 0.999629,
-            "bytes": 26747
+            "ssim": 0.999797,
+            "bytes": 31963
           },
           {
-            "width": 3270,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig1_architecture-w3270.avif.webp",
+            "width": 2400,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-layers-24212fd3eca3-w2400.avif.webp",
             "quality": 40,
-            "ssim": 0.999916,
-            "bytes": 38937
+            "ssim": 0.999906,
+            "bytes": 38041
           }
         ],
         "webp": [
           {
             "width": 640,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig1_architecture-w640.webp",
+            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-layers-24212fd3eca3-w640.webp",
             "quality": 70,
-            "ssim": 0.992227,
-            "bytes": 11886
+            "ssim": 0.997788,
+            "bytes": 13034
           },
           {
             "width": 1280,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig1_architecture-w1280.webp",
+            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-layers-24212fd3eca3-w1280.webp",
             "quality": 70,
-            "ssim": 0.998921,
-            "bytes": 30424
+            "ssim": 0.999231,
+            "bytes": 36316
           },
           {
             "width": 1920,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig1_architecture-w1920.webp",
+            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-layers-24212fd3eca3-w1920.webp",
+            "quality": 70,
+            "ssim": 0.999779,
+            "bytes": 59052
+          },
+          {
+            "width": 2400,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-ros-layers-24212fd3eca3-w2400.webp",
+            "quality": 70,
+            "ssim": 0.999774,
+            "bytes": 79030
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/paper-20261110-actions-pipeline-b4436589c249.png": {
+      "kind": "responsive",
+      "sourceDigest": "b4436589c2499f6fd43db973d25cec6c9436442ee94d50b9628508be74917d1a",
+      "width": 2400,
+      "height": 565,
+      "fallback": "https://img.muelsyse.us/bed/paper-20261110-actions-pipeline-b4436589c249-w2400.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-actions-pipeline-b4436589c249-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.991346,
+            "bytes": 4780
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-actions-pipeline-b4436589c249-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.996478,
+            "bytes": 12255
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-actions-pipeline-b4436589c249-w1920.avif.webp",
+            "quality": 40,
+            "ssim": 0.999177,
+            "bytes": 17710
+          },
+          {
+            "width": 2400,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-actions-pipeline-b4436589c249-w2400.avif.webp",
+            "quality": 40,
+            "ssim": 0.999653,
+            "bytes": 21308
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-actions-pipeline-b4436589c249-w640.webp",
+            "quality": 70,
+            "ssim": 0.994758,
+            "bytes": 7250
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-actions-pipeline-b4436589c249-w1280.webp",
+            "quality": 70,
+            "ssim": 0.997392,
+            "bytes": 19000
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-actions-pipeline-b4436589c249-w1920.webp",
             "quality": 70,
             "ssim": 0.999534,
-            "bytes": 49300
+            "bytes": 31274
           },
           {
-            "width": 3270,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig1_architecture-w3270.webp",
+            "width": 2400,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-actions-pipeline-b4436589c249-w2400.webp",
             "quality": 70,
-            "ssim": 0.999749,
-            "bytes": 87130
+            "ssim": 0.999704,
+            "bytes": 41692
           }
         ]
       }
     },
-    "https://img.muelsyse.us/bed/fruit_pipeline_fig2_confusion_matrices.png": {
+    "https://img.muelsyse.us/bed/paper-20261110-cloudflare-architecture-e308f5492721.png": {
       "kind": "responsive",
-      "sourceDigest": "eb24d59b751e1ef6df1e8b3db358d4a1b6796859929c28c23d8fd414285b4039",
-      "width": 3414,
-      "height": 1456,
-      "fallback": "https://img.muelsyse.us/bed/fruit_pipeline_fig2_confusion_matrices-w3414.webp",
+      "sourceDigest": "e308f5492721f31c44d87ef87024145c9777fb615c94115b62345825e03d7cc1",
+      "width": 2400,
+      "height": 1171,
+      "fallback": "https://img.muelsyse.us/bed/paper-20261110-cloudflare-architecture-e308f5492721-w2400.webp",
       "sources": {
         "avif": [
           {
             "width": 640,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig2_confusion_matrices-w640.avif.webp",
+            "url": "https://img.muelsyse.us/bed/paper-20261110-cloudflare-architecture-e308f5492721-w640.avif.webp",
             "quality": 40,
-            "ssim": 0.994109,
-            "bytes": 7760
+            "ssim": 0.992836,
+            "bytes": 7988
           },
           {
             "width": 1280,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig2_confusion_matrices-w1280.avif.webp",
+            "url": "https://img.muelsyse.us/bed/paper-20261110-cloudflare-architecture-e308f5492721-w1280.avif.webp",
             "quality": 40,
-            "ssim": 0.998934,
-            "bytes": 16565
+            "ssim": 0.99892,
+            "bytes": 20651
           },
           {
             "width": 1920,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig2_confusion_matrices-w1920.avif.webp",
+            "url": "https://img.muelsyse.us/bed/paper-20261110-cloudflare-architecture-e308f5492721-w1920.avif.webp",
             "quality": 40,
-            "ssim": 0.999568,
-            "bytes": 24674
+            "ssim": 0.99965,
+            "bytes": 29014
           },
           {
-            "width": 3414,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig2_confusion_matrices-w3414.avif.webp",
+            "width": 2400,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-cloudflare-architecture-e308f5492721-w2400.avif.webp",
             "quality": 40,
-            "ssim": 0.999884,
-            "bytes": 35638
+            "ssim": 0.999911,
+            "bytes": 34758
           }
         ],
         "webp": [
           {
             "width": 640,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig2_confusion_matrices-w640.webp",
+            "url": "https://img.muelsyse.us/bed/paper-20261110-cloudflare-architecture-e308f5492721-w640.webp",
             "quality": 70,
-            "ssim": 0.993338,
-            "bytes": 11422
+            "ssim": 0.994795,
+            "bytes": 12898
           },
           {
             "width": 1280,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig2_confusion_matrices-w1280.webp",
+            "url": "https://img.muelsyse.us/bed/paper-20261110-cloudflare-architecture-e308f5492721-w1280.webp",
             "quality": 70,
-            "ssim": 0.998728,
-            "bytes": 26658
+            "ssim": 0.99893,
+            "bytes": 33796
           },
           {
             "width": 1920,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig2_confusion_matrices-w1920.webp",
+            "url": "https://img.muelsyse.us/bed/paper-20261110-cloudflare-architecture-e308f5492721-w1920.webp",
             "quality": 70,
-            "ssim": 0.999293,
-            "bytes": 40922
+            "ssim": 0.999547,
+            "bytes": 54560
           },
           {
-            "width": 3414,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig2_confusion_matrices-w3414.webp",
+            "width": 2400,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-cloudflare-architecture-e308f5492721-w2400.webp",
+            "quality": 70,
+            "ssim": 0.999833,
+            "bytes": 69730
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/paper-20261110-cloudflare-request-34513a050cca.png": {
+      "kind": "responsive",
+      "sourceDigest": "34513a050ccaffc7154d2359fd6d5282e012c5f0800dd62e833414041fbd727c",
+      "width": 2400,
+      "height": 987,
+      "fallback": "https://img.muelsyse.us/bed/paper-20261110-cloudflare-request-34513a050cca-w2400.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-cloudflare-request-34513a050cca-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.991148,
+            "bytes": 7591
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-cloudflare-request-34513a050cca-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.998722,
+            "bytes": 20242
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-cloudflare-request-34513a050cca-w1920.avif.webp",
+            "quality": 40,
+            "ssim": 0.999531,
+            "bytes": 29104
+          },
+          {
+            "width": 2400,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-cloudflare-request-34513a050cca-w2400.avif.webp",
+            "quality": 40,
+            "ssim": 0.999898,
+            "bytes": 36530
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-cloudflare-request-34513a050cca-w640.webp",
+            "quality": 70,
+            "ssim": 0.993625,
+            "bytes": 13102
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-cloudflare-request-34513a050cca-w1280.webp",
+            "quality": 70,
+            "ssim": 0.99902,
+            "bytes": 33752
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-cloudflare-request-34513a050cca-w1920.webp",
+            "quality": 70,
+            "ssim": 0.999633,
+            "bytes": 54218
+          },
+          {
+            "width": 2400,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-cloudflare-request-34513a050cca-w2400.webp",
+            "quality": 70,
+            "ssim": 0.999815,
+            "bytes": 69774
+          }
+        ]
+      }
+    },
+    "https://img.muelsyse.us/bed/paper-20261110-picgo-upload-5539b593dd45.png": {
+      "kind": "responsive",
+      "sourceDigest": "5539b593dd45f85e233c56b55b740a327151e294b311130e47920c87b123d901",
+      "width": 2400,
+      "height": 853,
+      "fallback": "https://img.muelsyse.us/bed/paper-20261110-picgo-upload-5539b593dd45-w2400.webp",
+      "sources": {
+        "avif": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-picgo-upload-5539b593dd45-w640.avif.webp",
+            "quality": 40,
+            "ssim": 0.994051,
+            "bytes": 5991
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-picgo-upload-5539b593dd45-w1280.avif.webp",
+            "quality": 40,
+            "ssim": 0.998895,
+            "bytes": 13485
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-picgo-upload-5539b593dd45-w1920.avif.webp",
+            "quality": 40,
+            "ssim": 0.999566,
+            "bytes": 20347
+          },
+          {
+            "width": 2400,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-picgo-upload-5539b593dd45-w2400.avif.webp",
+            "quality": 40,
+            "ssim": 0.999838,
+            "bytes": 25531
+          }
+        ],
+        "webp": [
+          {
+            "width": 640,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-picgo-upload-5539b593dd45-w640.webp",
+            "quality": 70,
+            "ssim": 0.995867,
+            "bytes": 8732
+          },
+          {
+            "width": 1280,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-picgo-upload-5539b593dd45-w1280.webp",
+            "quality": 70,
+            "ssim": 0.999201,
+            "bytes": 23136
+          },
+          {
+            "width": 1920,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-picgo-upload-5539b593dd45-w1920.webp",
             "quality": 70,
             "ssim": 0.999677,
-            "bytes": 74778
-          }
-        ]
-      }
-    },
-    "https://img.muelsyse.us/bed/fruit_pipeline_fig3_performance_benchmark.png": {
-      "kind": "responsive",
-      "sourceDigest": "b0a020a80ee9854ab21d757529ec48ceece17ce8dff1faa5c25971374ee89d34",
-      "width": 2970,
-      "height": 1409,
-      "fallback": "https://img.muelsyse.us/bed/fruit_pipeline_fig3_performance_benchmark-w2970.webp",
-      "sources": {
-        "avif": [
-          {
-            "width": 640,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig3_performance_benchmark-w640.avif.webp",
-            "quality": 40,
-            "ssim": 0.98769,
-            "bytes": 7427
+            "bytes": 37466
           },
           {
-            "width": 1280,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig3_performance_benchmark-w1280.avif.webp",
-            "quality": 40,
-            "ssim": 0.997468,
-            "bytes": 18028
-          },
-          {
-            "width": 1920,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig3_performance_benchmark-w1920.avif.webp",
-            "quality": 40,
-            "ssim": 0.999205,
-            "bytes": 25591
-          },
-          {
-            "width": 2970,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig3_performance_benchmark-w2970.avif.webp",
-            "quality": 40,
-            "ssim": 0.999745,
-            "bytes": 37269
-          }
-        ],
-        "webp": [
-          {
-            "width": 640,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig3_performance_benchmark-w640.webp",
-            "quality": 79,
-            "ssim": 0.98565,
-            "bytes": 12356
-          },
-          {
-            "width": 1280,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig3_performance_benchmark-w1280.webp",
+            "width": 2400,
+            "url": "https://img.muelsyse.us/bed/paper-20261110-picgo-upload-5539b593dd45-w2400.webp",
             "quality": 70,
-            "ssim": 0.994582,
-            "bytes": 29560
-          },
-          {
-            "width": 1920,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig3_performance_benchmark-w1920.webp",
-            "quality": 70,
-            "ssim": 0.998698,
-            "bytes": 47194
-          },
-          {
-            "width": 2970,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig3_performance_benchmark-w2970.webp",
-            "quality": 70,
-            "ssim": 0.999106,
-            "bytes": 77536
-          }
-        ]
-      }
-    },
-    "https://img.muelsyse.us/bed/fruit_pipeline_fig4_confidence_distribution.png": {
-      "kind": "responsive",
-      "sourceDigest": "e86ae6d4208ed62fdb1b1caa5ebe243a1a33b7ae4c139215284a544696f2a544",
-      "width": 3278,
-      "height": 1320,
-      "fallback": "https://img.muelsyse.us/bed/fruit_pipeline_fig4_confidence_distribution-w3278.webp",
-      "sources": {
-        "avif": [
-          {
-            "width": 640,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig4_confidence_distribution-w640.avif.webp",
-            "quality": 40,
-            "ssim": 0.98821,
-            "bytes": 8226
-          },
-          {
-            "width": 1280,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig4_confidence_distribution-w1280.avif.webp",
-            "quality": 40,
-            "ssim": 0.997053,
-            "bytes": 18531
-          },
-          {
-            "width": 1920,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig4_confidence_distribution-w1920.avif.webp",
-            "quality": 40,
-            "ssim": 0.998379,
-            "bytes": 28001
-          },
-          {
-            "width": 3278,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig4_confidence_distribution-w3278.avif.webp",
-            "quality": 40,
-            "ssim": 0.999634,
-            "bytes": 44657
-          }
-        ],
-        "webp": [
-          {
-            "width": 640,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig4_confidence_distribution-w640.webp",
-            "quality": 70,
-            "ssim": 0.989948,
-            "bytes": 13080
-          },
-          {
-            "width": 1280,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig4_confidence_distribution-w1280.webp",
-            "quality": 70,
-            "ssim": 0.996112,
-            "bytes": 31976
-          },
-          {
-            "width": 1920,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig4_confidence_distribution-w1920.webp",
-            "quality": 70,
-            "ssim": 0.998371,
-            "bytes": 50012
-          },
-          {
-            "width": 3278,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig4_confidence_distribution-w3278.webp",
-            "quality": 70,
-            "ssim": 0.999274,
-            "bytes": 93876
-          }
-        ]
-      }
-    },
-    "https://img.muelsyse.us/bed/fruit_pipeline_fig6_stage2_classifier_ablation.png": {
-      "kind": "responsive",
-      "sourceDigest": "9b20cc006e98cc17e251a63cce06f7ba351dab6b6d19a598437737315667381f",
-      "width": 2670,
-      "height": 1230,
-      "fallback": "https://img.muelsyse.us/bed/fruit_pipeline_fig6_stage2_classifier_ablation-w2670.webp",
-      "sources": {
-        "avif": [
-          {
-            "width": 640,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig6_stage2_classifier_ablation-w640.avif.webp",
-            "quality": 40,
-            "ssim": 0.99164,
-            "bytes": 7105
-          },
-          {
-            "width": 1280,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig6_stage2_classifier_ablation-w1280.avif.webp",
-            "quality": 40,
-            "ssim": 0.997823,
-            "bytes": 14863
-          },
-          {
-            "width": 1920,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig6_stage2_classifier_ablation-w1920.avif.webp",
-            "quality": 40,
-            "ssim": 0.999005,
-            "bytes": 22595
-          },
-          {
-            "width": 2670,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig6_stage2_classifier_ablation-w2670.avif.webp",
-            "quality": 40,
-            "ssim": 0.999723,
-            "bytes": 28612
-          }
-        ],
-        "webp": [
-          {
-            "width": 640,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig6_stage2_classifier_ablation-w640.webp",
-            "quality": 70,
-            "ssim": 0.986377,
-            "bytes": 11024
-          },
-          {
-            "width": 1280,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig6_stage2_classifier_ablation-w1280.webp",
-            "quality": 70,
-            "ssim": 0.995582,
-            "bytes": 26306
-          },
-          {
-            "width": 1920,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig6_stage2_classifier_ablation-w1920.webp",
-            "quality": 70,
-            "ssim": 0.998118,
-            "bytes": 42956
-          },
-          {
-            "width": 2670,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig6_stage2_classifier_ablation-w2670.webp",
-            "quality": 70,
-            "ssim": 0.999124,
-            "bytes": 61098
-          }
-        ]
-      }
-    },
-    "https://img.muelsyse.us/bed/fruit_pipeline_fig5_feature_disentanglement.png": {
-      "kind": "responsive",
-      "sourceDigest": "69d7d35cf0e55e150380806c01705a988d7fe88634453fb3af10439cd19247ec",
-      "width": 3570,
-      "height": 1170,
-      "fallback": "https://img.muelsyse.us/bed/fruit_pipeline_fig5_feature_disentanglement-w3570.webp",
-      "sources": {
-        "avif": [
-          {
-            "width": 640,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig5_feature_disentanglement-w640.avif.webp",
-            "quality": 40,
-            "ssim": 0.985378,
-            "bytes": 10687
-          },
-          {
-            "width": 1280,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig5_feature_disentanglement-w1280.avif.webp",
-            "quality": 40,
-            "ssim": 0.996453,
-            "bytes": 26631
-          },
-          {
-            "width": 1920,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig5_feature_disentanglement-w1920.avif.webp",
-            "quality": 40,
-            "ssim": 0.997005,
-            "bytes": 40337
-          },
-          {
-            "width": 3570,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig5_feature_disentanglement-w3570.avif.webp",
-            "quality": 40,
-            "ssim": 0.9996,
-            "bytes": 74556
-          }
-        ],
-        "webp": [
-          {
-            "width": 640,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig5_feature_disentanglement-w640.webp",
-            "quality": 70,
-            "ssim": 0.990115,
-            "bytes": 19274
-          },
-          {
-            "width": 1280,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig5_feature_disentanglement-w1280.webp",
-            "quality": 70,
-            "ssim": 0.995871,
-            "bytes": 48194
-          },
-          {
-            "width": 1920,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig5_feature_disentanglement-w1920.webp",
-            "quality": 70,
-            "ssim": 0.996325,
-            "bytes": 76520
-          },
-          {
-            "width": 3570,
-            "url": "https://img.muelsyse.us/bed/fruit_pipeline_fig5_feature_disentanglement-w3570.webp",
-            "quality": 70,
-            "ssim": 0.999151,
-            "bytes": 151836
+            "ssim": 0.999806,
+            "bytes": 49984
           }
         ]
       }
@@ -994,8 +967,80 @@
     "bed/20261025185635532-w640.webp",
     "bed/20261025185635532-w718.avif.webp",
     "bed/20261025185635532-w718.webp",
+    "bed/jupiter-w1280.avif.webp",
+    "bed/jupiter-w1280.webp",
+    "bed/jupiter-w640.avif.webp",
+    "bed/jupiter-w640.webp",
+    "bed/moon-w1280.avif.webp",
+    "bed/moon-w1280.webp",
+    "bed/moon-w1282.avif.webp",
+    "bed/moon-w1282.webp",
+    "bed/moon-w640.avif.webp",
+    "bed/moon-w640.webp",
+    "bed/paper-20261110-actions-pipeline-b4436589c249-w1280.avif.webp",
+    "bed/paper-20261110-actions-pipeline-b4436589c249-w1280.webp",
+    "bed/paper-20261110-actions-pipeline-b4436589c249-w1920.avif.webp",
+    "bed/paper-20261110-actions-pipeline-b4436589c249-w1920.webp",
+    "bed/paper-20261110-actions-pipeline-b4436589c249-w2400.avif.webp",
+    "bed/paper-20261110-actions-pipeline-b4436589c249-w2400.webp",
+    "bed/paper-20261110-actions-pipeline-b4436589c249-w640.avif.webp",
+    "bed/paper-20261110-actions-pipeline-b4436589c249-w640.webp",
+    "bed/paper-20261110-cloudflare-architecture-e308f5492721-w1280.avif.webp",
+    "bed/paper-20261110-cloudflare-architecture-e308f5492721-w1280.webp",
+    "bed/paper-20261110-cloudflare-architecture-e308f5492721-w1920.avif.webp",
+    "bed/paper-20261110-cloudflare-architecture-e308f5492721-w1920.webp",
+    "bed/paper-20261110-cloudflare-architecture-e308f5492721-w2400.avif.webp",
+    "bed/paper-20261110-cloudflare-architecture-e308f5492721-w2400.webp",
+    "bed/paper-20261110-cloudflare-architecture-e308f5492721-w640.avif.webp",
+    "bed/paper-20261110-cloudflare-architecture-e308f5492721-w640.webp",
+    "bed/paper-20261110-cloudflare-request-34513a050cca-w1280.avif.webp",
+    "bed/paper-20261110-cloudflare-request-34513a050cca-w1280.webp",
+    "bed/paper-20261110-cloudflare-request-34513a050cca-w1920.avif.webp",
+    "bed/paper-20261110-cloudflare-request-34513a050cca-w1920.webp",
+    "bed/paper-20261110-cloudflare-request-34513a050cca-w2400.avif.webp",
+    "bed/paper-20261110-cloudflare-request-34513a050cca-w2400.webp",
+    "bed/paper-20261110-cloudflare-request-34513a050cca-w640.avif.webp",
+    "bed/paper-20261110-cloudflare-request-34513a050cca-w640.webp",
+    "bed/paper-20261110-picgo-upload-5539b593dd45-w1280.avif.webp",
+    "bed/paper-20261110-picgo-upload-5539b593dd45-w1280.webp",
+    "bed/paper-20261110-picgo-upload-5539b593dd45-w1920.avif.webp",
+    "bed/paper-20261110-picgo-upload-5539b593dd45-w1920.webp",
+    "bed/paper-20261110-picgo-upload-5539b593dd45-w2400.avif.webp",
+    "bed/paper-20261110-picgo-upload-5539b593dd45-w2400.webp",
+    "bed/paper-20261110-picgo-upload-5539b593dd45-w640.avif.webp",
+    "bed/paper-20261110-picgo-upload-5539b593dd45-w640.webp",
+    "bed/paper-20261110-ros-data-path-4c6bb401b377-w1280.avif.webp",
+    "bed/paper-20261110-ros-data-path-4c6bb401b377-w1280.webp",
+    "bed/paper-20261110-ros-data-path-4c6bb401b377-w1920.avif.webp",
+    "bed/paper-20261110-ros-data-path-4c6bb401b377-w1920.webp",
+    "bed/paper-20261110-ros-data-path-4c6bb401b377-w2400.avif.webp",
+    "bed/paper-20261110-ros-data-path-4c6bb401b377-w2400.webp",
+    "bed/paper-20261110-ros-data-path-4c6bb401b377-w640.avif.webp",
+    "bed/paper-20261110-ros-data-path-4c6bb401b377-w640.webp",
+    "bed/paper-20261110-ros-layers-24212fd3eca3-w1280.avif.webp",
+    "bed/paper-20261110-ros-layers-24212fd3eca3-w1280.webp",
+    "bed/paper-20261110-ros-layers-24212fd3eca3-w1920.avif.webp",
+    "bed/paper-20261110-ros-layers-24212fd3eca3-w1920.webp",
+    "bed/paper-20261110-ros-layers-24212fd3eca3-w2400.avif.webp",
+    "bed/paper-20261110-ros-layers-24212fd3eca3-w2400.webp",
+    "bed/paper-20261110-ros-layers-24212fd3eca3-w640.avif.webp",
+    "bed/paper-20261110-ros-layers-24212fd3eca3-w640.webp"
+  ],
+  "pendingDeletion": [
+    "bed/20260728123332461-w616.avif.webp",
+    "bed/20260728123332461-w616.webp",
+    "bed/20260808035823249-w1280.avif.webp",
+    "bed/20260808035823249-w1280.webp",
+    "bed/20260808035823249-w1876.avif.webp",
+    "bed/20260808035823249-w1876.webp",
+    "bed/20260808035823249-w640.avif.webp",
+    "bed/20260808035823249-w640.webp",
     "bed/20261025214411104-w474.avif.webp",
     "bed/20261025214411104-w474.webp",
+    "bed/20261027103501918-w640.avif.webp",
+    "bed/20261027103501918-w640.webp",
+    "bed/20261027103501918-w818.avif.webp",
+    "bed/20261027103501918-w818.webp",
     "bed/fruit_pipeline_fig1_architecture-w1280.avif.webp",
     "bed/fruit_pipeline_fig1_architecture-w1280.webp",
     "bed/fruit_pipeline_fig1_architecture-w1920.avif.webp",
@@ -1044,30 +1089,6 @@
     "bed/fruit_pipeline_fig6_stage2_classifier_ablation-w2670.webp",
     "bed/fruit_pipeline_fig6_stage2_classifier_ablation-w640.avif.webp",
     "bed/fruit_pipeline_fig6_stage2_classifier_ablation-w640.webp",
-    "bed/jupiter-w1280.avif.webp",
-    "bed/jupiter-w1280.webp",
-    "bed/jupiter-w640.avif.webp",
-    "bed/jupiter-w640.webp",
-    "bed/moon-w1280.avif.webp",
-    "bed/moon-w1280.webp",
-    "bed/moon-w1282.avif.webp",
-    "bed/moon-w1282.webp",
-    "bed/moon-w640.avif.webp",
-    "bed/moon-w640.webp"
-  ],
-  "pendingDeletion": [
-    "bed/20260728123332461-w616.avif.webp",
-    "bed/20260728123332461-w616.webp",
-    "bed/20260808035823249-w1280.avif.webp",
-    "bed/20260808035823249-w1280.webp",
-    "bed/20260808035823249-w1876.avif.webp",
-    "bed/20260808035823249-w1876.webp",
-    "bed/20260808035823249-w640.avif.webp",
-    "bed/20260808035823249-w640.webp",
-    "bed/20261027103501918-w640.avif.webp",
-    "bed/20261027103501918-w640.webp",
-    "bed/20261027103501918-w818.avif.webp",
-    "bed/20261027103501918-w818.webp",
     "blog/36357886a211c5a9e1f9664b9ecb190aa034a1fe9054c8cab2415e58a6783ab5.svg",
     "blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w1280.avif.webp",
     "blog/637ff9e7e452096ff68f92a3480980f7a83f5b30cf12edf284be2ad60446f05a-w1280.webp",

@@ -13,28 +13,28 @@ const { locale = "zh-CN" } = Astro.props;
 const i18nConfig = {
   "zh-CN": {
     title: "搜索",
-    placeholder: "搜索文章、项目、笔记...",
+    placeholder: "搜索文章...",
     empty: "未找到相关内容",
     loading: "正在检索...",
     badges: { blog: "Blog", project: "Project", note: "Note" },
   },
   "zh-TW": {
     title: "搜尋",
-    placeholder: "搜尋文章、專案、筆記...",
+    placeholder: "搜尋文章...",
     empty: "未找到相符內容",
     loading: "正在檢索...",
     badges: { blog: "Blog", project: "Project", note: "Note" },
   },
   en: {
     title: "Search",
-    placeholder: "Search blogs, projects, notes...",
+    placeholder: "Search blogs...",
     empty: "No matching results",
     loading: "Searching...",
     badges: { blog: "Blog", project: "Project", note: "Note" },
   },
 }[locale] ?? {
   title: "搜索",
-  placeholder: "搜索文章、项目、笔记...",
+  placeholder: "搜索文章...",
   empty: "未找到相关内容",
   loading: "正在检索...",
   badges: { blog: "Blog", project: "Project", note: "Note" },

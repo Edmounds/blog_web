@@ -3,8 +3,8 @@ import { stripLocaleFromPath } from "./i18n.ts";
 export const PRIMARY_ROUTES = [
   "/",
   "/blog/",
-  "/project/",
-  "/note/",
+  // "/project/",
+  // "/note/",
   "/links/",
   "/about/",
 ] as const;

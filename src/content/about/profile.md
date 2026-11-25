@@ -16,7 +16,7 @@ backgroundKeywords:
 
 ## 关于网站
 - BLOG 发布正经的技术性文章
-- NOTE 日常碎碎念
+  <!-- - NOTE 日常碎碎念 -->
 - LINKS 友链
 - ABOUT 就是这一页
 - LIFE 分享我看过的书、影视剧、音乐、游戏

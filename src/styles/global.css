@@ -459,7 +459,11 @@ html:lang(zh) .article-prose > p {
 }
 
 html.dark .ui-prose {
-  color: color-mix(in srgb, var(--foreground) 78%, transparent);
+  color: color-mix(in srgb, var(--foreground) 92%, transparent);
+}
+
+html.dark .ui-prose a {
+  color: color-mix(in srgb, var(--foreground) 96%, transparent);
 }
 
 .ui-prose > * + * {

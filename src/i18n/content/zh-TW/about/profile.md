@@ -1,6 +1,6 @@
 ﻿---
 name: Last4ev3r
-motto: Keep it Simple,Stupid
+motto: 簡單就好，笨蛋
 portrait: /images/content/about/profile-fe4782a21dcb-w320.webp
 backgroundKeywords:
   - C++
@@ -15,16 +15,16 @@ backgroundKeywords:
 ---
 
 ## 關於網站
-- BLOG 發布正經的技術文章
-- NOTE 日常碎念
-- LINKS 友站連結
+- BLOG 發布正經的技術性文章
+  <!-- - NOTE 日常碎碎念 -->
+- LINKS 友情連結
 - ABOUT 就是這一頁
-- LIFE 分享我看過的書、影視劇、音樂和遊戲
+- LIFE 分享我看過的書、影視劇、音樂、遊戲
 
 ## 關於我
 
-重慶沙坪壩沙正街男子職業技術學院大三就讀中
-喜歡天文，淺嚐過行星攝影，未來有機會想嘗試深空攝影／星野攝影
+重慶沙坪壩沙正街男子職業技術學院大三在讀
+喜歡天文，稍微嘗試過行星攝影，未來有機會的話想試試深空攝影／星野攝影
 路亞空軍中
 
 ```image-layout
@@ -41,20 +41,20 @@ grid: |
 ```
 
 喜歡折騰
-以下是我的幾個 ROS 相關開源專案，如果覺得好用，歡迎 star～
+以下是我的幾個 ROS 相關開源專案，如果覺得好用，歡迎點個 Star～
 https://github.com/ConQU2026/auto_serial_bridge
 https://github.com/Edmounds/robviz
 
--  2026 robocup 決賽全國冠軍
+-  2026 RoboCup 決賽國冠
 - 2026 電賽 省一
-- 2026 robocon 主賽全國三等獎
+- 2026 robocon 主賽國三
 
 ## 聯絡我
 [i@muelsyse.us](mailto:i@muelsyse.us)
 
 ## 致謝
 
-本站基於 [Astro-star](https://github.com/hanlife02/Astro-star) 修改並重新建置
+本站基於[Astro-star](https://github.com/hanlife02/Astro-star)修改與重建
 
 本站使用以下服務／API
 

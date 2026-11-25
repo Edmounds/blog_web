@@ -1,113 +1,88 @@
 ﻿---
-title: Building a Personal Website with Cloudflare
-description: "Site architecture overview: two Workers, one SQL database, and one object storage service"
+title: Build a Personal Website with Cloudflare
+description: "Architecture of this site: two Workers, one SQL database, and one object storage bucket"
 createdAt: 2026-08-13T00:00:00.000Z
 updatedAt: 2026-08-13T00:00:00.000Z
 published: true
 tags:
   - Network
-  - Build a Website
+  - Website building
   - Optimization
 slug: 20260813-02
 ---
 
 ## Quotation
 
-My website runs on two Cloudflare Workers, an SQL database, and object storage. Comments, likes, and view counts update in real time; my book, movie, and music collections have their own admin dashboard, and my music rankings sync automatically every night at midnight. Apart from the domain, everything else on the bill costs virtually nothing.
+My website runs on two Cloudflare Workers, one SQL database, and one object storage service. Comments, likes, and page views are all updated in real time. My book, music, and movie collection has its own admin dashboard, and my music-listening rankings sync automatically every day in the early hours. Apart from the domain, the rest of the bill is essentially zero.
 
-This article describes its architecture.
+This article introduces its structure. It is currently made up of`muelsyse-blog`directly holds the blog domain; the other`blog-art-cover-fetcher`Responsible for fetching cover images and making them available to the application through a service binding. The admin path is protected by Cloudflare Access, and scheduled synchronization tasks also run in the application Worker.
 
-```mermaid
-flowchart LR
-  V[访客浏览器] --> D[DNS / 优选 CNAME]
-  D --> E[入口 Worker]
-  E -->|Service Binding| A[Astro SSR Worker]
-  A --> S[静态资源]
-  A --> Q[(D1 数据库)]
-  A --> R[(R2 对象存储)]
-  A --> X[外部 API]
+![The Blog’s Cloudflare Architecture](https://img.muelsyse.us/bed/paper-20261110-cloudflare-architecture-e308f5492721.png)
 
-  C[Cloudflare Access] -.保护后台.-> E
-  K[Cron] -.每日定时同步.-> A
-```
-## A Single Request's Path
+*Figure 1: The application Worker directly serves the blog domain, while the cover-fetching Worker is invoked via a service binding; D1, R2, and the static asset service each handle their respective storage and distribution responsibilities.*
 
-```mermaid
-sequenceDiagram
-  participant B as 浏览器
-  participant E as 入口 Worker
-  participant A as Astro SSR Worker
-  participant D1 as D1 / R2
+## Single Request Flow
 
-  B->>E: HTTPS 请求
-  E->>A: 内部调用（Service Binding）
-  alt 静态资源
-    A-->>E: 直接返回带哈希的 CSS / JS / 图片
-  else 页面或 API
-    A->>D1: 查询或写入
-    D1-->>A: 结果
-    A-->>E: HTML / JSON
-  end
-  E-->>B: 补上安全响应头后返回
-```
+![Blog Request Processing Flow](https://img.muelsyse.us/bed/paper-20261110-cloudflare-request-34513a050cca.png)
+
+*Figure 2: Requests are routed to static asset serving or application logic based on resource type. Pages and APIs that need data then access D1, R2, or external services as required by the business logic.*
 
 ## Database Design
 
-D1 is Cloudflare’s managed SQLite database, used to store structured data such as comments, likes, view counts, and metadata for books, films, and music in your collection.
+D1 is Cloudflare’s managed SQLite database, used to store structured data such as comments, likes, view counts, and metadata for book, music, and movie collections.
 
-R2 stores all images: illustrations in articles and collection covers. The main reason I chose it is that egress traffic is free—bandwidth charges are the bane of image hosting. R2 stores only the files; the metadata for those files lives in D1, and the two are linked by object key.
+R2 handles image hosting for article content and any image assets that need to be hosted. The main reason for choosing it is that outbound traffic is free—traffic charges are the biggest concern for an image host. Stable, directly accessible upstream cover images retain their original URLs instead of being duplicated in R2. Collection metadata is managed by D1; references to illustrations in the article body are stored in Markdown, while mappings for derived images are maintained in the build manifest.
+
 ## Image Pipeline
 
-I write articles in Obsidian. The moment I paste an image, the image-hosting plugin uploads it directly to R2, leaving a URL in the Markdown. There are no image binary files anywhere in the repository, so the Git history never bloats.
+When I write articles in Obsidian, the image-hosting plugin uploads each image directly to R2 the moment I paste it, leaving an online URL in the Markdown. The article body references the original image via its URL, so large images don’t have to be added to the Git history every time I write.
 
-At build time, the script generates multiple AVIF and WebP variants at several widths for each image the first time it appears (640 / 1280 / 1920), uploads them to the same directory in R2, and records the mapping in a manifest. When rendered, the URL in the Markdown remains unchanged, but the resulting HTML contains a complete `<picture>` element: the browser selects the smallest file sufficient for the viewport and pixel density, the first image in the article loads at high priority, and the rest are lazy-loaded. The original image URL always remains valid as a fallback.
+During the build, the script generates AVIF and WebP variants for body images that need optimization, with target widths of 640 / 1280 / 1920 pixels, while avoiding upscaling based on the original image dimensions. The variants are uploaded to R2, and the mappings are written to the manifest. During rendering, the URL in the Markdown remains unchanged, but the output HTML is complete.`<picture>`: The browser selects the smallest adequate file based on the viewport and pixel density. The first image in the body is loaded at high priority, while the rest are lazy-loaded. The original image URL is retained as a fallback.
 
-## Little Money-Saving Tricks
+## Small Money-Saving Strategy
 
->If your site is a purely static blog, Astro and static hosting are all you need—no Workers required.
+> If your site is a purely static blog, Astro with static asset hosting is sufficient; you don’t need to run any application Worker code.
 
-If you need comments, an admin panel, or scheduled tasks, D1 plus an SSR Worker is a relatively low-cost option.
+If you need comments, an admin panel, or scheduled tasks, D1 combined with an SSR Worker is a relatively low-cost solution.
 
 ### Worker
-Requests for static assets don’t execute any code or count toward Workers’ 100,000 free requests per day. CSS, JavaScript, fonts, and local images all fall into this category, so they’re free and unlimited. The only things that actually consume the daily allowance of 100,000 free requests are HTML rendering and API calls that require code to run.
+Requests for static assets neither execute code nor count toward Workers’ 100,000 free requests per day. CSS, JavaScript, fonts, and local images all fall into this category—they’re free and unlimited. What actually consumes the 100,000-request daily allowance are requests that require the application Worker code to run, such as dynamic HTML rendering and API calls.
 
-So I keep as many requests as possible at the static layer. Only routes that require dynamic processing are configured to pass through a Worker first. This keeps request usage largely within the free-tier limits.
+So I route as many requests as possible through the static layer. Only paths that require dynamic processing are configured to go through a Worker first. This keeps request usage largely within the free tier.
 
 ### D1
-Keep an eye on D1 row reads. The free tier includes 5 million rows per day, but this counts rows scanned, not rows returned. A query that returns 20 comments could count tens of thousands of rows if it scans the entire table instead of using an index. Indexing commonly filtered fields and paginating lists can help you make the most of D1’s free tier.
+Pay attention to the number of rows read by D1. The free tier allows 5 million rows per day, but it counts rows scanned, not rows returned. A query that returns 20 comments could count tens of thousands of rows if it scans the entire table without using an index. Creating indexes on commonly filtered fields and paginating lists can help you make the most of D1’s free quota.
 
-###  A Note on Free-Tier Limits
-The claim of zero cost here needs a qualification: excluding the domain name, the bill is approximately zero as long as traffic and data usage stay within the free tier. The specific allowances are (July 2026):
+###  Be mindful of the free-tier limits.
+The “zero cost” claim here needs a caveat: excluding the domain, the bill is approximately zero as long as traffic and data usage remain within the free tiers. The specific quotas are (July 2026):
 
-| Item           | Free allowance               |
-| ------------ | ------------------ |
-| Dynamic Worker requests | 100,000/day, shared across the account       |
-| Static asset requests       | Free, unlimited             |
-| D1           | 5 million row reads/day, 100,000 row writes/day |
-| R2           | 10 GB of storage, free egress traffic    |
+| Project              | Free allowance                  |
+| -------------------- | -------------------------------- |
+| Workers dynamic requests | 100,000/day, shared across the account |
+| Static asset requests | Free, unlimited                  |
+| D1                   | 5 million row reads/day, 100,000 row writes/day |
+| R2                   | 10 GB of storage, free egress   |
 
-Note that 100,000 requests is the free daily limit for your entire account, not 100,000 per Worker.
+Note that 100,000 requests is the free daily limit for the entire account, not 100,000 per Worker. Full-table scans in D1 may quickly consume read quotas; whether charges are incurred also depends on the plan and usage. The quotas listed in the table reflect the information recorded at the time, so you should still verify the official pricing before enabling services or scaling up.
 
-Important: D1 charges based on rows scanned, so queries without indexes can make your bill skyrocket.
+## Accelerated access in mainland China
 
-## Accelerating Access from Mainland China
+Cloudflare’s default entry point is Anycast, with routing determined by BGP, which isn’t always ideal for China’s three major carriers. For the same site, China Telecom may be fast, while China Mobile may take a circuitous route and experience packet loss during the evening peak. My approach is to use an optimized CNAME: point the domain to a target domain that continuously measures performance and updates its DNS resolution results.
 
-Cloudflare’s default entry point uses Anycast, with routing determined by BGP, which isn’t always ideal for China’s three major telecom carriers. The same site may load quickly on China Telecom, while China Mobile users may experience detours and packet loss during the evening rush. My approach is to use an optimized CNAME: point my domain’s CNAME record to a hostname that continuously measures performance and updates its DNS responses.
+Once visitors reach the site, loading speed depends on layered caching, with the rules determined by how often the content changes:
 
-Once traffic enters the site, speed depends on layered caching; the rules are based on how frequently each type of content changes:
-- CSS/JS/fonts with content hashes: cache for one year
-- HTML: `no-cache`, re-verify each time to ensure the latest code is being used
-- Dynamic APIs such as comments and statistics: cache at the edge for 15 seconds; write requests always use `no-store`.
-- The GitHub contribution graph is cached for 6 hours, while WakaTime data is cached for 15 minutes.
+- CSS / JS / fonts with content hashes: cache for one year
+- HTML:`no-cache`, the cache must be revalidated before it can be reused
+- Dynamic APIs such as comments and analytics: cache at the edge for 15 seconds; all write requests uniformly`no-store`.
+- The GitHub contribution graph is cached for 6 hours, and WakaTime data is cached for 15 minutes.
 
-## In Brief
+## TL;DR
 
-
-
+Serve static content directly wherever possible, put dynamic logic in the application Worker, and store structured data in D1 and article images in R2. First, clarify the routing and caching boundaries, then determine based on actual usage whether a paid plan is necessary.
 
 ## References
 
-- [Workers Platform Limits](https://developers.cloudflare.com/workers/platform/limits/)
+- [Workers Platform Limitations](https://developers.cloudflare.com/workers/platform/limits/)
 - [Static Asset Billing Rules](https://developers.cloudflare.com/workers/static-assets/billing-and-limitations/)
 - [Service Bindings](https://developers.cloudflare.com/workers/runtime-apis/bindings/service-bindings/)
 - [D1 Pricing](https://developers.cloudflare.com/d1/platform/pricing/)
